@@ -1,0 +1,110 @@
+body {
+    background-color: #fcfafa;
+}
+
+/* Container Styling */
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.register-form-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    width: 100%;
+    max-width: 450px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 5em;
+    margin-bottom: 6em;
+    box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.input-field {
+    position: relative;
+    margin-bottom: 1em;
+}
+
+.input-field input {
+    padding: 1em !important;
+    font-size: 1em;
+    border: 1px solid #2196F3;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-field label {
+    position: absolute;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 1em;
+    transition: all 0.4s ease;
+}
+
+.input-field input:focus+label,
+.input-field input:valid+label {
+    color: #000;
+    top: -1em;
+    font-size: 0.75em;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.5em;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Error Styling */
+.register-error {
+    margin-bottom: 1em;
+}
+
+.error-text {
+    color: red;
+    font-size: 0.9em;
+}
+
+/* Buttons */
+.register-button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 0.8em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.register-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.register-button:active {
+    transform: scale(0.95);
+}
+
+.login-button {
+    color: #007bff;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 1em;
+}
+
+.login-button:hover {
+    text-decoration: underline;
+    color: whitesmoke;
+}

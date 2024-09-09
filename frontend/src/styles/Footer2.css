@@ -1,0 +1,354 @@
+.footer2 {
+    color: #495057;
+    /* Dark text color for contrast */
+    background-color: rgb(227, 238, 246);
+    padding: 2em;
+    /* Padding around the content */
+    border-bottom: 1px solid #dee2e6;
+    /* Border for separation */
+    display: block;
+    margin-bottom: -2em;
+}
+
+.footer2-content {
+    display: flex;
+    flex-wrap: wrap;
+    /* Allow wrapping for smaller screens */
+    /* justify-content: space-between; */
+    margin: 3em;
+    padding-top: 5em;
+    padding-bottom: 3em;
+}
+
+/* border-bottom: 1px solid #dee2e6; */
+
+.footer2Box {
+    border-bottom: 1px solid #cfd5da;
+    margin-right: 5.9em;
+    margin-left: 5.9em;
+    margin-top: -2em;
+}
+
+.footer2Box2 {
+    border-bottom: 1px solid #cfd5da;
+    margin-left: 5.9em;
+    margin-right: 5.9em;
+}
+
+
+.footer2-feedback {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
+    /* Align items to the start */
+    margin-right: 13em;
+}
+
+.footer2-feedback h2 {
+    margin: 0 0 0.5em 0;
+    /* Space between heading and brand name */
+    font-size: 1.5em;
+    /* Font size for heading */
+    color: #343a40;
+    /* Dark color for heading */
+}
+
+.footer2-brand {
+    font-size: 1.1em;
+    /* Font size for brand name */
+    margin-left: 1.2em;
+    margin-bottom: 1em;
+}
+
+.footer2-feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    /* Increased space between form elements */
+    margin-top: 1em;
+    /* Space above the form */
+}
+
+.input-field {
+    position: relative;
+    margin-bottom: 1em;
+    /* Space between input fields */
+}
+
+/* Styling for the input field */
+.input-field input[type=text],
+.input-field input[type=email],
+.input-field input[type=password] {
+    width: 20em;
+    padding: 0.8em 0.5em;
+    border: none;
+    border-bottom: 1px solid #007bff;
+    font-size: 1.3em;
+    background-color: transparent;
+    color: #333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    /* Smooth transition for border and shadow */
+    outline: none;
+    /* Remove default outline */
+}
+
+/* Styling for the label */
+.input-field label {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    color: #999;
+    /* Default label color */
+    font-size: 1em;
+    transition: all 0.4s ease;
+    /* Smooth transition for label color and position */
+}
+
+/* Adjust label position when input is focused */
+.input-field input:focus+label,
+.input-field input:valid+label {
+    color: #000;
+    /* Label color on focus or if input is valid */
+    top: -1em;
+    /* Move label above the input field */
+    left: 0;
+    font-size: 0.75em;
+    /* Smaller font size for the label */
+}
+
+/* Input border and shadow on focus */
+.input-field input:focus {
+    border-bottom: 1px solid #000;
+    /* Border color on focus */
+    box-shadow: 0 1px 0 0 #000;
+    /* Shadow effect on focus */
+}
+
+/* Input border and shadow for valid input */
+.input-field input.valid {
+    border-bottom: 1px solid #2196F3;
+    /* Border color for valid input */
+    box-shadow: 0 1px 0 0 #2196F3;
+    /* Shadow effect for valid input */
+}
+
+/* Input border and shadow for invalid input */
+.input-field input.invalid {
+    border-bottom: 1px solid #F44336;
+    /* Border color for invalid input */
+    box-shadow: 0 1px 0 0 #F44336;
+    /* Shadow effect for invalid input */
+}
+
+
+.footer2-feedback-form label {
+    font-size: 1.1em;
+    margin-bottom: 0.2em;
+    font-weight: 500;
+}
+
+.footer2-feedback-form input,
+.footer2-feedback-form textarea {
+    width: 193%;
+    padding: 0.8em 0.5em;
+    font-size: 1em;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #2196F3;
+    /* Border color for valid input */
+    border-radius: 4px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+}
+
+.footer2-feedback-form input:focus,
+.footer2-feedback-form textarea:focus {
+    border-bottom: 2px solid #007bff;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.footer2-feedback-form textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.footer2-feedback-form button {
+    background-color: #007bff;
+    /* Button background color */
+    color: #fff;
+    /* Button text color */
+    padding: 0.8em;
+    border: none;
+    border-radius: 4px;
+    /* Rounded corners */
+    cursor: pointer;
+    /* Pointer cursor on hover */
+    font-size: 1em;
+    /* Font size for button text */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    /* Smooth transition for hover effect */
+}
+
+.footer2-feedback-form button:hover {
+    background-color: #0056b3;
+    /* Darker background on hover */
+    transform: scale(1.05);
+    /* Slightly enlarge button on hover */
+}
+
+.footer2-feedback-form button:active {
+    transform: scale(0.95);
+    /* Slightly shrink button when pressed */
+}
+
+.footer2-feedback-form button {
+    background-color: #007bff;
+    /* Button background color */
+    color: #fff;
+    /* Button text color */
+    padding: 0.8em;
+    border: none;
+    border-radius: 4px;
+    /* Rounded corners */
+    cursor: pointer;
+    /* Pointer cursor on hover */
+    font-size: 1em;
+    /* Font size for button text */
+}
+
+.footer2-feedback-form button:hover {
+    background-color: #0056b3;
+    /* Darker background on hover */
+}
+
+.footerNav {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    margin-inline-start: auto;
+}
+
+.footer2-nav {
+    flex-wrap: wrap;
+    /* Allow wrapping for smaller screens */
+    margin-left: 10em;
+    align-items: flex-start;
+    margin-right: 7em;
+}
+
+.footer2-nav-item {
+    font-size: 1em;
+    /* Font size for nav items */
+    color: #007bff;
+    /* Link color */
+    text-decoration: none;
+    /* Remove underline */
+    cursor: pointer;
+    /* Pointer cursor on hover */
+}
+
+.footer2-nav-item:hover {
+    text-decoration: underline;
+    /* Underline on hover */
+}
+
+.div2 {
+    padding: 1 1em;
+    line-height: 3;
+    font-size: 20px;
+    margin: 0 1em;
+    /* Adjust margins for spacing */
+    color: #000000;
+    /* White text color */
+    cursor: pointer;
+    /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    /* Smooth transition for hover effects */
+    text-transform: uppercase;
+    /* Make text uppercase */
+    font-weight: bold;
+    /* Bold text */
+    position: relative;
+    width: max-content;
+}
+
+/* Hover effect */
+.div2:hover {
+    color: #007bff;
+    /* Blue border for the marker */
+}
+
+.div2::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    /* Height of the marker bar */
+    background-color: #007bff;
+    /* Marker bar color */
+    width: 100%;
+    /* Fill the entire width */
+    transform: scaleX(0);
+    /* Start from 0 width */
+    transform-origin: top left;
+    /* Animation origin */
+    transition: transform 0.3s ease;
+    /* Smooth transition for filling effect */
+}
+
+/* Fill the marker bar on hover */
+.div2:hover::before {
+    transform: scaleX(1);
+    /* Fill the entire width */
+}
+
+/* Animation for marker depleting */
+.div2:not(:hover)::before {
+    transform: scaleX(0);
+    /* Deplete to 0 width */
+    transition: transform 0.3s ease;
+    /* Smooth transition for depleting effect */
+}
+
+/* Active effect (when the button is pressed) */
+.div2:active {
+    background-color: #004080;
+    /* Even darker blue when pressed */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    /* Reduce shadow depth */
+    color: whitesmoke;
+}
+
+/* Focus effect (for keyboard accessibility) */
+.div2:focus {
+    outline: none;
+    /* Remove default outline */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+    /* Add custom focus ring */
+}
+
+/* Marker for selected div */
+.div2.selected::after {
+    content: '';
+    /* Empty content for the marker */
+    position: absolute;
+    top: -5px;
+    /* Position marker above the div */
+    left: -5px;
+    /* Position marker to the left of the div */
+    width: calc(100% + 10px);
+    /* Expand width to cover the div and some margin */
+    height: calc(100% + 10px);
+    /* Expand height to cover the div and some margin */
+    border: 2px solid #007bff;
+    /* Blue border for the marker */
+    border-radius: 8px;
+    /* Match the div's border radius */
+    box-sizing: border-box;
+    /* Include border in element's total width and height */
+    pointer-events: none;
+    /* Ensure marker doesn't interfere with clicks */
+}

@@ -1,0 +1,253 @@
+.contact-container {
+    padding: 2em;
+    max-width: 118em;
+    margin: 0 auto;
+}
+
+
+.contactDiv {
+    background: #fcfafa;
+}
+
+.contact-info {
+    width: 101%;
+    /* Makes the element full width */
+    border-top: 1px solid rgb(163, 173, 180);
+    display: flex;
+    align-items: flex-start;
+    /* Aligns items to the top */
+    padding: 2em;
+    padding-top: 5em;
+    padding-bottom: 5em;
+    /* Padding around the content */
+    box-sizing: border-box;
+    /* Includes padding and border in element's total width and height */
+    flex-wrap: wrap;
+    /* Prevents wrapping to new lines */
+    overflow-x: auto;
+    /* Allows horizontal scrolling if needed */
+    margin-left: -0.5em;
+}
+
+.contact-info2 {
+    width: 101%;
+    /* Makes the element full width */
+    border-top: 1px solid rgb(163, 173, 180);
+    border-bottom: 1px solid rgb(163, 173, 180);
+    display: flex;
+    align-items: flex-start;
+    /* Aligns items to the top */
+    padding: 2em;
+    padding-top: 5em;
+    padding-bottom: 5em;
+    /* Padding around the content */
+    box-sizing: border-box;
+    /* Includes padding and border in element's total width and height */
+    flex-wrap: wrap;
+    /* Prevents wrapping to new lines */
+    overflow-x: auto;
+    /* Allows horizontal scrolling if needed */
+    margin-left: -0.5em;
+}
+
+.contact-info-text {
+    margin-left: -6em;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.email {
+    /* Centers text inside each email block */
+    margin: 0em 3em;
+    margin-bottom: 3em;
+    /* Space between each email block */
+    padding: 1em;
+    flex: 0 0 auto;
+    /* Prevents flex items from shrinking or growing */
+    width: 30em;
+    /* Fixed width for each email block */
+}
+
+.email h1 {
+    margin-bottom: 0.5em;
+    /* Space between the header and the paragraph */
+    font-size: 2.5em;
+    /* Adjust font size as needed */
+    color: #333;
+    /* Darker color for better readability */
+}
+
+.email p {
+    margin: 0;
+    /* Removes default margin */
+    font-size: 1.2em;
+    /* Adjust font size as needed */
+    color: #555;
+    /* Slightly lighter color for contrast */
+}
+
+.contact-form {
+    margin-bottom: 10em;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+}
+
+.contact-form label {
+    margin-bottom: 1em;
+    font-size: 1.1em;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 0.8em;
+    margin-top: 0.5em;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.contact-form button {
+    width: 100%;
+    padding: 1em;
+    font-size: 1.1em;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.contact-form button:hover {
+    background-color: #0056b3;
+}
+
+.contact {
+    font-size: 96px;
+    margin-left: 1.2em;
+    margin-top: 1.8em;
+    margin-bottom: 2em;
+}
+
+.map-container {
+    margin: 2em 0;
+}
+
+.faq-section {
+    margin-top: 3em;
+    margin-left: -0.5em;
+}
+
+.faq-item {
+    margin-bottom: 1.5em;
+}
+
+.faq-item h3 {
+    font-size: 1.2em;
+    margin-bottom: 0.5em;
+}
+
+.faq-item p {
+    font-size: 1em;
+}
+
+.aboutYouDiv {
+    font-size: 54px;
+    font-weight: bold;
+    width: 100%;
+
+}
+
+.formDiv {
+    display: flex;
+    margin-left: -0.5em;
+}
+
+.formDiv2 {
+    width: 100%;
+    font-size: 18px;
+    margin-bottom: 7em;
+    flex-wrap: wrap;
+}
+
+.footer2-feedback {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 3em;
+}
+
+.footer2-feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    width: 100%;
+}
+
+.input-pair {
+    display: flex;
+    justify-content: space-between;
+    gap: 4em;
+    width: 100%;
+}
+
+.input-field {
+    flex: 1;
+    position: relative;
+    margin-bottom: 1em;
+}
+
+.input-field input,
+.input-field textarea {
+    width: 100%;
+    padding: 0.8em 0.5em;
+    font-size: 1em;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #2196F3;
+    border-radius: 4px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+}
+
+.input-field label {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 1em;
+    transition: all 0.4s ease;
+}
+
+.input-field input:focus+label,
+.input-field input:valid+label,
+.input-field textarea:focus+label,
+.input-field textarea:valid+label {
+    color: #000;
+    top: -1em;
+    font-size: 0.75em;
+}
+
+.footer2-feedback-form button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 0.8em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.footer2-feedback-form button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.footer2-feedback-form button:active {
+    transform: scale(0.95);
+}
