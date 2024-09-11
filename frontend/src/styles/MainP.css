@@ -440,41 +440,28 @@ body {
     bottom: 0;
     left: 0;
     height: 3px;
-    /* Height of the marker bar */
     background-color: #007bff;
-    /* Marker bar color */
     width: 100%;
     transform: scaleX(0);
-    /* Start from 0 width */
     transform-origin: bottom left;
-    /* Animation origin */
     transition: transform 0.3s ease;
-    /* Smooth transition */
 }
 
-/* Fill the marker bar on hover */
 .areaDiv:hover::before {
     transform: scaleX(1);
-    /* Fill the entire width */
     transform-origin: bottom left;
 }
 
 .areaDiv:not(:hover)::before {
     transform: scaleX(0);
-    /* Empty to 0 width */
     transform-origin: bottom right;
-    /* Empty from right to left */
     transition: transform 0.4s ease;
-    /* Smooth transition */
 }
 
-/* When the link is active or focused */
 .areaDiv:active,
 .areaDiv:focus {
     color: #0056b3;
-    /* Darker blue for active state */
     outline: none;
-    /* Remove default outline */
 }
 
 .areaDiv:focus {

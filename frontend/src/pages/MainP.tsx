@@ -31,25 +31,25 @@ export function MainP() {
         const headerOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.1 
+            threshold: 0.1
         };
 
         const featuresOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.1 
+            threshold: 0.1
         };
 
         const div1Options = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.1 
+            threshold: 0.1
         };
 
         const div2Options = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.1 
+            threshold: 0.1
         };
 
         const featureDiv2Options1 = {
@@ -61,7 +61,7 @@ export function MainP() {
         const featureDiv2Options2 = {
             root: null,
             rootMargin: '0px',
-            threshold: 0 
+            threshold: 0
         };
         const featureDiv2Options3 = {
             root: null,
@@ -77,7 +77,7 @@ export function MainP() {
         const featureDiv2Options5 = {
             root: null,
             rootMargin: '0px',
-            threshold: 0 
+            threshold: 0
         };
 
         const offerDiv4Options = {
@@ -89,13 +89,13 @@ export function MainP() {
         const offerDiv5Options = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.5 
+            threshold: 0.5
         };
 
         const offerDiv6Options = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.5 
+            threshold: 0.5
         };
 
         const headerObserver = new IntersectionObserver(([entry]) => {
@@ -253,7 +253,7 @@ export function MainP() {
                             <p>IMMERSIVE COURSES</p>
                             <h3 className='feature-head'>Our courses are structured to keep you engaged and motivated throughout your learning path.</h3>
                             <p className="feature-description">Explore comprehensive learning journey with our three-tier courses designed to elevate your skills.</p>
-                            <a href="/guidance" className="feature-button">Explore courses</a>
+                            <a className="feature-button">Explore courses</a>
                         </div>
                     </a>
                     <a href="/guidance&help" style={{ textDecoration: 'none' }} className="feature">
@@ -261,7 +261,7 @@ export function MainP() {
                             <p>GUIDANCE & HELP</p>
                             <h3 className='feature-head'>Get insights and help from experienced developers.</h3>
                             <p className="feature-description">Receive personalized guidance and expert advice to overcome coding challenges and advance your learning journey.</p>
-                            <a href="/guidance" className="feature-button">Get Help</a>
+                            <a href="/help" className="feature-button">Get Help</a>
                         </div>
                     </a>
                     <a href="/support" style={{ textDecoration: 'none' }} className="feature">
@@ -294,7 +294,6 @@ export function MainP() {
 
 
 
-            {/* <div className={`featureDiv2 feature2 ${featureDiv2Visible2 ? 'background-change' : ''}`}> */}
             <div className={`featureDiv2 feature2 ${featureDiv2Visible2 ? 'slide-in' : 'slide-out'}`}>
                 <header className="featureHeader2">GAME DEVELOPMENT</header>
                 <div className="offerDiv3">
@@ -302,7 +301,7 @@ export function MainP() {
                 </div>
 
                 <div className='features3'>
-                    <a href="/gameEnginesTutorial" className="reactDiv">
+                    <a href="/gameDevelopment" className="reactDiv">
                         <img src={picture2} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Master Game Engines<br />Unlock Your Creativity And Build Games With Modern Game Engines!

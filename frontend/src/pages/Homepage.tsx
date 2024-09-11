@@ -7,8 +7,10 @@ import { Footer } from './Footer';
 const Homepage: React.FC = () => {
 
   return (
-    <div>
-      <HomepageHeader></HomepageHeader>
+    <div className='homepageContainer'>
+      <HomepageHeader bgColor='#f5f5f5'></HomepageHeader>
+
+      <div className='homepageDiv'></div>
       <Footer2 bgColor='#f5f5f5' />
       <Footer bgColor="#f5f5f5" />
     </div>

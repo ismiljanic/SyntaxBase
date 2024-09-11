@@ -1,0 +1,125 @@
+.help-container {
+    margin: 0 auto;
+}
+
+.help-container2 {
+    padding-left: 7.5em;
+    padding-top: 5em;
+    width: 88.5%;
+}
+
+h1, h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+p {
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.help-sections {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.help-sections li {
+    margin-bottom: 10px;
+}
+
+.help-sections a {
+    text-decoration: none;
+    color: #0066cc;
+    font-weight: bold;
+}
+
+.faq-section, .community-section, .live-support-section, .tutorials-section, .personalized-guidance-section, .contact-section {
+    margin-bottom: 40px;
+}
+
+.faq-item {
+    margin-bottom: 20px;
+}
+
+.faq-item h3 {
+    margin-bottom: 5px;
+}
+
+.community-button, .live-support-button, .tutorial-button, .personalized-help-button {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #007bff;
+    overflow: hidden;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    transition: color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
+    font-weight: bold;
+    z-index: 1;
+}
+.community-button::before, .live-support-button::before, .tutorial-button::before, .personalized-help-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0056b3;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.3s ease;
+    z-index: -1;
+}
+
+.community-button:hover::before, .live-support-button:hover::before, .tutorial-button:hover::before, .personalized-help-button:hover::before {
+    transform: scaleY(1);
+}
+.community-button, .live-support-button, .tutorial-button, .personalized-help-button {
+    position: relative;
+    z-index: 1;
+}
+
+.community-button:hover, .live-support-button:hover, .tutorial-button:hover, .personalized-help-button:hover {
+    color: #ffffff;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+.community-button:active, .live-support-button:active, .tutorial-button:active, .personalized-help-button:active {
+    background-color: #004080;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.community-button:focus, .live-support-button:focus, .tutorial-button:focus, .personalized-help-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-form label {
+    margin-bottom: 5px;
+}
+
+.contact-form input, .contact-form textarea {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.contact-form button {
+    padding: 10px;
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.contact-form button:hover {
+    background-color: #004999;
+}

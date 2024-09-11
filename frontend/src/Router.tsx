@@ -12,6 +12,12 @@ import { GameDevelopmentPage } from "./pages/GameDevelopmentPage";
 import { DatabaseManagment } from "./pages/DatabaseManagment";
 import { ProblemSolvingPage } from "./pages/ProblemSolvingPage";
 import { InstructionsPage } from "./pages/InstructionsPage";
+import { Tutorials } from "./pages/Tutorials";
+import { Courses } from "./pages/Courses";
+import { Help } from "./pages/Help";
+import { About } from "./pages/About";
+import { MyCourses } from "./pages/MyCourses";
+import { BeginnerWebCourse } from "./pages/webCourses/BeginnerWebCourse";
 
 export function Router() {
   return (
@@ -22,13 +28,19 @@ export function Router() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/homepage/:donorId" element={<Homepage />} />
-          <Route path="/changeSettings/:donorId" element={<PersonalInformationPage />} />
+          <Route path="/homepage/:id" element={<Homepage />} />
+          <Route path="/changeSettings/:id" element={<PersonalInformationPage />} />
           <Route path="/webDevelopment" element={<WebDevelopmentPage />} />
           <Route path="/gameDevelopment" element={<GameDevelopmentPage />} />
           <Route path="/databaseManagment" element={<DatabaseManagment />} />
           <Route path="/problemSolving" element={<ProblemSolvingPage />} />
           <Route path="/instructions" element={<InstructionsPage />} />
+          <Route path="/tutorials" element={<Tutorials />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/myCourses/:id" element={<MyCourses />} />
+          <Route path="/beginnerWebCourse" element={<BeginnerWebCourse />} />
+          <Route path="/help" element={<Help />} />
+          <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

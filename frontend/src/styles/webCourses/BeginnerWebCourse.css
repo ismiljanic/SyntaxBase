@@ -1,0 +1,350 @@
+.container {
+    font-weight: bold;
+}
+
+.webCourseDiv,
+.webCourseDiv2 {
+    margin: 0.5em 0;
+}
+
+.webCourseDiv {
+    font-size: 4.5em;
+    padding-top: 1em;
+    margin-left: 1.6em;
+    text-align: left;
+    font-weight: bold;
+}
+
+.webCourseDiv2.slide-in {
+    font-size: 3em;
+    animation: slideIn 0.8s ease-out forwards;
+}
+
+.webCourseDiv2.slide-out {
+    animation: slideOut 1.5s ease-out forwards;
+}
+
+
+.aboutCourseDiv {
+    font-size: 1.5em;
+    padding-top: 3em;
+    text-align: center;
+    margin-left: 5em;
+    margin-right: 5em;
+}
+
+.textContent {
+    margin-bottom: 1em;
+}
+
+.showMoreButton {
+    margin-top: 1em;
+    padding: 0.5em 2em;
+    font-size: 1em;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.showMoreButton:hover {
+    background-color: #0056b3;
+}
+
+.aboutPicturesDiv {
+    max-height: 0;
+    /* Initially hidden */
+    overflow: hidden;
+    /* Hide overflow content */
+    transition: max-height 0.5s ease-out;
+    /* Smooth expansion */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 7em;
+    padding-top: 3em;
+    /* Space above images */
+}
+
+.aboutPicturesDiv.expand {
+    max-height: 2000px;
+    /* Adjust to fit the content size */
+    transition: max-height 0.5s ease-in;
+    /* Smooth collapse */
+    padding-bottom: 3em;
+}
+
+.imageWithDescription {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.imageDescription {
+    margin-top: 1em;
+    padding: 0.5em;
+    font-style: italic;
+    color: #555;
+    position: relative;
+}
+
+
+.courseImage {
+    width: 37em;
+    height: 22em;
+    margin-left: -1.3em;
+    object-fit: cover;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.courseImage::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: rgba(0, 123, 255, 0.3);
+    transform: scale(0);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    z-index: 1;
+}
+
+.courseImage:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(0, 123, 255, 0.9);
+}
+
+.courseImage:hover::after {
+    background-color: rgba(0, 123, 255, 0.3);
+    transform: scale(1);
+}
+
+.imageWithDescription:hover .courseImage::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+
+.imageWithDescription:hover .courseImage {
+    color: #007bff;
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+    transform: scale(1.02);
+}
+
+.imageWithDescription:hover .courseImage::after,
+.imageWithDescription:hover .imageDescription::before,
+.courseImage:hover::after,
+.imageDescription:hover::before {
+    background-color: #007bff;
+    /* Adjust color if needed */
+}
+
+.imageWithDescription:hover .courseImage,
+.imageWithDescription:hover .imageDescription,
+.courseImage:hover,
+.imageDescription:hover {
+    color: #007bff;
+}
+
+.imageDescription::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background-color: #007bff;
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: bottom left;
+    transition: transform 0.3s ease;
+}
+
+.imageWithDescription:hover .imageDescription::before,
+.imageDescription:hover::before {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+
+.imageDescription:not(:hover)::before {
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.4s ease;
+}
+
+.imageDescription:active,
+.imageDescription:focus {
+    color: #0056b3;
+    outline: none;
+}
+
+.imageDescription:focus {
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+.imageDescription:active {
+    color: whitesmoke;
+}
+
+.imageDescription.selected::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: calc(100% + 10px);
+    height: calc(100% + 10px);
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.aboutCourseDiv2 {
+    font-size: 1.5em;
+    padding-top: 3em;
+    margin-left: 5em;
+    border-top: 1px solid #d1d7de;
+    margin-right: 5em;
+    padding-bottom: 11em;
+}
+
+.headerDivText {
+    text-align: left;
+    width: 30%;
+}
+
+.descriptionWithImage {}
+
+.imageForCourse {
+    width: 30em;
+    height: 15em;
+    object-fit: cover;
+    margin-left: 17em;
+    margin-top: -3.5em;
+    margin-bottom: 2em;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.descriptionImage {
+    margin-left: 26em;
+    margin-top: -1em;
+    width: 100%;
+}
+
+.descriptionOfCourse {
+    margin-top: -23em;
+    margin-bottom: 10em;
+    width: 30%;
+}
+
+.pictureContainer {
+    padding-top: 10em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6em;
+    margin-top: -20em;
+    margin-bottom: 10em;
+    margin-right: -1em;
+    justify-content: center;
+}
+
+.pictureContainer2 {
+    padding-top: 10em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6em;
+    margin-top: -20em;
+    margin-bottom: 10em;
+    margin-right: -1em;
+    justify-content: center;
+}
+
+.bigDaddyContainer {
+    font-weight: bold;
+    background-color: rgb(227, 238, 246);
+}
+
+.webCourseDiv3 {
+    font-size: 4.5em;
+    border-top: 1px solid #dee2e7;
+    padding-top: 1em;
+    padding-bottom: 4em;
+    margin-left: 1.6em;
+    text-align: left;
+    font-weight: bold;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.courseButton {
+    padding: 1em;
+    text-align: center;
+    font-size: 16px;
+    margin-top: 1.5em;
+    margin-bottom: 2em;
+    justify-content: center;
+    color: #ffffff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    width: 10%;
+    cursor: pointer;
+    overflow: hidden;
+    transition: color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
+    font-weight: bold;
+    z-index: 1;
+}
+
+.courseButton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0056b3;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.3s ease;
+    z-index: -1;
+}
+
+.courseButton:hover::before {
+    transform: scaleY(1);
+}
+
+.courseButton {
+    position: relative;
+    z-index: 1;
+}
+
+.courseButton:hover {
+    color: #ffffff;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.courseButton:active {
+    background-color: #004080;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.courseButton:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}

@@ -96,7 +96,6 @@ export function Contact() {
                         </div>
                     </div>
                 </div>
-                {/* Optional FAQ Section */}
                 <div className="faq-section">
                     <h2>Frequently Asked Questions</h2>
                     <div className="faq-item">

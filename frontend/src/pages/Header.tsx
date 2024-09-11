@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/Header.css';
 import picture from '../images/logoSyntaxBase.png';
 
@@ -8,14 +8,16 @@ interface HeaderProps {
 }
 
 export function Header({ bgColor = '#333' }: HeaderProps) {
-    const [isLoggedIn, setIsLoggedIn] = useState(false); 
-    const navigate = useNavigate(); 
-    const location = useLocation(); 
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const headerRef = useRef<HTMLElement>(null); // Ref for the header
+    const [headerVisible, setHeaderVisible] = useState(false); // State to track visibility
 
     const handleProtectedNavigation = (path: string) => {
         if (!isLoggedIn) {
             sessionStorage.setItem('redirectAfterLogin', path);
-            navigate('/login'); 
+            navigate('/login');
         } else {
             navigate(path);
         }
@@ -43,8 +45,37 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
         }
     };
 
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setHeaderVisible(true); // Set state to true when header is visible
+                    } else {
+                        setHeaderVisible(false); // Set state to false when header is not visible
+                    }
+                });
+            },
+            { threshold: 0.1 } // Adjust threshold for triggering visibility
+        );
+
+        if (headerRef.current) {
+            observer.observe(headerRef.current);
+        }
+
+        return () => {
+            if (headerRef.current) {
+                observer.unobserve(headerRef.current); // Clean up observer
+            }
+        };
+    }, []);
+
     return (
-        <header className='header' style={{ backgroundColor: bgColor }}>
+        <header
+            ref={headerRef}
+            className={`header ${headerVisible ? 'header-visible' : 'header-hidden'}`}
+            style={{ backgroundColor: bgColor }}
+        >
             <a href="/">
                 <img src={picture} alt="Logo SyntaxBase" />
             </a>
