@@ -4,27 +4,17 @@ import { Footer } from "../Footer";
 import { Footer2 } from "../Footer2";
 import web4 from '../../images/web4.png';
 import '../../styles/webCourses/BeginnerWebCourse.css';
-import simple1 from '../../pages/webCourses/BeginnerWebCourse/images/simple1.png';
-import simple2 from '../../pages/webCourses/BeginnerWebCourse/images/simple2.png';
-import simple3 from '../../pages/webCourses/BeginnerWebCourse/images/simple3.png';
-import simple4 from '../../pages/webCourses/BeginnerWebCourse/images/simple4.png';
-import simple5 from '../../pages/webCourses/BeginnerWebCourse/images/simple5.png';
-import simple6 from '../../pages/webCourses/BeginnerWebCourse/images/simple6.png';
-import simple7 from '../../pages/webCourses/BeginnerWebCourse/images/simple7.png';
-import intermediateWebCourse from '../../images/intermediateWebCourse.png';
-import adv from '../../images/adv.png';
-import desktop2 from '../../images/desktop2.png';
-import gameL2 from '../../images/gameL2.png';
-import database2 from '../../images/database2.png';
 
-export function BeginnerWebCourse() {
+
+
+export function BeginnerGameCourse() {
     return (
         <div className="mainp-container" style={{ backgroundColor: 'rgb(247, 250, 251)' }}>
             <Header bgColor='rgb(247, 250, 251)' />
             <div>
                 <div className="container">
                     <div className="webCourseDiv">
-                        Beginner Frontend Course
+                        Beginner Game Course
                     </div>
                     <div className="webCoursesDiv2" style={{ fontSize: '2.5em', paddingBottom: '2em', fontWeight: 'bold', marginLeft: '3em' }}>
                         Create Simple Frontend Application!
@@ -38,7 +28,7 @@ export function BeginnerWebCourse() {
                                 Learn How to Create a Simple Frontend Application
                             </div>
                             <div className="imageContainer">
-                                <img src={simple2} alt="" className="imageForCourse" />
+                                <img src={web4} alt=""className="imageForCourse" />
                             </div>
                         </h1>
                     </div>
@@ -52,28 +42,28 @@ export function BeginnerWebCourse() {
                 </div>
                 <div className="pictureContainer">
                     <div className="imageWithDescription">
-                        <img src={simple1} alt="" className="courseImage" />
-                        <div className="imageDescription">Learn HTML structure</div>
+                        <img src={web4} alt="img11" className="courseImage" />
+                        <div className="imageDescription">image description</div>
                     </div>
                     <div className="imageWithDescription">
-                        <img src={simple3} alt="" className="courseImage" />
-                        <div className="imageDescription">Gain knowledge of TypeScript</div>
+                        <img src={web4} alt="img10" className="courseImage" />
+                        <div className="imageDescription">image description</div>
                     </div>
                     <div className="imageWithDescription">
-                        <img src={simple4} alt="" className="courseImage" />
-                        <div className="imageDescription">Create attractive structures with CSS</div>
+                        <img src={web4} alt="img9" className="courseImage" />
+                        <div className="imageDescription">image description</div>
                     </div>
                     <div className="imageWithDescription">
-                        <img src={simple5} alt="" className="courseImage" />
-                        <div className="imageDescription">Start with development</div>
+                        <img src={web4} alt="img8" className="courseImage" />
+                        <div className="imageDescription">image description</div>
                     </div>
                     <div className="imageWithDescription">
-                        <img src={simple6} alt="" className="courseImage" />
-                        <div className="imageDescription">Find out why node modules are heavy</div>
+                        <img src={web4} alt="img7" className="courseImage" />
+                        <div className="imageDescription">image description</div>
                     </div>
                     <div className="imageWithDescription">
-                        <img src={simple7} alt="" className="courseImage" />
-                        <div className="imageDescription">Finish all steps of course and get feedback</div>
+                        <img src={web4} alt="img6" className="courseImage" />
+                        <div className="imageDescription">image description</div>
                     </div>
                 </div>
             </div>
@@ -94,35 +84,35 @@ export function BeginnerWebCourse() {
                 </div>
                 <div className="pictureContainer2">
                     <a href="/intermediateWebCourse" className="imageWithDescription2">
-                        <img src={intermediateWebCourse} alt="" className="courseImage2" />
+                        <img src={web4} alt="img1" className="courseImage2" />
                         <div className="imageDescription2">Intermediate Frontend Course<br></br> Develop Intermediate Application Following Course Project Structure!</div>
                     </a>
                     <a href="/advancedWebCourse" className="imageWithDescription2">
-                        <img src={adv} alt="" className="courseImage2" />
+                        <img src={web4} alt="img1" className="courseImage2" />
                         <div className="imageDescription2">
                             Advanced Frontend Course<br />Master Frontend Development With Ultimate Project!
                         </div>
                     </a>
                     <a href="/beginnerGameCourse" className="imageWithDescription2">
-                        <img src={desktop2} alt="" className="courseImage2" />
+                        <img src={web4} alt="img2" className="courseImage2" />
                         <div className="imageDescription2">
                             Beginner Game Development Course<br />Create Simple Android And Desktop Games With C++ or C#!
                         </div>
                     </a>
                     <a href="/intermediateGameCourse" className="imageWithDescription2">
-                        <img src={gameL2} alt="" className="courseImage2" />
+                        <img src={web4} alt="img3" className="courseImage2" />
                         <div className="imageDescription2">
                             Intermediate Game Development Course<br />Advance With Game Development With C++ and C#!
                         </div>
                     </a>
                     <a href="/advancedGameCourse" className="imageWithDescription2">
-                        <img src={gameL2} alt="" className="courseImage2" />
+                        <img src={web4} alt="img4" className="courseImage2" />
                         <div className="imageDescription2">
                             Advanced Game Development Course<br />Create Complex Android And Desktop Games With C++ or C#!
                         </div>
                     </a>
                     <a href="/intermediateDbCourse" className="imageWithDescription2">
-                        <img src={database2} alt="" className="courseImage2" />
+                        <img src={web4} alt="img5" className="courseImage2" />
                         <div className="imageDescription2">
                             Intermediate Database Managment Course<br />Create Complex Structure Of Database!
                         </div>

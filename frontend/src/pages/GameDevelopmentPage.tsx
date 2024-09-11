@@ -11,7 +11,6 @@ import picture5 from '../images/gameL.png';
 
 export function GameDevelopmentPage() {
     const [featureDiv2Visible2, setFeatureDiv2Visible2] = useState(false);
-    const [offerDiv4Visible, setOfferDiv4Visible] = useState(false);
     const [offerDiv5Visible, setOfferDiv5Visible] = useState(false);
 
     useEffect(() => {
@@ -21,13 +20,6 @@ export function GameDevelopmentPage() {
             rootMargin: '0px',
             threshold: 0
         };
-
-        const offerDiv4Options = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.5
-        };
-
         const offerDiv5Options = {
             root: null,
             rootMargin: '0px',
@@ -43,16 +35,9 @@ export function GameDevelopmentPage() {
             setOfferDiv5Visible(entry.isIntersecting);
         }, offerDiv5Options);
 
-        const offerDiv4Observer = new IntersectionObserver(([entry]) => {
-            setOfferDiv4Visible(entry.isIntersecting);
-        }, offerDiv5Options);
-
-
-        const offerDiv4Elements = document.querySelectorAll('.offerDiv4');
         const offerDiv5Elements = document.querySelectorAll('.offerDiv5');
 
         offerDiv5Elements.forEach(el => offerDiv5Observer.observe(el));
-        offerDiv4Elements.forEach(el => offerDiv4Observer.observe(el));
 
         const featureDiv2_2 = document.querySelector('.featureDiv2.feature2');
 
@@ -61,14 +46,13 @@ export function GameDevelopmentPage() {
         return () => {
             if (featureDiv2_2) featureDiv2Observer2.unobserve(featureDiv2_2);
             offerDiv5Elements.forEach(el => offerDiv5Observer.unobserve(el));
-            offerDiv4Elements.forEach(el => offerDiv4Observer.unobserve(el));
         };
 
     }, []);
 
     return (
         <div className="mainp-container">
-            <Header bgColor="#f5f5f5"></Header>
+            <Header bgColor="rgb(247, 250, 251)"></Header>
             <div className={`featureDiv2 feature2 ${featureDiv2Visible2 ? 'slide-in' : ''}`}>
                 <header className="featureHeader2">GAME DEVELOPMENT</header>
                 <div className="offerDiv2" style={{ paddingTop: '3em' }}>
@@ -133,8 +117,8 @@ export function GameDevelopmentPage() {
                     </a>
                 </div>
             </div>
-            <Footer2 bgColor="#f5f5f5"></Footer2>
-            <Footer bgColor="#f5f5f5"></Footer>
+            <Footer2 bgColor="rgb(247, 250, 251)"></Footer2>
+            <Footer bgColor="rgb(247, 250, 251)"></Footer>
         </div>
     );
 }

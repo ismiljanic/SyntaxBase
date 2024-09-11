@@ -1,6 +1,6 @@
 import React from 'react';
 import '../styles/Footer2.css'; // Import styles specific to Footer2
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface FooterProps {
     bgColor?: string;
@@ -8,7 +8,6 @@ interface FooterProps {
 
 export function Footer2({ bgColor = '#333' }: FooterProps) {
 
-    const location = useLocation();
     const navigate = useNavigate();
 
     const handleScroll = () => {

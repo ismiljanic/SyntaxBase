@@ -17,8 +17,6 @@ import problem6 from '../images/problem6.png';
 
 export function Courses() {
     const [featureDiv2Visible2, setFeatureDiv2Visible2] = useState(false);
-    const [offerDiv4Visible, setOfferDiv4Visible] = useState(false);
-    const [offerDiv5Visible, setOfferDiv5Visible] = useState(false);
 
     useEffect(() => {
 
@@ -28,37 +26,9 @@ export function Courses() {
             threshold: 0
         };
 
-        const offerDiv4Options = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.5
-        };
-
-        const offerDiv5Options = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.5
-        };
-
-
         const featureDiv2Observer2 = new IntersectionObserver(([entry]) => {
             setFeatureDiv2Visible2(entry.isIntersecting);
         }, featureDiv2Options2);
-
-        const offerDiv5Observer = new IntersectionObserver(([entry]) => {
-            setOfferDiv5Visible(entry.isIntersecting);
-        }, offerDiv5Options);
-
-        const offerDiv4Observer = new IntersectionObserver(([entry]) => {
-            setOfferDiv4Visible(entry.isIntersecting);
-        }, offerDiv5Options);
-
-
-        const offerDiv4Elements = document.querySelectorAll('.offerDiv4');
-        const offerDiv5Elements = document.querySelectorAll('.offerDiv5');
-
-        offerDiv5Elements.forEach(el => offerDiv5Observer.observe(el));
-        offerDiv4Elements.forEach(el => offerDiv4Observer.observe(el));
 
         const featureDiv2_2 = document.querySelector('.featureDiv2.feature2');
 
@@ -66,8 +36,6 @@ export function Courses() {
 
         return () => {
             if (featureDiv2_2) featureDiv2Observer2.unobserve(featureDiv2_2);
-            offerDiv5Elements.forEach(el => offerDiv5Observer.unobserve(el));
-            offerDiv4Elements.forEach(el => offerDiv4Observer.unobserve(el));
         };
 
     }, []);

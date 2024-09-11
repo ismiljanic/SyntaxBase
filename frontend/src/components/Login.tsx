@@ -1,13 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ErrorResponse, Login } from "../models/Login";
-import { AxiosError } from "axios";
-import { Button, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField } from "@mui/material";
-import PersonIcon from '@mui/icons-material/Person';
-import LockRoundedIcon from '@mui/icons-material/LockRounded';
+import { IconButton} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { loginUser } from "../functions/UserFunc";
-import { setUserData } from "../functions/LoginFunc";
 import '../styles/Login.css'
 import axios from "axios";
 
@@ -84,7 +78,7 @@ export function LoginComponent() {
 
             const type = user.data["type"];
             console.log(type);
-            if (type == "user") {
+            if (type === "user") {
                 navigate(`/homepage/${id}`);
             } else {
                 alert("Internal application error");

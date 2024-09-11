@@ -86,8 +86,8 @@
 .imageDescription {
     margin-top: 1em;
     padding: 0.5em;
-    font-style: italic;
-    color: #555;
+    font-size: 1.2em;
+    color: #000000;
     position: relative;
 }
 
@@ -147,8 +147,8 @@
 .courseImage:hover::after,
 .imageDescription:hover::before {
     background-color: #007bff;
-    /* Adjust color if needed */
 }
+
 
 .imageWithDescription:hover .courseImage,
 .imageWithDescription:hover .imageDescription,
@@ -219,22 +219,21 @@
     padding-bottom: 11em;
 }
 
-.headerDivText {
-    text-align: left;
-    width: 30%;
-}
 
-.descriptionWithImage {}
+.imageContainer {
+    justify-content: left;
+    margin-left: 17em;
+}
 
 .imageForCourse {
     width: 30em;
     height: 15em;
     object-fit: cover;
-    margin-left: 17em;
     margin-top: -3.5em;
     margin-bottom: 2em;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 
 .descriptionImage {
     margin-left: 26em;
@@ -259,9 +258,16 @@
     justify-content: center;
 }
 
+.lineDiv {
+    padding: 1em;
+    margin-left: 7em;
+    margin-right: 7.5em;
+    border-top: 1px solid #dee2e7;
+}
+
 .pictureContainer2 {
-    padding-top: 10em;
     display: flex;
+    padding-top: 22em;
     flex-wrap: wrap;
     gap: 6em;
     margin-top: -20em;
@@ -272,15 +278,14 @@
 
 .bigDaddyContainer {
     font-weight: bold;
-    background-color: rgb(227, 238, 246);
+    background-color: rgb(247, 250, 251);
 }
 
 .webCourseDiv3 {
-    font-size: 4.5em;
-    border-top: 1px solid #dee2e7;
-    padding-top: 1em;
-    padding-bottom: 4em;
-    margin-left: 1.6em;
+    font-size: 3.3em;
+    padding-top: 2em;
+    margin-bottom: -0.7em;
+    margin-left: 2.1em;
     text-align: left;
     font-weight: bold;
 }
@@ -347,4 +352,390 @@
 .courseButton:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+.introductionDiv {
+    position: relative;
+    width: fit-content;
+    padding-bottom: 0.5em;
+}
+
+.introductionDiv:hover::before {
+    background-color: #007bff;
+}
+
+.introductionDiv:hover {
+    color: #007bff;
+}
+
+.introductionDiv::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background-color: #007bff;
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: bottom left;
+    transition: transform 0.3s ease;
+}
+
+.introductionDiv::before,
+.introductionDiv:hover::before {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+.introductionDiv:not(:hover)::before {
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.4s ease;
+}
+
+.introductionDiv:active,
+.introductionDiv:focus {
+    color: #0056b3;
+    outline: none;
+}
+
+.introductionDiv:focus {
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+.introductionDiv:active {
+    color: whitesmoke;
+}
+
+.introductionDiv.selected::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: calc(100% + 10px);
+    height: calc(100% + 10px);
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.headerDivText {
+    text-align: left;
+    width: 30%;
+    position: relative;
+}
+
+.imageForCourse::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: rgba(0, 123, 255, 0.3);
+    transform: scale(0);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    z-index: 1;
+}
+
+.imageForCourse:hover::after {
+    background-color: rgba(0, 123, 255, 0.3);
+    transform: scale(1);
+}
+
+.frontImage:hover .imageForCourse::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+
+.frontImage:hover .imageForCourse {
+    color: #007bff;
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+    transform: scale(1.02);
+}
+
+.frontImage:hover .imageForCourse::after,
+.frontImage:hover .headerContainer::before,
+.imageForCourse:hover::after,
+.headerContainer:hover::before {
+    background-color: #007bff;
+}
+
+
+.frontImage:hover .imageForCourse,
+.frontImage:hover .headerContainer,
+.imageForCourse:hover,
+.headerContainer:hover {
+    color: #007bff;
+}
+
+.headerContainer::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background-color: #007bff;
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: bottom left;
+    transition: transform 0.3s ease;
+}
+
+.frontImage:hover .headerContainer::before,
+.headerContainer:hover::before {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+
+.headerContainer:not(:hover)::before {
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.4s ease;
+}
+
+.headerContainer:active,
+.headerContainer:focus {
+    color: #0056b3;
+    outline: none;
+}
+
+.headerContainer:focus {
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+.headerContainer:active {
+    color: whitesmoke;
+}
+
+.headerContainer.selected::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: calc(100% + 10px);
+    height: calc(100% + 10px);
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+.headerContainer {
+    position: relative;
+    padding-bottom: 0.5em;
+}
+
+.moreCoursesDiv {
+    font-size: 1.5em;
+    padding: 1em;
+    position: relative;
+    width: fit-content;
+    display: inline-block;
+    transition: transform 0.5s ease, color 0.5s ease;
+    margin-left: 76em;
+    padding-bottom: 1.5em;
+    margin-top: -1em;
+    color: black;
+}
+
+.moreCoursesDiv:hover::before {
+    transform: scaleX(1);
+    color: #007bff;
+}
+
+.moreCoursesDiv:not(:hover)::before {
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.5s ease;
+    color: #007bff;
+}
+
+.moreCoursesDiv:hover {
+    transform: translateX(1.5em);
+    color: #007bff;
+}
+
+.moreCoursesDiv::after {
+    content: '→';
+    position: absolute;
+    right: -0.5em; 
+    top: 0;
+    padding-top: 1em;
+    opacity: 1;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.moreCoursesDiv:hover::after {
+    opacity: 0;
+    transform: translateX(1em); 
+}
+
+.moreCoursesDiv:active,
+.moreCoursesDiv:focus {
+    outline: none;
+    color: #007bff;
+}
+
+.moreCoursesDiv:focus {
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+    color: #007bff;
+}
+
+.moreCoursesDiv:active {
+    color: whitesmoke;
+}
+
+.pictureContainer2 {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-between; 
+    gap: 2em;
+    margin: 0 auto;
+    max-width: 90vw;
+    margin-top: -20em;
+    padding-bottom: 3em;
+}
+
+.imageWithDescription2 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-basis: calc(50% - 1em);
+    margin-bottom: 2em; 
+}
+
+.courseImage2 {
+    width: 20em; 
+    height: 20em;
+}
+
+.imageDescription2 {
+    margin-top: -8em;
+    font-size: 1.7em;
+    margin-left: 2em;
+    font-weight: bold;
+    color: #000000;
+    position: relative;
+    padding-bottom: 0.5em;
+}
+
+
+.courseImage2::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: rgba(0, 123, 255, 0.3);
+    transform: scale(0);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    z-index: 1;
+}
+
+.courseImage2:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(0, 123, 255, 0.9);
+}
+
+.courseImage2:hover::after {
+    background-color: rgba(0, 123, 255, 0.3);
+    transform: scale(1);
+}
+
+.imageWithDescription2:hover .courseImage2::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+
+.imageWithDescription2:hover .courseImage2 {
+    color: #007bff;
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+    transform: scale(1.02);
+}
+
+.imageWithDescription2:hover .courseImage2::after,
+.imageWithDescription2:hover .imageDescription2::before,
+.courseImage2:hover::after,
+.imageDescription2:hover::before {
+    background-color: #007bff;
+}
+
+
+.imageWithDescription2:hover .courseImage2,
+.imageWithDescription2:hover .imageDescription2,
+.courseImage2:hover,
+.imageDescription2:hover {
+    color: #007bff;
+}
+
+.imageDescription2::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background-color: #007bff;
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: bottom left;
+    transition: transform 0.3s ease;
+}
+
+.imageWithDescription2:hover .imageDescription2::before,
+.imageDescription2:hover::before {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+
+.imageDescription2:not(:hover)::before {
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.4s ease;
+}
+
+.imageDescription2:active,
+.imageDescription2:focus {
+    color: #0056b3;
+    outline: none;
+}
+
+.imageDescription2:focus {
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+.imageDescription2:active {
+    color: whitesmoke;
+}
+
+.imageDescription2.selected::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: calc(100% + 10px);
+    height: calc(100% + 10px);
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    box-sizing: border-box;
+    pointer-events: none;
 }

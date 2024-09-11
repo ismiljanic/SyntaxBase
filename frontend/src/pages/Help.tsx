@@ -5,12 +5,6 @@ import { Footer } from './Footer';
 import { Footer2 } from './Footer2';
 
 export function Help() {
-    const [faqVisible, setFaqVisible] = useState(false);
-
-    const toggleFaqVisibility = () => {
-        setFaqVisible(!faqVisible);
-    };
-
     return (
         <div className="help-container">
             <Header bgColor='#fafafa'></Header>

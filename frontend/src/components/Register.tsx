@@ -1,4 +1,4 @@
-import { Button, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField } from "@mui/material";
+import {IconButton} from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Register, registerUser } from "../functions/RegisterFunc";

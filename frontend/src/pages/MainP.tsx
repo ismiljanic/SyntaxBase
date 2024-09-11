@@ -80,12 +80,6 @@ export function MainP() {
             threshold: 0
         };
 
-        const offerDiv4Options = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.5
-        };
-
         const offerDiv5Options = {
             root: null,
             rootMargin: '0px',
@@ -167,7 +161,6 @@ export function MainP() {
             setOfferDiv6Visible(entry.isIntersecting);
         }, offerDiv6Options);
 
-        const features3Elements = document.querySelectorAll('.features3');
         const offerDiv4Elements = document.querySelectorAll('.offerDiv4');
         const offerDiv5Elements = document.querySelectorAll('.offerDiv5');
         const offerDiv6Elements = document.querySelectorAll('.offerDiv6');
@@ -390,12 +383,12 @@ export function MainP() {
             <div className='featureDiv2'>
                 <div className="features3">
                     <div className={`offerDiv6 ${offerDiv6Visible ? 'slide-in' : 'slide-out'}`}>
-                        <p className='whatDiv'>SO, WHAT DO YOU SAY?</p>
+                        <p className='whatDiv'>READY TO DIVE IN?</p>
                     </div>
                 </div>
             </div>
-            <Footer2 bgColor='#f5f5f5' />
-            <Footer bgColor="#f5f5f5" />
+            <Footer2 bgColor='rgb(247, 250, 251)' />
+            <Footer bgColor="rgb(247, 250, 251)" />
         </div>
     );
 }

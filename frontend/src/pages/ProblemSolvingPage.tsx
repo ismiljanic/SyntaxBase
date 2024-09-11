@@ -12,7 +12,6 @@ import problem6 from '../images/problem6.png';
 
 export function ProblemSolvingPage() {
     const [featureDiv2Visible2, setFeatureDiv2Visible2] = useState(false);
-    const [offerDiv4Visible, setOfferDiv4Visible] = useState(false);
     const [offerDiv5Visible, setOfferDiv5Visible] = useState(false);
 
     useEffect(() => {
@@ -21,12 +20,6 @@ export function ProblemSolvingPage() {
             root: null,
             rootMargin: '0px',
             threshold: 0
-        };
-
-        const offerDiv4Options = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.5
         };
 
         const offerDiv5Options = {
@@ -44,16 +37,9 @@ export function ProblemSolvingPage() {
             setOfferDiv5Visible(entry.isIntersecting);
         }, offerDiv5Options);
 
-        const offerDiv4Observer = new IntersectionObserver(([entry]) => {
-            setOfferDiv4Visible(entry.isIntersecting);
-        }, offerDiv5Options);
-
-
-        const offerDiv4Elements = document.querySelectorAll('.offerDiv4');
         const offerDiv5Elements = document.querySelectorAll('.offerDiv5');
 
         offerDiv5Elements.forEach(el => offerDiv5Observer.observe(el));
-        offerDiv4Elements.forEach(el => offerDiv4Observer.observe(el));
 
         const featureDiv2_2 = document.querySelector('.featureDiv2.feature2');
 
@@ -62,21 +48,20 @@ export function ProblemSolvingPage() {
         return () => {
             if (featureDiv2_2) featureDiv2Observer2.unobserve(featureDiv2_2);
             offerDiv5Elements.forEach(el => offerDiv5Observer.unobserve(el));
-            offerDiv4Elements.forEach(el => offerDiv4Observer.unobserve(el));
         };
 
     }, []);
 
     return (
         <div className="mainp-container">
-            <Header bgColor="#f5f5f5"></Header>
+            <Header bgColor="rgb(247, 250, 251)"></Header>
             <div className={`featureDiv2 feature2 ${featureDiv2Visible2 ? 'slide-in' : ''}`}>
                 <header className="featureHeader2">PROBLEM SOLVING</header>
                 <div className="offerDiv2" style={{ paddingTop: '3em' }}>
                     Unlock the power of problem-solving with our in-depth tutorials designed to sharpen your analytical thinking and approach to complex issues. Our courses cover a wide array of problem-solving techniques and strategies, from fundamental concepts to advanced methodologies.
                 </div>
                 <div className='features3'>
-                    <a href="/beginnerPsTutorial" className="reactDiv">
+                    <a href="/beginnerProblemSolvingTutorial" className="reactDiv">
                         <img src={problem1} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Beginner Problem Solving<br />Solve Easy Problems And Learn Simple Algorithms
@@ -85,7 +70,7 @@ export function ProblemSolvingPage() {
                     </a>
                 </div>
                 <div className='features3'>
-                    <a href="/intermediatePsTutorial" className="reactDiv">
+                    <a href="/intermediateProblemSolvingTutorial" className="reactDiv">
                         <img src={problem2} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Intermediate Problem Solving<br />Learn Data Structures And More Complex Algorithms!
@@ -94,7 +79,7 @@ export function ProblemSolvingPage() {
                     </a>
                 </div>
                 <div className='features3'>
-                    <a href="/advancedPsTutorial" className="reactDiv">
+                    <a href="/advancedProblemSolvingTutorial" className="reactDiv">
                         <img src={problem3} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Advanced Problem Solving<br />Learn Complex Algorithms And Their Application!
@@ -107,7 +92,7 @@ export function ProblemSolvingPage() {
                     <p>EXPLORE OUR COURSES</p>
                 </div>
                 <div className='features3'>
-                    <a href="/beginnerPsCourse" className="reactDiv">
+                    <a href="/beginnerProblemSolvingCourse" className="reactDiv">
                         <img src={problem4} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Beginner Problem Solving Course<br />Explore New Problems And Their Solutions!
@@ -116,7 +101,7 @@ export function ProblemSolvingPage() {
                     </a>
                 </div>
                 <div className="features3">
-                    <a href="/intermediatePsCourse" className="reactDiv">
+                    <a href="/intermediateProblemSolvingCourse" className="reactDiv">
                         <img src={problem5} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Intermediate Problem Solving Course<br />Start Journey And Unlock Problem Solver In You!
@@ -125,7 +110,7 @@ export function ProblemSolvingPage() {
                     </a>
                 </div>
                 <div className="features3">
-                    <a href="/advancedPsCourse" className="reactDiv">
+                    <a href="/advancedProblemSolvingCourse" className="reactDiv">
                         <img src={problem6} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Advanced Problem Solving Course<br />Master Problem Solving With Ultimate Problems!
@@ -134,8 +119,8 @@ export function ProblemSolvingPage() {
                     </a>
                 </div>
             </div>
-            <Footer2 bgColor="#f5f5f5"></Footer2>
-            <Footer bgColor="#f5f5f5"></Footer>
+            <Footer2 bgColor="rgb(247, 250, 251)"></Footer2>
+            <Footer bgColor="rgb(247, 250, 251)"></Footer>
         </div>
     );
 }
