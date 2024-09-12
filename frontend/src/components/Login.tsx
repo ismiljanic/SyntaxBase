@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IconButton} from "@mui/material";
+import { IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import '../styles/Login.css'
 import axios from "axios";
@@ -14,36 +14,18 @@ export function LoginComponent() {
     const [error, setError] = useState<string>("");
     const navigate = useNavigate();
 
-    const handleNavigation = () => {
-        navigate("/register");
-    }
-
     const clickShowPassword = () => setShowPassword((hide) => !hide);
 
     const handleMouseEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
     }
 
-    const handleLogin = () => {
-        const isLoginSuccessful = true;
-
-        if (isLoginSuccessful) {
-            const redirectUrl = sessionStorage.getItem('redirectAfterLogin');
-            if (redirectUrl) {
-                sessionStorage.removeItem('redirectAfterLogin');
-                navigate(redirectUrl);
-            } else {
-                navigate('/');
-            }
-        }
-    };
-
     async function handleSubmit(event: any) {
         event.preventDefault();
         setLoginFailed(false);
         setSubmit(true);
         setError("");
-
+    
         const user = await axios.post("http://localhost:8080/api/users/login", {
             username: username,
             password: password
@@ -60,35 +42,50 @@ export function LoginComponent() {
             }
             setSubmit(false);
             console.error("Error:", error.message);
-            console.log(error.config);
         });
-
+    
         if (user === undefined) return;
-
+    
         if (user.status === 200) {
             const id = user.data["id"];
-            console.log(user);
-            console.log(id);
-            if (id === undefined || isNaN(parseInt(id))) {
+            const userToken = user.data["token"];
+    
+            if (!id || isNaN(parseInt(id))) {
                 alert("Internal application error");
                 setSubmit(false);
-                console.error("Error: Bad id received after login");
                 return;
             }
-
-            const type = user.data["type"];
-            console.log(type);
-            if (type === "user") {
-                navigate(`/homepage/${id}`);
+    
+            sessionStorage.setItem('userId', id); // Store the user ID
+            sessionStorage.setItem('userToken', userToken); // Store the token
+    
+            const redirectUrl = sessionStorage.getItem('redirectAfterLogin'); // Get stored redirect path
+            if (redirectUrl) {
+                sessionStorage.removeItem('redirectAfterLogin'); // Clean up
+                navigate(redirectUrl); // Navigate to the desired path
             } else {
-                alert("Internal application error");
-                setSubmit(false);
-                console.error("Error: Bad type received after login");
-                return;
+                navigate(`/homepage/${id}`); // Default to homepage with user ID
             }
         }
     }
 
+    const handleNavigation = () => {
+        navigate("/register");
+    }
+
+    const handleLogin = () => {
+        const isLoginSuccessful = true;
+
+        if (isLoginSuccessful) {
+            const redirectUrl = sessionStorage.getItem('redirectAfterLogin');
+            if (redirectUrl) {
+                sessionStorage.removeItem('redirectAfterLogin');
+                navigate(redirectUrl);
+            } else {
+                navigate('/');
+            }
+        }
+    };
     return (
         <div className='login-container'>
             <div className='login-form-container'>

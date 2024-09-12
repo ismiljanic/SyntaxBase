@@ -37,12 +37,10 @@ public class UserController {
 
     @PostMapping(value = "/login", consumes = "application/x-www-form-urlencoded", produces = "application/json")
     public ResponseEntity<?> loginUser(@RequestParam String username, @RequestParam String password) {
-        // Create a UserDTO object from the request parameters
         UserDTO userDTO = new UserDTO();
         userDTO.setUsername(username);
         userDTO.setPassword(password);
 
-        // Handle login logic
         Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(userDTO.getUsername()));
         if (userOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Username does not exist");
@@ -57,8 +55,6 @@ public class UserController {
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("id", user.getId());
         responseBody.put("type", userType);
-        System.out.println(responseBody);
         return ResponseEntity.ok(responseBody);
     }
-
 }

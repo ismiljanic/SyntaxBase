@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import programming.tutorial.dao.UserRepository;
+import programming.tutorial.domain.Course;
 import programming.tutorial.domain.User;
 import programming.tutorial.dto.UserDTO;
 import programming.tutorial.services.UserService;
@@ -52,8 +53,12 @@ public class UserServiceJpa implements UserService {
     }
 
     @Override
+    public Optional<User> findById(Integer userId) {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<User> findByUsername(String username) {
         return Optional.ofNullable(userRepository.findByUsername(username));
     }
-
 }

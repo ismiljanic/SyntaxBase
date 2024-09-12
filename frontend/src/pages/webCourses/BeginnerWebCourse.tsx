@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Header } from "../Header";
 import { Footer } from "../Footer";
 import { Footer2 } from "../Footer2";
-import web4 from '../../images/web4.png';
 import '../../styles/webCourses/BeginnerWebCourse.css';
 import simple1 from '../../pages/webCourses/BeginnerWebCourse/images/simple1.png';
 import simple2 from '../../pages/webCourses/BeginnerWebCourse/images/simple2.png';
@@ -16,8 +15,50 @@ import adv from '../../images/adv.png';
 import desktop2 from '../../images/desktop2.png';
 import gameL2 from '../../images/gameL2.png';
 import database2 from '../../images/database2.png';
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Popup from "reactjs-popup";
+import "reactjs-popup/dist/index.css";
 
 export function BeginnerWebCourse() {
+
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState("");
+    const navigate = useNavigate();
+    const userToken = sessionStorage.getItem('userToken');
+
+    const handleButtonClick = async () => {
+        const userId = sessionStorage.getItem('userId');
+        const userToken = sessionStorage.getItem('userToken');
+        if (userToken && userId) {
+            try {
+                await axios.post("http://localhost:8080/api/user-courses", {
+                    userId: parseInt(userId, 10),
+                    courseId: 1
+                }, {
+                    headers: { 'Authorization': `Bearer ${userToken}` }
+                });
+
+                navigate(`/beginnerWebCourse/${userId}`);
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    if (error.response && error.response.status === 409) {
+                        const errorMessage = error.response.data;
+                        setPopupMessage(errorMessage || "You have already started this course.");
+                        setShowPopup(true);
+                    } else {
+                        console.error("Unexpected error:", error);
+                    }
+                } else {
+                    console.error("Non-Axios error:", error);
+                }
+            }
+        } else {
+            navigate('/login', { state: { from: `/beginnerWebCourse/${userId}` } });
+        }
+    };
+
+
     return (
         <div className="mainp-container" style={{ backgroundColor: 'rgb(247, 250, 251)' }}>
             <Header bgColor='rgb(247, 250, 251)' />
@@ -78,10 +119,20 @@ export function BeginnerWebCourse() {
                 </div>
             </div>
             <div className="buttonContainer">
-                <button className="courseButton">START COURSE</button>
+                <button className="courseButton" onClick={handleButtonClick}>START COURSE</button>
             </div>
-
-
+            <Popup
+                open={showPopup}
+                onClose={() => setShowPopup(false)}
+                modal
+                className="custom-popup"
+            >
+                <div className="custom-popup-content">
+                    <div className="custom-popup-header">Course Error</div>
+                    <p>{popupMessage}</p>
+                    <button className="custom-popup-button" onClick={() => setShowPopup(false)}>Close</button>
+                </div>
+            </Popup>
             <div className="bigDaddyContainer">
                 <div className="container2">
                     <div className="webCourseDiv3">

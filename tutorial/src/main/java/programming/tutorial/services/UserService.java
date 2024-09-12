@@ -12,5 +12,8 @@ import java.util.Optional;
 public interface UserService {
 
     ResponseEntity<?> addUser(UserDTO userDTO);
+
+    Optional<User> findById(Integer userId);
     Optional<User> findByUsername(String username);
+
 }

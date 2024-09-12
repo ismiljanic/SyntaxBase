@@ -8,9 +8,19 @@ export function Login() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const isLoggedIn = sessionStorage.getItem('userToken'); // Replace with actual login status check
+        const isLoggedIn = sessionStorage.getItem('userToken');
+        const redirectUrl = sessionStorage.getItem('redirectAfterLogin'); // Get the redirect path if available
+        const userId = sessionStorage.getItem('userId');
+
         if (isLoggedIn) {
-            navigate('/homepage');
+            if (redirectUrl) {
+                sessionStorage.removeItem('redirectAfterLogin'); // Remove it after using it
+                navigate(redirectUrl); // Redirect to the stored path
+            } else if (userId) {
+                navigate(`/homepage/${userId}`); // Redirect to user's homepage if no specific path is stored
+            } else {
+                navigate('/homepage'); // Fallback if no user ID
+            }
         }
     }, [navigate]);
 

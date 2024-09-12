@@ -2,30 +2,54 @@ package programming.tutorial.domain;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userID", nullable = false)
     private Integer id;
+
     @Column(name = "name", nullable = false)
-    public String name;
+    private String name;
+
     @Column(name = "surname", nullable = false)
-    public String surname;
+    private String surname;
+
     @Column(name = "password", nullable = false)
-    public String password;
+    private String password;
+
     @Column(name = "username", nullable = false)
-    public String username;
+    private String username;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_courses",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id")
+    )
+    private Set<Course> myCourses;
 
     public User() {
     }
 
-    public User(String name, String surname, String password, String username) {
+    public User(Integer id, String name, String surname, String password, String username, Set<Course> myCourses) {
+        this.id = id;
         this.name = name;
         this.surname = surname;
         this.password = password;
         this.username = username;
+        this.myCourses = myCourses;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -60,12 +84,13 @@ public class User {
         this.username = username;
     }
 
-    public Integer getId() {
-        return id;
+
+    public Set<Course> getMyCourses() {
+        return myCourses;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setMyCourses(Set<Course> myCourses) {
+        this.myCourses = myCourses;
     }
 
     @Override
@@ -76,6 +101,7 @@ public class User {
                 ", surname='" + surname + '\'' +
                 ", password='" + password + '\'' +
                 ", username='" + username + '\'' +
+                ", myCourses=" + myCourses +
                 '}';
     }
 }

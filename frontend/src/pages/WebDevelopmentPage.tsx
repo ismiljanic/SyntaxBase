@@ -55,7 +55,7 @@ export function WebDevelopmentPage() {
     return (
         <div className="mainp-container">
             <Header bgColor="rgb(247, 250, 251)"></Header>
-            <div className={`featureDiv2 feature2 ${featureDiv2Visible2 ? 'slide-in' : ''}`}>
+            <div className='feature2' style={{ backgroundColor: 'rgb(247, 250, 251)' }}>
                 <header className="featureHeader2">WEB DEVELOPMENT</header>
                 <div className="offerDiv2" style={{ paddingTop: '3em' }}>
                     Build modern websites using popular technologies like React, Node.js, and Express to create high-performance, scalable, and user-friendly applications.
