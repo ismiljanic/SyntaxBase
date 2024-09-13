@@ -2,6 +2,7 @@ package programming.tutorial.domain;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -23,6 +24,8 @@ public class User {
 
     @Column(name = "username", nullable = false)
     private String username;
+    @Column(name = "dateCreated", nullable = false)
+    public LocalDateTime dateCreated;
 
     @ManyToMany
     @JoinTable(
@@ -35,12 +38,13 @@ public class User {
     public User() {
     }
 
-    public User(Integer id, String name, String surname, String password, String username, Set<Course> myCourses) {
+    public User(Integer id, String name, String surname, String password, String username, LocalDateTime dateCreated, Set<Course> myCourses) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.password = password;
         this.username = username;
+        this.dateCreated = dateCreated;
         this.myCourses = myCourses;
     }
 
@@ -93,6 +97,14 @@ public class User {
         this.myCourses = myCourses;
     }
 
+    public LocalDateTime getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -101,6 +113,7 @@ public class User {
                 ", surname='" + surname + '\'' +
                 ", password='" + password + '\'' +
                 ", username='" + username + '\'' +
+                ", dateCreated=" + dateCreated +
                 ", myCourses=" + myCourses +
                 '}';
     }

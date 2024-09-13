@@ -7,9 +7,7 @@ public class UserCourseDTO {
 
     private Integer userId;
     private Integer courseId;
-
     private User user;
-
     private Course course;
 
     public UserCourseDTO() {

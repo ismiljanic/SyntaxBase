@@ -1,0 +1,43 @@
+.container {
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box; 
+}
+
+.account-information {
+    margin-top: 0; 
+    width: 50em;
+    padding: 10em; 
+    margin-top: 10em;
+    margin-left: 40.5em;
+    margin-bottom: 10em;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box; 
+}
+
+.account-info-title {
+    font-size: 48px;
+    margin-bottom: 70px;
+    color: #333;
+}
+
+.account-info-item {
+    font-size: 22px;
+    padding-top: 2em;
+    color: #555;
+}
+
+.error-message {
+    color: red;
+    font-size: 18px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.loading {
+    font-size: 18px;
+    text-align: center;
+    margin: 20px 0;
+}

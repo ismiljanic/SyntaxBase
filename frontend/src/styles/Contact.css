@@ -11,42 +11,30 @@
 
 .contact-info {
     width: 101%;
-    /* Makes the element full width */
     border-top: 1px solid rgb(163, 173, 180);
     display: flex;
     align-items: flex-start;
-    /* Aligns items to the top */
     padding: 2em;
     padding-top: 5em;
     padding-bottom: 5em;
-    /* Padding around the content */
     box-sizing: border-box;
-    /* Includes padding and border in element's total width and height */
     flex-wrap: wrap;
-    /* Prevents wrapping to new lines */
     overflow-x: auto;
-    /* Allows horizontal scrolling if needed */
     margin-left: -0.5em;
 }
 
 .contact-info2 {
     width: 101%;
-    /* Makes the element full width */
     border-top: 1px solid rgb(163, 173, 180);
     border-bottom: 1px solid rgb(163, 173, 180);
     display: flex;
     align-items: flex-start;
-    /* Aligns items to the top */
     padding: 2em;
     padding-top: 5em;
     padding-bottom: 5em;
-    /* Padding around the content */
     box-sizing: border-box;
-    /* Includes padding and border in element's total width and height */
     flex-wrap: wrap;
-    /* Prevents wrapping to new lines */
     overflow-x: auto;
-    /* Allows horizontal scrolling if needed */
     margin-left: -0.5em;
 }
 
@@ -57,33 +45,25 @@
 }
 
 .email {
-    /* Centers text inside each email block */
     margin: 0em 3em;
     margin-bottom: 3em;
-    /* Space between each email block */
     padding: 1em;
     flex: 0 0 auto;
-    /* Prevents flex items from shrinking or growing */
     width: 30em;
-    /* Fixed width for each email block */
+    justify-content: center;
+    text-align: center;
 }
 
 .email h1 {
     margin-bottom: 0.5em;
-    /* Space between the header and the paragraph */
     font-size: 2.5em;
-    /* Adjust font size as needed */
     color: #333;
-    /* Darker color for better readability */
 }
 
 .email p {
     margin: 0;
-    /* Removes default margin */
     font-size: 1.2em;
-    /* Adjust font size as needed */
     color: #555;
-    /* Slightly lighter color for contrast */
 }
 
 .contact-form {
@@ -126,6 +106,8 @@
 
 .contact {
     font-size: 96px;
+    justify-content: left;
+    text-align: left;
     margin-left: 1.2em;
     margin-top: 1.8em;
     margin-bottom: 2em;

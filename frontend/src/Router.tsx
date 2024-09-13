@@ -30,6 +30,8 @@ import { BeginnerProblemSolvingCourse } from "./pages/problemSolvingCourses/Begi
 import { IntermediateProblemSolvingCourse } from "./pages/problemSolvingCourses/IntermediateProblemSolvingCourse";
 import { AdvancedProblemSolvingCourse } from "./pages/problemSolvingCourses/AdvancedProblemSolvingCourse";
 import { SimpleFrontendApplication } from "./pages/webCourses/BeginnerWebCourse/pages/SimpleFrontendApplication";
+import { AccountInformation } from "./pages/AccountInformation";
+
 
 export function Router() {
   return (
@@ -63,6 +65,8 @@ export function Router() {
           <Route path="/intermediateProblemSolvingCourse" element={<IntermediateProblemSolvingCourse />} />
           <Route path="/advancedProblemSolvingCourse" element={<AdvancedProblemSolvingCourse />} />
           <Route path="/simpleFrontendApplication" element={<SimpleFrontendApplication />} />
+          <Route path="/change-personal-info/:id" element={<PersonalInformationPage />} />
+          <Route path="/accountInformation/:userId" element={<AccountInformation />} />
           <Route path="/help" element={<Help />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />

@@ -9,6 +9,7 @@ interface HeaderProps {
 
 export function Header({ bgColor = '#333' }: HeaderProps) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userId, setUserId] = useState<string | null>(null);
     const navigate = useNavigate();
     const location = useLocation();
     const headerRef = useRef<HTMLElement>(null);
@@ -45,6 +46,16 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
             navigate('/?scrollTo=courses');
         }
     };
+
+    useEffect(() => {
+        const storedUserId = sessionStorage.getItem('userId');
+        if (storedUserId) {
+            setUserId(storedUserId);
+            setIsLoggedIn(true);
+        } else {
+            setIsLoggedIn(false); 
+        }
+    }, []);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -85,7 +96,6 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
                 <div className="dropdown" onClick={() => setDropdownActive(!dropdownActive)}>
                     <div className='divni3' id='tutorials'>
                         Tutorials
-                        <span className={`arrow ${dropdownActive ? 'up' : 'down'}`}></span>
                     </div>
                     <div className='dropdown-overlay'>
                         <div className='dropdown-curtain'>
@@ -97,8 +107,11 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
                     </div>
                 </div>
                 <div className='divni3' onClick={handleScrollCourses}>Courses</div>
-                <a href='/help' className='divni3'>Help</a>
                 <a href='/about' className='divni3'>About</a>
+                <a href='/help' className='divni3'>Help</a>
+                {isLoggedIn && userId && (
+                    <a href={`/homepage/${userId}`} className='divni3'>Homepage</a>
+                )}
             </div>
             <a href="/contact">
                 <button className='divni1'>Contact</button>

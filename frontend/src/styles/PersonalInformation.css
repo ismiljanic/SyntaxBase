@@ -1,49 +1,21 @@
 .personal-information {
-  background: linear-gradient(178deg, #ff5a5a, #ffffff, #ff5353);
-  background-size: 600% 600%;
-  -webkit-animation: AnimationName 30s ease infinite;
-  -moz-animation: AnimationName 30s ease infinite;
-  -o-animation: AnimationName 30s ease infinite;
-  animation: AnimationName 30s ease infinite;
-}
-@-webkit-keyframes AnimationName {
-  0%{background-position:51% 0%}
-  50%{background-position:50% 100%}
-  100%{background-position:51% 0%}
-}
-@-moz-keyframes AnimationName {
-  0%{background-position:51% 0%}
-  50%{background-position:50% 100%}
-  100%{background-position:51% 0%}
-}
-@-o-keyframes AnimationName {
-  0%{background-position:51% 0%}
-  50%{background-position:50% 100%}
-  100%{background-position:51% 0%}
-}
-@keyframes AnimationName {
-  0%{background-position:51% 0%}
-  50%{background-position:50% 100%}
-  100%{background-position:51% 0%}
+  background-color: #f5f5f5;
 }
 
 .personal-information {
-  display: flex;
   justify-content: center;
   align-items: center;
-  /* margin-top: 50px;
-  margin-bottom: 50px; */
   text-align: center;
-  height: 1300px;
 }
 
 .personal-information-container {
   background-color: #fff;
   border-radius: 8px;
+  width: 50em;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 40px;
-  width: 600px;
-  height: 1150px;
+  padding: 5em;
+  margin-left: 35em;
+  margin-top: 3em;
 }
 
 .personal-information-title {

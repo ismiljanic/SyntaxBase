@@ -5,9 +5,12 @@ import '../styles/PersonalInformation.css';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Header } from './Header';
+import { Footer } from './Footer';
+import { Footer2 } from './Footer2';
 
 const PersonalInformation: React.FC = () => {
-  const { donorId } = useParams();
+  const { userId } = useParams();
   const [name, setName] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -28,24 +31,6 @@ const PersonalInformation: React.FC = () => {
   const [usernameError, setUsernameError] = useState<string>('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`/api/blood_donor/numberOfDonations/${donorId}`);
-        const donorData = response.data;
-
-        setName(donorData.name);
-        setSurname(donorData.surname);
-        setUsername(donorData.username);
-        console.log(donorData.name);
-      } catch (error) {
-        console.error('Error fetching donor data:', error);
-        alert('Error fetching donor data. Please try again.');
-      }
-    };
-
-    fetchData();
-  }, [donorId]);
 
   const openConfirmationModal = (field: string) => {
     setFieldToUpdate(field);
@@ -66,18 +51,18 @@ const PersonalInformation: React.FC = () => {
     openConfirmationModal('name');
   };
   const handleUpdateSurname = async () => {
-          if (oldSurname === '') {
-            alert('Please enter your current surname.');
-            return;
-          } else if (oldSurname !== surname) {
-            alert('Your current surname does not match the provided surname.');
-            return;
-          } else if (newSurname === '' || newSurname === oldSurname) {
-            alert('Please provide a different new surname.');
-            return;
-          }
-      openConfirmationModal('surname');
-    };
+    if (oldSurname === '') {
+      alert('Please enter your current surname.');
+      return;
+    } else if (oldSurname !== surname) {
+      alert('Your current surname does not match the provided surname.');
+      return;
+    } else if (newSurname === '' || newSurname === oldSurname) {
+      alert('Please provide a different new surname.');
+      return;
+    }
+    openConfirmationModal('surname');
+  };
 
   const handleUpdateUsername = () => {
     if (newUsername === '' || oldUSername === '' || oldUSername !== username) {
@@ -88,32 +73,32 @@ const PersonalInformation: React.FC = () => {
     openConfirmationModal('username');
   };
 
-const handleUpdatePassword = async () => {
-  if (oldPassword === '') {
-    window.alert('Please enter your old password.');
-    return;
-  } else if (newPassword === '') {
-    window.alert('Please enter a new password.');
-    return;
-  } else if (newPassword.length < 6) {
-    window.alert('Please enter a new password with at least 6 characters.');
-    return;
-  }
+  const handleUpdatePassword = async () => {
+    if (oldPassword === '') {
+      window.alert('Please enter your old password.');
+      return;
+    } else if (newPassword === '') {
+      window.alert('Please enter a new password.');
+      return;
+    } else if (newPassword.length < 6) {
+      window.alert('Please enter a new password with at least 6 characters.');
+      return;
+    }
 
-  const confirmedNewPassword = window.prompt('Please confirm your new password:');
+    const confirmedNewPassword = window.prompt('Please confirm your new password:');
 
-  if (confirmedNewPassword !== newPassword) {
-    window.alert('Confirmed password does not match the new password. Please try again.');
-    return;
-  }
+    if (confirmedNewPassword !== newPassword) {
+      window.alert('Confirmed password does not match the new password. Please try again.');
+      return;
+    }
 
-  openConfirmationModal('password');
-};
+    openConfirmationModal('password');
+  };
   const handleDeleteAccount = async () => {
     const confirmDelete = window.confirm('Are you sure you want to delete your account?');
     if (confirmDelete) {
       try {
-        await axios.delete(`/api/blood_donor/deleteAccount/${donorId}`);
+        await axios.delete(`/api/users/deleteAccount/${userId}`);
         alert('Account deleted successfully.');
         navigate(`/login`);
       } catch (error) {
@@ -130,7 +115,7 @@ const handleUpdatePassword = async () => {
             setUsernameError('Please enter a new name.');
             return;
           }
-          await axios.put(`/api/blood_donor/changeName/${donorId}`, {
+          await axios.put(`/api/users/changeName/${userId}`, {
             oldName,
             newName,
           });
@@ -141,7 +126,7 @@ const handleUpdatePassword = async () => {
           break;
 
         case 'username':
-          await axios.put(`/api/blood_donor/changeUsername/${donorId}`, {
+          await axios.put(`/api/users/changeUsername/${userId}`, {
             oldUSername,
             newUsername,
           });
@@ -153,7 +138,7 @@ const handleUpdatePassword = async () => {
           break;
 
         case 'password':
-          await axios.put(`/api/blood_donor/changePassword/${donorId}`, {
+          await axios.put(`/api/users/changePassword/${userId}`, {
             oldPassword,
             newPassword,
           });
@@ -167,7 +152,7 @@ const handleUpdatePassword = async () => {
             setUsernameError('Please enter a new surname.');
             return;
           }
-          await axios.put(`/api/blood_donor/changeSurname/${donorId}`, {
+          await axios.put(`/api/blood_donor/changeSurname/${userId}`, {
             oldSurname,
             newSurname,
           });
@@ -189,125 +174,182 @@ const handleUpdatePassword = async () => {
   };
   return (
     <div className="personal-information">
-      <Button className="btnpip" variant="outlined" startIcon={<ArrowBackIcon/>} sx={{position:'absolute', top: 100, left: 100, color: 'white', bgcolor: 'red', '&:hover': { bgcolor: '', borderColor: 'red', color: 'black', '& svg': {visibility: 'visible'} } }} onClick={() => navigate(-1)}>Go back</Button>
-      <div className="personal-information-container">
-        <h1 className="personal-information-title">Personal Information</h1>
-        <div className="personal-information-data">
-          <div>
-            <h2>Name: {name}</h2>
-            <input
-              className='txt1'
-              type="text"
-              placeholder="Enter your current name"
-              value={oldName}
-              onChange={(e) => setOldName(e.target.value)}
-            />
-            <input
-              className='txt1'
-              type="text"
-              placeholder="Enter your new name"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-            />
-            <button
-              className="personal-information-button"
-              onClick={handleUpdateName}
-            >
-              Apply Changes
-            </button>
+      <Header bgColor='#f5f5f5'></Header>
+      <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '-4em' }}>
+        <div className='aboutYouDiv' style={{ paddingTop: '0.5em', marginLeft: '-4.2em' }}>Change Name</div>
+        <div className='formDiv2'>
+          <div className="footer2-feedback">
+            <form className="footer2-feedback-form" style={{ marginRight: '-5.7em' }}>
+              <div className="input-pair">
+                <div className="input-field">
+                  <input
+                    className='txt1'
+                    type="text"
+                    placeholder="Enter your current name"
+                    value={oldName}
+                    onChange={(e) => setOldName(e.target.value)}
+                  />
+                </div>
+                <div className="input-field">
+                  <input
+                    className='txt1'
+                    type="text"
+                    placeholder="Enter your new name"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                  />
+                </div>
+              </div>
+              <button
+                className="divni1"
+                onClick={handleUpdateName} style={{ marginRight: '-5.7em' }}
+              >
+                Apply Changes
+              </button>
+            </form>
           </div>
-          <div>
-            <h2>Surname: {surname}</h2>
-            <input
-              className='txt1'
-              type="text"
-              placeholder="Enter your current surname"
-              value={oldSurname}
-              onChange={(e) => setOldSurname(e.target.value)}
-            />
-            <input
-              className='txt1'
-              type="text"
-              placeholder="Enter your new surname"
-              value={newSurname}
-              onChange={(e) => setNewSurname(e.target.value)}
-            />
-            <button
-              className="personal-information-button"
-              onClick={handleUpdateSurname}
-            >
-              Apply Changes
-            </button>
-          </div>
-          <div>
-            <h2>Username: {username}</h2>
-            <input
-              className='txt1'
-              type="text"
-              placeholder="Enter your current username"
-              value={oldUSername}
-              onChange={(e) => setOldUsername(e.target.value)}
-            />
-            <input
-              className='txt1'
-              type="text"
-              placeholder="Enter your new username"
-              value={newUsername}
-              onChange={(e) => {
-                setNewUsername(e.target.value);
-                setUsernameError('');
-              }}
-            />
-            <p>
-              <strong>{usernameError}</strong>
-            </p>
-            <button
-              className="personal-information-button"
-              onClick={handleUpdateUsername}
-            >
-              Apply Changes
-            </button>
-          </div>
-          <div>
-            <h2>Password: </h2>
-            <input
-              className='txt2'
-              type="password"
-              placeholder="Enter your old password"
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
-            />
-            <input
-              className='txt2'
-              type="password"
-              placeholder="Enter your new password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <button
-              className="personal-information-button"
-              onClick={handleUpdatePassword}
-            >
-              Apply Changes
-            </button>
-          </div>
-        </div>
-        <div className="personal-information-buttons">
-          <button className="personal-information-button" onClick={handleDeleteAccount}>
-            Delete Account
-          </button>
         </div>
       </div>
-
-      {confirmationModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <p>{`Are you sure you want to apply changes to ${fieldToUpdate}?: `}</p>
-            <button onClick={confirmUpdateField}>Yes</button>
-            <button onClick={closeConfirmationModal}>No</button>
+      <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '-4em' }}>
+        <div className='aboutYouDiv' style={{ paddingTop: '0.5em', marginLeft: '-2.8em' }}>Change Surname</div>
+        <div className='formDiv2'>
+          <div className="footer2-feedback">
+            <form className="footer2-feedback-form" style={{ marginRight: '-5.7em' }}>
+              <div className="input-pair">
+                <div className="input-field">
+                  <input
+                    className='txt1'
+                    type="text"
+                    placeholder="Enter your current surname"
+                    value={oldSurname}
+                    onChange={(e) => setOldSurname(e.target.value)}
+                  />
+                </div>
+                <div className="input-field">
+                  <input
+                    className='txt1'
+                    type="text"
+                    placeholder="Enter your new surname"
+                    value={newSurname}
+                    onChange={(e) => setNewSurname(e.target.value)}
+                  />
+                </div>
+              </div>
+              <button
+                className="divni1"
+                onClick={handleUpdateSurname} style={{ marginRight: '-5.7em' }}
+              >
+                Apply Changes
+              </button>
+            </form>
           </div>
         </div>
-      )}
+      </div>
+      <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '-4em' }}>
+        <div className='aboutYouDiv' style={{ paddingTop: '0.5em', marginLeft: '-2.8em' }}>Change Username</div>
+        <div className='formDiv2'>
+          <div className="footer2-feedback">
+            <form className="footer2-feedback-form" style={{ marginRight: '-5.7em' }}>
+              <div className="input-pair">
+                <div className="input-field">
+                  <input
+                    className='txt1'
+                    type="text"
+                    placeholder="Enter your current username"
+                    value={oldUSername}
+                    onChange={(e) => setOldUsername(e.target.value)}
+                  />
+                </div>
+                <div className="input-field">
+                  <input
+                    className='txt1'
+                    type="text"
+                    placeholder="Enter your new username"
+                    value={newUsername}
+                    onChange={(e) => {
+                      setNewUsername(e.target.value);
+                      setUsernameError('');
+                    }}
+                  />
+                </div>
+              </div>
+              <p>
+                <strong>{usernameError}</strong>
+              </p>
+              <button
+                className="divni1"
+                onClick={handleUpdateUsername} style={{ marginRight: '-5.7em' }}
+              >
+                Apply Changes
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '-4em' }}>
+        <div className='aboutYouDiv' style={{ paddingTop: '0.5em', marginLeft: '-1.8em' }}>Change Password</div>
+        <div className='formDiv2'>
+          <div className="footer2-feedback">
+            <form className="footer2-feedback-form" style={{ marginRight: '-5.7em' }}>
+              <div className="input-pair">
+                <div className="input-field">
+                  <input
+                    className='txt2'
+                    type="password"
+                    placeholder="Enter your old password"
+                    value={oldPassword}
+                    onChange={(e) => setOldPassword(e.target.value)}
+                  />
+                </div>
+                <div className="input-field">
+                  <input
+                    className='txt2'
+                    type="password"
+                    placeholder="Enter your new password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+                </div>
+              </div>
+              <button
+                className="divni1"
+                onClick={handleUpdatePassword} style={{ marginRight: '-5.7em' }}
+              >
+                Apply Changes
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '-11.5em' }}>
+        <div className='aboutYouDiv' style={{ paddingTop: '1em', marginLeft: '-2em' }}>Delete account</div>
+        <div className='formDiv2'>
+          <div className="footer2-feedback">
+            <form className="footer2-feedback-form">
+              <div className="input-pair">
+                <div className="input-field">
+                </div>
+                <div className="input-field">
+                </div>
+              </div>
+              <button className="divni1" onClick={handleDeleteAccount} style={{ marginRight: '-6em', marginLeft: '-3.2em' }}>
+                Delete Account
+              </button>
+              {confirmationModal && (
+                <div className="modal-overlay">
+                  <div className="modal">
+                    <p>{`Are you sure you want to apply changes to ${fieldToUpdate}?: `}</p>
+                    <button onClick={confirmUpdateField}>Yes</button>
+                    <button onClick={closeConfirmationModal}>No</button>
+                  </div>
+                </div>
+              )}
+            </form>
+          </div>
+        </div>
+      </div>
+      <Footer2 bgColor='#f5f5f5'></Footer2>
+      <Footer bgColor='#f5f5f5'></Footer>
     </div>
   );
 };

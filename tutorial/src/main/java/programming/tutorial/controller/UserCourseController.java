@@ -4,13 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import programming.tutorial.dao.UserCourseRepository;
+import programming.tutorial.domain.UserCourse;
 import programming.tutorial.dto.CourseDTO;
 import programming.tutorial.dto.UserCourseDTO;
 import programming.tutorial.services.UserCourseService;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/user-courses")
@@ -20,7 +21,10 @@ public class UserCourseController {
     @Autowired
     private UserCourseService userCourseService;
 
-    @PostMapping
+    @Autowired
+    private UserCourseRepository userCourseRepository;
+
+    @PostMapping("/startCourse")
     public ResponseEntity<String> enrollUserInCourse(@RequestBody UserCourseDTO userCourseDTO) {
         try {
             userCourseService.enrollUserInCourse(userCourseDTO);
@@ -32,11 +36,11 @@ public class UserCourseController {
         }
     }
 
-
-
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<CourseDTO>> getCoursesByUserId(@PathVariable Integer userId) {
+        System.out.println("Fetching courses for user with ID: {" + userId + "}");
         List<CourseDTO> courses = userCourseService.getCoursesByUserId(userId);
+        System.out.println("Fetched {" + courses.size() + "} courses " + " for user with ID: {" + userId + "}");
         return ResponseEntity.ok(courses);
     }
 }

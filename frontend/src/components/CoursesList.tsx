@@ -16,7 +16,7 @@ interface FetchError {
 }
 
 interface CoursesListProps {
-    userId: number; // Pass userId as a prop
+    userId: number;
 }
 
 const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
@@ -30,14 +30,6 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
             try {
                 const response = await axios.get<Course[]>(`http://localhost:8080/api/user-courses/user/${userId}`);
                 const fetchedCourses = response.data;
-                console.log('Fetched courses for user:', fetchedCourses);
-
-                // Check for duplicates
-                const ids = fetchedCourses.map(course => course.courseId);
-                const hasDuplicates = new Set(ids).size !== ids.length;
-                if (hasDuplicates) {
-                    console.warn('Duplicate IDs found in the courses data');
-                }
 
                 setCourses(fetchedCourses);
             } catch (err) {
@@ -52,7 +44,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
         };
 
         fetchCourses();
-    }, [userId]); // Fetch courses when userId changes
+    }, [userId]);
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error fetching courses: {error.message}</p>;
@@ -62,23 +54,29 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
     };
 
     return (
-        <div>
-            <h1>Courses List</h1>
-            <div className="course-container">
+        <div className="bigDaddyContainer" style={{paddingTop: '4em'}}>
+            <div className="container2">
+                <div className="webCourseDiv3">
+                    My courses
+                </div>
+                <a href="/courses" className="moreCoursesDiv">
+                    More courses
+                </a>
+                <div className="lineDiv"></div>
+            </div>
+            <div className="pictureContainer2">
                 {courses.map(course => (
-                    <div
+                    <a
                         key={course.courseId}
-                        className='features3'
-                        onClick={() => handleCourseClick(course.courseId)}
+                        href={`/course/${course.courseId}`}
+                        className="imageWithDescription2"
                     >
-                        <div className="reactDiv">
-                            <img src={web4} alt="Logo SyntaxBase" className="reactImage" />
-                            <div className="webCourses">
-                                {course.courseName}<br />Create Simple Frontend Application!
-                            </div>
-                            <div className="arrow-circle"></div>
+                        <img src={web4} alt={course.courseName} className="courseImage2" />
+                        <div className="imageDescription2">
+                            {course.description || 'No description available.'}
                         </div>
-                    </div>
+                        
+                    </a>
                 ))}
             </div>
         </div>

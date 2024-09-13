@@ -1,18 +1,27 @@
 package programming.tutorial.dto;
 
+import java.time.LocalDateTime;
+
 public class UserDTO {
-    public Integer id;
     public String name;
     public String surname;
     public String password;
     public String username;
+    public LocalDateTime dateCreated;
 
-    public UserDTO(Integer id, String name, String surname, String password, String username) {
-        this.id = id;
+    public UserDTO(String name, String surname, String password, String username, LocalDateTime dateCreated) {
         this.name = name;
         this.surname = surname;
         this.password = password;
         this.username = username;
+        this.dateCreated = dateCreated;
+    }
+
+    public UserDTO(String name, String surname, String username, LocalDateTime dateCreated) {
+        this.name = name;
+        this.surname = surname;
+        this.username = username;
+        this.dateCreated = dateCreated;
     }
 
     public UserDTO() {
@@ -50,14 +59,22 @@ public class UserDTO {
         this.username = username;
     }
 
+    public LocalDateTime getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
     @Override
     public String toString() {
         return "UserDTO{" +
-                "id=" + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", password='" + password + '\'' +
                 ", username='" + username + '\'' +
+                ", dateCreated=" + dateCreated +
                 '}';
     }
 }

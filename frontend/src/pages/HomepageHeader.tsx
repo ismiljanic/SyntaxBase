@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import '../styles/Header.css';
 import picture from '../images/logoSyntaxBase.png';
+import { SettingsMenu } from './SettingsMenu';
 
 interface HeaderProps {
     bgColor?: string;
@@ -11,9 +12,9 @@ export function HomepageHeader({ bgColor = '#333' }: HeaderProps) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-    const { id } = useParams<{ id: string }>();  // Get the user ID from the URL parameters
-    const headerRef = useRef<HTMLElement>(null); // Ref for the header
-    const [headerVisible, setHeaderVisible] = useState(false); // State to track visibility
+    const { id } = useParams<{ id: string }>(); 
+    const headerRef = useRef<HTMLElement>(null);
+    const [headerVisible, setHeaderVisible] = useState(false);
 
     const handleScrollCourses = () => {
         if (location.pathname === '/') {
@@ -46,14 +47,14 @@ export function HomepageHeader({ bgColor = '#333' }: HeaderProps) {
 
         return () => {
             if (headerRef.current) {
-                observer.unobserve(headerRef.current); // Clean up observer
+                observer.unobserve(headerRef.current); 
             }
         };
     }, []);
 
     const handleMyCoursesNavigation = () => {
         if (id) {
-            navigate(`/myCourses/${id}`);  // Use the user ID to navigate to the appropriate route
+            navigate(`/myCourses/${id}`);
         } else {
             console.error("User ID is missing");
         }
@@ -63,13 +64,12 @@ export function HomepageHeader({ bgColor = '#333' }: HeaderProps) {
         <header
             ref={headerRef}
             className={`header ${headerVisible ? 'header-visible' : 'header-hidden'}`}
-            style={{ backgroundColor: bgColor }}
+            style={{ backgroundColor: bgColor, paddingBottom: '7em' }}
         >
             <a href="/">
                 <img src={picture} alt="Logo SyntaxBase" />
             </a>
-            <div className='divni2'>
-                {/* Use onClick to dynamically navigate to /myCourses/{id} */}
+            <div className='divni2' style={{paddingLeft: '27em', paddingRight: '35em'}}>
                 <div className='divni3' onClick={handleMyCoursesNavigation}>My Courses</div>
                 <div className="dropdown">
                     <div className='divni3' id='tutorials'>
@@ -88,9 +88,7 @@ export function HomepageHeader({ bgColor = '#333' }: HeaderProps) {
                 <a href='/help' className='divni3'>Help</a>
                 <a href='/about' className='divni3'>About</a>
             </div>
-            <a href="/contact">
-                <button className='divni1'>Contact</button>
-            </a>
+            <SettingsMenu />
         </header>
     );
 }

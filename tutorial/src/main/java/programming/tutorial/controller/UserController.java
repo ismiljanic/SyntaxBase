@@ -6,7 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.User;
+import programming.tutorial.dto.ChangePasswordRequest;
+import programming.tutorial.dto.PasswordRequest;
 import programming.tutorial.dto.UserDTO;
+import programming.tutorial.dto.UserUpdateRequest;
 import programming.tutorial.services.UserService;
 
 import java.util.HashMap;
@@ -56,5 +59,75 @@ public class UserController {
         responseBody.put("id", user.getId());
         responseBody.put("type", userType);
         return ResponseEntity.ok(responseBody);
+    }
+
+    @GetMapping("/accountInformation/{userId}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId) {
+        try {
+            Optional<User> userOptional = userRepository.findById(Math.toIntExact(userId));
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                UserDTO userDTO = new UserDTO();
+                userDTO.setName(user.getName());
+                userDTO.setSurname(user.getSurname());
+                userDTO.setUsername(user.getUsername());
+                userDTO.setDateCreated(user.getDateCreated());
+                return ResponseEntity.ok(userDTO);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @PutMapping("/{userId}/name")
+    public ResponseEntity<String> updateName(@PathVariable Long userId, @RequestBody UserUpdateRequest request) {
+        try {
+            userService.updateName(userId, request.getName());
+            return ResponseEntity.ok("Name updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/updateSurname/{userId}")
+    public ResponseEntity<String> updateSurname(@PathVariable Long userId, @RequestBody UserUpdateRequest request) {
+        try {
+            userService.updateSurname(userId, request.getSurname());
+            return ResponseEntity.ok("Surname updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/updateUsername/{userId}")
+    public ResponseEntity<String> updateUsername(@PathVariable Long userId, @RequestBody UserUpdateRequest request) {
+        try {
+            userService.updateUsername(userId, request.getUsername());
+            return ResponseEntity.ok("Username updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/changePassword/{userId}")
+    public ResponseEntity<String> changePassword(@PathVariable Long userId, @RequestBody ChangePasswordRequest request) {
+        try {
+            userService.changePassword(userId, request.getCurrentPassword(), request.getNewPassword());
+            return ResponseEntity.ok("Password changed successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/deleteAccount/{userId}")
+    public ResponseEntity<String> deleteAccount(@PathVariable Long userId, @RequestBody PasswordRequest request) {
+        try {
+            userService.deleteUser(userId, request.getPassword());
+            return ResponseEntity.ok("Account deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 }

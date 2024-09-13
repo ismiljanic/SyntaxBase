@@ -49,7 +49,6 @@ a {
     padding: 1em;
     font-size: 16px;
     margin-top: 1.5em;
-    margin-left: 29.5em;
     margin-bottom: 2em;
     justify-content: center;
     color: #ffffff;
@@ -105,8 +104,9 @@ a {
 }
 
 .divni2 {
-    margin-left: 26em;
     display: flex;
+    padding-left: 19em;
+    padding-right: 27em;
 }
 
 .divni3 {

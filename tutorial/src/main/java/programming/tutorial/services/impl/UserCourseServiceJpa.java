@@ -6,9 +6,11 @@ import programming.tutorial.dao.CourseRepository;
 import programming.tutorial.dao.UserCourseRepository;
 import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.Course;
+import programming.tutorial.domain.User;
 import programming.tutorial.domain.UserCourse;
 import programming.tutorial.dto.CourseDTO;
 import programming.tutorial.dto.UserCourseDTO;
+import programming.tutorial.dto.UserUpdateRequest;
 import programming.tutorial.services.UserCourseService;
 
 import java.util.List;
@@ -40,7 +42,6 @@ public class UserCourseServiceJpa implements UserCourseService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         var course = courseRepository.findById(userCourseDTO.getCourseId())
                 .orElseThrow(() -> new IllegalArgumentException("Course not found"));
-
         UserCourse userCourse = new UserCourse();
         userCourse.setUser(user);
         userCourse.setCourse(course);
