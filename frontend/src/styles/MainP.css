@@ -290,7 +290,6 @@ body {
 /* Footer styling */
 .mainp-footer {
     margin-top: auto;
-    /* Pushes footer to the bottom */
     padding: 20px;
     font-size: 0.9rem;
     color: #555;
@@ -301,19 +300,13 @@ body {
 
 .mainPageDiv1 {
     width: 100%;
-    /* Makes the element full width */
     border-top: 1px solid rgb(163, 173, 180);
     display: flex;
     align-items: flex-start;
-    /* Aligns items to the top */
     padding: 2em;
-    /* Padding around the content */
     box-sizing: border-box;
-    /* Includes padding and border in element's total width and height */
     flex-wrap: wrap;
-    /* Prevents wrapping to new lines */
     overflow-x: auto;
-    /* Allows horizontal scrolling if needed */
     height: 30em;
     justify-content: space-between;
     margin-left: 7em;
@@ -322,9 +315,7 @@ body {
 
 .storyDiv {
     text-align: center;
-    /* Centers text inside each email block */
     margin: 0em -2em;
-    /* Space between each email block */
     padding: 1em;
     flex: 0 0 auto;
     /* Prevents flex items from shrinking or growing */

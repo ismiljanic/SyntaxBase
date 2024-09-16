@@ -56,15 +56,15 @@ export function LoginComponent() {
                 return;
             }
     
-            sessionStorage.setItem('userId', id); // Store the user ID
-            sessionStorage.setItem('userToken', userToken); // Store the token
+            sessionStorage.setItem('userId', id); 
+            sessionStorage.setItem('userToken', userToken); 
     
-            const redirectUrl = sessionStorage.getItem('redirectAfterLogin'); // Get stored redirect path
+            const redirectUrl = sessionStorage.getItem('redirectAfterLogin'); 
             if (redirectUrl) {
-                sessionStorage.removeItem('redirectAfterLogin'); // Clean up
-                navigate(redirectUrl); // Navigate to the desired path
+                sessionStorage.removeItem('redirectAfterLogin');
+                navigate(redirectUrl); 
             } else {
-                navigate(`/homepage/${id}`); // Default to homepage with user ID
+                navigate(`/homepage/${id}`);
             }
         }
     }

@@ -1,4 +1,4 @@
-import {IconButton} from "@mui/material";
+import { IconButton } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Register, registerUser } from "../functions/RegisterFunc";
@@ -22,7 +22,7 @@ export function RegisterComponent() {
     const [submit, setSubmit] = useState<boolean>(false);
     const navigate = useNavigate();
 
-    const clickShowPassword = () => setShowPassword((hide) => !hide);
+    const clickShowPassword = () => setShowPassword((prev) => !prev);
     const handleMouseEvent = (e: React.MouseEvent<HTMLButtonElement>) => e.preventDefault();
 
     const valid = (): string[] => {
@@ -30,7 +30,7 @@ export function RegisterComponent() {
         if (!name) error.push("You must enter your name");
         if (!surname) error.push("You must enter your surname");
         if (!username) error.push("You must enter your username");
-        if (6 > username.length) error.push("Username must contain more than 6 characters");
+        if (username.length < 6) error.push("Username must contain more than 6 characters");
         if (username.length > 20) error.push("Username must contain less than 20 characters");
         if (password.length < 6) error.push("More characters required for password");
         if (password !== passwordAgain) error.push("Passwords don't match");
@@ -46,20 +46,26 @@ export function RegisterComponent() {
         } else {
             setSubmit(true);
             setError([]);
-            const data: Register = { name, surname, username, password };
+            const data = { name, surname, username, password };
 
             registerUser(data)
                 .then((response) => {
                     if (response.status >= 200 && response.status < 300) {
-                        setUserData(response);
-                        const donorId = response.data.id?.id;
-                        if (donorId) navigate(`/homepage/${donorId}`);
+                        const userId = response.data.id.id;
+                        if (userId) {
+                            sessionStorage.setItem('userId', userId); 
+                            navigate(`/homepage/${userId}`);
+                        } else {
+                            setRegisterFailed(true);
+                        }
                     } else {
                         setRegisterFailed(true);
                     }
                 })
                 .catch((e: AxiosError<ErrorResponse>) => {
-                    if (e.response) errorMessage.push(e.response.data.errorMessage);
+                    if (e.response) {
+                        errorMessage.push(e.response.data.errorMessage);
+                    }
                     setError(errorMessage);
                     setRegisterFailed(true);
                 })

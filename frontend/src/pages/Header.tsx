@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/Header.css';
 import picture from '../images/logoSyntaxBase.png';
+import { SettingsMenu } from './SettingsMenu';
 
 interface HeaderProps {
     bgColor?: string;
@@ -47,13 +48,21 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
         }
     };
 
+    const handleContactClick = () => {
+        if (isLoggedIn && userId) {
+            navigate(`/contact/${userId}`);
+        } else {
+            navigate('/contact');
+        }
+    };
+
     useEffect(() => {
         const storedUserId = sessionStorage.getItem('userId');
         if (storedUserId) {
             setUserId(storedUserId);
             setIsLoggedIn(true);
         } else {
-            setIsLoggedIn(false); 
+            setIsLoggedIn(false);
         }
     }, []);
 
@@ -85,7 +94,7 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
     return (
         <header
             ref={headerRef}
-            className={`header ${headerVisible ? 'header-visible' : 'header-hidden'} ${dropdownActive ? 'header-expanded' : ''}`}
+            className={`header ${headerVisible ? 'header-visible' : 'header-hidden'} ${dropdownActive ? 'header-expanded' : ''} ${isLoggedIn ? 'logged-in' : 'logged-out'}`}
             style={{ backgroundColor: bgColor }}
         >
             <a href="/">
@@ -110,12 +119,16 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
                 <a href='/about' className='divni3'>About</a>
                 <a href='/help' className='divni3'>Help</a>
                 {isLoggedIn && userId && (
-                    <a href={`/homepage/${userId}`} className='divni3'>Homepage</a>
+                    <a href={`/homepage/${userId}`} className='divni3' style={{ marginRight: '5em' }}>Homepage</a>
                 )}
             </div>
-            <a href="/contact">
-                <button className='divni1'>Contact</button>
-            </a>
+            {isLoggedIn && userId ? (
+                <SettingsMenu />
+            ) : (
+                <a href="/contact">
+                    <button className='divni1'>Contact</button>
+                </a>
+            )}
             {dropdownActive && <div className="header-overlay" onClick={() => setDropdownActive(false)}></div>}
         </header>
     );

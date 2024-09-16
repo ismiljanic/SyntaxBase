@@ -26,6 +26,19 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @GetMapping("/userInformation/{id}")
+    public User getUserInformation(@PathVariable String id) {
+        System.out.println("Fetching user information for ID: " + id);
+        User user = userService.getUserById(id);
+        if (user != null) {
+            System.out.println("User found: " + user);
+        } else {
+            System.out.println("User not found with ID: " + id);
+        }
+        return user;
+    }
+
+
     @RequestMapping(value = "/register", method = {RequestMethod.POST, RequestMethod.OPTIONS})
     ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
         ResponseEntity<?> responseEntity = userService.addUser(userDTO);
@@ -81,12 +94,15 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{userId}/name")
+    @PutMapping("/updateName/{userId}")
     public ResponseEntity<String> updateName(@PathVariable Long userId, @RequestBody UserUpdateRequest request) {
         try {
+            System.out.println("User ID: " + userId);
+            System.out.println("New Name: " + request.getName());
             userService.updateName(userId, request.getName());
             return ResponseEntity.ok("Name updated successfully");
         } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -117,16 +133,21 @@ public class UserController {
             userService.changePassword(userId, request.getCurrentPassword(), request.getNewPassword());
             return ResponseEntity.ok("Password changed successfully");
         } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
+
     @DeleteMapping("/deleteAccount/{userId}")
     public ResponseEntity<String> deleteAccount(@PathVariable Long userId, @RequestBody PasswordRequest request) {
         try {
+            System.out.println("Received DELETE request for userId: " + userId);
+            System.out.println("Password received: " + request.getPassword());
             userService.deleteUser(userId, request.getPassword());
             return ResponseEntity.ok("Account deleted successfully");
         } catch (Exception e) {
+            System.out.println("Error deleting account: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }

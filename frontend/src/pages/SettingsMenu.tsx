@@ -30,7 +30,8 @@ export function SettingsMenu() {
     
 
     const handleContact = () => {
-        navigate('/contact');
+        const userId = sessionStorage.getItem('userId');
+        navigate(`/contact/${userId}`);
     };
     const handleAccountInformation = () => {
         const userId = sessionStorage.getItem('userId');

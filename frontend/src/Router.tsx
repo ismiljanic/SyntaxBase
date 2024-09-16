@@ -42,6 +42,7 @@ export function Router() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/contact/:userId" element={<Contact />} />
           <Route path="/homepage/:id" element={<Homepage />} />
           <Route path="/changeSettings/:id" element={<PersonalInformationPage />} />
           <Route path="/webDevelopment" element={<WebDevelopmentPage />} />

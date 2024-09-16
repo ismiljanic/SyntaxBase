@@ -178,6 +178,7 @@ export function MainP() {
                 targetSection.scrollIntoView({ behavior: 'smooth' });
             }
         }
+
         return () => {
             if (header) headerObserver.unobserve(header);
             if (features) featuresObserver.unobserve(features);

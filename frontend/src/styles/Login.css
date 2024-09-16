@@ -22,9 +22,8 @@ body {
     }
 }
 
-/* Header Styling */
 .login-header {
-    font-size: 48px;
+    font-size: 30px;
     font-weight: bold;
     width: 100%;
     text-align: center;
@@ -32,7 +31,6 @@ body {
     color: #000000;
 }
 
-/* Form Container */
 .login-form-container {
     display: flex;
     justify-content: center;
@@ -88,7 +86,6 @@ body {
     transform: translateY(-50%);
 }
 
-/* Error Styling */
 .login-error {
     margin-bottom: 1em;
 }
@@ -98,7 +95,6 @@ body {
     font-size: 0.9em;
 }
 
-/* Buttons */
 .login-button {
     background-color: #007bff;
     color: #fff;
@@ -135,7 +131,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: -2em;
     font-size: 16px;
     color: #333;
 }
@@ -157,4 +152,5 @@ body {
     text-align: center;
     font-size: 16px;
     margin-right: 3.3em;
+    margin-bottom: 2em;
 }

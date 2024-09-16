@@ -29,7 +29,7 @@
   flex-direction: column;
 }
 
-.personal-information-data > div {
+.personal-information-data>div {
   display: flex;
   flex-direction: column;
   margin-bottom: 30px;
@@ -114,4 +114,66 @@ h2 {
 
 .modal button:hover {
   background-color: #2980b9;
+}
+
+.buttonsi {
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 1.1em;
+  padding-top: 0.7em;
+  display: flex;
+}
+
+.personalInformationDiv {
+  position: relative;
+  width: fit-content;
+  font-size: 0.5em;
+  padding-right: 2.5em;
+  transition: transform 0.5s ease, color 0.5s ease;
+  color: black;
+}
+
+.personalInformationDiv:hover::before {
+  transform: scaleX(1);
+  color: #007bff;
+}
+
+.personalInformationDiv:not(:hover)::before {
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.5s ease;
+  color: #007bff;
+}
+
+.personalInformationDiv:hover {
+  transform: translateX(1.3em);
+  color: #007bff;
+}
+
+.personalInformationDiv::after {
+  content: '→';
+  position: absolute;
+  top: 0;
+  opacity: 1;
+  right: 1.3em;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.personalInformationDiv:hover::after {
+  opacity: 0;
+  transform: translateX(0.3em); 
+}
+
+.personalInformationDiv:active,
+.personalInformationDiv:focus {
+  outline: none;
+  color: #007bff;
+}
+
+.personalInformationDiv:focus {
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+  color: #007bff;
+}
+
+.personalInformationDiv:active {
+  color: whitesmoke;
 }

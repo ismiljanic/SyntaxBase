@@ -105,7 +105,20 @@ public class UserServiceJpa implements UserService {
         if (!password.equals(user.getPassword())) {
             throw new RuntimeException("Password is incorrect");
         }
-
         userRepository.delete(user);
     }
+
+    public User getUserById(String id) throws UserNotFoundException {
+        System.out.println("Service layer: Fetching user by ID: " + id);
+        Optional<User> userOptional = userRepository.findById(Integer.valueOf(id));
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            System.out.println("User found: " + user);
+            return user;
+        } else {
+            System.out.println("User not found with ID: " + id);
+            throw new UserNotFoundException("User not found with id: " + id);
+        }
+    }
+
 }

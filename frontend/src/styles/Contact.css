@@ -233,3 +233,74 @@
 .footer2-feedback-form button:active {
     transform: scale(0.95);
 }
+
+.contactEmailDiv {
+    position: relative;
+    padding-bottom: 0.5em;
+    font-size: 1.15em;
+    color: #007bff;
+}
+
+.contactEmailDiv::before,
+.courseImage2:hover::after,
+.contactEmailDiv:hover::before {
+    background-color: #007bff;
+}
+
+
+.contactEmailDiv:hover {
+    color: #007bff;
+}
+
+.contactEmailDiv::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background-color: #007bff;
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: bottom left;
+    transition: transform 0.3s ease;
+}
+
+.contactEmailDiv::before,
+.contactEmailDiv:hover::before {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+
+.contactEmailDiv:not(:hover)::before {
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.4s ease;
+}
+
+.contactEmailDiv:active,
+.contactEmailDiv:focus {
+    color: #0056b3;
+    outline: none;
+}
+
+.contactEmailDiv:focus {
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+.contactEmailDiv:active {
+    color: whitesmoke;
+}
+
+.contactEmailDiv.selected::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: calc(100% + 10px);
+    height: calc(100% + 10px);
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    box-sizing: border-box;
+    pointer-events: none;
+}

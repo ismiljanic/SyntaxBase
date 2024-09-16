@@ -6,7 +6,7 @@
     opacity: 0;
     transform: translateY(-50px); 
     transition: opacity 0.4s ease, transform 0.4s ease;
-    position: relative; /* Added to control the overlay */
+    position: relative; 
 }
 
 .header-visible {
@@ -20,7 +20,7 @@
 }
 
 .header-expanded {
-    height: 10em; /* Adjust as needed for expansion */
+    height: 10em;
 }
 
 .header-overlay {
@@ -45,7 +45,7 @@ a {
     text-decoration: none;
 }
 
-.divni1 {
+.header.logged-in .divni1 {
     padding: 1em;
     font-size: 16px;
     margin-top: 1.5em;
@@ -54,6 +54,27 @@ a {
     color: #ffffff;
     background-color: #007bff;
     border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
+    font-weight: bold;
+    z-index: 1;
+}
+
+.header.logged-out .divni1 {
+    padding: 1em;
+    font-size: 16px;
+    margin-top: 1.5em;
+    margin-bottom: 2em;
+    justify-content: center;
+    color: #ffffff;
+    background-color: #007bff;
+    border: none;
+    margin-left: 3.2em;
     border-radius: 8px;
     cursor: pointer;
     position: relative;
@@ -106,6 +127,12 @@ a {
 .divni2 {
     display: flex;
     padding-left: 19em;
+    padding-right: 27em;
+}
+
+.header.logged-out .divni2 {
+    display: flex;
+    padding-left: 25em;
     padding-right: 27em;
 }
 

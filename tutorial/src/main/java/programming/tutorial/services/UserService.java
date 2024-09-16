@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import programming.tutorial.domain.User;
 import programming.tutorial.dto.UserDTO;
 import programming.tutorial.dto.UserUpdateRequest;
+import programming.tutorial.services.impl.UserNotFoundException;
 
 import java.util.Optional;
 
@@ -20,5 +21,5 @@ public interface UserService {
     public void updateSurname(Long userId, String lastName);
     public void changePassword(Long userId, String currentPassword, String newPassword);
     public void deleteUser(Long userId, String password);
-
+    User getUserById(String id) throws UserNotFoundException;
 }

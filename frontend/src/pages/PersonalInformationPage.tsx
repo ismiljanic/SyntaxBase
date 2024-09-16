@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import '../styles/PersonalInformation.css';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
@@ -8,9 +8,9 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { Footer2 } from './Footer2';
+import { AxiosError } from 'axios';
 
 const PersonalInformation: React.FC = () => {
-  const { userId } = useParams();
   const [name, setName] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -25,12 +25,82 @@ const PersonalInformation: React.FC = () => {
   const [newSurname, setNewSurname] = useState<string>('');
   const [confirmationModal, setConfirmationModal] = useState<boolean>(false);
   const [fieldToUpdate, setFieldToUpdate] = useState<string>('');
-  const validateName = (value: string): boolean => value.length >= 3;
-  const validateUsername = (value: string): boolean => value.length > 0;
-  const validatePassword = (value: string): boolean => value.length >= 6 && value.length <= 20;
   const [usernameError, setUsernameError] = useState<string>('');
+  const [deleted, setDeleted] = useState<boolean>(false);
+  const location = useLocation();
   const navigate = useNavigate();
+  const userId = sessionStorage.getItem('userId');
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!userId) return;
+      try {
+        const response = await axios.get(`http://localhost:8080/api/users/accountInformation/${userId}`);
+        const userData = response.data;
+        setName(userData.name);
+        setSurname(userData.surname);
+        setUsername(userData.username);
+      } catch (error) {
+        const axiosError = error as AxiosError;
+        if (axiosError.response?.status === 404) {
+          navigate('/login');
+        } else {
+          alert('Error fetching user data. Please try again.');
+        }
+      }
+    };
+
+    if (!deleted) {
+      fetchData();
+    }
+  }, [userId, navigate, deleted]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const scrollTo = params.get('scrollTo');
+    if (scrollTo) {
+      const targetSection = document.getElementById(scrollTo);
+      if (targetSection) {
+        targetSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [location.search]);
+
+  const handleScrollToSection = (sectionId: string) => {
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+      window.history.pushState(null, '', `?scrollTo=${sectionId}`);
+      targetSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!userId) {
+      alert('User ID is not found.');
+      return;
+    }
+
+    const confirmDelete = window.confirm('Are you sure you want to delete your account?');
+    if (confirmDelete) {
+      try {
+        const password = prompt('Please enter your password to confirm deletion:');
+        if (!password) {
+          alert('Password is required to delete the account.');
+          return;
+        }
+        setDeleted(true);
+        await axios.delete(`http://localhost:8080/api/users/deleteAccount/${userId}`, {
+          data: { password },
+        });
+        sessionStorage.removeItem('userId');
+        console.log('User ID cleared from session storage');
+      } catch (error) {
+        const axiosError = error as AxiosError;
+        console.error('Error deleting account:', axiosError);
+        alert('Error deleting account. Please try again.');
+      }
+    }
+  };
 
   const openConfirmationModal = (field: string) => {
     setFieldToUpdate(field);
@@ -42,15 +112,17 @@ const PersonalInformation: React.FC = () => {
     setConfirmationModal(false);
   };
 
-  const handleUpdateName = async () => {
+  const handleUpdateName = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (oldName === '' || oldName !== name || newName === '' || newName === oldName) {
       alert('Please enter your current name correctly and provide a different new name.');
       return;
     }
-
     openConfirmationModal('name');
   };
-  const handleUpdateSurname = async () => {
+
+  const handleUpdateSurname = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (oldSurname === '') {
       alert('Please enter your current surname.');
       return;
@@ -64,16 +136,17 @@ const PersonalInformation: React.FC = () => {
     openConfirmationModal('surname');
   };
 
-  const handleUpdateUsername = () => {
+  const handleUpdateUsername = (e: React.FormEvent) => {
+    e.preventDefault();
     if (newUsername === '' || oldUSername === '' || oldUSername !== username) {
       setUsernameError('Please enter your current username correctly and provide a new username.');
       return;
     }
-
     openConfirmationModal('username');
   };
 
-  const handleUpdatePassword = async () => {
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (oldPassword === '') {
       window.alert('Please enter your old password.');
       return;
@@ -82,6 +155,9 @@ const PersonalInformation: React.FC = () => {
       return;
     } else if (newPassword.length < 6) {
       window.alert('Please enter a new password with at least 6 characters.');
+      return;
+    } else if (oldPassword === newPassword) {
+      window.alert('New password is same as old password');
       return;
     }
 
@@ -94,19 +170,7 @@ const PersonalInformation: React.FC = () => {
 
     openConfirmationModal('password');
   };
-  const handleDeleteAccount = async () => {
-    const confirmDelete = window.confirm('Are you sure you want to delete your account?');
-    if (confirmDelete) {
-      try {
-        await axios.delete(`/api/users/deleteAccount/${userId}`);
-        alert('Account deleted successfully.');
-        navigate(`/login`);
-      } catch (error) {
-        console.error('Error deleting account:', error);
-        alert('Error deleting account. Please try again.');
-      }
-    }
-  };
+
   const confirmUpdateField = async () => {
     try {
       switch (fieldToUpdate) {
@@ -115,9 +179,10 @@ const PersonalInformation: React.FC = () => {
             setUsernameError('Please enter a new name.');
             return;
           }
-          await axios.put(`/api/users/changeName/${userId}`, {
-            oldName,
-            newName,
+          await axios.put(`http://localhost:8080/api/users/updateName/${userId}`, {
+            name: newName,
+            surname: oldSurname,
+            username: oldUSername
           });
           setUsernameError('');
           setName(newName);
@@ -126,21 +191,21 @@ const PersonalInformation: React.FC = () => {
           break;
 
         case 'username':
-          await axios.put(`/api/users/changeUsername/${userId}`, {
-            oldUSername,
-            newUsername,
+          await axios.put(`http://localhost:8080/api/users/updateUsername/${userId}`, {
+            name: newName,
+            surname: oldSurname,
+            username: newUsername
           });
           setUsernameError('');
-          openConfirmationModal('username');
           setUsername(newUsername);
           setOldUsername('');
           setNewUsername('');
           break;
 
         case 'password':
-          await axios.put(`/api/users/changePassword/${userId}`, {
-            oldPassword,
-            newPassword,
+          await axios.put(`http://localhost:8080/api/users/changePassword/${userId}`, {
+            currentPassword: oldPassword,
+            newPassword: newPassword
           });
           setUsernameError('');
           setOldPassword('');
@@ -152,9 +217,10 @@ const PersonalInformation: React.FC = () => {
             setUsernameError('Please enter a new surname.');
             return;
           }
-          await axios.put(`/api/blood_donor/changeSurname/${userId}`, {
-            oldSurname,
-            newSurname,
+          await axios.put(`http://localhost:8080/api/users/updateSurname/${userId}`, {
+            name: newName,
+            surname: newSurname,
+            username: oldUSername
           });
           setUsernameError('');
           setSurname(newSurname);
@@ -172,16 +238,26 @@ const PersonalInformation: React.FC = () => {
       setConfirmationModal(false);
     }
   };
+
   return (
     <div className="personal-information">
       <Header bgColor='#f5f5f5'></Header>
-      <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '-4em' }}>
-        <div className='aboutYouDiv' style={{ paddingTop: '0.5em', marginLeft: '-4.2em' }}>Change Name</div>
+      <div className='aboutYouDiv' style={{ paddingTop: '2em', textAlign: 'left', marginLeft: '2.1em', width: '88.5%', paddingBottom: '3em' }}>Personal Information
+        <div className='buttonsi'>
+          <div className='personalInformationDiv' onClick={() => handleScrollToSection('setName')}>Name</div>
+          <div className='personalInformationDiv' onClick={() => handleScrollToSection('setSurname')}>Surname</div>
+          <div className='personalInformationDiv' onClick={() => handleScrollToSection('setUsername')}>Username</div>
+          <div className='personalInformationDiv' onClick={() => handleScrollToSection('setPassword')}>Password</div>
+          <div className='personalInformationDiv' onClick={() => handleScrollToSection('deleteAccount')}>Delete Account</div>
+        </div>
+      </div>
+      <div className='formDiv' style={{ marginLeft: '7em', marginBottom: '5em', marginTop: '2em', borderBottom: '1px solid #dee2e6', width: '88.5%' }}>
+        <div className='aboutYouDiv' style={{ paddingTop: '0.5em', marginLeft: '-5em' }}>Change Name</div>
         <div className='formDiv2'>
           <div className="footer2-feedback">
             <form className="footer2-feedback-form" style={{ marginRight: '-5.7em' }}>
               <div className="input-pair">
-                <div className="input-field">
+                <div className="input-field" id='setName'>
                   <input
                     className='txt1'
                     type="text"
@@ -209,14 +285,23 @@ const PersonalInformation: React.FC = () => {
             </form>
           </div>
         </div>
+        {confirmationModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <p>{`Are you sure you want to apply changes to ${fieldToUpdate}?: `}</p>
+              <button onClick={confirmUpdateField}>Yes</button>
+              <button onClick={closeConfirmationModal}>No</button>
+            </div>
+          </div>
+        )}
       </div>
-      <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '-4em' }}>
-        <div className='aboutYouDiv' style={{ paddingTop: '0.5em', marginLeft: '-2.8em' }}>Change Surname</div>
+      <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '7em', borderBottom: '1px solid #dee2e6', width: '88.5%' }}>
+        <div className='aboutYouDiv' style={{ paddingTop: '0.5em', marginLeft: '-3.4em' }}>Change Surname</div>
         <div className='formDiv2'>
           <div className="footer2-feedback">
             <form className="footer2-feedback-form" style={{ marginRight: '-5.7em' }}>
               <div className="input-pair">
-                <div className="input-field">
+                <div className="input-field" id='setSurname'>
                   <input
                     className='txt1'
                     type="text"
@@ -245,13 +330,13 @@ const PersonalInformation: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '-4em' }}>
-        <div className='aboutYouDiv' style={{ paddingTop: '0.5em', marginLeft: '-2.8em' }}>Change Username</div>
+      <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '8em', borderBottom: '1px solid #dee2e6', width: '88.5%'}}>
+        <div className='aboutYouDiv' style={{ paddingTop: '0.5em', marginLeft: '-3.2em' }}>Change Username</div>
         <div className='formDiv2'>
           <div className="footer2-feedback">
             <form className="footer2-feedback-form" style={{ marginRight: '-5.7em' }}>
               <div className="input-pair">
-                <div className="input-field">
+                <div className="input-field" id='setUsername'>
                   <input
                     className='txt1'
                     type="text"
@@ -286,13 +371,13 @@ const PersonalInformation: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '-4em' }}>
-        <div className='aboutYouDiv' style={{ paddingTop: '0.5em', marginLeft: '-1.8em' }}>Change Password</div>
+      <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '8em' , borderBottom: '1px solid #dee2e6', width: '88.5%'}}>
+        <div className='aboutYouDiv' style={{ paddingTop: '0.5em', marginLeft: '-3.5em' }}>Change Password</div>
         <div className='formDiv2'>
           <div className="footer2-feedback">
             <form className="footer2-feedback-form" style={{ marginRight: '-5.7em' }}>
               <div className="input-pair">
-                <div className="input-field">
+                <div className="input-field" id='setPassword'>
                   <input
                     className='txt2'
                     type="password"
@@ -322,28 +407,19 @@ const PersonalInformation: React.FC = () => {
         </div>
       </div>
       <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '-11.5em' }}>
-        <div className='aboutYouDiv' style={{ paddingTop: '1em', marginLeft: '-2em' }}>Delete account</div>
+        <div className='aboutYouDiv' style={{ paddingTop: '1em', marginLeft: '-2.2em' }}>Delete account</div>
         <div className='formDiv2'>
           <div className="footer2-feedback">
             <form className="footer2-feedback-form">
               <div className="input-pair">
                 <div className="input-field">
                 </div>
-                <div className="input-field">
+                <div className="input-field" id='deleteAccount'>
                 </div>
               </div>
-              <button className="divni1" onClick={handleDeleteAccount} style={{ marginRight: '-6em', marginLeft: '-3.2em' }}>
+              <button className="divni1" onClick={handleDeleteAccount} style={{ marginRight: '1em', marginLeft: '-10em' }}>
                 Delete Account
               </button>
-              {confirmationModal && (
-                <div className="modal-overlay">
-                  <div className="modal">
-                    <p>{`Are you sure you want to apply changes to ${fieldToUpdate}?: `}</p>
-                    <button onClick={confirmUpdateField}>Yes</button>
-                    <button onClick={closeConfirmationModal}>No</button>
-                  </div>
-                </div>
-              )}
             </form>
           </div>
         </div>

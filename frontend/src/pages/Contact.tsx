@@ -1,57 +1,166 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 import '../styles/Contact.css';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { Footer2 } from './Footer2';
 
+interface FormData {
+    name: string;
+    surname: string;
+    phone: string;
+    email: string;
+    username: string;
+    message: string;
+}
+
 export function Contact() {
+    const navigate = useNavigate();
+    const { userId } = useParams<{ userId?: string }>();
+
+    const [formData, setFormData] = useState<FormData>({
+        name: '',
+        surname: '',
+        phone: '',
+        email: '',
+        username: '',
+        message: ''
+    });
+    const [status, setStatus] = useState<string>('');
+
     useEffect(() => {
         document.title = "Contact Us | SyntaxBase";
-    }, []);
+
+        if (userId) {
+            axios.get(`http://localhost:8080/api/users/userInformation/${userId}`)
+                .then(response => {
+                    console.log('User information fetched:', response.data);
+                    const { name, surname, username } = response.data;
+                    setFormData(prevData => ({
+                        ...prevData,
+                        name,
+                        surname,
+                        username
+                    }));
+                })
+                .catch(error => {
+                    console.error('Error fetching user information:', error);
+                });
+        }
+    }, [userId]);
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            await axios.post('http://localhost:8080/api/contact/email', formData);
+            setStatus('Feedback submitted successfully!');
+            setFormData({
+                name: '',
+                surname: '',
+                phone: '',
+                email: '',
+                username: '',
+                message: ''
+            });
+        } catch (error) {
+            console.error('Error submitting feedback:', error);
+            setStatus('Failed to submit feedback. Please try again.');
+        }
+    };
 
     return (
         <div className='contactDiv'>
-            <Header bgColor='#fcfafa'/>
+            <Header bgColor='#fcfafa' />
             <h1 className='contact'>Contact Us</h1>
             <div className="contact-container">
                 <div className='formDiv'>
                     <div className='aboutYouDiv'>About you</div>
                     <div className='formDiv2'>
                         <div className="footer2-feedback">
-                            <form className="footer2-feedback-form">
+                            <form className="footer2-feedback-form" onSubmit={handleSubmit}>
                                 <div className="input-pair">
                                     <div className="input-field">
-                                        <input type="text" id="first-name" name="name" required />
+                                        <input
+                                            type="text"
+                                            id="first-name"
+                                            name="name"
+                                            value={formData.name}
+                                            onChange={handleChange}
+                                            required
+                                        />
                                         <label htmlFor="first-name">First name</label>
                                     </div>
                                     <div className="input-field">
-                                        <input type="text" id="surname" name="surname" required />
+                                        <input
+                                            type="text"
+                                            id="surname"
+                                            name="surname"
+                                            value={formData.surname}
+                                            onChange={handleChange}
+                                            required
+                                        />
                                         <label htmlFor="surname">Surname</label>
                                     </div>
                                 </div>
-
                                 <div className="input-pair">
+                                    <div className="input-field full-width">
+                                        <input
+                                            type="text"
+                                            id="username"
+                                            name="username"
+                                            value={formData.username}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                        <label htmlFor="username">Username</label>
+                                    </div>
                                     <div className="input-field">
-                                        <input type="text" id="phone" name="phone" required />
+                                        <input
+                                            type="text"
+                                            id="phone"
+                                            name="phone"
+                                            value={formData.phone}
+                                            onChange={handleChange}
+                                            required
+                                        />
                                         <label htmlFor="phone">Phone</label>
                                     </div>
-                                    <div className="input-field">
-                                        <input type="email" id="email" name="email" required />
-                                        <label htmlFor="email">Email</label>
-                                    </div>
-                                </div>
-
-                                <div className="input-field full-width">
-                                    <input type="text" id="username" name="username" required />
-                                    <label htmlFor="username">Username</label>
                                 </div>
 
                                 <div className="input-field">
-                                    <textarea id="message" name="message" required></textarea>
-                                    <label htmlFor="message">Message</label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        required
+                                        style={{ width: '45em' }}
+                                    />
+                                    <label htmlFor="email">Email</label>
+                                </div>
+                                <div className="input-field">
+                                    <textarea
+                                        id="message"
+                                        name="message"
+                                        value={formData.message}
+                                        onChange={handleChange}
+                                        required
+                                    ></textarea>
+                                    <label htmlFor="message">Feedback</label>
                                 </div>
 
                                 <button type="submit">Submit Feedback</button>
+                                {status && <p>{status}</p>}
                             </form>
                         </div>
                     </div>
@@ -59,27 +168,28 @@ export function Contact() {
                 <div className="contact-info">
                     <div className='contact-info-text'>
                         <div className='email'>
-                            <h1>Personal email</h1>
-                            <p>ssmiljanicivan@gmail.com</p>
+                            <h1>Official email</h1>
+                            <a href="mailto:SyntaxBaseDev@gmail.com" className='contactEmailDiv'>SyntaxBaseDev@gmail.com</a>
                         </div>
                         <div className='email'>
-                            <h1>Student email</h1>
-                            <p>ivan.smiljanic@fer.hr</p>
+                            <h1>Personal email</h1>
+                            <a href="mailto:ssmiljanicivan@gmail.com" className='contactEmailDiv'>ssmiljanicivan@gmail.com</a>
                         </div>
                         <div className='email'>
                             <h1>Emergency email</h1>
-                            <p>ivanveliki65@gmail.com</p>
+                            <a href="mailto:ivansmiljanic9@outlook.com" className='contactEmailDiv'>ivansmiljanic9@outlook.com</a>
                         </div>
                         <div className='email'>
                             <h1>Other</h1>
-                            <p>ivansmiljanic9@outlook.com</p>
+                            <a href="mailto:fudansfudans@gmail.com" className='contactEmailDiv' style={{marginLeft: '0.5em'}}>fudansfudans@gmail.com</a>
                         </div>
                         <div className='email'>
                             <h1>Other email</h1>
-                            <p>fudansfudans@gmail.com</p>
+                            <a href="mailto:ivan.smiljanic@fer.hr" className='contactEmailDiv' style={{marginLeft: '0.5em'}}>ivan.smiljanic@fer.hr</a>
                         </div>
                     </div>
                 </div>
+
                 <div className="contact-info2">
                     <div className='contact-info-text'>
                         <div className='email'>

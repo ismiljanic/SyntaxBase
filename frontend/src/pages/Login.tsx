@@ -9,17 +9,17 @@ export function Login() {
 
     useEffect(() => {
         const isLoggedIn = sessionStorage.getItem('userToken');
-        const redirectUrl = sessionStorage.getItem('redirectAfterLogin'); // Get the redirect path if available
+        const redirectUrl = sessionStorage.getItem('redirectAfterLogin');
         const userId = sessionStorage.getItem('userId');
 
         if (isLoggedIn) {
             if (redirectUrl) {
-                sessionStorage.removeItem('redirectAfterLogin'); // Remove it after using it
-                navigate(redirectUrl); // Redirect to the stored path
+                sessionStorage.removeItem('redirectAfterLogin'); 
+                navigate(redirectUrl);
             } else if (userId) {
-                navigate(`/homepage/${userId}`); // Redirect to user's homepage if no specific path is stored
+                navigate(`/homepage/${userId}`); 
             } else {
-                navigate('/homepage'); // Fallback if no user ID
+                navigate('/homepage');
             }
         }
     }, [navigate]);
@@ -34,6 +34,7 @@ export function Login() {
             <div className="login-footer">
                 <Link to="/forgot-password" className="footer-link">Forgot Password?</Link>
                 <div className="footer-text">Don't have an account? <Link to="/register" className="footer-link">Sign Up</Link></div>
+                <div className="footer-text" style={{marginTop: '-1em', marginLeft: '3em'}}>Go to <Link to="/" className="footer-link">Homepage</Link></div>
             </div>
         </div>
     );
