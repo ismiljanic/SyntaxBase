@@ -9,11 +9,10 @@
 }
 
 .subsection-title {
-    font-size: 2em;
-    /* border-top: 1px solid #dee2e6; */
-    border-top: 1px solid black;
+    font-size: 2.5em;
+    border-top: 1px solid #dee2e6;
     padding-top: 1.5em;
-    margin-left: 4em;
+    margin-left: 3.1em;
     margin-right: 4em;
 }
 
@@ -33,6 +32,7 @@
 .key-areas li {
     padding-top: 1em;
 }
+
 .keyAreasOfBeginnerWebDev {
     margin-top: -10em;
 }
@@ -51,6 +51,8 @@
     flex-wrap: wrap;
     margin-left: 0.5em;
     gap: 5em;
+    margin-top: -18em;
+    margin-bottom: 8em;
     justify-content: center;
 }
 
@@ -108,4 +110,107 @@
 
 .keyDescription {
     margin-left: 2em;
+}
+
+.key-areas3 {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 1.3em;
+    padding-top: 8em;
+    gap: 5em;
+}
+
+.imageContainerWebBeginner2 {
+    position: relative;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.imageForWebBeginner2 {
+    width: 28em;
+    height: 17em;
+    transition: transform 0.4s ease;
+}
+
+.imageContainerWebBeginner2:hover .imageForWebBeginner2 {
+    transform: scale(1.05);
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(32, 33, 33, 0.8);
+    color: #fff;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: opacity 0.5s ease;
+}
+
+.imageContainerWebBeginner2:hover .overlay {
+    opacity: 1;
+}
+
+.keyAreasOfBeginnerWebDev3 {
+    justify-content: center;
+    text-align: center;
+}
+
+.keyDescription2 {
+    margin-left: 2em;
+    padding-top: 2em;
+    width: 88%;
+}
+
+.feedbackContainer {
+    text-align: center;
+    margin-top: 2em;
+    margin-bottom: 4em;
+}
+
+.feedbackButtons {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+}
+
+.feedbackButtons button {
+    margin: 0;
+    width: 16.5em;
+    padding: 1em 2em;
+    font-size: 1.2em;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    outline: none;
+}
+
+.feedbackButtons .thumbsUp {
+    background-color: #007bff;
+    background-image: linear-gradient(145deg, #007bff, #007bff);
+}
+
+.feedbackButtons .thumbsDown {
+    background-color: #f44336;
+    background-image: linear-gradient(145deg, #f44336, #e53935);
+}
+
+.feedbackButtons button:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    transform: scale(1.02);
+}
+
+.feedbackButtons button:active {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }

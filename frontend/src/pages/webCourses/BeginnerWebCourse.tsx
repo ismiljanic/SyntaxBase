@@ -30,14 +30,16 @@ export function BeginnerWebCourse() {
     const handleButtonClick = async () => {
         const userId = sessionStorage.getItem('userId');
         console.log(userId);
+
         if (userId) {
             try {
                 await axios.post("http://localhost:8080/api/user-courses/startCourse", {
-                    userId: parseInt(userId, 10),
+                    userId: parseInt(userId, 10), 
                     courseId: 1
                 }, {
                     headers: { 'Authorization': `Bearer ${userToken}` }
                 });
+
                 navigate(`/beginnerWebCourse/${userId}`);
             } catch (error) {
                 if (axios.isAxiosError(error)) {
@@ -56,6 +58,7 @@ export function BeginnerWebCourse() {
             navigate('/login', { state: { from: `/beginnerWebCourse/${userId}` } });
         }
     };
+
 
 
     return (

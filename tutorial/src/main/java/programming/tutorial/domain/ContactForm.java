@@ -1,6 +1,13 @@
 package programming.tutorial.domain;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "contactForm")
 public class ContactForm {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private String name;
     private String surname;
     private String phone;

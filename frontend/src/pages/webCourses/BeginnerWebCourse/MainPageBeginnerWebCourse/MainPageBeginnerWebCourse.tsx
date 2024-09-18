@@ -9,7 +9,7 @@ import '../../../../styles/webCourses/MainPageBeginnerWebCourse/MainPageBeginner
 
 export function MainPageBeginnerWebCourse() {
     const navigate = useNavigate();
-    const courseId = "beginner-web-course";
+    const courseId = 1;
 
     const courseOutline = [
         { title: "Introduction to Web Development", description: "Learn the basics of the web and how websites work." },
@@ -30,7 +30,7 @@ export function MainPageBeginnerWebCourse() {
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={() => navigate(`/course/${courseId}/lesson1`)}
+                            onClick={() => navigate(`/course/${courseId}/lesson/1`)}
                             className="divni1"
                         >
                             Get Started

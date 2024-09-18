@@ -45,9 +45,35 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
         fetchCourses();
     }, [userId]);
 
-    if (loading) return <p style={{backgroundColor: 'rgb(247, 250, 251)'}}>Loading courses...</p>;
-    if (error) return <p style={{backgroundColor: 'rgb(247, 250, 251)'}}>Error fetching courses: {error.message}</p>;
-    if (courses.length === 0) return <div style={{backgroundColor: 'rgb(247, 250, 251)', paddingLeft: '41em', fontSize: '1.5em', paddingBottom: '10em', paddingTop: '4em'}}>No courses available.</div>;
+    const handleCourseClick = async (courseId: number) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/progress/current-lesson`, {
+                params: {
+                    userId,
+                    courseId
+                }
+            });
+
+            const lesson = response.data;
+            console.log(lesson);
+
+            if (lesson && lesson.id) {
+                navigate(`/course/${courseId}/lesson/${lesson.id}`);
+            } else {
+                navigate(`/course/${courseId}/lesson/1`);
+            }
+        } catch (err) {
+            console.error('Error fetching user progress:', err);
+            navigate(`/course/${courseId}/lesson/1`);
+        }
+    };
+
+
+
+
+    if (loading) return <p style={{ backgroundColor: 'rgb(247, 250, 251)' }}>Loading courses...</p>;
+    if (error) return <p style={{ backgroundColor: 'rgb(247, 250, 251)' }}>Error fetching courses: {error.message}</p>;
+    if (courses.length === 0) return <div style={{ backgroundColor: 'rgb(247, 250, 251)', paddingLeft: '41em', fontSize: '1.5em', paddingBottom: '10em', paddingTop: '4em' }}>No courses available.</div>;
 
     return (
         <div className="bigDaddyContainer" style={{ paddingTop: '4em' }}>
@@ -62,16 +88,16 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
             </div>
             <div className="pictureContainer2">
                 {courses.map(course => (
-                    <a
+                    <div
                         key={course.courseId}
-                        href={`/course/${course.courseId}`}
                         className="imageWithDescription2"
+                        onClick={() => handleCourseClick(course.courseId)}
                     >
                         <img src={web4} alt={course.courseName} className="courseImage2" />
                         <div className="imageDescription2">
                             {course.description || 'No description available.'}
                         </div>
-                    </a>
+                    </div>
                 ))}
             </div>
         </div>

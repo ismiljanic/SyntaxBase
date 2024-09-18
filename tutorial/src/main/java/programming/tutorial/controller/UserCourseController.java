@@ -4,8 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import programming.tutorial.dao.UserCourseRepository;
+import programming.tutorial.dao.*;
 import programming.tutorial.domain.UserCourse;
+import programming.tutorial.domain.UserProgress;
 import programming.tutorial.dto.CourseDTO;
 import programming.tutorial.dto.UserCourseDTO;
 import programming.tutorial.services.UserCourseService;
@@ -20,14 +21,33 @@ public class UserCourseController {
 
     @Autowired
     private UserCourseService userCourseService;
-
     @Autowired
     private UserCourseRepository userCourseRepository;
+    @Autowired
+    private UserProgressRepository userProgressRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private CourseRepository courseRepository;
+    @Autowired
+    private LessonRepository lessonRepository;
 
     @PostMapping("/startCourse")
     public ResponseEntity<String> enrollUserInCourse(@RequestBody UserCourseDTO userCourseDTO) {
         try {
             userCourseService.enrollUserInCourse(userCourseDTO);
+
+            Integer userId = userCourseDTO.getUserId();
+            Integer courseId = userCourseDTO.getCourseId();
+
+            if (!userProgressRepository.findByUserIdAndCourseId(userId, courseId).isPresent()) {
+                UserProgress newUserProgress = new UserProgress();
+                newUserProgress.setUser(userRepository.findById(userId).orElse(null));
+                newUserProgress.setCourse(courseRepository.findById(courseId).orElse(null));
+                newUserProgress.setCurrentLesson(lessonRepository.findById(1).orElse(null)); // Assuming starting with lesson 1
+                userProgressRepository.save(newUserProgress);
+            }
+
             return ResponseEntity.ok().build();
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("You are already enrolled in this course.");
@@ -35,6 +55,7 @@ public class UserCourseController {
             return ResponseEntity.badRequest().body("Invalid input.");
         }
     }
+
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<CourseDTO>> getCoursesByUserId(@PathVariable Integer userId) {

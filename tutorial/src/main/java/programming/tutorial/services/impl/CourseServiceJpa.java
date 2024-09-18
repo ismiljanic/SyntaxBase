@@ -31,7 +31,7 @@ public class CourseServiceJpa implements CourseService {
     public Course saveCourse(CourseDTO courseDTO) {
         Course course = new Course();
         course.setId(courseDTO.getCourseId());
-        course.setName(courseDTO.getCourseName());
+        course.setCourseName(courseDTO.getCourseName());
         course.setLength(courseDTO.getCourseLength());
         course.setDescription(courseDTO.getDescription());
         course.setCategory(courseDTO.getCategory());
@@ -48,10 +48,10 @@ public class CourseServiceJpa implements CourseService {
         List<Course> courses = courseRepository.findAll();
         System.out.println("Retrieved courses from database:");
         for (Course course : courses) {
-            System.out.println("Course ID: " + course.getId() + ", Name: " + course.getName());
+            System.out.println("Course ID: " + course.getId() + ", Name: " + course.getCourseName());
         }
         return courses.stream()
-                .map(course -> new CourseDTO(course.getId(), course.getName(), course.getLength(), course.getDescription(), course.getCategory()))
+                .map(course -> new CourseDTO(course.getId(), course.getCourseName(), course.getLength(), course.getDescription(), course.getCategory()))
                 .collect(Collectors.toList());
     }
 }

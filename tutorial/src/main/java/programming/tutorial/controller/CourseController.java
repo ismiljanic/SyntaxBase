@@ -34,7 +34,7 @@ public class CourseController {
     @PostMapping
     public ResponseEntity<Course> createCourse(@RequestBody CourseDTO courseDTO) {
         Course course = courseService.saveCourse(courseDTO);
-        System.out.println("Created course: " + course.getId() + ", Name: " + course.getName());
+        System.out.println("Created course: " + course.getId() + ", Name: " + course.getCourseName());
         return ResponseEntity.status(HttpStatus.CREATED).body(course);
     }
 
@@ -42,7 +42,7 @@ public class CourseController {
     public ResponseEntity<Course> updateCourse(@PathVariable Integer id, @RequestBody CourseDTO courseDTO) {
         CourseDTO updatedCourseDTO = new CourseDTO(id, courseDTO.getCourseName(), courseDTO.getCourseLength(), courseDTO.getDescription(), courseDTO.getCategory());
         Course course = courseService.saveCourse(updatedCourseDTO);
-        System.out.println("Updated course: " + course.getId() + ", Name: " + course.getName());
+        System.out.println("Updated course: " + course.getId() + ", Name: " + course.getCourseName());
         return ResponseEntity.ok(course);
     }
 

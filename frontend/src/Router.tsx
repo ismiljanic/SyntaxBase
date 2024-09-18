@@ -72,8 +72,8 @@ export function Router() {
           <Route path="/accountInformation/:userId" element={<AccountInformation />} />
           <Route path="/help" element={<Help />} />
           <Route path="/about" element={<About />} />
-          <Route path="/course/:courseid" element={<MainPageBeginnerWebCourse />} />
-          <Route path="/course/:courseId/lesson1" element={<Lesson1 />} />
+          <Route path="/beginnerWebCourse/:userId" element={<MainPageBeginnerWebCourse />} />
+          <Route path="/course/:courseId/lesson/1" element={<Lesson1 />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

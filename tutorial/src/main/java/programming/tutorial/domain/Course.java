@@ -1,8 +1,7 @@
 package programming.tutorial.domain;
 
 import jakarta.persistence.*;
-
-import java.util.Objects;
+import java.util.List;
 
 @Entity
 @Table(name = "courses")
@@ -15,6 +14,8 @@ public class Course {
     private int length;
     private String description;
     private String category;
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Lesson> lessons;
 
     public Course() {
     }
@@ -34,12 +35,12 @@ public class Course {
         this.id = id;
     }
 
-    public String getName() {
+    public String getCourseName() {
         return courseName;
     }
 
-    public void setName(String name) {
-        this.courseName = name;
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
     }
 
     public int getLength() {
@@ -66,31 +67,23 @@ public class Course {
         this.category = category;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Course course = (Course) o;
-        return length == course.length &&
-                Objects.equals(id, course.id) &&
-                Objects.equals(courseName, course.courseName) &&
-                Objects.equals(description, course.description) &&
-                Objects.equals(category, course.category);
+    public List<Lesson> getLessons() {
+        return lessons;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, courseName, length, description, category);
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
     }
 
     @Override
     public String toString() {
         return "Course{" +
                 "id=" + id +
-                ", name='" + courseName + '\'' +
+                ", courseName='" + courseName + '\'' +
                 ", length=" + length +
                 ", description='" + description + '\'' +
                 ", category='" + category + '\'' +
+                ", lessons=" + lessons.size() +
                 '}';
     }
 }
