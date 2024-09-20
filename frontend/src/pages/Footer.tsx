@@ -1,9 +1,9 @@
 import React from 'react';
-import '../styles/Footer.css'; // Import styles specific to the footer
+import '../styles/Footer.css';
 import picture from '../images/logoSyntaxBase.png';
 
 interface FooterProps {
-  bgColor?: string; // bgColor prop is optional
+  bgColor?: string;
 }
 
 export function Footer({ bgColor = '#333' }: FooterProps) {

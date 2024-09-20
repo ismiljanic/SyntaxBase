@@ -1,5 +1,6 @@
 .container {
     font-weight: bold;
+    background-color: rgb(247, 250, 251);
 }
 
 .webCourseDiv,
@@ -12,6 +13,7 @@
     padding-top: 1em;
     margin-left: 1.6em;
     text-align: left;
+    background-color: rgb(247, 250, 251);
     font-weight: bold;
 }
 
@@ -577,7 +579,6 @@
 
 .moreCoursesDiv:hover::after {
     opacity: 0;
-    transform: translateX(1em); 
 }
 
 .moreCoursesDiv:active,

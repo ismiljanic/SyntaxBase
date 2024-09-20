@@ -1,16 +1,16 @@
 .footer {
     background-color: rgb(227, 238, 246);
-    color: #343a40; /* Dark text color */
-    padding: 1em 2em; /* Padding around the content */
-    display: flex; /* Flexbox for horizontal layout */
-    align-items: center; /* Center items vertically */
-    justify-content: space-between; /* Space out items evenly */
+    color: #343a40;
+    padding: 1em 2em; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
     height: 7.5em;
 }
 
 .footer-logo-link {
     display: flex;
-    align-items: center; /* Center logo vertically */
+    align-items: center; 
     margin-left: 3.7em;
 }
 
@@ -21,23 +21,23 @@
 }
 
 .footer-text {
-    flex-grow: 1; /* Allow text to take available space */
-    text-align: center; /* Center text horizontally */
-    margin-left: 5em;
+    flex-grow: 1;
+    text-align: center; 
+    margin-left: 14em;
 }
 
 .footer-links {
     display: flex;
-    gap: 1.5em; /* Space between links */
+    gap: 1.5em; 
     margin-right: 5.9em;
 }
 
 .footer-links a {
-    color: #007bff; /* Primary link color */
-    text-decoration: none; /* Remove underline from links */
-    font-size: 0.9em; /* Adjust font size */
+    color: #007bff; 
+    text-decoration: none; 
+    font-size: 0.9em; 
 }
 
 .footer-links a:hover {
-    text-decoration: underline; /* Underline on hover */
+    text-decoration: underline; 
 }

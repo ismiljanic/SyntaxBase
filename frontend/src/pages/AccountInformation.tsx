@@ -50,7 +50,7 @@ export function AccountInformation() {
     }
 
     return (
-        <div className='container'>
+        <div className='containerBig'>
             <Header bgColor='#f5f5f5'></Header>
             <div className="account-information">
                 <h1 className="account-info-title">Account Information</h1>

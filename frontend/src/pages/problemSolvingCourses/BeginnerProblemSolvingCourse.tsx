@@ -12,13 +12,13 @@ export function BeginnerProblemSolvingCourse() {
         <div className="mainp-container" style={{ backgroundColor: 'rgb(247, 250, 251)' }}>
             <Header bgColor='rgb(247, 250, 251)' />
             <div>
-                <div className="container">
+                <div className="container" style={{ backgroundColor: 'rgb(247, 250, 251)' }}>
                     <div className="webCourseDiv">
                         Beginner Problem Solving Course
                     </div>
-                    <div className="webCoursesDiv2" style={{ fontSize: '2.5em', paddingBottom: '2em', fontWeight: 'bold', marginLeft: '3em' }}>
-                        Create Simple Frontend Application!
-                    </div>
+                </div>
+                <div className="webCoursesDiv2" style={{ fontSize: '2.5em', paddingBottom: '2em', fontWeight: 'bold', marginLeft: '3em' }}>
+                    Create Simple Frontend Application!
                 </div>
                 <div className="aboutCourseDiv2">
                     <div className="introductionDiv">Introduction</div>

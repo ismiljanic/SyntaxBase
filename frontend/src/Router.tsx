@@ -33,6 +33,12 @@ import { SimpleFrontendApplication } from "./pages/webCourses/BeginnerWebCourse/
 import { AccountInformation } from "./pages/AccountInformation";
 import { MainPageBeginnerWebCourse } from "./pages/webCourses/BeginnerWebCourse/MainPageBeginnerWebCourse/MainPageBeginnerWebCourse";
 import { Lesson1 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson1";
+import { Lesson2 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson2";
+import { Lesson3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson3";
+import { ShowCase1 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase1";
+import { ShowCase2 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase2";
+import { ShowCase3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase3";
+import { ShowCase4 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase4";
 
 
 export function Router() {
@@ -74,6 +80,12 @@ export function Router() {
           <Route path="/about" element={<About />} />
           <Route path="/beginnerWebCourse/:userId" element={<MainPageBeginnerWebCourse />} />
           <Route path="/course/:courseId/lesson/1" element={<Lesson1 />} />
+          <Route path="/course/:courseId/lesson/2" element={<Lesson2 />} />
+          <Route path="/course/:courseId/lesson/3" element={<Lesson3 />} />
+          <Route path="/showCase1" element={<ShowCase1 />} />
+          <Route path="/showCase2" element={<ShowCase2 />} />
+          <Route path="/showCase3" element={<ShowCase3 />} />
+          <Route path="/showCase4" element={<ShowCase4 />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
