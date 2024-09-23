@@ -33,7 +33,7 @@ export function Login() {
             <LoginComponent />
             <div className="login-footer">
                 <Link to="/forgot-password" className="footer-link">Forgot Password?</Link>
-                <div className="footer-text">Don't have an account? <Link to="/register" className="footer-link">Sign Up</Link></div>
+                <div className="footer-text" style={{marginLeft: '3em'}}>Don't have an account? <Link to="/register" className="footer-link">Sign Up</Link></div>
                 <div className="footer-text" style={{marginTop: '-1em', marginLeft: '3em'}}>Go to <Link to="/" className="footer-link">Homepage</Link></div>
             </div>
         </div>

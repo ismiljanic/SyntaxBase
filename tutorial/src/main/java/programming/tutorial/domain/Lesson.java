@@ -19,6 +19,12 @@ public class Lesson {
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LessonFeedback> feedbackList = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+    @Column(name = "completed")
+    private boolean completed;
+
     public Lesson() {
     }
 
@@ -59,6 +65,22 @@ public class Lesson {
         this.course = course;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
     @Override
     public String toString() {
         return "Lesson{" +
@@ -66,6 +88,8 @@ public class Lesson {
                 ", lessonName='" + lessonName + '\'' +
                 ", course=" + course +
                 ", feedbackList=" + feedbackList +
+                ", user=" + user +
+                ", completed=" + completed +
                 '}';
     }
 }

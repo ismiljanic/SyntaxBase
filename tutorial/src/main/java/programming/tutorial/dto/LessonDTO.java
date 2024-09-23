@@ -5,14 +5,18 @@ public class LessonDTO {
     private String lessonName;
 
     private Integer courseId;
+    private Integer userId;
+    private String completed;
 
     public LessonDTO() {
     }
 
-    public LessonDTO(Integer id, String lessonName, Integer courseId) {
+    public LessonDTO(Integer id, String lessonName, Integer courseId, Integer userId, String completed) {
         this.id = id;
         this.lessonName = lessonName;
         this.courseId = courseId;
+        this.userId = userId;
+        this.completed = completed;
     }
 
     public Integer getId() {
@@ -37,5 +41,20 @@ public class LessonDTO {
 
     public void setCourseId(Integer courseId) {
         this.courseId = courseId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public String getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(String completed) {
+        this.completed = completed;
     }
 }

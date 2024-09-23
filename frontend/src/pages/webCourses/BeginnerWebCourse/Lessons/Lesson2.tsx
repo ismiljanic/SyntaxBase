@@ -90,12 +90,32 @@ export function Lesson2() {
             });
 
             if (response.ok) {
+                const numericUserId = Number(userId);
+                await markLessonAsCompleted(lessonId, numericUserId);
                 setFeedbackSubmitted(true);
             } else {
                 console.error('Failed to send feedback');
             }
         } catch (error) {
             console.error('Error sending feedback:', error);
+        }
+    };
+
+    const markLessonAsCompleted = async (lessonId: number, userId: number) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/feedback/complete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ lessonId, userId })
+            });
+
+            if (!response.ok) {
+                console.error('Failed to mark lesson as completed');
+            }
+        } catch (error) {
+            console.error('Error marking lesson as completed:', error);
         }
     };
 
@@ -237,22 +257,49 @@ export function Lesson2() {
                     In this section we are going to showcase four simple examples of area we covered. These examples
                 </p>
                 <div className='beginnerPictureContainer'>
-                    <a href='/showCase1' className="imageWithDescription">
-                        <img src={firstExample} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
+                    <div
+                        className="imageWithDescription"
+                        onClick={() => window.open('/showCase1/lesson2', '_blank')}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <img
+                            src={firstExample}
+                            alt=""
+                            className="courseImage"
+                            style={{ width: '50em', height: '30em' }}
+                        />
                         <div className='imageDescription'>Try it yourself</div>
-                    </a>
-                    <a href='/showCase2' className="imageWithDescription">
+                    </div>
+
+                    <div
+                        className="imageWithDescription"
+                        onClick={() => window.open('/showCase2/lesson2', '_blank')}
+                        style={{ cursor: 'pointer' }}
+                        aria-label="Open showcase 2 lesson 2 in a new tab"
+                    >
                         <img src={secondExample} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
                         <div className="imageDescription">Try it yourself</div>
-                    </a>
-                    <a href='/showCase3' className="imageWithDescription">
+                    </div>
+
+                    <div
+                        className="imageWithDescription"
+                        onClick={() => window.open('/showCase3/lesson2', '_blank')}
+                        style={{ cursor: 'pointer' }}
+                        aria-label="Open showcase 3 lesson 2 in a new tab"
+                    >
                         <img src={thirdExample} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
                         <div className="imageDescription">Try it yourself</div>
-                    </a>
-                    <a href='/showCase4' className="imageWithDescription">
+                    </div>
+
+                    <div
+                        className="imageWithDescription"
+                        onClick={() => window.open('/showCase4/lesson2', '_blank')}
+                        style={{ cursor: 'pointer' }}
+                        aria-label="Open showcase 4 lesson 2 in a new tab"
+                    >
                         <img src={fourthExample} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
                         <div className="imageDescription">Try it yourself</div>
-                    </a>
+                    </div>
                 </div>
                 <div className="aboutCourseDiv2" style={{ paddingBottom: '7em' }}>
                     <div className="introductionDiv">Summary</div>
@@ -350,11 +397,11 @@ export function Lesson2() {
             </div>
             {feedbackSubmitted && (
                 <>
-                    <div style={{display: 'flex'}}>
+                    <div style={{ display: 'flex' }}>
                         <div className='moreCoursesDiv' onClick={handleNextLesson}>
                             Next Lesson
                         </div>
-                        <div className='goToPreviousLessonDiv' onClick={handlePreviousLesson} style={{marginLeft: '-77.5em'}}>
+                        <div className='goToPreviousLessonDiv' onClick={handlePreviousLesson} style={{ marginLeft: '-77.5em' }}>
                             Previous Lesson
                         </div>
                     </div>

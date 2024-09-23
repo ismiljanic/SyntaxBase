@@ -14,13 +14,13 @@ import thirdExample from '../../../../pages/webCourses/BeginnerWebCourse/images/
 import fourthExample from '../../../../pages/webCourses/BeginnerWebCourse/images/fourthExample.png';
 
 
-export function Lesson3() {
+export function Lesson4() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(true);
     const [feedbackSubmitted, setFeedbackSubmitted] = useState<boolean>(false);
     const location = useLocation();
 
-    const lessonId = 3;
+    const lessonId = 4;
     const { courseId } = useParams();
     const userId = sessionStorage.getItem('userId');
 
@@ -128,7 +128,7 @@ export function Lesson3() {
     const updateProgress = async () => {
         const userId = sessionStorage.getItem('userId');
         const courseId = 1;
-        const lessonId = 3;
+        const lessonId = 4;
 
         if (!userId) {
             console.error('User ID is not found in session storage');
@@ -151,12 +151,12 @@ export function Lesson3() {
 
     const handleNextLesson = async () => {
         await updateProgress();
-        navigate(`/course/${courseId}/lesson/4`);
+        navigate(`/course/${courseId}/lesson/5`);
     };
 
     const handlePreviousLesson = async () => {
         await updateProgress();
-        navigate(`/course/${courseId}/lesson/2`);
+        navigate(`/course/${courseId}/lesson/3`);
     };
 
     if (loading) return <p>Loading...</p>;
@@ -165,8 +165,8 @@ export function Lesson3() {
         <div className='mainContainer'>
             <Header bgColor="rgb(247, 250, 251)" />
             <div className='lessonIntroduction'>
-                <h1>Introduction to CSS</h1>
-                <p>Welcome to <b>Lesson 3</b> of the <b>Beginner Web Development course</b>.</p>
+                <h1>CSS</h1>
+                <p>Welcome to <b>Lesson 4</b> of the <b>Beginner Web Development course</b>.</p>
             </div>
             <div className='aboutBeginnerWeb'>
                 <div className="aboutCourseDiv2" style={{ paddingBottom: '7em' }}>

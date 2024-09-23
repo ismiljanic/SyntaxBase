@@ -12,7 +12,8 @@ export function HomepageHeader({ bgColor = '#333' }: HeaderProps) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-    const { id } = useParams<{ id: string }>(); 
+    const [userId, setUserId] = useState<number | null>(null);
+    const { id } = useParams<{ id: string }>();
     const headerRef = useRef<HTMLElement>(null);
     const [headerVisible, setHeaderVisible] = useState(false);
 
@@ -47,9 +48,16 @@ export function HomepageHeader({ bgColor = '#333' }: HeaderProps) {
 
         return () => {
             if (headerRef.current) {
-                observer.unobserve(headerRef.current); 
+                observer.unobserve(headerRef.current);
             }
         };
+    }, []);
+
+    useEffect(() => {
+        const storedUserId = sessionStorage.getItem('userId');
+        if (storedUserId) {
+            setUserId(parseInt(storedUserId, 10));
+        }
     }, []);
 
     const handleMyCoursesNavigation = () => {
@@ -59,7 +67,6 @@ export function HomepageHeader({ bgColor = '#333' }: HeaderProps) {
             console.error("User ID is missing");
         }
     };
-
     return (
         <header
             ref={headerRef}
@@ -69,7 +76,7 @@ export function HomepageHeader({ bgColor = '#333' }: HeaderProps) {
             <a href="/">
                 <img src={picture} alt="Logo SyntaxBase" />
             </a>
-            <div className='divni2' style={{paddingLeft: '27em', paddingRight: '35em'}}>
+            <div className='divni2' style={{ paddingLeft: '27em', paddingRight: '35em' }}>
                 <div className='divni3' onClick={handleMyCoursesNavigation}>My Courses</div>
                 <div className="dropdown">
                     <div className='divni3' id='tutorials'>
@@ -86,7 +93,8 @@ export function HomepageHeader({ bgColor = '#333' }: HeaderProps) {
 
                 <div className='divni3' onClick={handleScrollCourses}>Courses</div>
                 <a href='/help' className='divni3'>Help</a>
-                <a href='/about' className='divni3'>About</a>
+
+                <a href={`/community/${userId}`} className='divni3' style={{ marginRight: '-1.5em' }}>Community</a>
             </div>
             <SettingsMenu />
         </header>

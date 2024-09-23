@@ -16,12 +16,19 @@ interface FetchError {
     message: string;
 }
 
+interface Progress {
+    totalLessons: number;
+    completedLessons: number;
+    progress: number;
+}
+
 interface CoursesListProps {
     userId: number;
 }
 
 const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
     const [courses, setCourses] = useState<Course[]>([]);
+    const [progressData, setProgressData] = useState<{ [key: number]: Progress }>({});
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<FetchError | null>(null);
     const navigate = useNavigate();
@@ -29,18 +36,41 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
     const [hoveredRating, setHoveredRating] = useState(0);
 
     useEffect(() => {
-        const fetchCoursesAndRatings = async () => {
+        const fetchCoursesAndProgress = async () => {
             try {
                 const coursesResponse = await axios.get<Course[]>(`http://localhost:8080/api/user-courses/user/${userId}`);
-                const ratingsResponse = await axios.get<{ courseId: number; rating: number }[]>(`http://localhost:8080/api/ratings/user/${userId}`);
-
                 setCourses(coursesResponse.data);
+
+                const progressPromises = coursesResponse.data.map(course =>
+                    axios.get<Progress>(`http://localhost:8080/api/progress/progressBar`, {
+                        params: { userId, courseId: course.courseId }
+                    })
+                );
+
+                const progressResponses = await Promise.all(progressPromises);
+                const progressDataMap = progressResponses.reduce((acc, response, index) => {
+                    const courseId = coursesResponse.data[index].courseId;
+                    acc[courseId] = {
+                        totalLessons: response.data.totalLessons,
+                        completedLessons: response.data.completedLessons,
+                        progress: response.data.progress,
+                    };
+                    return acc;
+                }, {} as { [key: number]: Progress });
+
+                setTimeout(() => {
+                    setProgressData(progressDataMap);
+                }, 50);
+
+                const ratingsResponse = await axios.get<{ courseId: number; rating: number }[]>(`http://localhost:8080/api/ratings/user/${userId}`);
                 const initialRatings = ratingsResponse.data.reduce((acc, rating) => {
                     acc[rating.courseId] = rating.rating;
                     return acc;
                 }, {} as { [key: number]: number });
 
-                setRatings(initialRatings);
+                setTimeout(() => {
+                    setRatings(initialRatings);
+                }, 50);
             } catch (err) {
                 setError(err instanceof Error ? { message: err.message } : { message: 'An unknown error occurred' });
             } finally {
@@ -48,8 +78,9 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
             }
         };
 
-        fetchCoursesAndRatings();
+        fetchCoursesAndProgress();
     }, [userId]);
+
 
     const handleCourseClick = async (courseId: number) => {
         try {
@@ -108,6 +139,20 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
                         <div className="imageDescription2">{course.description || 'No description available.'}</div>
                     </div>
                 ))}
+                {courses.map(course => (
+                    <div key={`progress-${course.courseId}`} className="progress-section2">
+                        <h2>Your Progress</h2>
+                        <div className="progress-bar2">
+                            <div
+                                className="progress-bar-inner2"
+                                style={{ width: `${progressData[course.courseId]?.progress || 0}%` }}
+                            ></div>
+                        </div>
+                        <p>
+                            You have completed {progressData[course.courseId]?.completedLessons || 0} / {progressData[course.courseId]?.totalLessons || 0} lessons
+                        </p>
+                    </div>
+                ))}
                 <div className="ratingContainer">
                     {courses.map(course => (
                         <div key={`rating-${course.courseId}`} className="rateCourseDiv">
@@ -120,6 +165,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
                                     onClick={() => handleRating(index, course.courseId)}
                                     onMouseEnter={() => handleMouseEnter(index)}
                                     onMouseLeave={handleMouseLeave}
+                                    style={{ transitionDelay: `${index * 0.1}s` }}
                                 >
                                     ★
                                 </span>
@@ -127,6 +173,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
                         </div>
                     ))}
                 </div>
+
             </div>
         </div>
     );

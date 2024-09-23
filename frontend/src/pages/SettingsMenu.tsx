@@ -11,8 +11,9 @@ export function SettingsMenu() {
     const handleLogout = async () => {
         try {
             await axios.get("http://localhost:8080/api/logout");
-            sessionStorage.removeItem('userId');
             sessionStorage.removeItem('userToken');
+            sessionStorage.removeItem('userId');
+            sessionStorage.removeItem('redirectAfterLogin');
             navigate('/login');
         } catch (error) {
             console.error("Logout failed", error);
@@ -27,7 +28,7 @@ export function SettingsMenu() {
             console.error('User ID not found');
         }
     };
-    
+
 
     const handleContact = () => {
         const userId = sessionStorage.getItem('userId');

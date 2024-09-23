@@ -35,11 +35,16 @@ import { MainPageBeginnerWebCourse } from "./pages/webCourses/BeginnerWebCourse/
 import { Lesson1 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson1";
 import { Lesson2 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson2";
 import { Lesson3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson3";
+import { Lesson4 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson4";
 import { ShowCase1 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase1";
 import { ShowCase2 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase2";
 import { ShowCase3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase3";
 import { ShowCase4 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase4";
-
+import { ShowCase1Lesson3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase1Lesson3";
+import { ShowCase2Lesson3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase2Lesson3";
+import { ShowCase3Lesson3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase3Lesson3";
+import { ShowCase4Lesson3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase4Lesson3";
+import { Community } from "./pages/Community";
 
 export function Router() {
   return (
@@ -82,10 +87,16 @@ export function Router() {
           <Route path="/course/:courseId/lesson/1" element={<Lesson1 />} />
           <Route path="/course/:courseId/lesson/2" element={<Lesson2 />} />
           <Route path="/course/:courseId/lesson/3" element={<Lesson3 />} />
-          <Route path="/showCase1" element={<ShowCase1 />} />
-          <Route path="/showCase2" element={<ShowCase2 />} />
-          <Route path="/showCase3" element={<ShowCase3 />} />
-          <Route path="/showCase4" element={<ShowCase4 />} />
+          <Route path="/course/:courseId/lesson/4" element={<Lesson4 />} />
+          <Route path="/showCase1/lesson2" element={<ShowCase1 />} />
+          <Route path="/showCase2/lesson2" element={<ShowCase2 />} />
+          <Route path="/showCase3/lesson2" element={<ShowCase3 />} />
+          <Route path="/showCase4/lesson2" element={<ShowCase4 />} />
+          <Route path="/showCase1Lesson3/lesson3" element={<ShowCase1Lesson3 />} />
+          <Route path="/showCase2Lesson3/lesson3" element={<ShowCase2Lesson3 />} />
+          <Route path="/showCase3Lesson3/lesson3" element={<ShowCase3Lesson3 />} />
+          <Route path="/showCase4Lesson3/lesson3" element={<ShowCase4Lesson3 />} />
+          <Route path="/community/:userId" element={<Community />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

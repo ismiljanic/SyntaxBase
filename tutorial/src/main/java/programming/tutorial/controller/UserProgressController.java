@@ -10,6 +10,8 @@ import programming.tutorial.domain.Lesson;
 import programming.tutorial.domain.UserProgress;
 import programming.tutorial.dto.LessonDTO;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -70,4 +72,23 @@ public class UserProgressController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/progressBar")
+    public ResponseEntity<?> getCurrentProgressBar(
+            @RequestParam Integer userId,
+            @RequestParam Integer courseId
+    ) {
+        Long totalLessons = lessonRepository.countLessonsForCourse(courseId, userId);
+        Long completedLessons = lessonRepository.countCompletedLessonsForUserAndCourse(courseId, userId);
+
+        double progress = totalLessons > 0 ? (completedLessons / (double) totalLessons) * 100 : 0;
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalLessons", totalLessons);
+        response.put("completedLessons", completedLessons);
+        response.put("progress", progress);
+
+        return ResponseEntity.ok(response);
+    }
+
 }

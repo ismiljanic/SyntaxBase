@@ -118,9 +118,12 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
                 <div className='divni3' onClick={handleScrollCourses}>Courses</div>
                 <a href='/about' className='divni3'>About</a>
                 <a href='/help' className='divni3'>Help</a>
-                {isLoggedIn && userId && (
-                    <a href={`/homepage/${userId}`} className='divni3' style={{ marginRight: '5em' }}>Homepage</a>
-                )}
+                {isLoggedIn && userId ? (
+                    <>
+                        <a href={`/homepage/${userId}`} className='divni3'>Homepage</a>
+                        <a href={`/community/${userId}`} className='divni3' style={{ marginRight: '-5em' }}>Community</a>
+                    </>
+                ) : null}
             </div>
             {isLoggedIn && userId ? (
                 <SettingsMenu />

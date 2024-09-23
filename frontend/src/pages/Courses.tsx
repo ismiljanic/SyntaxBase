@@ -42,7 +42,7 @@ export function Courses() {
 
     return (
         <div className="mainp-container">
-            <Header bgColor="#f5f5f5"></Header>
+            <Header bgColor="rgb(247, 250, 251)"></Header>
             <div className={`featureDiv2 feature2 ${featureDiv2Visible2 ? 'slide-in' : ''}`}>
                 <header className="featureHeader2">COURSES</header>
                 <div className="offerDiv2" style={{ paddingTop: '3em', marginBottom: '-5em' }}>
@@ -166,8 +166,8 @@ export function Courses() {
                     </a>
                 </div>
             </div>
-            <Footer2 bgColor="#f5f5f5"></Footer2>
-            <Footer bgColor="#f5f5f5"></Footer>
+            <Footer2 bgColor="rgb(247, 250, 251)"></Footer2>
+            <Footer bgColor="rgb(247, 250, 251)"></Footer>
         </div>
     );
 }

@@ -12,6 +12,7 @@ import programming.tutorial.domain.FeedbackRequest;
 import programming.tutorial.domain.Lesson;
 import programming.tutorial.domain.LessonFeedback;
 import programming.tutorial.domain.User;
+import programming.tutorial.dto.LessonCompletionDTO;
 import programming.tutorial.dto.LessonFeedbackRequestDTO;
 
 import java.util.Optional;
@@ -72,7 +73,6 @@ public class FeedbackController {
         System.out.println("User ID: " + feedbackDTO.getUserId());
         System.out.println("Feedback: " + feedbackDTO.getFeedback());
 
-        // Save the feedback
         LessonFeedback lessonFeedback = new LessonFeedback();
         lessonFeedback.setLesson(lessonRepository.findById(feedbackDTO.getLessonId()).orElse(null));
         lessonFeedback.setUser(userRepository.findById(feedbackDTO.getUserId()).orElse(null));
@@ -80,6 +80,21 @@ public class FeedbackController {
         lessonFeedbackRepository.save(lessonFeedback);
 
         return ResponseEntity.ok("Feedback submitted successfully");
+    }
+
+    @PostMapping("/complete")
+    public ResponseEntity<String> markLessonAsCompleted(@RequestBody LessonCompletionDTO completionDTO) {
+        Lesson lesson = lessonRepository.findById(completionDTO.getLessonId()).orElse(null);
+        User user = userRepository.findById(completionDTO.getUserId()).orElse(null);
+
+        if (lesson == null || user == null) {
+            return ResponseEntity.badRequest().body("Lesson or User not found");
+        }
+
+        lesson.setCompleted(true);
+        lessonRepository.save(lesson);
+
+        return ResponseEntity.ok("Lesson marked as completed");
     }
 
     @GetMapping("/status")

@@ -10,7 +10,7 @@ import picture4 from '../images/database.png';
 import picture5 from '../images/gameL.png';
 import picture6 from '../images/probSolv.png';
 import instr from '../images/instr.png';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 export function MainP() {
     const [headerVisible, setHeaderVisible] = useState(false);
@@ -26,6 +26,19 @@ export function MainP() {
     const [offerDiv5Visible, setOfferDiv5Visible] = useState(false);
     const [offerDiv6Visible, setOfferDiv6Visible] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
+    const [userId, setUserId] = useState<string | null>(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        const storedUserId = sessionStorage.getItem('userId');
+        if (storedUserId) {
+            setUserId(storedUserId);
+            setIsLoggedIn(true);
+        } else {
+            setIsLoggedIn(false);
+        }
+    }, []);
 
     useEffect(() => {
         const headerOptions = {
@@ -196,6 +209,15 @@ export function MainP() {
 
     }, [location]);
 
+    const handleProtectedNavigation = (path: string) => {
+        if (!isLoggedIn) {
+            sessionStorage.setItem('redirectAfterLogin', path);
+            navigate('/login');
+        } else {
+            navigate(path);
+        }
+    };
+
     return (
         <div className="mainp-container">
             <Header bgColor='rgb(227, 238, 246)'></Header>
@@ -233,7 +255,7 @@ export function MainP() {
                 <header className={`featureHeader ${featuresVisible ? 'slide-in' : ''}`}>GETTING STARTED</header>
                 <div className={`offerDiv ${featuresVisible ? 'slide-in' : ''}`} >Explore new trends and solve exciting problems.</div>
                 <div className={`features ${featuresVisible ? 'slide-in' : ''}`}>
-                    <a href="/tutorials" style={{ textDecoration: 'none' }} className="feature">
+                    <div style={{ textDecoration: 'none' }} className="feature">
                         <div className="feature-content">
                             <p>INTERACTIVE TUTORIALS</p>
                             <h3 className='feature-head'>Programming exercises and tutorials to build your skills.</h3>
@@ -241,31 +263,31 @@ export function MainP() {
                             <p className="feature-description">Dive into hands-on coding exercises and learn at your own pace with interactive tutorials tailored to your skill level.</p>
                             <a href="/tutorials" className="feature-button">Explore Tutorials</a>
                         </div>
-                    </a>
-                    <a href="/courses" style={{ textDecoration: 'none' }} className="feature">
+                    </div>
+                    <div style={{ textDecoration: 'none' }} className="feature">
                         <div className="feature-content">
                             <p>IMMERSIVE COURSES</p>
                             <h3 className='feature-head'>Our courses are structured to keep you engaged and motivated throughout your learning path.</h3>
                             <p className="feature-description">Explore comprehensive learning journey with our three-tier courses designed to elevate your skills.</p>
-                            <a className="feature-button">Explore courses</a>
+                            <a href="/courses" className="feature-button">Explore courses</a>
                         </div>
-                    </a>
-                    <a href="/guidance&help" style={{ textDecoration: 'none' }} className="feature">
+                    </div>
+                    <div style={{ textDecoration: 'none' }} className="feature">
                         <div className="feature-content">
                             <p>GUIDANCE & HELP</p>
                             <h3 className='feature-head'>Get insights and help from experienced developers.</h3>
                             <p className="feature-description">Receive personalized guidance and expert advice to overcome coding challenges and advance your learning journey.</p>
                             <a href="/help" className="feature-button">Get Help</a>
                         </div>
-                    </a>
-                    <a href="/support" style={{ textDecoration: 'none' }} className="feature">
+                    </div>
+                    <div style={{ textDecoration: 'none' }} className="feature">
                         <div className="feature-content">
                             <p>COMMUNITY SUPPORT</p>
                             <h3 className='feature-head'>Join a vibrant community of learners and professionals.</h3>
                             <p className="feature-description">Engage with fellow learners and professionals, participate in discussions, and collaborate on projects to enhance your skills.</p>
-                            <a href="/community" className="feature-button">Join Community</a>
+                            <a onClick={() => handleProtectedNavigation(`/community/${userId}`)} className="feature-button">Join Community</a>
                         </div>
-                    </a>
+                    </div>
                 </div>
             </div>
 

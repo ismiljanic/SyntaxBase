@@ -126,8 +126,8 @@ a {
 
 .divni2 {
     display: flex;
-    padding-left: 19em;
-    padding-right: 27em;
+    padding-left: 16em;
+    padding-right: 30em;
 }
 
 .header.logged-out .divni2 {

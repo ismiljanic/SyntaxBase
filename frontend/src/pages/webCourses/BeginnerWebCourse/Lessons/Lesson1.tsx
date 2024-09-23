@@ -72,6 +72,8 @@ export function Lesson1() {
             });
 
             if (response.ok) {
+                const numericUserId = Number(userId);
+                await markLessonAsCompleted(lessonId, numericUserId);
                 setFeedbackSubmitted(true);
             } else {
                 console.error('Failed to send feedback');
@@ -80,6 +82,26 @@ export function Lesson1() {
             console.error('Error sending feedback:', error);
         }
     };
+
+    const markLessonAsCompleted = async (lessonId: number, userId: number) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/feedback/complete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ lessonId, userId })
+            });
+
+            if (!response.ok) {
+                console.error('Failed to mark lesson as completed');
+            }
+        } catch (error) {
+            console.error('Error marking lesson as completed:', error);
+        }
+    };
+
+
 
     const handleUnderstand = async () => {
         await sendFeedback('understood');
@@ -91,14 +113,14 @@ export function Lesson1() {
 
     const updateProgress = async () => {
         const userId = sessionStorage.getItem('userId');
-        const courseId = 1; 
+        const courseId = 1;
         const lessonId = 1;
-    
+
         if (!userId) {
             console.error('User ID is not found in session storage');
             return;
         }
-    
+
         try {
             await fetch(`http://localhost:8080/api/progress/update?userId=${userId}&courseId=${courseId}&lessonId=${lessonId}`, {
                 method: 'POST',
@@ -110,7 +132,7 @@ export function Lesson1() {
             console.error('Error updating progress:', error);
         }
     };
-    
+
 
 
     const handleNextLesson = async () => {
