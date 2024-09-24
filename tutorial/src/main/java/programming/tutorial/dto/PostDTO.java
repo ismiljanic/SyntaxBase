@@ -10,6 +10,7 @@ public class PostDTO {
     private String username;
     private Date createdAt;
     private List<PostDTO> replies;
+    private String category;
 
     public PostDTO(Integer id, String content, Integer userId, String username, Date createdAt, List<PostDTO> replies) {
         this.id = id;
@@ -74,5 +75,13 @@ public class PostDTO {
 
     public void setReplies(List<PostDTO> replies) {
         this.replies = replies;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

@@ -1,43 +1,186 @@
-.containerBig {
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box; 
+.accountDiv {
+    background: #fcfafa;
 }
 
-.account-information {
-    margin-top: 0; 
-    width: 50em;
-    padding: 10em; 
-    margin-top: 10em;
-    margin-left: 40.5em;
-    margin-bottom: 10em;
-    background-color: #f9f9f9;
+.account-container {
+    padding: 2em;
+    max-width: 118em;
+    margin: 0 auto;
+}
+
+.account-info-section {
+    background-color: #f8f9fa;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box; 
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .account-info-title {
-    font-size: 48px;
-    margin-bottom: 70px;
-    color: #333;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #343a40;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
 }
 
 .account-info-item {
-    font-size: 22px;
-    padding-top: 2em;
-    color: #555;
+    margin-bottom: 12px;
+    font-size: 1.2rem;
+    color: #495057;
 }
 
-.error-message {
-    color: red;
-    font-size: 18px;
-    text-align: center;
-    margin: 20px 0;
+.account-info-value {
+    margin-left: 8px;
+    color: #007bff;
+    font-weight: bold;
 }
 
-.loading {
-    font-size: 18px;
-    text-align: center;
+.account-info-section:last-child {
+    border-bottom: none;
+}
+
+.deleted-posts-section {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
     margin: 20px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.deleted-posts-title {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #343a40;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.deleted-posts-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.deleted-post-item {
+    background-color: #ffffff;
+    border-radius: 6px;
+    padding: 15px;
+    margin: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.deleted-post-item:hover {
+    transform: translateY(-2px);
+}
+
+.deleted-post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.deleted-post-date {
+    font-weight: bold;
+    color: #6c757d;
+}
+
+.deleted-post-status {
+    color: #dc3545;
+}
+
+.deleted-post-content {
+    margin-top: 8px;
+    color: #495057;
+}
+
+.no-deleted-posts-message {
+    color: #6c757d;
+    font-style: italic;
+    text-align: center;
+}
+
+.user-posts-section {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-posts-title {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #343a40;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.user-posts-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-post-item {
+    background-color: #ffffff;
+    border-radius: 6px;
+    padding: 15px;
+    margin: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.user-post-item:hover {
+    transform: translateY(-2px);
+}
+
+.user-post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-post-date {
+    font-weight: bold;
+    color: #6c757d;
+}
+
+.user-post-content {
+    margin-top: 8px;
+    color: #495057;
+}
+
+.no-posts-message {
+    color: #6c757d;
+    font-style: italic;
+    text-align: center;
+}
+
+.show-more-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.show-more-button:hover {
+    background-color: #0056b3;
+}
+
+.show-more-button:active {
+    transform: scale(0.95);
+}
+
+.show-more-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    color: #666666;
 }

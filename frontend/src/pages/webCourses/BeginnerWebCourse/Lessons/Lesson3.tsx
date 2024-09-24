@@ -210,7 +210,7 @@ export function Lesson3() {
 
                 <h3 className='subsection-title'>Easy CSS examples</h3>
                 <p className='paragraph'>
-                    In this section we are going to showcase four simple examples of area we covered. These examples
+                    In this section we are going to showcase four simple examples of area we covered. These examples will show you what you can do by yourself today. We highly recommend exploring futher with our examples.
                 </p>
                 <div className='beginnerPictureContainer'>
                     <div

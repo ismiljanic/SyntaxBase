@@ -91,6 +91,7 @@
     padding-right: 1.5em;
     font-size: 1.3em;
     opacity: 0;
+    background-color: white;
     visibility: hidden;
     transform: translateY(-10px);
     transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
@@ -139,13 +140,11 @@
     transition: color 0.5s ease, transform 0.5s ease;
 }
 
-/* Hover effect for Logout button */
 .settings-dropdown button:hover {
     color: #007bff;
     transform: translateX(1.1em);
 }
 
-/* Underline effect on hover */
 .settings-dropdown button::before {
     content: '';
     position: absolute;
@@ -158,19 +157,16 @@
     transition: transform 0.3s ease;
 }
 
-/* Underline effect on hover */
 .settings-dropdown button:hover::before {
     transform: scaleX(1);
 }
 
-/* Focus effect for Logout button */
 .settings-dropdown button:focus {
     outline: none;
     color: #007bff;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
 }
 
-/* Active effect for Logout button */
 .settings-dropdown button:active {
     color: whitesmoke;
 }

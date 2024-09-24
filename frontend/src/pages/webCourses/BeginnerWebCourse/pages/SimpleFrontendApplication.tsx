@@ -7,11 +7,9 @@ export function SimpleFrontendApplication() {
     return (
         <div>
             <SimpleFrontendHeader />
-            <div className='simple-container'>
-                <h1>
-                    Simple Frontend Application
-                </h1>
-            </div>
+            <h1>
+                Simple Frontend Application
+            </h1>
             <SimpleFrontendFooter />
         </div>
     );

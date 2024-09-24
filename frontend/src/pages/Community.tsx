@@ -23,24 +23,22 @@ export function Community() {
 
     useEffect(() => {
         const fetchPosts = async () => {
-            const response = await axios.get<Post[]>('http://localhost:8080/api/posts');
+            try {
+                const response = await axios.get<Post[]>('http://localhost:8080/api/posts');
 
-            const structuredPosts: Post[] = response.data.reduce((acc: Post[], post) => {
-                if (post.parentPostId) {
-                    const parentPost = acc.find(p => p.id === post.parentPostId);
-                    if (parentPost) {
-                        parentPost.replies = parentPost.replies || [];
-                        parentPost.replies.push(post);
-                    }
-                } else {
-                    acc.push({ ...post, replies: [] });
-                }
-                return acc;
-            }, []);
+                const structuredPosts: Post[] = response.data.map(post => ({
+                    ...post,
+                    replies: post.replies || []
+                }));
 
-            const sortedPosts = structuredPosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-            setPosts(sortedPosts);
+                const sortedPosts = structuredPosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+                setPosts(sortedPosts);
+            } catch (error) {
+                console.error('Error fetching posts:', error);
+            }
         };
+
         fetchPosts();
     }, []);
 
@@ -70,10 +68,10 @@ export function Community() {
         if (replyContent.trim()) {
             const userId = sessionStorage.getItem('userId');
             try {
-                const response = await axios.post<Post>(`http://localhost:8080/api/posts`, {
+                const response = await axios.post<Post>('http://localhost:8080/api/posts', {
                     content: replyContent,
                     userId: userId,
-                    parentPostId: postId,
+                    parentPost: { id: postId },
                 });
                 setPosts(posts.map(post => {
                     if (post.id === postId) {
@@ -86,6 +84,16 @@ export function Community() {
             }
         }
     };
+
+    const handleDeletePost = async (postId: number) => {
+        try {
+            await axios.delete(`http://localhost:8080/api/posts/${postId}`);
+            setPosts(posts.filter(post => post.id !== postId));
+        } catch (error) {
+            console.error('Error deleting post:', error);
+        }
+    };
+
 
     const toggleExpand = (postId: number) => {
         setPosts(posts.map(post =>
@@ -109,7 +117,7 @@ export function Community() {
                         className="post-input"
                     />
                     {errorMessage && <div className="error-message">{errorMessage}</div>}
-                    <div className="word-count">Word Count: {wordCount}</div>
+                    <div className="word-count">Limit 1024 words, Word Count: {wordCount}</div>
                     <div className='centerThisButton'>
                         <button type="submit" className="post-button">Post</button>
                     </div>
@@ -120,18 +128,33 @@ export function Community() {
                             <div className="post-header">
                                 <span className="post-user">{post.username}</span>
                                 <span className="post-time">{new Date(post.createdAt).toLocaleString()}</span>
+                                {post.userId === Number(sessionStorage.getItem('userId')) && (
+                                    <button className="delete-button" onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeletePost(post.id);
+                                    }}>
+                                        Delete
+                                    </button>
+                                )}
                             </div>
+
                             <p className={`post-content ${post.isExpanded ? 'expanded' : ''}`}>
                                 {post.content}
                             </p>
-                            {post.isExpanded && (
-                                <>
-                                    {post.replies && post.replies.length > 0 && post.replies.map(reply => (
+
+                            {post.isExpanded && post.replies && post.replies.length > 0 && (
+                                <div className="replies-list">
+                                    {post.replies.map(reply => (
                                         <div key={reply.id} className="reply">
                                             <span className="reply-user">{reply.username} (Reply)</span>
                                             <p className="reply-content">{reply.content}</p>
                                         </div>
                                     ))}
+                                </div>
+                            )}
+
+                            {post.isExpanded && (
+                                <div>
                                     <div className="reply-hint">Reply to this message:</div>
                                     <textarea
                                         placeholder="Type your reply..."
@@ -145,7 +168,7 @@ export function Community() {
                                         }}
                                         onClick={(e) => e.stopPropagation()}
                                     />
-                                </>
+                                </div>
                             )}
                         </div>
                     ))}

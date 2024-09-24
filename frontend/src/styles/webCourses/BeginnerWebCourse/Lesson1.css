@@ -258,7 +258,7 @@
 
 .goToPreviousLessonDiv:hover::after {
     opacity: 0;
-    transform: translateX(1em); 
+    transform: translateX(1em);
 }
 
 .goToPreviousLessonDiv:active,
@@ -274,4 +274,13 @@
 
 .goToPreviousLessonDiv:active {
     color: whitesmoke;
+}
+
+.borderExplanation {
+    padding-top: 8em;
+    margin-bottom: -3em;
+}
+
+.borders {
+    color: #007bff;
 }

@@ -2,6 +2,7 @@ package programming.tutorial.domain;
 
 import jakarta.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Post {
@@ -18,18 +19,25 @@ public class Post {
     private Date createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "parent_post_id") // This is the foreign key column in the database
-    private Post parentPost; // This will handle the relationship
+    @JoinColumn(name = "parent_post_id")
+    private Post parentPost;
+
+    @OneToMany(mappedBy = "parentPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> replies;
+
+    private boolean deleted = false;
 
     public Post() {
     }
 
-    public Post(Integer id, String content, Integer userId, Date createdAt, Post parentPost) {
+    public Post(Integer id, String content, Integer userId, Date createdAt, Post parentPost, List<Post> replies, boolean deleted) {
         this.id = id;
         this.content = content;
         this.userId = userId;
         this.createdAt = createdAt;
         this.parentPost = parentPost;
+        this.replies = replies;
+        this.deleted = deleted;
     }
 
     public Integer getId() {
@@ -72,6 +80,22 @@ public class Post {
         this.parentPost = parentPost;
     }
 
+    public List<Post> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(List<Post> replies) {
+        this.replies = replies;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
@@ -80,6 +104,8 @@ public class Post {
                 ", userId=" + userId +
                 ", createdAt=" + createdAt +
                 ", parentPost=" + parentPost +
+                ", replies=" + replies +
+                ", deleted=" + deleted +
                 '}';
     }
 }

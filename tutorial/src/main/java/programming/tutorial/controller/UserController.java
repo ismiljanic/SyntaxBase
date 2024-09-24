@@ -4,18 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import programming.tutorial.dao.PostRepository;
 import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.User;
-import programming.tutorial.dto.ChangePasswordRequest;
-import programming.tutorial.dto.PasswordRequest;
-import programming.tutorial.dto.UserDTO;
-import programming.tutorial.dto.UserUpdateRequest;
+import programming.tutorial.dto.*;
 import programming.tutorial.services.UserService;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -25,6 +21,9 @@ public class UserController {
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
     @GetMapping("/userInformation/{id}")
     public User getUserInformation(@PathVariable String id) {
@@ -75,17 +74,32 @@ public class UserController {
     }
 
     @GetMapping("/accountInformation/{userId}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId) {
-        try {
+    public ResponseEntity<UserAccountDTO> getUserAccountInformation(@PathVariable Long userId) {
+        try {   
             Optional<User> userOptional = userRepository.findById(Math.toIntExact(userId));
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
-                UserDTO userDTO = new UserDTO();
-                userDTO.setName(user.getName());
-                userDTO.setSurname(user.getSurname());
-                userDTO.setUsername(user.getUsername());
-                userDTO.setDateCreated(user.getDateCreated());
-                return ResponseEntity.ok(userDTO);
+                List<PostDTO> userPosts = postRepository.findByUserId(user.getId())
+                        .stream()
+                        .map(post -> new PostDTO(post.getId(), post.getContent(), post.getUserId(),
+                                user.getUsername(), post.getCreatedAt()))
+                        .collect(Collectors.toList());
+
+                List<PostDTO> deletedPosts = postRepository.findDeletedPostsByUserId(user.getId())
+                        .stream()
+                        .map(post -> new PostDTO(post.getId(), post.getContent(), post.getUserId(),
+                                user.getUsername(), post.getCreatedAt()))
+                        .collect(Collectors.toList());
+
+                UserAccountDTO userAccountDTO = new UserAccountDTO();
+                userAccountDTO.setName(user.getName());
+                userAccountDTO.setSurname(user.getSurname());
+                userAccountDTO.setUsername(user.getUsername());
+                userAccountDTO.setDateCreated(user.getDateCreated().toString());
+                userAccountDTO.setUserPosts(userPosts);
+                userAccountDTO.setDeletedPosts(deletedPosts);
+
+                return ResponseEntity.ok(userAccountDTO);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
@@ -93,6 +107,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
 
     @PutMapping("/updateName/{userId}")
     public ResponseEntity<String> updateName(@PathVariable Long userId, @RequestBody UserUpdateRequest request) {
