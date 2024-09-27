@@ -9,6 +9,7 @@ import programming.tutorial.dao.PostRepository;
 import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.Notification;
 import programming.tutorial.domain.Post;
+import programming.tutorial.domain.Role;
 import programming.tutorial.domain.User;
 import programming.tutorial.dto.NotificationDTO;
 import programming.tutorial.dto.PostDTO;
@@ -47,6 +48,7 @@ public class PostController {
                 })
                 .collect(Collectors.toList());
     }
+
     @PostMapping
     public ResponseEntity<?> createPost(@RequestBody Post post) {
         Integer userId = post.getUserId();
@@ -80,7 +82,13 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePost(@PathVariable Integer id) {
+    public ResponseEntity<String> deletePost(@PathVariable Integer id, @RequestParam String username) {
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found.");
+        }
+
         if (!postRepository.existsById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post not found.");
         }
@@ -90,11 +98,16 @@ public class PostController {
         if (postToDelete == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post not found.");
         }
+        System.out.println(user.getRole());
+        if (!postToDelete.getUserId().equals(user.getId()) && !user.getRole().equals(Role.ADMIN)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to delete this post.");
+        }
 
         postRepository.delete(postToDelete);
 
         return ResponseEntity.ok("Post and its replies deleted successfully.");
     }
+
 
     @GetMapping("/notifications/{userId}")
     public ResponseEntity<List<NotificationDTO>> getNotifications(@PathVariable Long userId) {

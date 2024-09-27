@@ -11,7 +11,7 @@ interface Notification {
     postId: number;
     replyId: number;
     message: string;
-    isRead: boolean;
+    read: boolean;  
     createdAt: string;
     username: string;
 }
@@ -41,7 +41,14 @@ export function Notifications() {
                 throw new Error('Failed to fetch notifications');
             }
             const data: Notification[] = await response.json();
-            setNotifications(data);
+
+            const sortedNotifications = data.sort((a, b) => {
+                if (!a.read && b.read) return -1;  
+                if (a.read && !b.read) return 1;  
+                return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(); 
+            });
+
+            setNotifications(sortedNotifications);
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
@@ -75,23 +82,21 @@ export function Notifications() {
     }, [userId]);
 
     const handleNotificationClick = async (notification: Notification) => {
-        try {
-            const response = await fetch(`http://localhost:8080/api/notifications/${notification.id}/mark-read`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (!response.ok) {
-                throw new Error('Failed to mark notification as read');
+        if (!notification.read) {
+            try {
+                const response = await fetch(`http://localhost:8080/api/notifications/${notification.id}/mark-read`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to mark notification as read');
+                }
+                await fetchNotifications();
+            } catch (err) {
+                console.error(err);
             }
-            setNotifications(prevNotifications => 
-                prevNotifications.map(notif => 
-                    notif.id === notification.id ? { ...notif, isRead: true } : notif
-                )
-            );
-        } catch (err) {
-            console.error(err);
         }
 
         setSelectedPost(null);
@@ -140,7 +145,7 @@ export function Notifications() {
                         {notifications.map(notification => (
                             <div
                                 key={notification.id}
-                                className={`notification ${notification.isRead ? 'readNotification' : 'unreadNotification'}`}
+                                className={`notification ${notification.read ? 'readNotification' : 'unreadNotification'}`}
                                 onClick={() => handleNotificationClick(notification)}
                             >
                                 <div>

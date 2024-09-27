@@ -4,13 +4,6 @@ import { Header } from '../../../Header';
 import { Footer } from '../../../Footer';
 import { Footer2 } from '../../../Footer2';
 import '../../../../styles/webCourses/BeginnerWebCourse/Lesson1.css';
-import css1 from '../../../../pages/webCourses/BeginnerWebCourse/images/css1.png';
-import firstExample from '../../../../pages/webCourses/BeginnerWebCourse/images/firstExample.png';
-import borders from '../../../../pages/webCourses/BeginnerWebCourse/images/borders.png';
-import margins from '../../../../pages/webCourses/BeginnerWebCourse/images/margins.png';
-import secondExample from '../../../../pages/webCourses/BeginnerWebCourse/images/secondExample.png';
-import thirdExample from '../../../../pages/webCourses/BeginnerWebCourse/images/thirdExample.png';
-import fourthExample from '../../../../pages/webCourses/BeginnerWebCourse/images/fourthExample.png';
 import react from '../../../../pages/webCourses/BeginnerWebCourse/images/react.png';
 import typescript from '../../../../pages/webCourses/BeginnerWebCourse/images/typescript.png';
 import typescript2 from '../../../../pages/webCourses/BeginnerWebCourse/images/typescript2.png';
@@ -26,13 +19,13 @@ import onclickk from '../../../../pages/webCourses/BeginnerWebCourse/images/oncl
 import generics from '../../../../pages/webCourses/BeginnerWebCourse/images/generics.png';
 
 
-export function Lesson5() {
+export function Lesson6() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(true);
     const [feedbackSubmitted, setFeedbackSubmitted] = useState<boolean>(false);
     const location = useLocation();
 
-    const lessonId = 5;
+    const lessonId = 6;
     const { courseId } = useParams();
     const userId = sessionStorage.getItem('userId');
 
@@ -140,7 +133,7 @@ export function Lesson5() {
     const updateProgress = async () => {
         const userId = sessionStorage.getItem('userId');
         const courseId = 1;
-        const lessonId = 5;
+        const lessonId = 6;
 
         if (!userId) {
             console.error('User ID is not found in session storage');
@@ -163,12 +156,12 @@ export function Lesson5() {
 
     const handleNextLesson = async () => {
         await updateProgress();
-        navigate(`/course/${courseId}/lesson/6`);
+        navigate(`/course/${courseId}/lesson/7`);
     };
 
     const handlePreviousLesson = async () => {
         await updateProgress();
-        navigate(`/course/${courseId}/lesson/4`);
+        navigate(`/course/${courseId}/lesson/5`);
     };
 
     if (loading) return <p>Loading...</p>;
@@ -177,8 +170,8 @@ export function Lesson5() {
         <div className='mainContainer'>
             <Header bgColor="rgb(247, 250, 251)" />
             <div className='lessonIntroduction'>
-                <h1>TypeScript and React</h1>
-                <p>Welcome to <b>Lesson 5</b> of the <b>Beginner Web Development course</b>.</p>
+                <h1>Final Project</h1>
+                <p>Welcome to <b>Lesson 6</b> of the <b>Beginner Web Development course</b>.</p>
             </div>
             <div className='aboutBeginnerWeb'>
                 <div className="aboutCourseDiv2" style={{ paddingBottom: '7em' }}>

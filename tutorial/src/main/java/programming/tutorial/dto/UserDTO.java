@@ -1,12 +1,17 @@
 package programming.tutorial.dto;
 
+import programming.tutorial.domain.Role;
+
 import java.time.LocalDateTime;
 
 public class UserDTO {
+    public Integer id;
     public String name;
     public String surname;
     public String password;
     public String username;
+    public Role role;
+    public String email;
     public LocalDateTime dateCreated;
 
     public UserDTO(String name, String surname, String password, String username, LocalDateTime dateCreated) {
@@ -24,7 +29,31 @@ public class UserDTO {
         this.dateCreated = dateCreated;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public UserDTO() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -77,4 +106,5 @@ public class UserDTO {
                 ", dateCreated=" + dateCreated +
                 '}';
     }
+
 }

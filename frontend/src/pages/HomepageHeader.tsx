@@ -3,9 +3,22 @@ import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import '../styles/Header.css';
 import picture from '../images/logoSyntaxBase.png';
 import { SettingsMenu } from './SettingsMenu';
+import NotificationPopup from '../components/NotificationPopup';
+import "../styles/NotificationPopup.css";
 
 interface HeaderProps {
     bgColor?: string;
+}
+
+interface Notification {
+    id: number;
+    userId: number;
+    postId: number;
+    replyId: number;
+    message: string;
+    read: boolean;
+    createdAt: string;
+    username: string;
 }
 
 export function HomepageHeader({ bgColor = '#333' }: HeaderProps) {
@@ -16,6 +29,24 @@ export function HomepageHeader({ bgColor = '#333' }: HeaderProps) {
     const { id } = useParams<{ id: string }>();
     const headerRef = useRef<HTMLElement>(null);
     const [headerVisible, setHeaderVisible] = useState(false);
+    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [showPopup, setShowPopup] = useState<boolean>(true); // Popup should be shown initially
+
+    const fetchNotifications = async () => {
+        const storedUserId = sessionStorage.getItem('userId');
+        try {
+            const response = await fetch(`http://localhost:8080/api/posts/notifications/${storedUserId}`);
+            if (!response.ok) throw new Error('Failed to fetch notifications');
+            const data: Notification[] = await response.json();
+            setNotifications(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchNotifications();
+    }, []);
 
     const handleScrollCourses = () => {
         if (location.pathname === '/') {
@@ -67,6 +98,19 @@ export function HomepageHeader({ bgColor = '#333' }: HeaderProps) {
             console.error("User ID is missing");
         }
     };
+
+    const handleNotificationClick = (notification: Notification) => {
+        console.log("Notification clicked:", notification);
+    };
+
+    const handleDismiss = (notificationId: number) => {
+        setNotifications(prev => prev.filter(notif => notif.id !== notificationId));
+    };
+
+    const handleClosePopup = () => {
+        setShowPopup(false); // This will close the popup
+    };
+
     return (
         <header
             ref={headerRef}

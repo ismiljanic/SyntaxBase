@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import '../styles/Login.css'
+import '../styles/Login.css';
 import axios from "axios";
 
 export function LoginComponent() {
@@ -18,75 +18,67 @@ export function LoginComponent() {
 
     const handleMouseEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-    }
+    };
 
     async function handleSubmit(event: any) {
         event.preventDefault();
         setLoginFailed(false);
         setSubmit(true);
         setError("");
-    
-        const user = await axios.post("http://localhost:8080/api/users/login", {
-            username: username,
-            password: password
-        }, {
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        }).catch(function (error) {
-            const user = error.response;
-            if (user.status === 401) {
-                alert("Incorrect Username and Password");
-            } else if (user.status === 406) {
-                alert("Username does not exist");
-            } else {
-                alert("Internal application error");
+
+        try {
+            const response = await axios.post("http://localhost:8080/api/users/login", {
+                username: username,
+                password: password
+            }, {
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            });
+
+            if (response.status === 200) {
+                const id = response.data["id"];
+                const userToken = response.data["token"];
+                const userRole = response.data["role"]; 
+            
+                if (!id || isNaN(parseInt(id))) {
+                    alert("Internal application error");
+                    setSubmit(false);
+                    return;
+                }
+            
+                sessionStorage.setItem('userId', id); 
+                sessionStorage.setItem('userToken', userToken); 
+                sessionStorage.setItem('userRole', userRole);
+            
+                const redirectUrl = sessionStorage.getItem('redirectAfterLogin'); 
+                if (redirectUrl) {
+                    sessionStorage.removeItem('redirectAfterLogin');
+                    navigate(redirectUrl); 
+                } else {
+                    navigate(`/homepage/${id}`);
+                }
+            }
+            
+        } catch (error) {
+            const userError = error as { response?: { status: number } };
+            if (userError.response) {
+                if (userError.response.status === 401) {
+                    alert("Incorrect Username and Password");
+                } else if (userError.response.status === 406) {
+                    alert("Username does not exist");
+                } else {
+                    alert("Internal application error");
+                }
             }
             setSubmit(false);
-            console.error("Error:", error.message);
-        });
-    
-        if (user === undefined) return;
-    
-        if (user.status === 200) {
-            const id = user.data["id"];
-            const userToken = user.data["token"];
-    
-            if (!id || isNaN(parseInt(id))) {
-                alert("Internal application error");
-                setSubmit(false);
-                return;
-            }
-    
-            sessionStorage.setItem('userId', id); 
-            sessionStorage.setItem('userToken', userToken); 
-    
-            const redirectUrl = sessionStorage.getItem('redirectAfterLogin'); 
-            if (redirectUrl) {
-                sessionStorage.removeItem('redirectAfterLogin');
-                navigate(redirectUrl); 
-            } else {
-                navigate(`/homepage/${id}`);
-            }
+            console.error("Error:", (userError.response?.status ? `HTTP ${userError.response.status}` : 'Unknown error'));
         }
     }
+
 
     const handleNavigation = () => {
         navigate("/register");
-    }
-
-    const handleLogin = () => {
-        const isLoginSuccessful = true;
-
-        if (isLoginSuccessful) {
-            const redirectUrl = sessionStorage.getItem('redirectAfterLogin');
-            if (redirectUrl) {
-                sessionStorage.removeItem('redirectAfterLogin');
-                navigate(redirectUrl);
-            } else {
-                navigate('/');
-            }
-        }
     };
-    
+
     return (
         <div className='login-container'>
             <div className='login-form-container'>
@@ -131,10 +123,7 @@ export function LoginComponent() {
                     <button
                         type="button"
                         className="login-button"
-                        onClick={(e) => {
-                            handleSubmit(e);
-                            handleLogin();
-                        }}
+                        onClick={handleSubmit}
                         disabled={submit}
                     >
                         Login

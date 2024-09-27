@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { LoginComponent } from "../components/Login";
 import '../styles/Login.css';
 
-
 export function Login() {
     const navigate = useNavigate();
 
@@ -11,6 +10,7 @@ export function Login() {
         const isLoggedIn = sessionStorage.getItem('userToken');
         const redirectUrl = sessionStorage.getItem('redirectAfterLogin');
         const userId = sessionStorage.getItem('userId');
+        const userRole = sessionStorage.getItem('userRole'); // Retrieve the user role if necessary
 
         if (isLoggedIn) {
             if (redirectUrl) {
@@ -33,8 +33,12 @@ export function Login() {
             <LoginComponent />
             <div className="login-footer">
                 <Link to="/forgot-password" className="footer-link">Forgot Password?</Link>
-                <div className="footer-text" style={{marginLeft: '3em'}}>Don't have an account? <Link to="/register" className="footer-link">Sign Up</Link></div>
-                <div className="footer-text" style={{marginTop: '-1em', marginLeft: '3em'}}>Go to <Link to="/" className="footer-link">Homepage</Link></div>
+                <div className="footer-text" style={{marginLeft: '3em'}}>
+                    Don't have an account? <Link to="/register" className="footer-link">Sign Up</Link>
+                </div>
+                <div className="footer-text" style={{marginTop: '-1em', marginLeft: '3em'}}>
+                    Go to <Link to="/" className="footer-link">Homepage</Link>
+                </div>
             </div>
         </div>
     );

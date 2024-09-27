@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.Course;
+import programming.tutorial.domain.Role;
 import programming.tutorial.domain.User;
 import programming.tutorial.dto.UserDTO;
 import programming.tutorial.services.UserService;
@@ -39,7 +40,7 @@ public class UserServiceJpa implements UserService {
             user.setName(userDTO.getName());
             user.setSurname(userDTO.getSurname());
             user.setDateCreated(LocalDateTime.now());
-
+            user.setRole(Role.USER);
             System.out.println(user.toString());
 
             userRepository.save(user);

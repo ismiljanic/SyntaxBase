@@ -44,6 +44,7 @@
 .keyDescription {
     padding-top: 2em;
     width: 88%;
+    text-align: justify;
 }
 
 .beginnerPictureContainer {
@@ -162,6 +163,7 @@
 }
 
 .keyDescription2 {
+    text-align: justify;
     margin-left: 2em;
     padding-top: 2em;
     width: 88%;
@@ -283,4 +285,12 @@
 
 .borders {
     color: #007bff;
+}
+
+.aboutBeginnerWeb {
+    margin-top: 5em;
+}
+.imageForCourse:hover {
+    transition: 0.3s ease;
+    transform: scale(1.02);
 }

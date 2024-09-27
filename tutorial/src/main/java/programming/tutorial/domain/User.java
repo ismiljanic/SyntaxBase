@@ -27,6 +27,9 @@ public class User {
     @Column(name = "dateCreated", nullable = false)
     public LocalDateTime dateCreated;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @ManyToMany
     @JoinTable(
             name = "user_courses",
@@ -105,6 +108,14 @@ public class User {
         this.dateCreated = dateCreated;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -114,6 +125,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", username='" + username + '\'' +
                 ", dateCreated=" + dateCreated +
+                ", role=" + role +
                 ", myCourses=" + myCourses +
                 '}';
     }

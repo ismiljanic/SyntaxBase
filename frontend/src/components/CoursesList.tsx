@@ -126,7 +126,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
     if (courses.length === 0) return <div style={{ backgroundColor: 'rgb(247, 250, 251)', paddingLeft: '41em', fontSize: '1.5em', paddingBottom: '10em', paddingTop: '4em' }}>No courses available.</div>;
 
     return (
-        <div className="bigDaddyContainer" style={{ paddingTop: '4em' }}>
+        <div className="bigDaddyContainer" style={{ paddingTop: '13em' }}>
             <div className="container2">
                 <div className="webCourseDiv3">My courses</div>
                 <a href="/courses" className="moreCoursesDiv">More courses</a>

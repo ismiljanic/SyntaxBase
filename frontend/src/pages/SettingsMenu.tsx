@@ -34,10 +34,20 @@ export function SettingsMenu() {
         const userId = sessionStorage.getItem('userId');
         navigate(`/contact/${userId}`);
     };
+
     const handleAccountInformation = () => {
         const userId = sessionStorage.getItem('userId');
         if (userId) {
             navigate(`/accountInformation/${userId}`);
+        } else {
+            console.error('User ID not found');
+        }
+    };
+
+    const handleNotifications = () => {
+        const userId = sessionStorage.getItem('userId');
+        if (userId) {
+            navigate(`/notifications/${userId}`);
         } else {
             console.error('User ID not found');
         }
@@ -54,6 +64,7 @@ export function SettingsMenu() {
                 <button onClick={handleAccountInformation}>Account Information</button>
                 <button onClick={handleChangePersonalInfo}>Change Personal Information</button>
                 <button onClick={handleContact}>Contact Us</button>
+                <button onClick={handleNotifications}>New Messages</button>
                 <button className="logout-button" onClick={handleLogout}>Logout</button>
             </div>
         </div>

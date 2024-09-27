@@ -20,19 +20,17 @@ export function Community() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [newPost, setNewPost] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const userRole = sessionStorage.getItem('userRole');
 
     useEffect(() => {
         const fetchPosts = async () => {
             try {
                 const response = await axios.get<Post[]>('http://localhost:8080/api/posts');
-
                 const structuredPosts: Post[] = response.data.map(post => ({
                     ...post,
                     replies: post.replies || []
                 }));
-
                 const sortedPosts = structuredPosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
                 setPosts(sortedPosts);
             } catch (error) {
                 console.error('Error fetching posts:', error);
@@ -86,14 +84,14 @@ export function Community() {
     };
 
     const handleDeletePost = async (postId: number) => {
+        const username = sessionStorage.getItem('username');
         try {
-            await axios.delete(`http://localhost:8080/api/posts/${postId}`);
+            await axios.delete(`http://localhost:8080/api/posts/${postId}`, { params: { username } });
             setPosts(posts.filter(post => post.id !== postId));
         } catch (error) {
             console.error('Error deleting post:', error);
         }
     };
-
 
     const toggleExpand = (postId: number) => {
         setPosts(posts.map(post =>
@@ -128,7 +126,7 @@ export function Community() {
                             <div className="post-header">
                                 <span className="post-user">{post.username}</span>
                                 <span className="post-time">{new Date(post.createdAt).toLocaleString()}</span>
-                                {post.userId === Number(sessionStorage.getItem('userId')) && (
+                                {(post.userId === Number(sessionStorage.getItem('userId')) || userRole === 'ADMIN') && (
                                     <button className="delete-button" onClick={(e) => {
                                         e.stopPropagation();
                                         handleDeletePost(post.id);

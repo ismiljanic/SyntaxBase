@@ -60,22 +60,22 @@ public class UserController {
         if (userOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Username does not exist");
         }
-
         User user = userOptional.get();
         if (!user.getPassword().equals(userDTO.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
         }
 
-        String userType = "user";
+        String userType = String.valueOf(user.getRole());
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("id", user.getId());
-        responseBody.put("type", userType);
+        responseBody.put("role", userType);
         return ResponseEntity.ok(responseBody);
     }
 
+
     @GetMapping("/accountInformation/{userId}")
     public ResponseEntity<UserAccountDTO> getUserAccountInformation(@PathVariable Long userId) {
-        try {   
+        try {
             Optional<User> userOptional = userRepository.findById(Math.toIntExact(userId));
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
@@ -107,7 +107,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
 
     @PutMapping("/updateName/{userId}")
     public ResponseEntity<String> updateName(@PathVariable Long userId, @RequestBody UserUpdateRequest request) {
@@ -165,5 +164,19 @@ public class UserController {
             System.out.println("Error deleting account: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/allUsers")
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserDTO> userDTOs = users.stream().map(user -> {
+            UserDTO dto = new UserDTO();
+            dto.setId(user.getId());
+            dto.setUsername(user.getUsername());
+            dto.setRole(user.getRole());
+            return dto;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(userDTOs);
     }
 }
