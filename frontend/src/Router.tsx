@@ -38,6 +38,10 @@ import { Lesson3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson3";
 import { Lesson4 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson4";
 import { Lesson5 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson5";
 import { Lesson6 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson6";
+import { Lesson7 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson7";
+import { Lesson8 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson8";
+import { Lesson9 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson9";
+import { Lesson10 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson10";
 import { ShowCase1 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase1";
 import { ShowCase2 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase2";
 import { ShowCase3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase3";
@@ -58,6 +62,12 @@ import { ShowCase4Lesson5 } from "./pages/webCourses/BeginnerWebCourse/Lessons/S
 import { ShowCase5Lesson5 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase5Lesson5";
 import { ShowCase6Lesson5 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase6Lesson5";
 import { ShowCase7Lesson5 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase7Lesson5";
+import { Lesson7PortfolioExample } from "./pages/webCourses/BeginnerWebCourse/Lessons/project/examples/Lesson7PortfolioExample";
+import { BeginnerWebTutorialLesson1 } from "./pages/webTutorials/beginnerWebTutorial/Lessons/Lesson1";
+import { BeginnerWebTutorialLesson2 } from "./pages/webTutorials/beginnerWebTutorial/Lessons/Lesson2";
+import { BeginnerWebTutorialLesson3 } from "./pages/webTutorials/beginnerWebTutorial/Lessons/Lesson3";
+import { BeginnerWebTutorialLesson4 } from "./pages/webTutorials/beginnerWebTutorial/Lessons/Lesson4";
+import { BeginnerWebTutorialLesson5 } from "./pages/webTutorials/beginnerWebTutorial/Lessons/Lesson5";
 import { Community } from "./pages/Community";
 import { Notifications } from "./pages/Notifications";
 import AdminPage from "./components/AdminPage";
@@ -106,6 +116,10 @@ export function Router() {
           <Route path="/course/:courseId/lesson/4" element={<Lesson4 />} />
           <Route path="/course/:courseId/lesson/5" element={<Lesson5 />} />
           <Route path="/course/:courseId/lesson/6" element={<Lesson6 />} />
+          <Route path="/course/:courseId/lesson/7" element={<Lesson7 />} />
+          <Route path="/course/:courseId/lesson/8" element={<Lesson8 />} />
+          <Route path="/course/:courseId/lesson/9" element={<Lesson9 />} />
+          <Route path="/course/:courseId/lesson/10" element={<Lesson10 />} />
           <Route path="/showCase1/lesson2" element={<ShowCase1 />} />
           <Route path="/showCase2/lesson2" element={<ShowCase2 />} />
           <Route path="/showCase3/lesson2" element={<ShowCase3 />} />
@@ -126,6 +140,12 @@ export function Router() {
           <Route path="/showCase5Lesson5/lesson5" element={<ShowCase5Lesson5 />} />
           <Route path="/showCase6Lesson5/lesson5" element={<ShowCase6Lesson5 />} />
           <Route path="/showCase7Lesson5/lesson5" element={<ShowCase7Lesson5 />} />
+          <Route path="/beginnerWebCourse/project/portfolio" element={<Lesson7PortfolioExample />} />
+          <Route path="/beginnerWebTutorial/lesson/1" element={<BeginnerWebTutorialLesson1 />} />
+          <Route path="/beginnerWebTutorial/lesson/2" element={<BeginnerWebTutorialLesson2 />} />
+          <Route path="/beginnerWebTutorial/lesson/3" element={<BeginnerWebTutorialLesson3 />} />
+          <Route path="/beginnerWebTutorial/lesson/4" element={<BeginnerWebTutorialLesson4 />} />
+          <Route path="/beginnerWebTutorial/lesson/5" element={<BeginnerWebTutorialLesson5 />} />
           <Route path="/adminPage" element={<AdminPage />} />
           <Route path="/community/:userId" element={<Community />} />
           <Route path="/notifications/:userId" element={<Notifications />} />

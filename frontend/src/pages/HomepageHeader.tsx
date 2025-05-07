@@ -3,8 +3,6 @@ import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import '../styles/Header.css';
 import picture from '../images/logoSyntaxBase.png';
 import { SettingsMenu } from './SettingsMenu';
-import NotificationPopup from '../components/NotificationPopup';
-import "../styles/NotificationPopup.css";
 
 interface HeaderProps {
     bgColor?: string;

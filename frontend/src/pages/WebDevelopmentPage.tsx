@@ -64,7 +64,7 @@ export function WebDevelopmentPage() {
                     Three-tier tutorials tailored for your skills and needs starting from beginner mode, progressing to intermediate mode and finally mastering advanced mode.
                 </div>
                 <div className='features3'>
-                    <a href="/beginnerWebTutorial" className="reactDiv">
+                    <a href="/beginnerWebTutorial/lesson/1" className="reactDiv">
                         <img src={web1} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Beginner Frontend Tutorial<br />Learn Frontend With React, Node.js And Express Development!
@@ -73,7 +73,7 @@ export function WebDevelopmentPage() {
                     </a>
                 </div>
                 <div className='features3'>
-                    <a href="/intermediateWebTutorial" className="reactDiv">
+                    <a href="/intermediateWebTutorial/lesson/1" className="reactDiv">
                         <img src={web2} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Intermediate Frontend Tutorial<br />Learn More Complex Structures using React, Node.js And Express!
@@ -82,7 +82,7 @@ export function WebDevelopmentPage() {
                     </a>
                 </div>
                 <div className='features3'>
-                    <a href="/advancedWebTutorial" className="reactDiv">
+                    <a href="/advancedWebTutorial/lesson/1" className="reactDiv">
                         <img src={web3} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Advanced Frontend Tutorial<br />Become Master In Frontend Development With Advanced Tutorial!
@@ -100,7 +100,7 @@ export function WebDevelopmentPage() {
                         <div className="webCourses">
                             Beginner Frontend Course<br />Create Simple Frontend Application!
                         </div>
-                        <div className="arrow-circle"></div>
+                        <div className="arrow-circle" style={{marginLeft: "17em"}}></div>
                     </a>
                 </div>
                 <div className="features3">

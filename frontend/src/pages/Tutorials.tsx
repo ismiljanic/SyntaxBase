@@ -56,7 +56,7 @@ export function Tutorials() {
                     WEB DEVELOPMENT
                 </div>
                 <div className='features3'>
-                    <a href="/beginnerWebTutorial" className="reactDiv">
+                    <a href="/beginnerWebTutorial/lesson/1" className="reactDiv">
                         <img src={web1} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Beginner Frontend Tutorial<br />Learn Frontend With React, Node.js And Express Development!
@@ -65,7 +65,7 @@ export function Tutorials() {
                     </a>
                 </div>
                 <div className='features3'>
-                    <a href="/intermediateWebTutorial" className="reactDiv">
+                    <a href="/intermediateWebTutorial/lesson/1" className="reactDiv">
                         <img src={web2} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Intermediate Frontend Tutorial<br />Learn More Complex Structures using React, Node.js And Express!
@@ -74,7 +74,7 @@ export function Tutorials() {
                     </a>
                 </div>
                 <div className='features3'>
-                    <a href="/advancedWebTutorial" className="reactDiv">
+                    <a href="/advancedWebTutorial/lesson/1" className="reactDiv">
                         <img src={web3} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Advanced Frontend Tutorial<br />Become Master In Frontend Development With Advanced Tutorial!
@@ -86,7 +86,7 @@ export function Tutorials() {
                     GAME DEVELOPMENT
                 </div>
                 <div className='features3'>
-                    <a href="/gameEnginesTutorial" className="reactDiv">
+                    <a href="/gameEnginesTutorial/lesson/1" className="reactDiv">
                         <img src={picture2} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Game Engines Tutorial<br />Learn Basics Of Game Engines!
@@ -95,7 +95,7 @@ export function Tutorials() {
                     </a>
                 </div>
                 <div className='features3'>
-                    <a href="/beginnerGameTutorial" className="reactDiv">
+                    <a href="/beginnerGameTutorial/lesson/1" className="reactDiv">
                         <img src={game1} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Beginner Game Development Tutorial<br />Learn Basics Of Game Development With C++!
@@ -104,7 +104,7 @@ export function Tutorials() {
                     </a>
                 </div>
                 <div className='features3'>
-                    <a href="/intermediateGameTutorial" className="reactDiv">
+                    <a href="/intermediateGameTutorial/lesson/1" className="reactDiv">
                         <img src={game2} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Intermediate Game Development Tutorial<br />Explore More Complex Instances Of Game Development!
@@ -116,7 +116,7 @@ export function Tutorials() {
                     DATABASE MANAGMENT
                 </div>
                 <div className='features3'>
-                    <a href="/beginnerDbTutorial" className="reactDiv">
+                    <a href="/beginnerDbTutorial/lesson/1" className="reactDiv">
                         <img src={db1} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Introduction To Databases<br />Learn Basics Of MySQL, PostgreSQL And MongoDB!
@@ -125,7 +125,7 @@ export function Tutorials() {
                     </a>
                 </div>
                 <div className='features3'>
-                    <a href="/intermediateDbTutorial" className="reactDiv">
+                    <a href="/intermediateDbTutorial/lesson/1" className="reactDiv">
                         <img src={db3} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Intermediate Database Tutorial<br />Learn How To Manipulate With Databases With pgAdmin4!
@@ -134,7 +134,7 @@ export function Tutorials() {
                     </a>
                 </div>
                 <div className='features3'>
-                    <a href="/advancedDbTutorial" className="reactDiv">
+                    <a href="/advancedDbTutorial/lesson/1" className="reactDiv">
                         <img src={database} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Advanced Database Tutorial<br />Learn How To Manipulate With Databases With More Complex Instances!
@@ -146,7 +146,7 @@ export function Tutorials() {
                     PROBLEM SOLVING
                 </div>
                 <div className='features3'>
-                    <a href="/beginnerPsTutorial" className="reactDiv">
+                    <a href="/beginnerPsTutorial/lesson/1" className="reactDiv">
                         <img src={problem1} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Beginner Problem Solving<br />Solve Easy Problems And Learn Simple Algorithms
@@ -155,7 +155,7 @@ export function Tutorials() {
                     </a>
                 </div>
                 <div className='features3'>
-                    <a href="/intermediatePsTutorial" className="reactDiv">
+                    <a href="/intermediatePsTutorial/lesson/1" className="reactDiv">
                         <img src={problem2} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Intermediate Problem Solving<br />Learn Data Structures And More Complex Algorithms!
@@ -164,7 +164,7 @@ export function Tutorials() {
                     </a>
                 </div>
                 <div className='features3'>
-                    <a href="/advancedPsTutorial" className="reactDiv">
+                    <a href="/advancedPsTutorial/lesson/1" className="reactDiv">
                         <img src={problem3} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Advanced Problem Solving<br />Learn Complex Algorithms And Their Application!
@@ -176,7 +176,7 @@ export function Tutorials() {
                     INSTRUCTIONS
                 </div>
                 <div className='features3'>
-                    <a href="/calculusTutorial" className="reactDiv">
+                    <a href="/calculusTutorial/lesson/1" className="reactDiv">
                         <img src={calculus1} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Calculus Tutorial<br />Learn Calculus With Examples And Tutorials!
@@ -185,7 +185,7 @@ export function Tutorials() {
                     </a>
                 </div>
                 <div className='features3'>
-                    <a href="/programmingTutorial" className="reactDiv">
+                    <a href="/programmingTutoria/lesson/1" className="reactDiv">
                         <img src={instr2} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Programming Tutorial<br />Learn Basics Of Programming - Ideal For Beginners!
@@ -194,7 +194,7 @@ export function Tutorials() {
                     </a>
                 </div>
                 <div className='features3'>
-                    <a href="/linearAlgebraTutorial" className="reactDiv">
+                    <a href="/linearAlgebraTutorial/lesson/1" className="reactDiv">
                         <img src={instr3} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Linear Alegbra Tutorial<br />Explore New Concepts With Linear Algebra Tutorial!
@@ -203,7 +203,7 @@ export function Tutorials() {
                     </a>
                 </div>
                 <div className='features3'>
-                    <a href="/oopTutorial" className="reactDiv">
+                    <a href="/oopTutorial/lesson/1" className="reactDiv">
                         <img src={instr4} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Object Oriented Tutorial<br />Advance Forward With Object Oriented Programming!
@@ -212,7 +212,7 @@ export function Tutorials() {
                     </a>
                 </div>
                 <div className='features3'>
-                    <a href="/algorithmAndDSTutorial" className="reactDiv">
+                    <a href="/algorithmAndDSTutorial/lesson/1" className="reactDiv">
                         <img src={instr5} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
                             Algorithm And Data Structures Tutorial<br />Expand Your Knowledge Of Algorithms And Data Structures!

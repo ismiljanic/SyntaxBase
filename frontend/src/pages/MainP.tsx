@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/MainP.css'; // Import CSS file
+import '../styles/MainP.css';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { Footer2 } from './Footer2';

@@ -559,13 +559,14 @@
 .moreCoursesDiv:not(:hover)::before {
     transform: scaleX(0);
     transform-origin: bottom right;
-    transition: transform 0.5s ease;
+    transition: transform 0.3s ease;
     color: #007bff;
 }
 
 .moreCoursesDiv:hover {
     transform: translateX(1.5em);
     color: #007bff;
+    cursor: pointer;
 }
 
 .moreCoursesDiv::after {

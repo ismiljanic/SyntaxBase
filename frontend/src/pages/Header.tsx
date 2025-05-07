@@ -102,19 +102,7 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
             </a>
             <div className='divni2'>
                 <div className='divni3' onClick={handleScroll}>Getting started</div>
-                <div className="dropdown" onClick={() => setDropdownActive(!dropdownActive)}>
-                    <div className='divni3' id='tutorials'>
-                        Tutorials
-                    </div>
-                    <div className='dropdown-overlay'>
-                        <div className='dropdown-curtain'>
-                            <a onClick={() => handleProtectedNavigation('/webDevelopment')} className='dropdownA'>Web Development</a>
-                            <a onClick={() => handleProtectedNavigation('/gameDevelopment')} className='dropdownA'>Game Development</a>
-                            <a onClick={() => handleProtectedNavigation('/databaseManagment')} className='dropdownA'>Database Management</a>
-                            <a onClick={() => handleProtectedNavigation('/problemSolving')} className='dropdownA'>Problem Solving</a>
-                        </div>
-                    </div>
-                </div>
+                    <div className='divni3' id='tutorials' onClick={() => navigate('/tutorials')}>Tutorials</div>
                 <div className='divni3' onClick={handleScrollCourses}>Courses</div>
                 <a href='/about' className='divni3'>About</a>
                 <a href='/help' className='divni3'>Help</a>
@@ -132,7 +120,7 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
                     <button className='divni1'>Contact</button>
                 </a>
             )}
-            {dropdownActive && <div className="header-overlay" onClick={() => setDropdownActive(false)}></div>}
+            {/* {dropdownActive && <div className="header-overlay" onClick={() => setDropdownActive(false)}></div>} */}
         </header>
     );
 }

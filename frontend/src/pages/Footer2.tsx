@@ -44,12 +44,7 @@ export function Footer2({ bgColor = '#333' }: FooterProps) {
     };
 
     const handleScrollTutorials = () => {
-        const target = document.getElementById('tutorials');
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
-        } else {
-            navigate('/?scrollTo=tutorials');
-        }
+       navigate('/tutorials');
     };
 
     const handleContactClick = () => {

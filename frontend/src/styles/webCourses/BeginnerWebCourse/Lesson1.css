@@ -57,7 +57,6 @@
     justify-content: center;
 }
 
-
 .key-areas2 {
     display: flex;
     font-size: 1.3em;
@@ -246,6 +245,7 @@
 .goToPreviousLessonDiv:hover {
     transform: translateX(-1.5em);
     color: #007bff;
+    cursor: pointer;
 }
 
 .goToPreviousLessonDiv::after {

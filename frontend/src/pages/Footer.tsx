@@ -13,7 +13,7 @@ export function Footer({ bgColor = '#333' }: FooterProps) {
         <img src={picture} alt="Logo SyntaxBase" className="footer-logo" />
       </a>
       <div className="footer-text">
-        <p>&copy; 2024 SyntaxBase.</p>
+        <p>&copy; 2025 SyntaxBase.</p>
         <p> All rights reserved.</p>
       </div>
       <div className="footer-links">

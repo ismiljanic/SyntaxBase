@@ -4,12 +4,9 @@ import { Header } from '../../../Header';
 import { Footer } from '../../../Footer';
 import { Footer2 } from '../../../Footer2';
 import '../../../../styles/webCourses/BeginnerWebCourse/Lesson1.css';
-import react from '../../../../pages/webCourses/BeginnerWebCourse/images/react.png';
 import typescript from '../../../../pages/webCourses/BeginnerWebCourse/images/typescript.png';
-import typescript2 from '../../../../pages/webCourses/BeginnerWebCourse/images/typescript2.png';
 import react2 from '../../../../pages/webCourses/BeginnerWebCourse/images/react2.png';
 import react3 from '../../../../pages/webCourses/BeginnerWebCourse/images/react3.png';
-import magic from '../../../../pages/webCourses/BeginnerWebCourse/images/magic.png';
 import components from '../../../../pages/webCourses/BeginnerWebCourse/images/components.png';
 import types from '../../../../pages/webCourses/BeginnerWebCourse/images/types.png';
 import props from '../../../../pages/webCourses/BeginnerWebCourse/images/props.png';
@@ -17,7 +14,10 @@ import useStatee from '../../../../pages/webCourses/BeginnerWebCourse/images/use
 import useeffectt from '../../../../pages/webCourses/BeginnerWebCourse/images/useeffectt.png';
 import onclickk from '../../../../pages/webCourses/BeginnerWebCourse/images/onclickk.png';
 import generics from '../../../../pages/webCourses/BeginnerWebCourse/images/generics.png';
-
+import workspaceSetup from '../../../../pages/webCourses/BeginnerWebCourse/images/workspaceSetup.png';
+import vsc from '../../../../pages/webCourses/BeginnerWebCourse/images/vsc.png';
+import projectStructureExample from '../../../../pages/webCourses/BeginnerWebCourse/images/projectStructureExample.png';
+import nodeModulesExample from '../../../../pages/webCourses/BeginnerWebCourse/images/node_modules.png';
 
 export function Lesson6() {
     const navigate = useNavigate();
@@ -170,92 +170,78 @@ export function Lesson6() {
         <div className='mainContainer'>
             <Header bgColor="rgb(247, 250, 251)" />
             <div className='lessonIntroduction'>
-                <h1>Final Project</h1>
+                <h1>FINAL PROJECT</h1>
                 <p>Welcome to <b>Lesson 6</b> of the <b>Beginner Web Development course</b>.</p>
             </div>
             <div className='aboutBeginnerWeb'>
                 <div className="aboutCourseDiv2" style={{ paddingBottom: '7em' }}>
-                    <div className="introductionDiv">REACT</div>
+                    <div className="introductionDiv">WORKSPACE SETUP</div>
 
                     <div className="frontImageBeginner">
                         <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
                             <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                What is React?
+                                INTRODUCTION
                             </div>
                             <div className="imageContainer">
-                                <img src={react} alt="" className="imageForCourse" onClick={() => window.open('https://react.dev/', '_blank')} style={{ cursor: 'pointer' }} />
+                                <img src={workspaceSetup} alt="" className="imageForCourse" />
                             </div>
                         </h1>
                     </div>
 
                     <div className="descriptionOfCourse">
-                        React is a popular JavaScript library for building user interfaces. It allows developers to create reusable components, manage state efficiently, and handle dynamic user interactions. React focuses on building web applications with high performance and ease of development.
+                        In this lesson you will learn how to set up your workspace for the final project. We will be using <b>React</b> and <b>TypeScript</b> to build a simple web application. Tools like <b>Visual Studio Code</b> and <b>Node.js</b> will be used to create a development environment. This lesson will cover setting up the project, installing dependencies, and understanding the folder structure.
                     </div>
                 </div>
 
                 <div className="aboutCourseDiv2" style={{ paddingBottom: '2em' }}>
-                    <div className="introductionDiv">TYPESCRIPT</div>
+                    <div className="introductionDiv">VISUAL STUDIO CODE</div>
                     <div className="frontImageBeginner">
                         <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
                             <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                What is TypeScript?
+                                SET UP YOUR WORKSPACE
                             </div>
                             <div className="imageContainer">
-                                <img src={typescript} alt="" className="imageForCourse" onClick={() => window.open('https://www.typescriptlang.org/', '_blank')}
-                                    style={{ cursor: 'pointer' }} />
+                                <img src={vsc} alt="" className="imageForCourse" onClick={() => window.open('https://code.visualstudio.com/', '_blank')} style={{ cursor: 'pointer' }} />
                             </div>
                         </h1>
                     </div>
 
                     <div className="descriptionOfCourse">
-                        TypeScript is a superset of JavaScript that adds static typing to your code.
-                        This means that you can declare the types of variables, function parameters, and return values in your code, making it easier to catch errors early and improve code quality.
+                        Go to official website of <b>Visual Studio Code</b> and download the latest version. After downloading, install it on your computer. Once installed, open Visual Studio Code and create a new folder for your project. This will be your workspace where you will write your code.
                     </div>
                 </div>
 
                 <div className="aboutCourseDiv2" style={{ marginBottom: '-8em', marginTop: '6em' }}>
-                    <div className="introductionDiv" style={{ marginLeft: '0.2em' }}>TYPESCRIPT WITH REACT</div>
+                    <div className="introductionDiv" style={{ marginLeft: '0.2em' }}>CREATING INTIAL REACT APP</div>
                     <div className="frontImageBeginner">
                         <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
                             <div className="headerContainer" style={{ width: 'fit-content', marginLeft: '0.1em' }}>
-                                Why Use TypeScript with React?
+                                INSTALLING DEPENDENCIES
                             </div>
                         </h1>
                     </div>
                 </div>
                 <div className='key-areas2'>
                     <div className="imageContainerWebBeginner">
-                        <img src={typescript2} alt="" className="imageForWebBeginner" />
-                        <div className="overlay">
-                            <div className='keyAreasOfBeginnerWebDev'>
-                                <strong>Catch Errors Early</strong>
-                                <div className='keyDescription'>
-                                    TypeScript's type system helps developers catch potential bugs <b>before running the code</b>.
-                                    Unlike plain JavaScript, which is dynamically typed and prone to type-related runtime errors, TypeScript performs <b> compile-time type checking. </b>
-                                    This means errors like passing incorrect data types to a function or assigning an unexpected value to a variable are caught as you're writing the code.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="imageContainerWebBeginner">
                         <img src={react2} alt="" className="imageForWebBeginner" />
                         <div className="overlay">
-                            <div className='keyAreasOfBeginnerWebDev2' style={{ marginTop: '3em' }}><strong>Better Code Completion</strong>
+                            <div className='keyAreasOfBeginnerWebDev2' style={{ marginTop: '3em' }}><strong>Creating React project</strong>
                                 <div className='keyDescription'>
-                                    TypeScript provides <b> enhanced autocompletion</b> in editors like Visual Studio Code, thanks to its type system.
-                                    With TypeScript, the editor knows exactly what types your variables, props, and functions are, which leads to more accurate suggestions, reducing the chance of human errors.
+                                    To create a new React project, open the terminal in Visual Studio Code in your folder and run the following command:
                                     <br></br>
                                     <br></br>
-                                    <b>Benefits of Better Autocompletion:</b>
+                                    <b>npx create-react-app my-app-name</b>
                                     <ul>
                                         <li>
-                                            Increased Productivity: You can write code faster as your editor will suggest functions, variables, and types based on your existing code, reducing the need to switch contexts or look up documentation.
+                                            Replace my-app-name with your desired project name. This command will create a new folder with the specified name and set up a basic React application structure.
                                         </li>
                                         <li>
-                                            Fewer Typos and Syntax Errors: Autocompletion reduces manual typing and potential mistakes.
+                                            You will see a lot of files and folders created. The most important ones are src folder, which contains your source code, and package.json, which lists your project dependencies.
                                         </li>
                                         <li>
-                                            Improved Code Navigation: TypeScript makes it easier to navigate large codebases since you can easily click through types, props, or functions and understand their definitions.
+                                            After the installation is complete, navigate to your project folder using the command:
+                                            <br></br>
+                                            <b>cd my-app-name</b>
                                         </li>
                                     </ul>
                                 </div>
@@ -263,13 +249,37 @@ export function Lesson6() {
                         </div>
                     </div>
                     <div className="imageContainerWebBeginner">
-                        <img src={magic} alt="" className="imageForWebBeginner" />
+                        <img src={projectStructureExample} alt="" className="imageForWebBeginner" />
+                        <div className="overlay">
+                            <div className='keyAreasOfBeginnerWebDev'>
+                                <strong>Create your project structure</strong>
+                                <div className='keyDescription'>
+                                    When you installed React, it created a basic project structure for you. You will see folders like <b>public</b> and <b>src</b>. The <b>public</b> folder contains static files like index.html, while the <b>src</b> folder contains your React components and styles.
+                                    <br></br>
+                                    You can create additional folders inside src to organize your components, styles, and assets. For example, you can create a folder named <b>components</b> to store all your React components like header and footer.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="imageContainerWebBeginner">
+                        <img src={nodeModulesExample} alt="" className="imageForWebBeginner" />
                         <div className="overlay">
                             <div className='keyAreasOfBeginnerWebDev' style={{ marginTop: '-12em' }}>
-                                <strong>Maintainability</strong>
-                                <div className='keyDescription'>
-                                    As React applications grow, it becomes increasingly important to <b>keep your codebase organized, predictable, and easy to maintain</b>.
-                                    TypeScript enforces strong typing, making it easier to understand what your components expect and what they return.
+                                <strong>Install all aditional dependencies</strong>
+                                <div className='keyDescription' style={{ marginBottom: '-10em' }}>
+                                    <br></br>
+                                    When you have setup your project and created your folder structure, you can start building your application. You will need to install additional dependencies like <b>React Router</b> for routing and <b>Axios</b> for making API calls.
+                                    You can install these dependencies using the following commands:
+                                    <br></br>
+                                    <br></br>
+                                    <b>npm install react-router-dom axios</b>
+                                    <br></br>
+                                    <b>npm install @types/react-router-dom @types/axios</b>
+                                    <br></br>
+                                    <b>npm install --save-dev typescript</b>
+                                    <br></br>
+                                    <b>npm install --save-dev @types/react @types/react-dom</b><br></br>
+                                    All other dependencies will be installed automatically when you run the command <b>npm start</b>. If you need to install any other dependencies, you can do so by running the command <b>npm install package-name</b>.
                                 </div>
                             </div>
                         </div>
@@ -277,11 +287,11 @@ export function Lesson6() {
                 </div>
 
                 <div className="aboutCourseDiv2" style={{ paddingBottom: '2em' }}>
-                    <div className="introductionDiv">REACT</div>
+                    <div className="introductionDiv">FOLDER STRUCTURE</div>
                     <div className="frontImageBeginner">
                         <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
                             <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                1.Getting Started with React
+                                Understanding the Folder Structure
                             </div>
                             <div className="imageContainer">
                                 <img src={components} alt="" className="imageForCourse" onClick={() => window.open('/showCase1Lesson5/lesson5', '_blank')}
@@ -290,240 +300,48 @@ export function Lesson6() {
                         </h1>
                     </div>
 
-                    <div className="descriptionOfCourse">
-                        <b>Components</b>:<br></br><br></br> The building blocks of a React app. They are JavaScript functions or classes that return JSX (React’s syntax for writing HTML-like code in JavaScript).
+                    <div className="descriptionOfCourse" style={{ marginBottom: '3em' }}>
+                        This section will help you understand the folder structure of a React project. The most important folders are:
                         <br></br>
                         <br></br>
-                        <b>What You'll Learn:</b><br></br>
+                        <b>Components</b><br></br>
                         <ul>
                             <li>
-                                How to install React using Create React App.
+                                This folder contains all your React components. Each component should have its own folder with a separate file for the component code and styles.
                             </li>
                             <li>
-                                Understanding how components work.
+                                Components are reusable pieces of code that can be used throughout your application.
                             </li>
                             <li>
-                                How to organize and render components.
+                                Examples of components are Header, Footer, SideBar and many more.
                             </li>
                         </ul>
-                        <b>How React Works:</b><br></br>
+                        <b>Images:</b><br></br>
                         <ul>
                             <li>
-                                <b>JSX:</b> A syntax extension that allows you to write HTML-like code inside JavaScript.
-                            </li>
-                            <li>
-                                <b>Virtual DOM:</b> React creates a lightweight copy of the actual DOM to make rendering fast and efficient.
+                                This folder contains all your images and assets used in your application. You can create subfolders to organize your images.
                             </li>
                         </ul>
-                    </div>
-                </div>
-
-                <div className="aboutCourseDiv2" style={{ paddingBottom: '2em' }}>
-                    <div className="introductionDiv">TYPESCRIPT</div>
-                    <div className="frontImageBeginner">
-                        <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
-                            <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                2. Introduction to TypeScript Basics
-                            </div>
-                            <div className="imageContainer">
-                                <img src={types} alt="" className="imageForCourse" onClick={() => window.open('/showCase2Lesson5/lesson5', '_blank')}
-                                    style={{ cursor: 'pointer' }} />
-                            </div>
-                        </h1>
-                    </div>
-
-                    <div className="descriptionOfCourse">
-                        <b>Types</b>:<br></br><br></br>
-                        In TypeScript, you can specify the type of a variable when you declare it.
-                        <br></br>
-                        <br></br>
-                        <b>What You'll Learn:</b><br></br>
+                        <b>Pages:</b><br></br>
                         <ul>
                             <li>
-                                Basic types like <b>number, string, boolean, array, and object</b>.
+                                This folder contains all your pages used in your application. Each page should have its own folder with a separate file for the page code and styles.
                             </li>
                             <li>
-                                How to define <b>interfaces</b> for structured objects.
+                                Pages are the main components of your application that are displayed to the user. This is where you will create your main components like Home, About, Contact and many more.
+                            </li>
+                        </ul>
+                        <b>Styles:</b><br></br>
+                        <ul>
+                            <li>
+                                This folder contains all your styles used in your application. You can create subfolders to organize your styles.
                             </li>
                             <li>
-                                How to work with <b>functions and enforce type</b> safety in your code.
+                                Styles folder contains all your CSS files used in your application.
                             </li>
                         </ul>
                     </div>
                 </div>
-
-                <div className="aboutCourseDiv2" style={{ paddingBottom: '2em' }}>
-                    <div className="introductionDiv">REACT + TYPESCRIPT</div>
-                    <div className="frontImageBeginner">
-                        <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
-                            <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                3. React + TypeScript: Basic Setup
-                            </div>
-                            <div className="imageContainer">
-                                <img src={props} alt="" className="imageForCourse" onClick={() => window.open('/showCase3Lesson5/lesson5', '_blank')}
-                                    style={{ cursor: 'pointer' }} />
-                            </div>
-                        </h1>
-                    </div>
-
-                    <div className="descriptionOfCourse">
-                        <b>What You'll Learn:</b><br></br>
-                        <ul>
-                            <li>
-                                How to set up a new React project using TypeScript.
-                            </li>
-                            <li>
-                                How to define <b>props</b> (data passed to components) and state with types.
-                            </li>
-                        </ul>
-                        <b>Key Concepts:</b><br></br>
-                        <ul>
-                            <li>
-                                <b>Props and State in React:</b> Components receive data through props and manage their own state internally.
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div className="aboutCourseDiv2" style={{ paddingBottom: '2em' }}>
-                    <div className="introductionDiv">REACT STATE</div>
-                    <div className="frontImageBeginner">
-                        <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
-                            <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                4. Working with React State (with TypeScript)
-                            </div>
-                            <div className="imageContainer">
-                                <img src={useStatee} alt="" className="imageForCourse" onClick={() => window.open('/showCase4Lesson5/lesson5', '_blank')}
-                                    style={{ cursor: 'pointer' }} />
-                            </div>
-                        </h1>
-                    </div>
-
-                    <div className="descriptionOfCourse">
-                        <b>What You'll Learn:</b><br></br>
-                        <ul>
-                            <li>
-                                How to declare the type of state variables.
-                            </li>
-                            <li>
-                                How to handle state updates in TypeScript.
-                            </li>
-                        </ul>
-                        <b>Key Concepts:</b><br></br>
-                        <ul>
-                            <li>
-                                <b>useState Hook:</b> This hook allows you to add state to functional components.
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div className="aboutCourseDiv2" style={{ paddingBottom: '2em' }}>
-                    <div className="introductionDiv">REACT EVENTS</div>
-                    <div className="frontImageBeginner">
-                        <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
-                            <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                5. Handling Events in React with TypeScript
-                            </div>
-                            <div className="imageContainer">
-                                <img src={onclickk} alt="" className="imageForCourse" onClick={() => window.open('/showCase5Lesson5/lesson5', '_blank')}
-                                    style={{ cursor: 'pointer' }} />
-                            </div>
-                        </h1>
-                    </div>
-
-                    <div className="descriptionOfCourse">
-                        <b>What You'll Learn:</b><br></br>
-                        <ul>
-                            <li>
-                                How to type common event handlers like <b>onClick</b>, <b>onChange</b>, and more.
-                            </li>
-                            <li>
-                                How to work with form events.
-                            </li>
-                        </ul>
-                        <b>Key Concepts:</b><br></br>
-                        <ul>
-                            <li>
-                                <b>Event Handlers:</b> In React, events work similarly to native HTML events but are wrapped in React's synthetic event system.
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div className="aboutCourseDiv2" style={{ paddingBottom: '2em' }}>
-                    <div className="introductionDiv">TYPESCRIPT FEATURES</div>
-                    <div className="frontImageBeginner">
-                        <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
-                            <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                6. Advanced TypeScript Features for React
-                            </div>
-                            <div className="imageContainer">
-                                <img src={generics} alt="" className="imageForCourse" onClick={() => window.open('/showCase6Lesson5/lesson5', '_blank')}
-                                    style={{ cursor: 'pointer' }} />
-                            </div>
-                        </h1>
-                    </div>
-
-                    <div className="descriptionOfCourse">
-                        <b>What You'll Learn:</b><br></br>
-                        <ul>
-                            <li>
-                                Using TypeScript's advanced features to write more flexible and reusable components.
-                            </li>
-                            <li>
-
-                                Working with <b>optional props</b> and <b>default props</b> in React.
-                            </li>
-                        </ul>
-                        <b>Key Concepts:</b><br></br>
-                        <ul>
-                            <li>
-                                <b>Generics:</b>  Functions or components that work with various data types.
-                            </li>
-                            <li>
-                                <b>Union Types:</b>  Variables that can take multiple types.
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div className="aboutCourseDiv2" style={{ paddingBottom: '2em' }}>
-                    <div className="introductionDiv">API RESPONSES</div>
-                    <div className="frontImageBeginner">
-                        <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
-                            <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                7. Fetching Data and Handling API Responses with TypeScript
-                            </div>
-                            <div className="imageContainer">
-                                <img src={useeffectt} alt="" className="imageForCourse" onClick={() => window.open('/showCase7Lesson5/lesson5', '_blank')}
-                                    style={{ cursor: 'pointer' }} />
-                            </div>
-                        </h1>
-                    </div>
-
-                    <div className="descriptionOfCourse">
-                        <b>What You'll Learn:</b><br></br>
-                        <ul>
-                            <li>
-                                How to use <b>useEffect</b> to fetch data from an API.
-                            </li>
-                            <li>
-                                How to type API responses and handle errors gracefully.
-                            </li>
-                        </ul>
-                        <b>Key Concepts:</b><br></br>
-                        <ul>
-                            <li>
-                                <b>Asynchronous Data Fetching:</b> Using <b>fetch</b> or <b>axios</b> to fetch data from APIs.
-                            </li>
-                            <li>
-                                <b>Typing API Responses:</b>  Defining interfaces for the data you expect to receive.
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
                 <div className="aboutCourseDiv2" style={{ paddingBottom: '7em' }}>
                     <div className="introductionDiv">Summary</div>
                     <div className="frontImageBeginner">
@@ -537,8 +355,7 @@ export function Lesson6() {
                     </div>
 
                     <div className="descriptionOfCourse">
-                        In this lesson, you learned how to build React applications with TypeScript, manage state, handle user events, fetch data from APIs, and use advanced TypeScript features.
-                        You'll be confident in using TypeScript to improve your productivity and maintainability in React projects.
+                        In this lesson you learned how to set up your workspace for the final project. You learned how to install Visual Studio Code and create a new folder for your project. You also learned how to create a new React project using the command <b>npx create-react-app my-app-name</b>. You learned how to install additional dependencies like <b>React Router</b> and <b>Axios</b>. Finally, you learned about the folder structure of a React project and how to organize your components, styles, and assets.
                     </div>
 
                     <div className='key-areas3' style={{ marginTop: '-10em' }}>
