@@ -1,0 +1,77 @@
+.finish-course {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    background: #f6f6f6;
+    margin-top: 10rem;
+    margin-bottom: 10rem;
+}
+
+
+.finish-content h1 {
+    font-size: 2.5rem;
+    margin-top: 10rem;
+    margin-bottom: 10rem;
+    display: flex;
+    color: #333;
+    margin-bottom: 16px;
+    align-items: center;
+    justify-content: center;
+}
+
+.finish-content p {
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    margin-bottom: 24px;
+}
+
+.congrats-img-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.congrats-img {
+    max-width: 700px;
+    width: 100%;
+    height: auto;
+}
+
+
+.finish-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+}
+
+.finish-actions button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 10rem;
+    transition: background-color 0.3s ease;
+}
+
+.finish-actions button:hover {
+    background-color: #0056b3;
+}
+
+.confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    pointer-events: none;
+}

@@ -10,14 +10,25 @@ public class UserCourseDTO {
     private User user;
     private Course course;
 
+    private Boolean isCourseCompleted;
+
     public UserCourseDTO() {
     }
 
-    public UserCourseDTO(Integer userId, Integer courseId, User user, Course course) {
+    public UserCourseDTO(Integer userId, Integer courseId, User user, Course course, Boolean isCourseCompleted) {
         this.userId = userId;
         this.courseId = courseId;
         this.user = user;
         this.course = course;
+        this.isCourseCompleted = isCourseCompleted;
+    }
+
+    public Boolean getCourseCompleted() {
+        return isCourseCompleted;
+    }
+
+    public void setCourseCompleted(Boolean courseCompleted) {
+        isCourseCompleted = courseCompleted;
     }
 
     public Integer getUserId() {
@@ -59,6 +70,7 @@ public class UserCourseDTO {
                 ", courseId=" + courseId +
                 ", user=" + user +
                 ", course=" + course +
+                ", isCourseCompleted=" + isCourseCompleted +
                 '}';
     }
 }

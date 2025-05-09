@@ -138,6 +138,14 @@ export function Lesson10() {
 
     const handleNextLesson = async () => {
         await updateProgress();
+        try {
+            await fetch(`http://localhost:8080/api/user-courses/completeCourse/${userId}/${courseId}`, {
+                method: "PUT",
+            });
+            navigate(`/course/${courseId}/lesson/finish`);
+        } catch (error) {
+            console.error("Error making course completed", error);
+        }
         navigate(`/course/${courseId}/lesson/finish`);
     };
 
@@ -258,7 +266,7 @@ export function Lesson10() {
                 <>
                     <div style={{ display: 'flex' }}>
                         <div className='moreCoursesDiv' onClick={handleNextLesson}>
-                            Next Lesson
+                            Finish Course
                         </div>
                         <div className='goToPreviousLessonDiv' onClick={handlePreviousLesson} style={{ marginLeft: '-77.5em' }}>
                             Previous Lesson

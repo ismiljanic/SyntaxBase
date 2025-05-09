@@ -15,7 +15,6 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
     const location = useLocation();
     const headerRef = useRef<HTMLElement>(null);
     const [headerVisible, setHeaderVisible] = useState(false);
-    const [dropdownActive, setDropdownActive] = useState(false);
 
     const handleProtectedNavigation = (path: string) => {
         if (!isLoggedIn) {
@@ -94,7 +93,7 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
     return (
         <header
             ref={headerRef}
-            className={`header ${headerVisible ? 'header-visible' : 'header-hidden'} ${dropdownActive ? 'header-expanded' : ''} ${isLoggedIn ? 'logged-in' : 'logged-out'}`}
+            className={`header ${headerVisible ? 'header-visible' : 'header-hidden'} ${isLoggedIn ? 'logged-in' : 'logged-out'}`}
             style={{ backgroundColor: bgColor }}
         >
             <a href="/">
@@ -120,7 +119,6 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
                     <button className='divni1'>Contact</button>
                 </a>
             )}
-            {/* {dropdownActive && <div className="header-overlay" onClick={() => setDropdownActive(false)}></div>} */}
         </header>
     );
 }

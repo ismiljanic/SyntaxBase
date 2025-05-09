@@ -217,9 +217,3 @@ a {
 .arrow.down {
     border-top: 6px solid #333;
 }
-
-.dropdown:hover .arrow {
-    transform: rotate(1deg);
-    border-bottom: 6px solid #333;
-    border-top: none;
-}

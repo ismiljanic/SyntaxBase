@@ -10,4 +10,7 @@ public interface UserCourseRepository extends JpaRepository<UserCourse, Integer>
     List<UserCourse> findByUserId(Integer userId);
 
     boolean existsByUserIdAndCourseId(Integer userId, Integer courseId);
+
+    List<UserCourse> findByUserIdAndCourseId(Integer userId, Integer courseId);
+
 }

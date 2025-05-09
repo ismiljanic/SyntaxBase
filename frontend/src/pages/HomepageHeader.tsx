@@ -106,7 +106,7 @@ export function HomepageHeader({ bgColor = '#333' }: HeaderProps) {
     };
 
     const handleClosePopup = () => {
-        setShowPopup(false); // This will close the popup
+        setShowPopup(false);
     };
 
     return (
@@ -120,19 +120,9 @@ export function HomepageHeader({ bgColor = '#333' }: HeaderProps) {
             </a>
             <div className='divni2' style={{ paddingLeft: '27em', paddingRight: '35em' }}>
                 <div className='divni3' onClick={handleMyCoursesNavigation}>My Courses</div>
-                <div className="dropdown">
-                    <div className='divni3' id='tutorials'>
-                        Tutorials
-                        <span className="arrow down"></span>
-                    </div>
-                    <div className='dropdown-curtain'>
-                        <a href='/webDevelopment'>Web Development</a>
-                        <a href='/gameDevelopment'>Game Development</a>
-                        <a href='/databaseManagment'>Database Management</a>
-                        <a href='/problemSolving'>Problem Solving</a>
-                    </div>
+                <div className='divni3' id='tutorials'>
+                    Tutorials
                 </div>
-
                 <div className='divni3' onClick={handleScrollCourses}>Courses</div>
                 <a href='/help' className='divni3'>Help</a>
 

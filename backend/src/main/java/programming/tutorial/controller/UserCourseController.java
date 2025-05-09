@@ -44,7 +44,7 @@ public class UserCourseController {
                 UserProgress newUserProgress = new UserProgress();
                 newUserProgress.setUser(userRepository.findById(userId).orElse(null));
                 newUserProgress.setCourse(courseRepository.findById(courseId).orElse(null));
-                newUserProgress.setCurrentLesson(lessonRepository.findById(1).orElse(null)); // Assuming starting with lesson 1
+                newUserProgress.setCurrentLesson(lessonRepository.findById(1).orElse(null));
                 userProgressRepository.save(newUserProgress);
             }
 
@@ -56,12 +56,28 @@ public class UserCourseController {
         }
     }
 
-
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<CourseDTO>> getCoursesByUserId(@PathVariable Integer userId) {
         System.out.println("Fetching courses for user with ID: {" + userId + "}");
         List<CourseDTO> courses = userCourseService.getCoursesByUserId(userId);
         System.out.println("Fetched {" + courses.size() + "} courses " + " for user with ID: {" + userId + "}");
         return ResponseEntity.ok(courses);
+    }
+
+    @PutMapping("/completeCourse/{userId}/{courseId}")
+    public ResponseEntity<String> completeCourse(@PathVariable Integer userId, @PathVariable Integer courseId) {
+        List<UserCourse> userCourses = userCourseRepository.findByUserIdAndCourseId(userId, courseId);
+        System.out.println("Found " + userCourses.size() + " userCourse records");
+
+        if (userCourses.isEmpty()) {
+            System.out.println("No course enrollment found for user/course");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course enrollment not found");
+        }
+
+        UserCourse userCourse = userCourses.get(0);
+        userCourse.setCompleted(true);
+        userCourseRepository.save(userCourse);
+
+        return ResponseEntity.ok("Course marked as completed");
     }
 }

@@ -6,13 +6,13 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.3.3</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>programming</groupId>
-	<artifactId>tutorial</artifactId>
+	<artifactId>backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>tutorial</name>
-	<description>Programming tutorial web application</description>
+	<name>backend</name>
+	<description>Backend for web application</description>
 	<url/>
 	<licenses>
 		<license/>

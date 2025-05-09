@@ -18,13 +18,17 @@ public class UserCourse {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
+    @JoinColumn(name = "completed", nullable = false)
+    private Boolean completed;
+
     public UserCourse() {
     }
 
-    public UserCourse(Integer id, User user, Course course) {
+    public UserCourse(Integer id, User user, Course course, Boolean completed) {
         this.id = id;
         this.user = user;
         this.course = course;
+        this.completed = completed;
     }
 
     public Integer getId() {
@@ -51,12 +55,20 @@ public class UserCourse {
         this.course = course;
     }
 
+    public Boolean getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
+    }
     @Override
     public String toString() {
         return "UserCourse{" +
                 "id=" + id +
                 ", user=" + user +
                 ", course=" + course +
+                ", completed=" + completed +
                 '}';
     }
 }
