@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/Footer2.css'; // Import styles specific to Footer2
+import '../styles/Footer2.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -14,6 +14,7 @@ export function Footer2({ bgColor = '#333' }: FooterProps) {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const [userId, setUserId] = useState<string | null>(null);
     const navigate = useNavigate();
+    const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         const storedUserId = sessionStorage.getItem('userId');
@@ -44,7 +45,7 @@ export function Footer2({ bgColor = '#333' }: FooterProps) {
     };
 
     const handleScrollTutorials = () => {
-       navigate('/tutorials');
+        navigate('/tutorials');
     };
 
     const handleContactClick = () => {

@@ -37,12 +37,13 @@ export function AccountInformation() {
     const [showMorePosts, setShowMorePosts] = useState<boolean>(false);
     const [showMoreDeletedPosts, setShowMoreDeletedPosts] = useState<boolean>(false);
     const initialPostCount = 5;
+    const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
                 if (userId) {
-                    const response = await axios.get<UserAccount>(`http://localhost:8080/api/users/accountInformation/${userId}`);
+                    const response = await axios.get<UserAccount>(`${baseUrl}/api/users/accountInformation/${userId}`);
                     console.log(response.data);
                     setAccountInfo(response.data);
                 }

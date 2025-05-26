@@ -7,7 +7,7 @@ import programming.tutorial.services.EmailService;
 
 @RestController
 @RequestMapping("/api/contact")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class ContactController {
 
     @Autowired

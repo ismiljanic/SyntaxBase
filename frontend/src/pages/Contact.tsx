@@ -18,7 +18,7 @@ interface FormData {
 export function Contact() {
     const navigate = useNavigate();
     const { userId } = useParams<{ userId?: string }>();
-
+    const baseUrl = process.env.REACT_APP_API_BASE_URL;
     const [formData, setFormData] = useState<FormData>({
         name: '',
         surname: '',
@@ -33,7 +33,7 @@ export function Contact() {
         document.title = "Contact Us | SyntaxBase";
 
         if (userId) {
-            axios.get(`http://localhost:8080/api/users/userInformation/${userId}`)
+            axios.get(`${baseUrl}/api/users/userInformation/${userId}`)
                 .then(response => {
                     console.log('User information fetched:', response.data);
                     const { name, surname, username } = response.data;
@@ -61,7 +61,7 @@ export function Contact() {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:8080/api/contact/email', formData);
+            await axios.post(`${baseUrl}/api/contact/email`, formData);
             setStatus('Feedback submitted successfully!');
             setFormData({
                 name: '',

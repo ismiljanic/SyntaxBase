@@ -1,23 +1,20 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/SettingsMenu.css';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export function SettingsMenu() {
     const [menuOpen, setMenuOpen] = useState(false);
     const navigate = useNavigate();
-    const handleMenuToggle = () => setMenuOpen(prev => !prev);
+    const { logout } = useAuth0();
+    const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
-    const handleLogout = async () => {
-        try {
-            await axios.get("http://localhost:8080/api/logout");
-            sessionStorage.removeItem('userToken');
-            sessionStorage.removeItem('userId');
-            sessionStorage.removeItem('redirectAfterLogin');
-            navigate('/login');
-        } catch (error) {
-            console.error("Logout failed", error);
-        }
+    const handleMenuToggle = () => setMenuOpen((prev) => !prev);
+
+    const handleLogout = () => {
+        sessionStorage.clear();
+        logout({ logoutParams: { returnTo: window.location.origin } });
     };
 
     const handleChangePersonalInfo = () => {
@@ -29,10 +26,13 @@ export function SettingsMenu() {
         }
     };
 
-
     const handleContact = () => {
         const userId = sessionStorage.getItem('userId');
-        navigate(`/contact/${userId}`);
+        if (userId) {
+            navigate(`/contact/${userId}`);
+        } else {
+            navigate('/contact');
+        }
     };
 
     const handleAccountInformation = () => {
@@ -65,7 +65,9 @@ export function SettingsMenu() {
                 <button onClick={handleChangePersonalInfo}>Change Personal Information</button>
                 <button onClick={handleContact}>Contact Us</button>
                 <button onClick={handleNotifications}>New Messages</button>
-                <button className="logout-button" onClick={handleLogout}>Logout</button>
+                <button className="logout-button" onClick={handleLogout}>
+                    Logout
+                </button>
             </div>
         </div>
     );

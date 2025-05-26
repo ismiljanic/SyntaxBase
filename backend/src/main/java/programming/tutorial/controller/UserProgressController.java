@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import programming.tutorial.dao.LessonRepository;
 import programming.tutorial.dao.UserProgressRepository;
+import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.Lesson;
+import programming.tutorial.domain.User;
 import programming.tutorial.domain.UserProgress;
 import programming.tutorial.dto.LessonDTO;
 
@@ -16,13 +18,15 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/progress")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class UserProgressController {
 
     @Autowired
     private UserProgressRepository userProgressRepository;
     @Autowired
     private LessonRepository lessonRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/current-lesson")
     public ResponseEntity<LessonDTO> getCurrentLesson(
@@ -75,11 +79,18 @@ public class UserProgressController {
 
     @GetMapping("/progressBar")
     public ResponseEntity<?> getCurrentProgressBar(
-            @RequestParam Integer userId,
+            @RequestParam String userId,
             @RequestParam Integer courseId
     ) {
-        Long totalLessons = lessonRepository.countLessonsForCourse(courseId, userId);
-        Long completedLessons = lessonRepository.countCompletedLessonsForUserAndCourse(courseId, userId);
+        Optional<User> optionalUser = userRepository.findByAuth0UserId(userId);
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        User user = optionalUser.get();
+        Integer numericUserId = user.getId();
+
+        Long totalLessons = lessonRepository.countLessonsForCourse(courseId, numericUserId);
+        Long completedLessons = lessonRepository.countCompletedLessonsForUserAndCourse(courseId, numericUserId);
 
         double progress = totalLessons > 0 ? (completedLessons / (double) totalLessons) * 100 : 0;
 
@@ -90,5 +101,4 @@ public class UserProgressController {
 
         return ResponseEntity.ok(response);
     }
-
 }

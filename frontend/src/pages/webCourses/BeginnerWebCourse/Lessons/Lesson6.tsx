@@ -24,6 +24,7 @@ export function Lesson6() {
     const [loading, setLoading] = useState<boolean>(true);
     const [feedbackSubmitted, setFeedbackSubmitted] = useState<boolean>(false);
     const location = useLocation();
+    const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
     const lessonId = 6;
     const { courseId } = useParams();
@@ -38,7 +39,7 @@ export function Lesson6() {
             }
 
             try {
-                const response = await fetch(`http://localhost:8080/api/feedback/status?lessonId=${lessonId}&userId=${userId}`);
+                const response = await fetch(`${baseUrl}/api/feedback/status?lessonId=${lessonId}&userId=${userId}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -80,7 +81,7 @@ export function Lesson6() {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/api/feedback/submit', {
+            const response = await fetch(`${baseUrl}/api/feedback/submit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -106,7 +107,7 @@ export function Lesson6() {
 
     const markLessonAsCompleted = async (lessonId: number, userId: number) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/feedback/complete`, {
+            const response = await fetch(`${baseUrl}/api/feedback/complete`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -141,7 +142,7 @@ export function Lesson6() {
         }
 
         try {
-            await fetch(`http://localhost:8080/api/progress/update?userId=${userId}&courseId=${courseId}&lessonId=${lessonId}`, {
+            await fetch(`${baseUrl}/api/progress/update?userId=${userId}&courseId=${courseId}&lessonId=${lessonId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

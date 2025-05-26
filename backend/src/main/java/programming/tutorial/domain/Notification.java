@@ -9,7 +9,7 @@ public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer userId;
+    private String userId;
     private Integer postId;
     private Integer replyId;
     @Column(length = 100000)
@@ -20,7 +20,7 @@ public class Notification {
     public Notification() {
     }
 
-    public Notification(Integer id, Integer userId, Integer postId, Integer replyId, String message, boolean isRead, Date createdAt) {
+    public Notification(Integer id, String userId, Integer postId, Integer replyId, String message, boolean isRead, Date createdAt) {
         this.id = id;
         this.userId = userId;
         this.postId = postId;
@@ -38,11 +38,11 @@ public class Notification {
         this.id = id;
     }
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

@@ -30,13 +30,14 @@ export function Notifications() {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const baseUrl = process.env.REACT_APP_API_BASE_URL;
     const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
     const fetchNotifications = async () => {
         if (!userId) return;
 
         try {
-            const response = await fetch(`http://localhost:8080/api/posts/notifications/${userId}`);
+            const response = await fetch(`${baseUrl}/api/posts/notifications/${userId}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch notifications');
             }
@@ -62,7 +63,7 @@ export function Notifications() {
 
     const fetchPostAndReplies = async (postId: number) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/posts/${postId}`);
+            const response = await fetch(`${baseUrl}/api/posts/${postId}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch post and replies');
             }
@@ -84,7 +85,7 @@ export function Notifications() {
     const handleNotificationClick = async (notification: Notification) => {
         if (!notification.read) {
             try {
-                const response = await fetch(`http://localhost:8080/api/notifications/${notification.id}/mark-read`, {
+                const response = await fetch(`${baseUrl}/api/notifications/${notification.id}/mark-read`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

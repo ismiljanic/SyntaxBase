@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/feedback")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class FeedbackController {
 
     @Autowired
@@ -39,7 +39,6 @@ public class FeedbackController {
             message.setTo("SyntaxBaseDev@gmail.com");
             message.setSubject("New Feedback Received");
             message.setText("Feedback from " + feedbackRequest.getEmail() + ":\n\n" + feedbackRequest.getMessage());
-
             emailSender.send(message);
             return "Feedback submitted successfully!";
         } catch (Exception e) {

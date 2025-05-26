@@ -9,7 +9,7 @@ import programming.tutorial.domain.Notification;
 
 @RestController
 @RequestMapping("/api/notifications")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class NotificationController {
 
     @Autowired

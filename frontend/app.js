@@ -16,6 +16,11 @@ app.use(
     createProxyMiddleware({
         target: API_BASE_URL,
         changeOrigin: true,
+        onProxyReq: (proxyReq, req, res) => {
+            if (req.headers.authorization) {
+                proxyReq.setHeader("Authorization", req.headers.authorization);
+            }
+        }
     })
 );
 

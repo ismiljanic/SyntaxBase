@@ -5,18 +5,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import programming.tutorial.dao.*;
+import programming.tutorial.domain.Role;
+import programming.tutorial.domain.User;
 import programming.tutorial.domain.UserCourse;
 import programming.tutorial.domain.UserProgress;
 import programming.tutorial.dto.CourseDTO;
 import programming.tutorial.dto.UserCourseDTO;
 import programming.tutorial.services.UserCourseService;
 
+import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/user-courses")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class UserCourseController {
 
     @Autowired
@@ -33,16 +38,28 @@ public class UserCourseController {
     private LessonRepository lessonRepository;
 
     @PostMapping("/startCourse")
-    public ResponseEntity<String> enrollUserInCourse(@RequestBody UserCourseDTO userCourseDTO) {
+    public ResponseEntity<String> enrollUserInCourse(@RequestBody Map<String, Object> payload, Principal principal) {
         try {
-            userCourseService.enrollUserInCourse(userCourseDTO);
+            String authenticatedAuth0UserId = principal.getName();
+            String auth0UserId = (String) payload.get("auth0UserId");
+            if (!authenticatedAuth0UserId.equals(auth0UserId)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid user id");
+            }
 
-            Integer userId = userCourseDTO.getUserId();
-            Integer courseId = userCourseDTO.getCourseId();
+            Integer courseId = (Integer) payload.get("courseId");
+
+            User user = getOrCreateUserByAuth0Id(authenticatedAuth0UserId);
+            Integer userId = user.getId();
+
+            UserCourseDTO userCourseDTO = new UserCourseDTO();
+            userCourseDTO.setUserId(userId);
+            userCourseDTO.setCourseId(courseId);
+
+            userCourseService.enrollUserInCourse(userCourseDTO);
 
             if (!userProgressRepository.findByUserIdAndCourseId(userId, courseId).isPresent()) {
                 UserProgress newUserProgress = new UserProgress();
-                newUserProgress.setUser(userRepository.findById(userId).orElse(null));
+                newUserProgress.setUser(user);
                 newUserProgress.setCourse(courseRepository.findById(courseId).orElse(null));
                 newUserProgress.setCurrentLesson(lessonRepository.findById(1).orElse(null));
                 userProgressRepository.save(newUserProgress);
@@ -54,6 +71,21 @@ public class UserCourseController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Invalid input.");
         }
+    }
+
+    public User getOrCreateUserByAuth0Id(String auth0UserId) {
+        return userRepository.findByAuth0UserId(auth0UserId)
+                .orElseGet(() -> {
+                    User newUser = new User();
+                    newUser.setAuth0UserId(auth0UserId);
+                    newUser.setName("Unknown");
+                    newUser.setSurname("User");
+                    newUser.setPassword("");
+                    newUser.setUsername("user_" + auth0UserId.substring(auth0UserId.length() - 5));
+                    newUser.setDateCreated(LocalDateTime.now());
+                    newUser.setRole(Role.USER);
+                    return userRepository.save(newUser);
+                });
     }
 
     @GetMapping("/user/{userId}")

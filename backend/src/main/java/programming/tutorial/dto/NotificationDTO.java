@@ -10,7 +10,7 @@ import java.util.Date;
 public class NotificationDTO {
     private Long id;
 
-    private Long userId;
+    private String userId;
     private Long postId;
     private Integer replyId;
     private String message;
@@ -22,7 +22,7 @@ public class NotificationDTO {
     public NotificationDTO() {
     }
 
-    public NotificationDTO(Long id, Long userId, Long postId, Integer replyId, String message, boolean isRead, Date createdAt) {
+    public NotificationDTO(Long id, String userId, Long postId, Integer replyId, String message, boolean isRead, Date createdAt) {
         this.id = id;
         this.userId = userId;
         this.postId = postId;
@@ -32,7 +32,7 @@ public class NotificationDTO {
         this.createdAt = createdAt;
     }
 
-    public NotificationDTO(long id, long userId, long postId, Integer replyId, String message, boolean isRead, Date createdAt, String username) {
+    public NotificationDTO(long id, String userId, long postId, Integer replyId, String message, boolean isRead, Date createdAt, String username) {
         this.id = id;
         this.userId = userId;
         this.postId = postId;
@@ -51,11 +51,11 @@ public class NotificationDTO {
         this.id = id;
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

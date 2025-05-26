@@ -1,21 +1,25 @@
 package programming.tutorial.controller;
-
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import programming.tutorial.dao.PostRepository;
 import programming.tutorial.dao.UserRepository;
+import programming.tutorial.domain.Role;
 import programming.tutorial.domain.User;
 import programming.tutorial.dto.*;
 import programming.tutorial.services.UserService;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -36,6 +40,34 @@ public class UserController {
         }
         return user;
     }
+    @PostMapping("/sync-auth0")
+    @Transactional
+    public ResponseEntity<String> syncAuth0User(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestBody Auth0UserDTO auth0User
+    ) {
+        String auth0UserId = jwt.getSubject();
+
+        Optional<User> existingUser = userRepository.findByAuth0UserId(auth0UserId);
+
+        if (existingUser.isEmpty()) {
+            User newUser = new User();
+            newUser.setAuth0UserId(auth0UserId);
+            newUser.setUsername(auth0User.getEmail());
+            newUser.setName(auth0User.getName());
+            newUser.setSurname(auth0User.getSurname());
+            newUser.setPassword("");
+            newUser.setDateCreated(LocalDateTime.now());
+            newUser.setRole(Role.USER);
+
+            userRepository.save(newUser);
+            System.out.println("New Auth0 user created: " + newUser.getUsername());
+            return ResponseEntity.ok("User created");
+        } else {
+            System.out.println("User already exists: " + existingUser.get().getUsername());
+            return ResponseEntity.ok("User already exists");
+        }
+    }
 
 
     @RequestMapping(value = "/register", method = {RequestMethod.POST, RequestMethod.OPTIONS})
@@ -50,42 +82,42 @@ public class UserController {
         }
     }
 
-    @PostMapping(value = "/login", consumes = "application/x-www-form-urlencoded", produces = "application/json")
-    public ResponseEntity<?> loginUser(@RequestParam String username, @RequestParam String password) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUsername(username);
-        userDTO.setPassword(password);
-
-        Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(userDTO.getUsername()));
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Username does not exist");
-        }
-        User user = userOptional.get();
-        if (!user.getPassword().equals(userDTO.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
-        }
-
-        String userType = String.valueOf(user.getRole());
-        Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("id", user.getId());
-        responseBody.put("role", userType);
-        return ResponseEntity.ok(responseBody);
-    }
+//    @PostMapping(value = "/login", consumes = "application/x-www-form-urlencoded", produces = "application/json")
+//    public ResponseEntity<?> loginUser(@RequestParam String username, @RequestParam String password) {
+//        UserDTO userDTO = new UserDTO();
+//        userDTO.setUsername(username);
+//        userDTO.setPassword(password);
+//
+//        Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(userDTO.getUsername()));
+//        if (userOptional.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Username does not exist");
+//        }
+//        User user = userOptional.get();
+//        if (!user.getPassword().equals(userDTO.getPassword())) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
+//        }
+//
+//        String userType = String.valueOf(user.getRole());
+//        Map<String, Object> responseBody = new HashMap<>();
+//        responseBody.put("id", user.getId());
+//        responseBody.put("role", userType);
+//        return ResponseEntity.ok(responseBody);
+//    }
 
 
     @GetMapping("/accountInformation/{userId}")
-    public ResponseEntity<UserAccountDTO> getUserAccountInformation(@PathVariable Long userId) {
+    public ResponseEntity<UserAccountDTO> getUserAccountInformation(@PathVariable String userId) {
         try {
-            Optional<User> userOptional = userRepository.findById(Math.toIntExact(userId));
+            Optional<User> userOptional = userRepository.findByAuth0UserId(userId);
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
-                List<PostDTO> userPosts = postRepository.findByUserId(user.getId())
+                List<PostDTO> userPosts = postRepository.findByUserId(user.getAuth0UserId())
                         .stream()
                         .map(post -> new PostDTO(post.getId(), post.getContent(), post.getUserId(),
                                 user.getUsername(), post.getCreatedAt()))
                         .collect(Collectors.toList());
 
-                List<PostDTO> deletedPosts = postRepository.findDeletedPostsByUserId(user.getId())
+                List<PostDTO> deletedPosts = postRepository.findDeletedPostsByUserId(user.getAuth0UserId())
                         .stream()
                         .map(post -> new PostDTO(post.getId(), post.getContent(), post.getUserId(),
                                 user.getUsername(), post.getCreatedAt()))

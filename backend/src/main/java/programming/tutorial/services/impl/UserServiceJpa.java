@@ -122,4 +122,14 @@ public class UserServiceJpa implements UserService {
         }
     }
 
+    public User getOrCreateUserByAuth0Id(String auth0UserId) {
+        return userRepository.findByAuth0UserId(auth0UserId)
+                .orElseGet(() -> {
+                    User newUser = new User();
+                    newUser.setAuth0UserId(auth0UserId);
+                    return userRepository.save(newUser);
+                });
+    }
+
+
 }

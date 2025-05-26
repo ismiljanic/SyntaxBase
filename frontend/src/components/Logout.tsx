@@ -1,24 +1,18 @@
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const LogoutComponent = () => {
-    const navigate = useNavigate();
+  const { logout } = useAuth0();
 
-    const handleLogout = async () => {
-        try {
-            await axios.get("http://localhost:8080/api/logout");
-        } catch (error) {
-            console.error("Logout failed", error);
-        } finally {
-            sessionStorage.removeItem('userId');
-            sessionStorage.removeItem('userToken');
-            navigate('/login'); 
-        }
-    };
+  const handleLogout = () => {
+    sessionStorage.clear();
+    logout({ logoutParams: { returnTo: window.location.origin } });
+  };
 
-    return (
-        <button onClick={handleLogout} className="courseButton">Logout</button>
-    );
+  return (
+    <button onClick={handleLogout} className="courseButton">
+      Logout
+    </button>
+  );
 };
 
 export default LogoutComponent;

@@ -13,7 +13,8 @@ public class Post {
     @Column(length = 100000)
     private String content;
 
-    private Integer userId;
+    @Column(name = "user_id")
+    private String userId;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -30,7 +31,7 @@ public class Post {
     public Post() {
     }
 
-    public Post(Integer id, String content, Integer userId, Date createdAt, Post parentPost, List<Post> replies, boolean deleted) {
+    public Post(Integer id, String content, String userId, Date createdAt, Post parentPost, List<Post> replies, boolean deleted) {
         this.id = id;
         this.content = content;
         this.userId = userId;
@@ -56,11 +57,11 @@ public class Post {
         this.content = content;
     }
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

@@ -107,6 +107,7 @@ a {
 .divni1 {
     position: relative;
     z-index: 1;
+    margin-right: 10em;
 }
 
 .divni1:hover {
@@ -124,10 +125,14 @@ a {
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
 }
 
-.divni2 {
-    display: flex;
-    padding-left: 16em;
-    padding-right: 30em;
+.divni2.logged-in {
+  display: flex;
+  margin-left: 18em;
+  margin-right: 31em;
+}
+
+.divni2.logged-out {
+  display: flex;
 }
 
 .header.logged-out .divni2 {
@@ -139,7 +144,7 @@ a {
 .divni3 {
     padding: 1em;
     font-size: 16px;
-    margin: 0 1em;
+    margin-right: 1.6em;
     color: #000000;
     cursor: pointer;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
@@ -197,6 +202,7 @@ a {
     box-sizing: border-box;
     pointer-events: none;
 }
+
 
 .header img {
     width: 200px;

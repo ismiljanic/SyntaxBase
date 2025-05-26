@@ -4,6 +4,7 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { Footer2 } from './Footer2';
 import "../styles/Community.css";
+import { useNavigate } from 'react-router-dom';
 
 interface Post {
     id: number;
@@ -20,76 +21,141 @@ export function Community() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [newPost, setNewPost] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
     const userRole = sessionStorage.getItem('userRole');
+    const userId = sessionStorage.getItem('userId');
+    const username = sessionStorage.getItem('username');
+    const token = sessionStorage.getItem('userToken');
+    const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
+
+    const api = axios.create({
+        baseURL: baseUrl,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : undefined
+        }
+    });
 
     useEffect(() => {
         const fetchPosts = async () => {
+            setLoading(true);
             try {
-                const response = await axios.get<Post[]>('http://localhost:8080/api/posts');
+                const response = await api.get<Post[]>('/api/posts');
                 const structuredPosts: Post[] = response.data.map(post => ({
                     ...post,
-                    replies: post.replies || []
+                    replies: post.replies || [],
+                    isExpanded: false
                 }));
-                const sortedPosts = structuredPosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                const sortedPosts = structuredPosts.sort((a, b) =>
+                    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                );
                 setPosts(sortedPosts);
+                setErrorMessage('');
             } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    if (error.response?.status === 401) {
+                        navigate('/login');
+                    } else {
+                        setErrorMessage(error.response?.data?.message || 'Failed to fetch posts');
+                    }
+                } else {
+                    setErrorMessage('An unexpected error occurred');
+                }
                 console.error('Error fetching posts:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchPosts();
-    }, []);
+    }, [baseUrl, navigate]);
 
     const handlePostSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (newPost.trim()) {
-            const userId = sessionStorage.getItem('userId');
-            try {
-                const response = await axios.post<Post>('http://localhost:8080/api/posts', {
-                    content: newPost,
-                    userId: userId,
-                });
-                setPosts([{ ...response.data, replies: [], isExpanded: false }, ...posts]);
-                setNewPost('');
-                setErrorMessage('');
-            } catch (error) {
-                if (axios.isAxiosError(error) && error.response) {
-                    setErrorMessage(error.response.data.message || 'Message exceeds 1024 word limit.');
+        if (!newPost.trim()) return;
+        const userId = sessionStorage.getItem('userId');
+
+        if (!userId) {
+            setErrorMessage('You must be logged in to post');
+            navigate('/login');
+            return;
+        }
+        try {
+            const response = await api.post<Post>('/api/posts', {
+                content: newPost,
+                userId: userId,
+            });
+
+            setPosts([{
+                ...response.data,
+                username: username || 'Anonymous',
+                replies: [],
+                isExpanded: false
+            }, ...posts]);
+
+            setNewPost('');
+            setErrorMessage('');
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                if (error.response?.status === 401) {
+                    setErrorMessage('Session expired. Please login again.');
+                    navigate('/login');
                 } else {
-                    setErrorMessage('An unknown error occurred.');
+                    setErrorMessage(error.response?.data?.message ||
+                        'Message exceeds 1024 word limit or other error occurred');
                 }
+            } else {
+                setErrorMessage('An unknown error occurred.');
             }
         }
     };
 
     const handleReplySubmit = async (postId: number, replyContent: string) => {
-        if (replyContent.trim()) {
-            const userId = sessionStorage.getItem('userId');
-            try {
-                const response = await axios.post<Post>('http://localhost:8080/api/posts', {
-                    content: replyContent,
-                    userId: userId,
-                    parentPost: { id: postId },
-                });
-                setPosts(posts.map(post => {
-                    if (post.id === postId) {
-                        return { ...post, replies: [...(post.replies || []), response.data] };
-                    }
-                    return post;
-                }));
-            } catch (error) {
-                setErrorMessage('Error occurred while replying.');
-            }
+        if (!replyContent.trim() || !userId) return;
+
+        try {
+            const response = await api.post<Post>('/api/posts', {
+                content: replyContent,
+                userId: userId,
+                parentPost: { id: postId },
+            });
+
+            setPosts(posts.map(post => {
+                if (post.id === postId) {
+                    return {
+                        ...post,
+                        replies: [
+                            ...(post.replies || []),
+                            {
+                                ...response.data,
+                                username: username || 'Anonymous'
+                            }
+                        ]
+                    };
+                }
+                return post;
+            }));
+        } catch (error) {
+            setErrorMessage('Error occurred while replying. ' +
+                (axios.isAxiosError(error) ? error.response?.data?.message : ''));
         }
     };
 
     const handleDeletePost = async (postId: number) => {
-        const username = sessionStorage.getItem('username');
+        if (!username) return;
+
         try {
-            await axios.delete(`http://localhost:8080/api/posts/${postId}`, { params: { username } });
+            await api.delete(`/api/posts/${postId}`, {
+                params: { username },
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
             setPosts(posts.filter(post => post.id !== postId));
         } catch (error) {
             console.error('Error deleting post:', error);
+            setErrorMessage('Failed to delete post. ' +
+                (axios.isAxiosError(error) ? error.response?.data?.message : ''));
         }
     };
 
@@ -100,7 +166,6 @@ export function Community() {
     };
 
     const wordCount = newPost.trim() ? newPost.trim().split(/\s+/).length : 0;
-
     return (
         <div className="community-container">
             <Header bgColor='rgb(247, 250, 251)' />

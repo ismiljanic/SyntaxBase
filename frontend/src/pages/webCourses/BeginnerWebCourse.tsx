@@ -26,20 +26,23 @@ export function BeginnerWebCourse() {
     const [popupMessage, setPopupMessage] = useState("");
     const navigate = useNavigate();
     const userToken = sessionStorage.getItem('userToken');
+    const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
     const handleButtonClick = async () => {
         const userId = sessionStorage.getItem('userId');
         console.log(userId);
-
+        console.log("userId (raw):", userId);
+        console.log("userToken:", userToken);
+        console.log("baseUrl:", baseUrl);
         if (userId) {
             try {
-                await axios.post("http://localhost:8080/api/user-courses/startCourse", {
-                    userId: parseInt(userId, 10),
+                await axios.post(`http://localhost:8080/api/user-courses/startCourse`, {
+                    auth0UserId: userId,
                     courseId: 1
                 }, {
-                    headers: { 'Authorization': `Bearer ${userToken}` }
+                    headers: { 'Authorization': `Bearer ${userToken}` },
+                    withCredentials: true,
                 });
-
                 navigate(`/beginnerWebCourse/${userId}`);
             } catch (error) {
                 if (axios.isAxiosError(error)) {
@@ -54,12 +57,11 @@ export function BeginnerWebCourse() {
                     console.error("Non-Axios error:", error);
                 }
             }
+
         } else {
             navigate('/login', { state: { from: `/beginnerWebCourse/${userId}` } });
         }
     };
-
-
 
     return (
         <div className="mainp-container" style={{ backgroundColor: 'rgb(247, 250, 251)' }}>

@@ -30,12 +30,13 @@ const PersonalInformation: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const userId = sessionStorage.getItem('userId');
+  const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     const fetchData = async () => {
       if (!userId) return;
       try {
-        const response = await axios.get(`http://localhost:8080/api/users/accountInformation/${userId}`);
+        const response = await axios.get(`${baseUrl}/api/users/accountInformation/${userId}`);
         const userData = response.data;
         setName(userData.name);
         setSurname(userData.surname);
@@ -89,7 +90,7 @@ const PersonalInformation: React.FC = () => {
           return;
         }
         setDeleted(true);
-        await axios.delete(`http://localhost:8080/api/users/deleteAccount/${userId}`, {
+        await axios.delete(`${baseUrl}/api/users/deleteAccount/${userId}`, {
           data: { password },
         });
         sessionStorage.removeItem('userId');
@@ -179,7 +180,7 @@ const PersonalInformation: React.FC = () => {
             setUsernameError('Please enter a new name.');
             return;
           }
-          await axios.put(`http://localhost:8080/api/users/updateName/${userId}`, {
+          await axios.put(`${baseUrl}/api/users/updateName/${userId}`, {
             name: newName,
             surname: oldSurname,
             username: oldUSername
@@ -191,7 +192,7 @@ const PersonalInformation: React.FC = () => {
           break;
 
         case 'username':
-          await axios.put(`http://localhost:8080/api/users/updateUsername/${userId}`, {
+          await axios.put(`${baseUrl}/api/users/updateUsername/${userId}`, {
             name: newName,
             surname: oldSurname,
             username: newUsername
@@ -203,7 +204,7 @@ const PersonalInformation: React.FC = () => {
           break;
 
         case 'password':
-          await axios.put(`http://localhost:8080/api/users/changePassword/${userId}`, {
+          await axios.put(`${baseUrl}/api/users/changePassword/${userId}`, {
             currentPassword: oldPassword,
             newPassword: newPassword
           });
@@ -217,7 +218,7 @@ const PersonalInformation: React.FC = () => {
             setUsernameError('Please enter a new surname.');
             return;
           }
-          await axios.put(`http://localhost:8080/api/users/updateSurname/${userId}`, {
+          await axios.put(`${baseUrl}/api/users/updateSurname/${userId}`, {
             name: newName,
             surname: newSurname,
             username: oldUSername
@@ -330,7 +331,7 @@ const PersonalInformation: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '8em', borderBottom: '1px solid #dee2e6', width: '88.5%'}}>
+      <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '8em', borderBottom: '1px solid #dee2e6', width: '88.5%' }}>
         <div className='aboutYouDiv' style={{ paddingTop: '0.5em', marginLeft: '-3.2em' }}>Change Username</div>
         <div className='formDiv2'>
           <div className="footer2-feedback">
@@ -371,7 +372,7 @@ const PersonalInformation: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '8em' , borderBottom: '1px solid #dee2e6', width: '88.5%'}}>
+      <div className='formDiv' style={{ paddingTop: '10em', marginLeft: '8em', borderBottom: '1px solid #dee2e6', width: '88.5%' }}>
         <div className='aboutYouDiv' style={{ paddingTop: '0.5em', marginLeft: '-3.5em' }}>Change Password</div>
         <div className='formDiv2'>
           <div className="footer2-feedback">

@@ -28,12 +28,13 @@ export function HomepageHeader({ bgColor = '#333' }: HeaderProps) {
     const headerRef = useRef<HTMLElement>(null);
     const [headerVisible, setHeaderVisible] = useState(false);
     const [notifications, setNotifications] = useState<Notification[]>([]);
-    const [showPopup, setShowPopup] = useState<boolean>(true); // Popup should be shown initially
+    const [showPopup, setShowPopup] = useState<boolean>(true);
+    const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
     const fetchNotifications = async () => {
         const storedUserId = sessionStorage.getItem('userId');
         try {
-            const response = await fetch(`http://localhost:8080/api/posts/notifications/${storedUserId}`);
+            const response = await fetch(`${baseUrl}/api/posts/notifications/${storedUserId}`);
             if (!response.ok) throw new Error('Failed to fetch notifications');
             const data: Notification[] = await response.json();
             setNotifications(data);

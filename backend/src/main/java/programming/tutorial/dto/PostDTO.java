@@ -6,13 +6,13 @@ import java.util.List;
 public class PostDTO {
     private Integer id;
     private String content;
-    private Integer userId;
+    private String userId;
     private String username;
     private Date createdAt;
     private List<PostDTO> replies;
     private String category;
 
-    public PostDTO(Integer id, String content, Integer userId, String username, Date createdAt, List<PostDTO> replies) {
+    public PostDTO(Integer id, String content, String userId, String username, Date createdAt, List<PostDTO> replies) {
         this.id = id;
         this.content = content;
         this.userId = userId;
@@ -21,7 +21,7 @@ public class PostDTO {
         this.replies = replies;
     }
 
-    public PostDTO(Integer id, String content, Integer userId, String username, Date createdAt) {
+    public PostDTO(Integer id, String content, String userId, String username, Date createdAt) {
         this.id = id;
         this.content = content;
         this.userId = userId;
@@ -45,11 +45,11 @@ public class PostDTO {
         this.content = content;
     }
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@auth0/auth0-react": "^2.3.0",
     "@babel/standalone": "^7.25.6",
     "@codemirror/lang-html": "^6.4.9",
     "@codemirror/state": "^6.4.1",

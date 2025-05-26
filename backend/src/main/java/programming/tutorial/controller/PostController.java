@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/posts")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class PostController {
 
     @Autowired
@@ -34,12 +34,12 @@ public class PostController {
     public List<PostDTO> getAllPosts() {
         return postRepository.findAllByParentPostIsNull().stream()
                 .map(post -> {
-                    User user = userRepository.findById(post.getUserId()).orElse(null);
+                    User user = userRepository.findByAuth0UserId(post.getUserId()).orElse(null);
                     String username = user != null ? user.getUsername() : "Unknown User";
 
                     List<PostDTO> replies = postRepository.findAllByParentPost(post).stream()
                             .map(reply -> {
-                                User replyUser = userRepository.findById(reply.getUserId()).orElse(null);
+                                User replyUser = userRepository.findByAuth0UserId(reply.getUserId()).orElse(null);
                                 String replyUsername = replyUser != null ? replyUser.getUsername() : "Unknown User";
                                 return new PostDTO(reply.getId(), reply.getContent(), reply.getUserId(), replyUsername, reply.getCreatedAt(), null); // Pass null for replies
                             }).collect(Collectors.toList());
@@ -51,7 +51,7 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<?> createPost(@RequestBody Post post) {
-        Integer userId = post.getUserId();
+        String userId = String.valueOf(post.getUserId());
         int wordCount = post.getContent().trim().isEmpty() ? 0 : post.getContent().trim().split("\\s+").length;
 
         if (wordCount > 1024) {
@@ -110,10 +110,10 @@ public class PostController {
 
 
     @GetMapping("/notifications/{userId}")
-    public ResponseEntity<List<NotificationDTO>> getNotifications(@PathVariable Long userId) {
+    public ResponseEntity<List<NotificationDTO>> getNotifications(@PathVariable String userId) {
         List<Notification> notifications = notificationRepository.findByUserId(userId);
         List<NotificationDTO> notificationDTOs = notifications.stream().map(notification -> {
-            User user = userRepository.findById(notification.getUserId()).orElse(null);
+            User user = userRepository.findByAuth0UserId(notification.getUserId()).orElse(null);
             String username = user != null ? user.getUsername() : "Unknown User";
             return new NotificationDTO(notification.getId(), notification.getUserId(), notification.getPostId(),
                     notification.getReplyId(), notification.getMessage(),
@@ -132,12 +132,12 @@ public class PostController {
             return ResponseEntity.notFound().build();
         }
 
-        User user = userRepository.findById(post.getUserId()).orElse(null);
+        User user = userRepository.findByAuth0UserId(post.getUserId()).orElse(null);
         String username = user != null ? user.getUsername() : "Unknown User";
 
         List<PostDTO> replies = postRepository.findAllByParentPost(post).stream()
                 .map(reply -> {
-                    User replyUser = userRepository.findById(reply.getUserId()).orElse(null);
+                    User replyUser = userRepository.findByAuth0UserId(reply.getUserId()).orElse(null);
                     String replyUsername = replyUser != null ? replyUser.getUsername() : "Unknown User";
                     return new PostDTO(reply.getId(), reply.getContent(), reply.getUserId(), replyUsername, reply.getCreatedAt());
                 }).collect(Collectors.toList());
