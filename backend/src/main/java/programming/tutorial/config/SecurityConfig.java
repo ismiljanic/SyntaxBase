@@ -1,4 +1,4 @@
-package programming.tutorial.controller;
+package programming.tutorial.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +23,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/users/register",
                                 "/api/users/login",
+                                "/api/auth/login",
                                 "/api/auth/refresh",
                                 "/api/auth/logout",
                                 "/api/feedback/email",

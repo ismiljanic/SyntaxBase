@@ -89,7 +89,7 @@ public class UserProgressController {
         User user = optionalUser.get();
         Integer numericUserId = user.getId();
 
-        Long totalLessons = lessonRepository.countLessonsForCourse(courseId, numericUserId);
+        Long totalLessons = lessonRepository.getCourseLength(courseId);
         Long completedLessons = lessonRepository.countCompletedLessonsForUserAndCourse(courseId, numericUserId);
 
         double progress = totalLessons > 0 ? (completedLessons / (double) totalLessons) * 100 : 0;

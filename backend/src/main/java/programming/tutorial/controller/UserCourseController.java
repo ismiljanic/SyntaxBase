@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import programming.tutorial.dao.*;
 import programming.tutorial.domain.Role;
 import programming.tutorial.domain.User;
@@ -88,13 +89,17 @@ public class UserCourseController {
                 });
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<CourseDTO>> getCoursesByUserId(@PathVariable Integer userId) {
-        System.out.println("Fetching courses for user with ID: {" + userId + "}");
-        List<CourseDTO> courses = userCourseService.getCoursesByUserId(userId);
-        System.out.println("Fetched {" + courses.size() + "} courses " + " for user with ID: {" + userId + "}");
+    @GetMapping("/user/{auth0UserId}")
+    public ResponseEntity<List<CourseDTO>> getCoursesByAuth0UserId(@PathVariable String auth0UserId) {
+        System.out.println("Fetching courses for user with ID: {" + auth0UserId + "}");
+
+        User user = userRepository.findByAuth0UserId(auth0UserId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        List<CourseDTO> courses = userCourseService.getCoursesByUserId(user.getId());
+        System.out.println("Fetched {" + courses.size() + "} courses " + " for user with ID: {" + auth0UserId + "}");
         return ResponseEntity.ok(courses);
     }
+
 
     @PutMapping("/completeCourse/{userId}/{courseId}")
     public ResponseEntity<String> completeCourse(@PathVariable Integer userId, @PathVariable Integer courseId) {
