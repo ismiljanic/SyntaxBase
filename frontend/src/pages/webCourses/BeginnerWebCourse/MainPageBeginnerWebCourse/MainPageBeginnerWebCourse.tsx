@@ -7,6 +7,7 @@ import { Button } from "@mui/material";
 import "reactjs-popup/dist/index.css";
 import '../../../../styles/webCourses/MainPageBeginnerWebCourse/MainPageBeginnerWebCourse.css';
 import axios from "axios";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export function MainPageBeginnerWebCourse() {
     const navigate = useNavigate();
@@ -15,27 +16,34 @@ export function MainPageBeginnerWebCourse() {
     const [completedLessons, setCompletedLessons] = useState(0);
     const [totalLessons, setTotalLessons] = useState(0);
 
-    const userId = sessionStorage.getItem('userId');
+    const { user, isAuthenticated, getAccessTokenSilently, isLoading } = useAuth0();
 
     useEffect(() => {
-        if (!userId) return;
+        const fetchProgress = async () => {
+            if (!isAuthenticated || !user?.sub) return;
 
-        axios.get(`http://localhost:8080/api/progress/progressBar`, {
-            params: { userId, courseId },
-            headers: { 'Authorization': `Bearer ${sessionStorage.getItem('userToken')}` },
-            withCredentials: true,
-        })
-            .then(response => {
+            try {
+                const token = await getAccessTokenSilently();
+
+                const response = await axios.get("http://localhost:8080/api/progress/progressBar", {
+                    params: { userId: user.sub, courseId },
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    withCredentials: true,
+                });
+
                 const { progress, completedLessons, totalLessons } = response.data;
                 setProgress(progress);
                 setCompletedLessons(completedLessons);
                 setTotalLessons(totalLessons);
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error("Failed to load progress", error);
-            });
-    }, [userId, courseId]);
+            }
+        };
 
+        fetchProgress();
+    }, [isAuthenticated, user, getAccessTokenSilently]);
 
     const courseOutline = [
         { title: "Introduction to Web Development", description: "Learn the basics of the web and how websites work." },
@@ -44,10 +52,11 @@ export function MainPageBeginnerWebCourse() {
         { title: "Final Project", description: "Build and deploy your own simple website." },
     ];
 
+    if (isLoading) return <p>Loading...</p>;
+
     return (
         <div className="bigContainer">
             <Header bgColor="rgb(247, 250, 251)" />
-
             <div className="main-container">
                 <div className="intro-section">
                     <h1>Welcome to the Beginner Web Development Course</h1>
@@ -93,7 +102,6 @@ export function MainPageBeginnerWebCourse() {
                     <p>By the end of the course you will have knowledge to build simple frontend application.</p>
                 </div>
             </div>
-
             <Footer2 bgColor="rgb(247, 250, 251)" />
             <Footer bgColor="rgb(247, 250, 251)" />
         </div>

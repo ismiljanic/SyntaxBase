@@ -19,49 +19,59 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export function BeginnerWebCourse() {
-
+    const { user, isAuthenticated, getAccessTokenSilently, isLoading } = useAuth0();
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState("");
     const navigate = useNavigate();
-    const userToken = sessionStorage.getItem('userToken');
-    const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
     const handleButtonClick = async () => {
-        const userId = sessionStorage.getItem('userId');
-        console.log(userId);
-        console.log("userId (raw):", userId);
-        console.log("userToken:", userToken);
-        console.log("baseUrl:", baseUrl);
-        if (userId) {
-            try {
-                await axios.post(`http://localhost:8080/api/user-courses/startCourse`, {
-                    auth0UserId: userId,
-                    courseId: 1
-                }, {
-                    headers: { 'Authorization': `Bearer ${userToken}` },
-                    withCredentials: true,
-                });
-                navigate(`/beginnerWebCourse/${userId}`);
-            } catch (error) {
-                if (axios.isAxiosError(error)) {
-                    if (error.response && error.response.status === 409) {
-                        const errorMessage = error.response.data;
-                        setPopupMessage(errorMessage || "You have already started this course.");
-                        setShowPopup(true);
-                    } else {
-                        console.error("Unexpected error:", error);
-                    }
-                } else {
-                    console.error("Non-Axios error:", error);
-                }
-            }
+        if (!isAuthenticated || !user?.sub) {
+            navigate('/login', { state: { from: '/beginnerWebCourse' } });
+            return;
+        }
 
-        } else {
-            navigate('/login', { state: { from: `/beginnerWebCourse/${userId}` } });
+        try {
+            const token = await getAccessTokenSilently();
+
+            await axios.post(
+                'http://localhost:8080/api/user-courses/startCourse',
+                {
+                    auth0UserId: user.sub,
+                    courseId: 1,
+                },
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                    withCredentials: true,
+                }
+            );
+
+            navigate(`/beginnerWebCourse/${user.sub}`);
+
+        } catch (error: any) {
+            if (axios.isAxiosError(error)) {
+                if (error.response?.status === 409) {
+                    setPopupMessage(error.response.data || "You are already enrolled in this course.");
+                    setShowPopup(true);
+                } else if (error.response) {
+                    setPopupMessage(`Error: ${error.response.data || error.message}`);
+                    setShowPopup(true);
+                } else {
+                    setPopupMessage("Network error. Please try again.");
+                    setShowPopup(true);
+                }
+            } else {
+                setPopupMessage("Unexpected error occurred.");
+                setShowPopup(true);
+            }
         }
     };
+
+    if (isLoading) {
+        return <p>Loading...</p>;
+    }
 
     return (
         <div className="mainp-container" style={{ backgroundColor: 'rgb(247, 250, 251)' }}>
@@ -150,42 +160,50 @@ export function BeginnerWebCourse() {
                 <div className="pictureContainer2">
                     <a href="/intermediateWebCourse" className="imageWithDescription2">
                         <img src={intermediateWebCourse} alt="" className="courseImage2" />
-                        <div className="imageDescription2">Intermediate Frontend Course<br></br> Develop Intermediate Application Following Course Project Structure!</div>
+                        <div className="imageDescription2">
+                            Intermediate Frontend Course<br />
+                            Develop Intermediate Application Following Course Project Structure!
+                        </div>
                     </a>
                     <a href="/advancedWebCourse" className="imageWithDescription2">
                         <img src={adv} alt="" className="courseImage2" />
                         <div className="imageDescription2">
-                            Advanced Frontend Course<br />Master Frontend Development With Ultimate Project!
+                            Advanced Frontend Course<br />
+                            Master Frontend Development With Ultimate Project!
                         </div>
                     </a>
                     <a href="/beginnerGameCourse" className="imageWithDescription2">
                         <img src={desktop2} alt="" className="courseImage2" />
                         <div className="imageDescription2">
-                            Beginner Game Development Course<br />Create Simple Android And Desktop Games With C++ or C#!
+                            Beginner Game Development Course<br />
+                            Create Simple Android And Desktop Games With C++ or C#!
                         </div>
                     </a>
                     <a href="/intermediateGameCourse" className="imageWithDescription2">
                         <img src={gameL2} alt="" className="courseImage2" />
                         <div className="imageDescription2">
-                            Intermediate Game Development Course<br />Advance With Game Development With C++ and C#!
+                            Intermediate Game Development Course<br />
+                            Advance With Game Development With C++ and C#!
                         </div>
                     </a>
                     <a href="/advancedGameCourse" className="imageWithDescription2">
                         <img src={gameL2} alt="" className="courseImage2" />
                         <div className="imageDescription2">
-                            Advanced Game Development Course<br />Create Complex Android And Desktop Games With C++ or C#!
+                            Advanced Game Development Course<br />
+                            Create Complex Android And Desktop Games With C++ or C#!
                         </div>
                     </a>
                     <a href="/intermediateDbCourse" className="imageWithDescription2">
                         <img src={database2} alt="" className="courseImage2" />
                         <div className="imageDescription2">
-                            Intermediate Database Managment Course<br />Create Complex Structure Of Database!
+                            Intermediate Database Managment Course<br />
+                            Create Complex Structure Of Database!
                         </div>
                     </a>
                 </div>
             </div>
             <Footer2 bgColor="rgb(247, 250, 251)" />
             <Footer bgColor="rgb(247, 250, 251)" />
-        </div >
+        </div>
     );
 }

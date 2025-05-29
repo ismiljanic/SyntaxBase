@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import web4 from '../images/web4.png';
 import '../styles/CoursesList.css';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface Course {
     courseId: number;
@@ -23,10 +24,11 @@ interface Progress {
 }
 
 interface CoursesListProps {
-    userId: number;
+    userId: string;
 }
 
 const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
+    const { isAuthenticated, user, isLoading } = useAuth0();
     const [courses, setCourses] = useState<Course[]>([]);
     const [progressData, setProgressData] = useState<{ [key: number]: Progress }>({});
     const [loading, setLoading] = useState<boolean>(true);
@@ -34,58 +36,87 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
     const navigate = useNavigate();
     const [ratings, setRatings] = useState<{ [key: number]: number }>({});
     const [hoveredRating, setHoveredRating] = useState(0);
+    const { getAccessTokenSilently } = useAuth0();
 
     useEffect(() => {
         const fetchCoursesAndProgress = async () => {
-            try {
-                const coursesResponse = await axios.get<Course[]>(`http://localhost:8080/api/user-courses/user/${userId}`);
-                setCourses(coursesResponse.data);
+            console.log('Fetching courses and progress for user:', userId);
+            if (!userId) {
+                setLoading(false);
+                setError({ message: 'User not authenticated.' });
+                return;
+            }
 
-                const progressPromises = coursesResponse.data.map(course =>
-                    axios.get<Progress>(`http://localhost:8080/api/progress/progressBar`, {
-                        params: { userId, courseId: course.courseId }
-                    })
+            try {
+                const token = await getAccessTokenSilently();
+                const encodedUserId = encodeURIComponent(userId);
+
+                const coursesResponse = await axios.get<Course[]>(
+                    `http://localhost:8080/api/user-courses/user/${encodedUserId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                        withCredentials: true,
+                    }
                 );
 
-                const progressResponses = await Promise.all(progressPromises);
+                setCourses(coursesResponse.data);
+
+                const progressResponses = await Promise.all(
+                    coursesResponse.data.map(course =>
+                        axios.get<Progress>(
+                            `http://localhost:8080/api/progress/progressBar`,
+                            {
+                                params: { userId, courseId: course.courseId },
+                                headers: { Authorization: `Bearer ${token}` },
+                                withCredentials: true,
+                            }
+                        )
+                    )
+                );
+
                 const progressDataMap = progressResponses.reduce((acc, response, index) => {
                     const courseId = coursesResponse.data[index].courseId;
-                    acc[courseId] = {
-                        totalLessons: response.data.totalLessons,
-                        completedLessons: response.data.completedLessons,
-                        progress: response.data.progress,
-                    };
+                    acc[courseId] = response.data;
                     return acc;
                 }, {} as { [key: number]: Progress });
 
-                setTimeout(() => {
-                    setProgressData(progressDataMap);
-                }, 50);
+                setProgressData(progressDataMap);
 
-                const ratingsResponse = await axios.get<{ courseId: number; rating: number }[]>(`http://localhost:8080/api/ratings/user/${userId}`);
+                const ratingsResponse = await axios.get<{ courseId: number; rating: number }[]>(
+                    `http://localhost:8080/api/ratings/user/${userId}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                        withCredentials: true,
+                    }
+                );
+
                 const initialRatings = ratingsResponse.data.reduce((acc, rating) => {
                     acc[rating.courseId] = rating.rating;
                     return acc;
                 }, {} as { [key: number]: number });
 
-                setTimeout(() => {
-                    setRatings(initialRatings);
-                }, 50);
+                setRatings(initialRatings);
             } catch (err) {
-                setError(err instanceof Error ? { message: err.message } : { message: 'An unknown error occurred' });
+                setError(
+                    err instanceof Error
+                        ? { message: err.message }
+                        : { message: 'An unknown error occurred' }
+                );
             } finally {
                 setLoading(false);
             }
         };
 
         fetchCoursesAndProgress();
-    }, [userId]);
-
+    }, [userId, getAccessTokenSilently]);
 
     const handleCourseClick = async (courseId: number) => {
         try {
             const response = await axios.get(`http://localhost:8080/api/progress/current-lesson`, {
-                params: { userId, courseId }
+                params: { userId, courseId },
+                withCredentials: true,
             });
 
             const lesson = response.data;
@@ -107,7 +138,11 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
         setRatings(prev => ({ ...prev, [courseId]: newRating }));
 
         try {
-            await axios.post('http://localhost:8080/api/ratings/save', { courseId, rating: newRating, userId });
+            await axios.post(
+                'http://localhost:8080/api/ratings/save',
+                { courseId, rating: newRating, userId },
+                { withCredentials: true }
+            );
         } catch (err) {
             console.error('Error saving rating:', err);
         }
@@ -121,22 +156,55 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
         setHoveredRating(0);
     };
 
-    if (loading) return <p style={{ backgroundColor: 'rgb(247, 250, 251)' }}>Loading courses...</p>;
-    if (error) return <p style={{ backgroundColor: 'rgb(247, 250, 251)' }}>Error fetching courses: {error.message}</p>;
-    if (courses.length === 0) return <div style={{ backgroundColor: 'rgb(247, 250, 251)', paddingLeft: '41em', fontSize: '1.5em', paddingBottom: '10em', paddingTop: '4em' }}>No courses available.</div>;
+    if (loading) {
+        return <p style={{ backgroundColor: 'rgb(247, 250, 251)' }}>Loading courses...</p>;
+    }
+
+    if (error) {
+        return (
+            <p style={{ backgroundColor: 'rgb(247, 250, 251)' }}>
+                Error fetching courses: {error.message}
+            </p>
+        );
+    }
+
+    if (courses.length === 0) {
+        return (
+            <div
+                style={{
+                    backgroundColor: 'rgb(247, 250, 251)',
+                    paddingLeft: '41em',
+                    fontSize: '1.5em',
+                    paddingBottom: '10em',
+                    paddingTop: '4em',
+                }}
+            >
+                No courses available.
+            </div>
+        );
+    }
 
     return (
         <div className="bigDaddyContainer" style={{ paddingTop: '13em' }}>
             <div className="container2">
                 <div className="webCourseDiv3">My courses</div>
-                <a href="/courses" className="moreCoursesDiv">More courses</a>
+                <a href="/courses" className="moreCoursesDiv">
+                    More courses
+                </a>
                 <div className="lineDiv"></div>
             </div>
             <div className="pictureContainer2">
                 {courses.map(course => (
-                    <div key={course.courseId} className="imageWithDescription2" onClick={() => handleCourseClick(course.courseId)} style={{ marginLeft: '1em' }}>
+                    <div
+                        key={course.courseId}
+                        className="imageWithDescription2"
+                        onClick={() => handleCourseClick(course.courseId)}
+                        style={{ marginLeft: '1em', cursor: 'pointer' }}
+                    >
                         <img src={web4} alt={course.courseName} className="courseImage2" />
-                        <div className="imageDescription2">{course.description || 'No description available.'}</div>
+                        <div className="imageDescription2">
+                            {course.description || 'No description available.'}
+                        </div>
                     </div>
                 ))}
                 {courses.map(course => (
@@ -145,11 +213,14 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
                         <div className="progress-bar2">
                             <div
                                 className="progress-bar-inner2"
-                                style={{ width: `${progressData[course.courseId]?.progress || 0}%` }}
+                                style={{
+                                    width: `${progressData[course.courseId]?.progress || 0}%`,
+                                }}
                             ></div>
                         </div>
                         <p>
-                            You have completed {progressData[course.courseId]?.completedLessons || 0} / {progressData[course.courseId]?.totalLessons || 0} lessons
+                            You have completed {progressData[course.courseId]?.completedLessons || 0} /{' '}
+                            {progressData[course.courseId]?.totalLessons || 0} lessons
                         </p>
                     </div>
                 ))}
@@ -157,15 +228,18 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
                     {courses.map(course => (
                         <div key={`rating-${course.courseId}`} className="rateCourseDiv">
                             <span style={{ marginLeft: '1.8em' }}>Rate course: </span>
-                            <div style={{ marginLeft: '1.6em', marginBottom: '1em' }}>Your Rating: {ratings[course.courseId] || 0}</div>
+                            <div style={{ marginLeft: '1.6em', marginBottom: '1em' }}>
+                                Your Rating: {ratings[course.courseId] || 0}
+                            </div>
                             {[...Array(5)].map((_, index) => (
                                 <span
                                     key={index}
-                                    className={`star ${(hoveredRating || ratings[course.courseId] || 0) > index ? 'filled' : ''}`}
+                                    className={`star ${(hoveredRating || ratings[course.courseId] || 0) > index ? 'filled' : ''
+                                        }`}
                                     onClick={() => handleRating(index, course.courseId)}
                                     onMouseEnter={() => handleMouseEnter(index)}
                                     onMouseLeave={handleMouseLeave}
-                                    style={{ transitionDelay: `${index * 0.1}s` }}
+                                    style={{ transitionDelay: `${index * 0.1}s`, cursor: 'pointer' }}
                                 >
                                     ★
                                 </span>
@@ -173,7 +247,6 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
                         </div>
                     ))}
                 </div>
-
             </div>
         </div>
     );

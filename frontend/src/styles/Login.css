@@ -1,156 +1,75 @@
-body {
-    background-color: #fcfafa;
-}
-
 .login-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-@keyframes gradient-animation {
-    0% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-.login-header {
-    font-size: 30px;
-    font-weight: bold;
-    width: 100%;
-    text-align: center;
-    margin-bottom: 3em;
-    color: #000000;
-}
-
-.login-form-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-.login-form {
-    display: flex;
     flex-direction: column;
-    gap: 1em;
-    width: 100%;
-    max-width: 450px;
+    min-height: 100vh;
+    background: #f9f9f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.login-card {
     background: #fff;
-    border-radius: 8px;
-    padding: 5em;
-    margin-bottom: 6em;
-    box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 40px 60px;
+    text-align: center;
+    max-width: 400px;
+    min-width: 300px;
+    margin-top: 10em;
+    margin-bottom: 10em;
+    margin-left: 50em;
+    transition: transform 0.3s ease;
 }
 
-.input-field {
-    position: relative;
-    margin-bottom: 1em;
-}
-
-.input-field input {
-    padding: 1em !important;
-    font-size: 1em;
-    border: 1px solid #2196F3;
-    border-radius: 4px;
-    outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.input-field label {
-    position: absolute;
-    transform: translateY(-50%);
-    color: #999;
-    font-size: 1em;
-    transition: all 0.4s ease;
-}
-
-.input-field input:focus+label,
-.input-field input:valid+label {
-    color: #000;
-    top: -1em;
-    font-size: 0.75em;
-}
-
-.password-toggle {
-    position: absolute;
-    right: 0.5em;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.login-error {
-    margin-bottom: 1em;
-}
-
-.error-text {
-    color: red;
-    font-size: 0.9em;
+.login-card:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
 }
 
 .login-button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 0.8em;
-    border: none;
-    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+    border: 2px solid #4a90e2;
+    color: #4a90e2;
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 18px 30px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: block;
+    transition: color 0.4s ease;
+    z-index: 0;
+}
+
+.login-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #4a90e2, #357ABD);
+    border-radius: 8px;
+    transition: left 0.4s ease;
+    z-index: -1;
+}
+
+.login-button:hover::before {
+    left: 0;
 }
 
 .login-button:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
+    color: white;
+    border-color: #357ABD;
 }
 
-.login-button:active {
-    transform: scale(0.95);
-}
-
-.register-button {
-    color: #007bff;
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-size: 1em;
-    margin-top: 1em;
-}
-
-.register-button:hover {
-    text-decoration: underline;
-}
-.login-footer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 16px;
+.login-card p {
+    font-size: 1.1rem;
     color: #333;
-}
-
-.footer-link {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
-
-.footer-link:hover {
-    text-decoration: underline;
-    color: #0056b3;
-}
-
-.footer-text {
-    margin-top: 1em;
-    text-align: center;
-    font-size: 16px;
-    margin-right: 3.3em;
-    margin-bottom: 2em;
+    margin: 0;
+    user-select: none;
 }

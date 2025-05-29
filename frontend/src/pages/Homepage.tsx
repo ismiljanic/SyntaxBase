@@ -4,29 +4,20 @@ import { HomepageHeader } from './HomepageHeader';
 import { Footer2 } from './Footer2';
 import { Footer } from './Footer';
 import CoursesList from '../components/CoursesList';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const Homepage: React.FC = () => {
-    const [userId, setUserId] = useState<string | null>(null);
-    const [loadingUserId, setLoadingUserId] = useState<boolean>(true);
+    const { isAuthenticated, user, isLoading } = useAuth0();
 
-    useEffect(() => {
-        const storedUserId = sessionStorage.getItem('userId');
-        if (storedUserId) {
-            setUserId(storedUserId);
-        }
-        setLoadingUserId(false);
-    }, []);
-
-
-    if (loadingUserId) {
+    if (isLoading) {
         return <p>Loading user information...</p>;
     }
 
     return (
         <div className='homepageContainer'>
             <HomepageHeader bgColor='rgb(247, 250, 251)' />
-            {userId ? (
-                <CoursesList userId={Number(userId)} />
+            {isAuthenticated && user?.sub ? (
+                <CoursesList userId={user.sub} />
             ) : (
                 <p>Please log in to see your courses.</p>
             )}

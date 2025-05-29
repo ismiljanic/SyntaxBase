@@ -20,13 +20,9 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
   useEffect(() => {
     const fetchTokenAndSetUser = async () => {
       if (isAuthenticated && user?.sub) {
-        const token = await getAccessTokenSilently();
         setUserId(user.sub);
-        sessionStorage.setItem('userId', user.sub);
-        sessionStorage.setItem('userToken', token);
       } else {
         setUserId(null);
-        sessionStorage.removeItem('userId');
       }
     };
     fetchTokenAndSetUser();
@@ -95,8 +91,7 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
   return (
     <header
       ref={headerRef}
-      className={`header ${headerVisible ? 'header-visible' : 'header-hidden'} ${isAuthenticated ? 'logged-in' : 'logged-out'
-        }`}
+      className={`header ${headerVisible ? 'header-visible' : 'header-hidden'} ${isAuthenticated ? 'logged-in' : 'logged-out'}`}
       style={{ backgroundColor: bgColor }}
     >
       <a href="/">
@@ -138,9 +133,9 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
       {isAuthenticated && userId ? (
         <SettingsMenu />
       ) : (
-        <a href="/contact">
-          <button className="divni1">Contact</button>
-        </a>
+        <button style={{paddingRight: '5.5em'}} className="divni1" onClick={handleContactClick}>
+          Contact
+        </button>
       )}
     </header>
   );

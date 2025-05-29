@@ -1,33 +1,81 @@
+import React, { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect } from "react";
+import "../styles/Login.css";
+import { Header } from "../pages/Header";
+import { Footer2 } from "../pages/Footer2";
+import { Footer } from "../pages/Footer";
 
 export function LoginComponent() {
     const { loginWithRedirect, isAuthenticated, user, getAccessTokenSilently } = useAuth0();
 
     useEffect(() => {
-        const storeUserData = async () => {
-            if (isAuthenticated && user) {
-                const token = await getAccessTokenSilently();
-                sessionStorage.setItem("userToken", token);
-                sessionStorage.setItem("userId", user.sub || "");
-                sessionStorage.setItem("userEmail", user.email || "");
+        const sendTokensToBackend = async () => {
+            if (!isAuthenticated || !user) return;
+
+            try {
+                const accessToken = await getAccessTokenSilently();
+
+                const storageKey = Object.keys(localStorage).find(
+                    (key) =>
+                        key.startsWith('@@auth0spajs@@') &&
+                        key.includes('https://dev-azim8sfu2yz6kzyp.us.auth0.com')
+                );
+
+                if (!storageKey) {
+                    console.warn("Auth0 tokens not found in localStorage");
+                    return;
+                }
+
+                const storedData = JSON.parse(localStorage.getItem(storageKey) || "{}");
+                const refreshToken = storedData?.body?.refresh_token;
+
+                if (!refreshToken) {
+                    console.warn("Refresh token not found in localStorage");
+                    return;
+                }
+                const tokens = { accessToken, refreshToken };
+
+                console.log("accessToken: " + accessToken);
+                console.log("refreshToken: " + refreshToken);
+
+                const response = await fetch("http://localhost:8080/api/auth/login", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify({ accessToken, refreshToken }),
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("Failed to send tokens to backend:", errorText);
+                } else {
+                    console.log("Tokens sent to backend, cookies should be set");
+                }
+            } catch (error) {
+                console.error("Error sending tokens to backend", error);
             }
         };
-        storeUserData();
-    }, [isAuthenticated, user]);
 
-    const handleLogin = () => {
-        loginWithRedirect();
-    };
+        sendTokensToBackend();
+    }, [isAuthenticated, user, getAccessTokenSilently]);
 
     return (
         <div className="login-container">
-            <div className="login-form-container">
-                <h2>Login with Auth0</h2>
-                <button className="login-button" onClick={handleLogin}>
-                    Login
-                </button>
+            <Header bgColor="#f9f9f9" />
+            <div className="login-card">
+                {!isAuthenticated ? (
+                    <button className="login-button" onClick={() => loginWithRedirect()}>
+                        Login with Auth0
+                    </button>
+                ) : (
+                    <p>Logged in as {user?.email}</p>
+                )}
             </div>
+            <Footer2 bgColor="#f9f9f9" />
+            <Footer bgColor="#f9f9f9" />
         </div>
     );
 }
