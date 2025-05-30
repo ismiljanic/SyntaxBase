@@ -28,19 +28,22 @@ public class UserCourseServiceJpa implements UserCourseService {
 
     @Override
     public void enrollUserInCourse(UserCourseDTO userCourseDTO) {
-        if (userCourseDTO.getUserId() == null || userCourseDTO.getCourseId() == null) {
-            throw new IllegalArgumentException("User ID and Course ID must not be null");
+        if (userCourseDTO.getAuth0UserId() == null || userCourseDTO.getCourseId() == null) {
+            throw new IllegalArgumentException("Auth0UserId and Course ID must not be null");
         }
 
-        if (isUserEnrolledInCourse(userCourseDTO.getUserId(), userCourseDTO.getCourseId())) {
+        if (isUserEnrolledInCourse(userCourseDTO.getAuth0UserId(), userCourseDTO.getCourseId())) {
             throw new IllegalStateException("User is already enrolled in this course");
         }
 
-        var user = userRepository.findById(userCourseDTO.getUserId())
+        var user = userRepository.findByAuth0UserId(userCourseDTO.getAuth0UserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         var course = courseRepository.findById(userCourseDTO.getCourseId())
                 .orElseThrow(() -> new IllegalArgumentException("Course not found"));
         UserCourse userCourse = new UserCourse();
+        System.out.println("User: " + user);
+        System.out.println("User Auth0 ID: " + user.getAuth0UserId());
+        System.out.println("Course: " + course);
         userCourse.setUser(user);
         userCourse.setCourse(course);
         userCourse.setCompleted(false);
@@ -48,8 +51,8 @@ public class UserCourseServiceJpa implements UserCourseService {
     }
 
     @Override
-    public List<CourseDTO> getCoursesByUserId(Integer userId) {
-        List<UserCourse> userCourses = userCourseRepository.findByUserId(userId);
+    public List<CourseDTO> getCoursesByUserId(String userId) {
+        List<UserCourse> userCourses = userCourseRepository.findByUser_Auth0UserId(userId);
         return userCourses.stream()
                 .map(userCourse -> {
                     Course course = userCourse.getCourse();
@@ -59,7 +62,7 @@ public class UserCourseServiceJpa implements UserCourseService {
     }
 
     @Override
-    public boolean isUserEnrolledInCourse(Integer userId, Integer courseId) {
-        return userCourseRepository.existsByUserIdAndCourseId(userId, courseId);
+    public boolean isUserEnrolledInCourse(String userId, Integer courseId) {
+        return userCourseRepository.existsByUser_Auth0UserIdAndCourseId(userId, courseId);
     }
 }

@@ -30,6 +30,7 @@ public class RatingController {
 
     @PostMapping("/save")
     public ResponseEntity<Rating> saveRating(@RequestBody Rating rating) {
+        System.out.println("rating: " + rating);
         Rating savedRating = ratingService.saveRating(rating);
         return ResponseEntity.ok(savedRating);
     }
@@ -38,7 +39,7 @@ public class RatingController {
     public ResponseEntity<List<RatingDTO>> getUserRatingsByAuth0Id(@PathVariable String auth0UserId) {
         User user = userRepository.findByAuth0UserId(auth0UserId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        List<RatingDTO> ratings = ratingService.getUserRatings(user.getId());
+        List<RatingDTO> ratings = ratingService.getUserRatings(user.getAuth0UserId());
         return ResponseEntity.ok(ratings);
     }
 }

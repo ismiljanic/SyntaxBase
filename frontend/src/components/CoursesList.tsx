@@ -114,10 +114,16 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
 
     const handleCourseClick = async (courseId: number) => {
         try {
+            const token = await getAccessTokenSilently();
+
             const response = await axios.get(`http://localhost:8080/api/progress/current-lesson`, {
                 params: { userId, courseId },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
                 withCredentials: true,
             });
+
 
             const lesson = response.data;
             navigate(`/course/${courseId}/lesson/${lesson?.id || 1}`);
@@ -136,16 +142,23 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
         }
 
         setRatings(prev => ({ ...prev, [courseId]: newRating }));
+        const token = await getAccessTokenSilently();
 
         try {
             await axios.post(
                 'http://localhost:8080/api/ratings/save',
-                { courseId, rating: newRating, userId },
-                { withCredentials: true }
+                { courseId, rating: newRating, auth0UserId: userId },
+                {
+                    withCredentials: true,
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
             );
         } catch (err) {
             console.error('Error saving rating:', err);
         }
+
     };
 
     const handleMouseEnter = (index: number) => {

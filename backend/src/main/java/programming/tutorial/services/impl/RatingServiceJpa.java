@@ -25,8 +25,8 @@ public class RatingServiceJpa implements RatingService {
         return ratingRepository.save(rating);
     }
 
-    public List<RatingDTO> getUserRatings(Integer userId) {
-        List<Rating> ratings = ratingRepository.findByUserId(Long.valueOf(userId));
+    public List<RatingDTO> getUserRatings(String userId) {
+        List<Rating> ratings = ratingRepository.findByAuth0UserId(userId);
         return ratings.stream().map(rating -> new RatingDTO(Math.toIntExact(rating.getCourseId()), rating.getRating()))
                 .collect(Collectors.toList());
     }

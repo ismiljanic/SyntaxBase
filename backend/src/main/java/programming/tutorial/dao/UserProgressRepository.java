@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface UserProgressRepository extends JpaRepository<UserProgress, Long> {
-    Optional<UserProgress> findByUserIdAndCourseId(Integer userId, Integer courseId);
+    Optional<UserProgress> findByUser_Auth0UserIdAndCourse_Id(String auth0UserId, Integer courseId);
 }

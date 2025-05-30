@@ -11,6 +11,7 @@ import programming.tutorial.domain.User;
 import programming.tutorial.domain.UserCourse;
 import programming.tutorial.domain.UserProgress;
 import programming.tutorial.dto.CourseDTO;
+import programming.tutorial.dto.StartCourseRequest;
 import programming.tutorial.dto.UserCourseDTO;
 import programming.tutorial.services.UserCourseService;
 
@@ -39,40 +40,59 @@ public class UserCourseController {
     private LessonRepository lessonRepository;
 
     @PostMapping("/startCourse")
-    public ResponseEntity<String> enrollUserInCourse(@RequestBody Map<String, Object> payload, Principal principal) {
+    public ResponseEntity<String> enrollUserInCourse(@RequestBody StartCourseRequest request, Principal principal) {
         try {
+            System.out.println("Received request: auth0UserId=" + request.auth0UserId + ", courseId=" + request.courseId);
+            System.out.println("Principal name: " + principal.getName());
+
             String authenticatedAuth0UserId = principal.getName();
-            String auth0UserId = (String) payload.get("auth0UserId");
-            if (!authenticatedAuth0UserId.equals(auth0UserId)) {
+            if (!authenticatedAuth0UserId.equals(request.auth0UserId)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid user id");
             }
 
-            Integer courseId = (Integer) payload.get("courseId");
-
+            Integer courseId = request.courseId;
             User user = getOrCreateUserByAuth0Id(authenticatedAuth0UserId);
-            Integer userId = user.getId();
+            System.out.println("User found/created: " + user.getUsername());
+            System.out.println("User auth0UserId: " + user.getAuth0UserId());
+            if (!courseRepository.existsById(courseId)) {
+                System.out.println("Course with ID " + courseId + " not found");
+                return ResponseEntity.badRequest().body("Invalid course ID");
+            }
 
             UserCourseDTO userCourseDTO = new UserCourseDTO();
-            userCourseDTO.setUserId(userId);
+            userCourseDTO.setAuth0UserId(user.getAuth0UserId());
             userCourseDTO.setCourseId(courseId);
+
+            System.out.println("UserCourseDTO.auth0UserId = " + userCourseDTO.getAuth0UserId());
+            System.out.println("UserCourseDTO.courseId = " + userCourseDTO.getCourseId());
 
             userCourseService.enrollUserInCourse(userCourseDTO);
 
-            if (!userProgressRepository.findByUserIdAndCourseId(userId, courseId).isPresent()) {
+            if (!userProgressRepository.findByUser_Auth0UserIdAndCourse_Id(user.getAuth0UserId(), courseId).isPresent()) {
                 UserProgress newUserProgress = new UserProgress();
                 newUserProgress.setUser(user);
                 newUserProgress.setCourse(courseRepository.findById(courseId).orElse(null));
                 newUserProgress.setCurrentLesson(lessonRepository.findById(1).orElse(null));
                 userProgressRepository.save(newUserProgress);
+                System.out.println("Created new UserProgress");
+            } else {
+                System.out.println("UserProgress already exists");
             }
 
             return ResponseEntity.ok().build();
+
         } catch (IllegalStateException e) {
+            System.out.println("IllegalStateException: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).body("You are already enrolled in this course.");
         } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException: " + e.getMessage());
             return ResponseEntity.badRequest().body("Invalid input.");
+        } catch (Exception e) {
+            System.out.println("Unexpected exception: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error.");
         }
     }
+
 
     public User getOrCreateUserByAuth0Id(String auth0UserId) {
         return userRepository.findByAuth0UserId(auth0UserId)
@@ -95,15 +115,15 @@ public class UserCourseController {
 
         User user = userRepository.findByAuth0UserId(auth0UserId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        List<CourseDTO> courses = userCourseService.getCoursesByUserId(user.getId());
+        List<CourseDTO> courses = userCourseService.getCoursesByUserId(user.getAuth0UserId());
         System.out.println("Fetched {" + courses.size() + "} courses " + " for user with ID: {" + auth0UserId + "}");
         return ResponseEntity.ok(courses);
     }
 
 
     @PutMapping("/completeCourse/{userId}/{courseId}")
-    public ResponseEntity<String> completeCourse(@PathVariable Integer userId, @PathVariable Integer courseId) {
-        List<UserCourse> userCourses = userCourseRepository.findByUserIdAndCourseId(userId, courseId);
+    public ResponseEntity<String> completeCourse(@PathVariable String userId, @PathVariable Integer courseId) {
+        List<UserCourse> userCourses = userCourseRepository.findByUser_Auth0UserIdAndCourseId(userId, courseId);
         System.out.println("Found " + userCourses.size() + " userCourse records");
 
         if (userCourses.isEmpty()) {

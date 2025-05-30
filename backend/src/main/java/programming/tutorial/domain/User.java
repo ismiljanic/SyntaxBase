@@ -12,6 +12,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userID", nullable = false)
     private Integer id;
+    @Column(name = "auth0user_id", nullable = false)
     private String auth0UserId;
 
     @Column(name = "name", nullable = false)

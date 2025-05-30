@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface UserCourseService {
     void enrollUserInCourse(UserCourseDTO userCourseDTO);
-    List<CourseDTO> getCoursesByUserId(Integer userId);
-    boolean isUserEnrolledInCourse(Integer userId, Integer courseId);
+    List<CourseDTO> getCoursesByUserId(String userId);
+    boolean isUserEnrolledInCourse(String userId, Integer courseId);
 }

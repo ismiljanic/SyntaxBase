@@ -30,10 +30,10 @@ public class UserProgressController {
 
     @GetMapping("/current-lesson")
     public ResponseEntity<LessonDTO> getCurrentLesson(
-            @RequestParam Integer userId,
+            @RequestParam String userId,
             @RequestParam Integer courseId) {
 
-        Optional<UserProgress> userProgressOpt = userProgressRepository.findByUserIdAndCourseId(userId, courseId);
+        Optional<UserProgress> userProgressOpt = userProgressRepository.findByUser_Auth0UserIdAndCourse_Id(userId, courseId);
         if (userProgressOpt.isPresent()) {
             UserProgress userProgress = userProgressOpt.get();
             Lesson currentLesson = userProgress.getCurrentLesson();
@@ -52,11 +52,11 @@ public class UserProgressController {
 
     @PostMapping("/update")
     public ResponseEntity<String> updateProgress(
-            @RequestParam Integer userId,
+            @RequestParam String userId,
             @RequestParam Integer courseId,
             @RequestParam Integer lessonId) {
 
-        Optional<UserProgress> userProgressOpt = userProgressRepository.findByUserIdAndCourseId(userId, courseId);
+        Optional<UserProgress> userProgressOpt = userProgressRepository.findByUser_Auth0UserIdAndCourse_Id(userId, courseId);
         System.out.println("lessonid: " + lessonId);
         if (userProgressOpt.isPresent()) {
             UserProgress userProgress = userProgressOpt.get();

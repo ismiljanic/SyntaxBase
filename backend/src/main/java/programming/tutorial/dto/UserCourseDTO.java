@@ -9,6 +9,7 @@ public class UserCourseDTO {
     private Integer courseId;
     private User user;
     private Course course;
+    private String auth0UserId;
 
     private Boolean isCourseCompleted;
 
@@ -61,6 +62,14 @@ public class UserCourseDTO {
 
     public void setCourse(Course course) {
         this.course = course;
+    }
+
+    public String getAuth0UserId() {
+        return auth0UserId;
+    }
+
+    public void setAuth0UserId(String auth0UserId) {
+        this.auth0UserId = auth0UserId;
     }
 
     @Override

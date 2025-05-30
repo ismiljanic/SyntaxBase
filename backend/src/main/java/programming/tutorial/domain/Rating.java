@@ -11,16 +11,16 @@ public class Rating {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long courseId;
-    private Long userId;
+    private String auth0UserId;
     private int rating;
 
     public Rating() {
     }
 
-    public Rating(Long id, Long courseId, Long userId, int rating) {
+    public Rating(Long id, Long courseId, String auth0UserId, int rating) {
         this.id = id;
         this.courseId = courseId;
-        this.userId = userId;
+        this.auth0UserId = auth0UserId;
         this.rating = rating;
     }
 
@@ -40,12 +40,12 @@ public class Rating {
         this.courseId = courseId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getAuth0UserId() {
+        return auth0UserId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setAuth0UserId(String userId) {
+        this.auth0UserId = userId;
     }
 
     public int getRating() {
@@ -61,7 +61,7 @@ public class Rating {
         return "Rating{" +
                 "id=" + id +
                 ", courseId=" + courseId +
-                ", userId=" + userId +
+                ", userId=" + auth0UserId +
                 ", rating=" + rating +
                 '}';
     }

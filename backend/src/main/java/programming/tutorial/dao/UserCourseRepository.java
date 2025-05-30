@@ -7,10 +7,9 @@ import programming.tutorial.domain.UserCourse;
 import java.util.List;
 @Repository
 public interface UserCourseRepository extends JpaRepository<UserCourse, Integer> {
-    List<UserCourse> findByUserId(Integer userId);
+    List<UserCourse> findByUser_Auth0UserId(String auth0UserId);
 
-    boolean existsByUserIdAndCourseId(Integer userId, Integer courseId);
-
-    List<UserCourse> findByUserIdAndCourseId(Integer userId, Integer courseId);
+    boolean existsByUser_Auth0UserIdAndCourseId(String auth0UserId, Integer courseId);
+    List<UserCourse> findByUser_Auth0UserIdAndCourseId(String userId, Integer courseId);
 
 }

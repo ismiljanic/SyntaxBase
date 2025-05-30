@@ -10,5 +10,5 @@ import java.util.List;
 public interface RatingService {
     public Rating getRating(Long courseId);
     public Rating saveRating(Rating rating);
-    public List<RatingDTO> getUserRatings(Integer userId);
+    public List<RatingDTO> getUserRatings(String userId);
 }
