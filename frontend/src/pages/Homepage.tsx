@@ -15,13 +15,18 @@ const Homepage: React.FC = () => {
 
     return (
         <div className='homepageContainer'>
-            <HomepageHeader bgColor='rgb(247, 250, 251)' />
+            <HomepageHeader bgColor="rgb(247, 250, 251)" />
             {isAuthenticated && user?.sub ? (
                 <CoursesList userId={user.sub} />
             ) : (
-                <p>Please log in to see your courses.</p>
+                <p
+                    className="unauthorized-message"
+                    title="Click to go to homepage"
+                >
+                    Please log in to see your courses.<br />
+                </p>    
             )}
-            <Footer2 bgColor='rgb(247, 250, 251)' />
+            <Footer2 bgColor="rgb(247, 250, 251)" />
             <Footer bgColor="rgb(247, 250, 251)" />
         </div>
     );

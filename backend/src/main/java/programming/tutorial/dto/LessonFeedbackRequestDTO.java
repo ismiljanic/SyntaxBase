@@ -2,13 +2,11 @@ package programming.tutorial.dto;
 
 public class LessonFeedbackRequestDTO {
     private Integer lessonId;
-    private Integer userId;
     private String feedback;
     public LessonFeedbackRequestDTO() {
     }
-    public LessonFeedbackRequestDTO(Integer lessonId, Integer userId, String feedback) {
+    public LessonFeedbackRequestDTO(Integer lessonId, String feedback) {
         this.lessonId = lessonId;
-        this.userId = userId;
         this.feedback = feedback;
     }
     public Integer getLessonId() {
@@ -27,11 +25,4 @@ public class LessonFeedbackRequestDTO {
         this.feedback = feedback;
     }
 
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
 }

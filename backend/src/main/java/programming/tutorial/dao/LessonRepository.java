@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import programming.tutorial.domain.Lesson;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,4 +19,6 @@ public interface LessonRepository extends JpaRepository<Lesson, Integer> {
 
     @Query("SELECT COUNT(l) FROM Lesson l WHERE l.course.id = :courseId AND l.user.id = :userId AND l.completed = true")
     Long countCompletedLessonsForUserAndCourse(@Param("courseId") Integer courseId, @Param("userId") Integer userId);
+
+    List<Lesson> findByCourse_IdAndUser_Auth0UserId(Integer id, String auth0UserId);
 }

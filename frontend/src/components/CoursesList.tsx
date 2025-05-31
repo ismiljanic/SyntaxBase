@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import web4 from '../images/web4.png';
 import '../styles/CoursesList.css';
 import { useAuth0 } from '@auth0/auth0-react';
+import AnimatedCounter from './AnimatedCounter';
+import AnimatedProgressBar from './AnimatedProgressBar';
 
 interface Course {
     courseId: number;
@@ -40,7 +42,6 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
 
     useEffect(() => {
         const fetchCoursesAndProgress = async () => {
-            console.log('Fetching courses and progress for user:', userId);
             if (!userId) {
                 setLoading(false);
                 setError({ message: 'User not authenticated.' });
@@ -84,21 +85,9 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
 
                 setProgressData(progressDataMap);
 
-                const ratingsResponse = await axios.get<{ courseId: number; rating: number }[]>(
-                    `http://localhost:8080/api/ratings/user/${userId}`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                        withCredentials: true,
-                    }
-                );
 
-                const initialRatings = ratingsResponse.data.reduce((acc, rating) => {
-                    acc[rating.courseId] = rating.rating;
-                    return acc;
-                }, {} as { [key: number]: number });
-
-                setRatings(initialRatings);
             } catch (err) {
+                console.error('Error fetching courses or progress:', err);
                 setError(
                     err instanceof Error
                         ? { message: err.message }
@@ -110,6 +99,35 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
         };
 
         fetchCoursesAndProgress();
+    }, [userId, getAccessTokenSilently]);
+
+    useEffect(() => {
+        const fetchRatings = async () => {
+            try {
+                const token = await getAccessTokenSilently();
+
+                const response = await axios.get(
+                    `http://localhost:8080/api/ratings/user/${encodeURIComponent(userId)}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                        withCredentials: true,
+                    }
+                );
+
+                const userRatings: { [key: number]: number } = {};
+                response.data.forEach((rating: { courseId: number; rating: number }) => {
+                    userRatings[rating.courseId] = rating.rating;
+                });
+
+                setRatings(userRatings);
+            } catch (err) {
+                console.error("Error fetching user ratings:", err);
+            }
+        };
+
+        if (userId) {
+            fetchRatings();
+        }
     }, [userId, getAccessTokenSilently]);
 
     const handleCourseClick = async (courseId: number) => {
@@ -223,18 +241,13 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
                 {courses.map(course => (
                     <div key={`progress-${course.courseId}`} className="progress-section2">
                         <h2>Your Progress</h2>
-                        <div className="progress-bar2">
-                            <div
-                                className="progress-bar-inner2"
-                                style={{
-                                    width: `${progressData[course.courseId]?.progress || 0}%`,
-                                }}
-                            ></div>
-                        </div>
+                        <AnimatedProgressBar progress={progressData[course.courseId]?.progress || 0} />
                         <p>
-                            You have completed {progressData[course.courseId]?.completedLessons || 0} /{' '}
+                            You have completed{' '}
+                            <AnimatedCounter targetNumber={progressData[course.courseId]?.completedLessons || 0} /> /{' '}
                             {progressData[course.courseId]?.totalLessons || 0} lessons
                         </p>
+
                     </div>
                 ))}
                 <div className="ratingContainer">

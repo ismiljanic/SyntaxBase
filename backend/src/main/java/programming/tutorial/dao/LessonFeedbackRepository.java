@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface LessonFeedbackRepository extends JpaRepository<LessonFeedback, Integer> {
 
     Optional<LessonFeedback> findByLessonAndUser(Lesson lesson, User user);
-    boolean existsByLessonIdAndUserId(Integer lessonId, Integer userId);
+    boolean existsByLessonIdAndUserAuth0UserId(Integer lessonId, String userId);
 }

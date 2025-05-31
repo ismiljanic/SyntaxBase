@@ -73,6 +73,7 @@ import { BeginnerWebDevelopmentQuiz } from "./pages/webCourses/BeginnerWebCourse
 import { Community } from "./pages/Community";
 import { Notifications } from "./pages/Notifications";
 import AdminPage from "./components/AdminPage";
+import { PrivateRoute } from "./components/PrivateRoute";
 
 export function Router() {
   return (
@@ -113,7 +114,7 @@ export function Router() {
           <Route path="/help" element={<Help />} />
           <Route path="/about" element={<About />} />
           <Route path="/beginnerWebCourse/:userId" element={<MainPageBeginnerWebCourse />} />
-          <Route path="/course/:courseId/lesson/1" element={<Lesson1 />} />
+          <Route path="/course/:courseId/lesson/:lessonId" element={<PrivateRoute><Lesson1/></PrivateRoute>}/>
           <Route path="/course/:courseId/lesson/2" element={<Lesson2 />} />
           <Route path="/course/:courseId/lesson/3" element={<Lesson3 />} />
           <Route path="/course/:courseId/lesson/4" element={<Lesson4 />} />

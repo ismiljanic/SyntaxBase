@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import '../../../../styles/webCourses/BeginnerWebCourse/Finish.css';
 import { Header } from '../../../Header';
 import { Footer2 } from '../../../Footer2';
@@ -17,17 +18,31 @@ interface ConfettiParticle {
 }
 
 export function FinishCourse() {
-    const [userId, setUserId] = useState<number | null>(null);
-    const [loadingUserId, setLoadingUserId] = useState<boolean>(true);
+    const { user, isLoading, isAuthenticated, getAccessTokenSilently } = useAuth0();
+    const [auth0UserId, setAuth0UserId] = useState<string | null>(null);
 
     useEffect(() => {
-        const storedUserId = sessionStorage.getItem('userId');
-        if (storedUserId) {
-            setUserId(parseInt(storedUserId, 10));
-        }
-        setLoadingUserId(false);
-    }, []);
+        const fetchAuth0UserId = async () => {
+            if (!isLoading && isAuthenticated && user?.sub) {
+                try {
+                    const token = await getAccessTokenSilently();
+                    const res = await fetch(`http://localhost:8080/api/users/by-auth0-id/${encodeURIComponent(user.sub)}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    if (!res.ok) throw new Error('Failed to fetch user Auth0 ID');
+                    const data = await res.json();
+                    setAuth0UserId(data.auth0id);
+                } catch (err) {
+                    console.error('Error fetching user Auth0 ID:', err);
+                    setAuth0UserId(null);
+                }
+            }
+        };
 
+        fetchAuth0UserId();
+    }, [isLoading, isAuthenticated, user, getAccessTokenSilently]);
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -99,6 +114,22 @@ export function FinishCourse() {
         return () => window.removeEventListener('resize', resize);
     }, []);
 
+    const goToHomepage = () => {
+        if (auth0UserId) {
+            window.location.href = `/homepage/${encodeURIComponent(auth0UserId)}`;
+        } else {
+            alert('User information not loaded yet. Please try again.');
+        }
+    };
+
+    if (isLoading) {
+        return <div>Loading user info...</div>;
+    }
+
+    if (!isAuthenticated) {
+        return <div>Please log in to view this page.</div>;
+    }
+
     return (
         <div>
             <canvas ref={canvasRef} className="confetti-canvas" />
@@ -111,11 +142,12 @@ export function FinishCourse() {
                     <img className="congrats-img" src={congrats} alt="Congratulations" />
                 </div>
 
-
                 <div className="finish-actions">
-                    <button onClick={() => (window.location.href = `/beginnerWebDevelopmentQuiz`)}>Take Final Quiz</button>
+                    <button onClick={() => (window.location.href = `/beginnerWebDevelopmentQuiz`)}>
+                        Take Final Quiz
+                    </button>
                     <button onClick={() => (window.location.href = '/courses')}>Explore More Courses</button>
-                    <button onClick={() => (window.location.href = `/homepage/${userId}`)}>Go to Homepage</button>
+                    <button onClick={goToHomepage}>Go to Homepage</button>
                 </div>
             </div>
 

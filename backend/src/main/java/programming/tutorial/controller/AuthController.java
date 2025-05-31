@@ -30,12 +30,38 @@ public class AuthController {
     @Value("${auth0.clientSecret}")
     private String clientSecret;
 
-    @GetMapping("/auth/logout")
-    public ResponseEntity<String> logout(HttpSession session) {
-        session.invalidate();
+    @PostMapping("/auth/logout")
+    public ResponseEntity<String> logout(HttpServletResponse response, HttpSession session) {
+        if (session == null) {
+            System.out.println("No session found");
+        } else {
+            session.invalidate();
+            System.out.println("Session invalidated");
+        }
+
+        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", "")
+                .path("/")
+                .maxAge(0)
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Strict")
+                .build();
+
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", "")
+                .path("/")
+                .maxAge(0)
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Strict")
+                .build();
+
+        response.addHeader("Set-Cookie", accessTokenCookie.toString());
+        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+
+        System.out.println("Cleared cookies: accessToken and refreshToken");
+
         return ResponseEntity.ok("Logged out successfully");
     }
-
     @PostMapping("/auth/login")
     public ResponseEntity<String> login(@RequestBody Map<String, String> tokens, HttpServletResponse response) {
         String accessToken = tokens.get("accessToken");

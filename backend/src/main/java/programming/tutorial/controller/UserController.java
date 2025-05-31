@@ -1,4 +1,5 @@
 package programming.tutorial.controller;
+
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import jakarta.transaction.Transactional;
@@ -40,6 +41,7 @@ public class UserController {
         }
         return user;
     }
+
     @PostMapping("/sync-auth0")
     @Transactional
     public ResponseEntity<String> syncAuth0User(
@@ -81,29 +83,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during registration");
         }
     }
-
-//    @PostMapping(value = "/login", consumes = "application/x-www-form-urlencoded", produces = "application/json")
-//    public ResponseEntity<?> loginUser(@RequestParam String username, @RequestParam String password) {
-//        UserDTO userDTO = new UserDTO();
-//        userDTO.setUsername(username);
-//        userDTO.setPassword(password);
-//
-//        Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(userDTO.getUsername()));
-//        if (userOptional.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Username does not exist");
-//        }
-//        User user = userOptional.get();
-//        if (!user.getPassword().equals(userDTO.getPassword())) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
-//        }
-//
-//        String userType = String.valueOf(user.getRole());
-//        Map<String, Object> responseBody = new HashMap<>();
-//        responseBody.put("id", user.getId());
-//        responseBody.put("role", userType);
-//        return ResponseEntity.ok(responseBody);
-//    }
-
 
     @GetMapping("/accountInformation/{userId}")
     public ResponseEntity<UserAccountDTO> getUserAccountInformation(@PathVariable String userId) {
@@ -210,5 +189,17 @@ public class UserController {
         }).collect(Collectors.toList());
 
         return ResponseEntity.ok(userDTOs);
+    }
+
+    @GetMapping("/by-auth0-id/{auth0Id}")
+    public ResponseEntity<?> getUserIdByAuth0Id(@PathVariable String auth0Id) {
+        Optional<User> userOpt = userRepository.findByAuth0UserId(auth0Id);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            return ResponseEntity.ok(new UserIdDTO(user.getAuth0UserId()));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("User not found with Auth0 ID: " + auth0Id);
+        }
     }
 }

@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import programming.tutorial.dao.LessonFeedbackRepository;
 import programming.tutorial.dao.LessonRepository;
@@ -68,13 +70,20 @@ public class FeedbackController {
 
     @PostMapping("/submit")
     public ResponseEntity<String> submitFeedback(@RequestBody LessonFeedbackRequestDTO feedbackDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String auth0UserId = authentication.getName();
+
         System.out.println("Lesson ID: " + feedbackDTO.getLessonId());
-        System.out.println("User ID: " + feedbackDTO.getUserId());
+        System.out.println("Auth0 User ID: " + auth0UserId);
         System.out.println("Feedback: " + feedbackDTO.getFeedback());
 
         LessonFeedback lessonFeedback = new LessonFeedback();
         lessonFeedback.setLesson(lessonRepository.findById(feedbackDTO.getLessonId()).orElse(null));
-        lessonFeedback.setUser(userRepository.findById(feedbackDTO.getUserId()).orElse(null));
+
+        User user = userRepository.findByAuth0UserId(auth0UserId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        lessonFeedback.setUser(user);
         lessonFeedback.setFeedback(feedbackDTO.getFeedback());
         lessonFeedbackRepository.save(lessonFeedback);
 
@@ -83,8 +92,12 @@ public class FeedbackController {
 
     @PostMapping("/complete")
     public ResponseEntity<String> markLessonAsCompleted(@RequestBody LessonCompletionDTO completionDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String auth0UserId = authentication.getName();
+
         Lesson lesson = lessonRepository.findById(completionDTO.getLessonId()).orElse(null);
-        User user = userRepository.findById(completionDTO.getUserId()).orElse(null);
+        User user = userRepository.findByAuth0UserId(auth0UserId)
+                .orElse(null);
 
         if (lesson == null || user == null) {
             return ResponseEntity.badRequest().body("Lesson or User not found");
@@ -96,15 +109,15 @@ public class FeedbackController {
         return ResponseEntity.ok("Lesson marked as completed");
     }
 
+
     @GetMapping("/status")
     public ResponseEntity<String> checkFeedbackStatus(
-            @RequestParam("lessonId") Integer lessonId,
-            @RequestParam("userId") Integer userId) {
+            @RequestParam("lessonId") Integer lessonId) {
 
-        System.out.println("Lesson ID: " + lessonId);
-        System.out.println("User ID: " + userId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String auth0UserId = authentication.getName();
 
-        boolean hasGivenFeedback = lessonFeedbackRepository.existsByLessonIdAndUserId(lessonId, userId);
+        boolean hasGivenFeedback = lessonFeedbackRepository.existsByLessonIdAndUserAuth0UserId(lessonId, auth0UserId);
         return ResponseEntity.ok(hasGivenFeedback ? "Thank you for your feedback!" : "Feedback not given");
     }
 }

@@ -7,6 +7,7 @@ import '../../../../styles/webCourses/BeginnerWebCourse/Lesson1.css';
 import style from '../images/style1.png'
 import cssframworks from '../images/cssframeworks.png';
 import responsiveDesign from '../images/responsiveDesign.png';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export function Lesson9() {
     const navigate = useNavigate();
@@ -15,22 +16,28 @@ export function Lesson9() {
     const location = useLocation();
     const lessonId = 9;
     const { courseId } = useParams();
-    const userId = sessionStorage.getItem('userId');
-    const baseUrl = process.env.REACT_APP_API_BASE_URL;
+    const { user, getAccessTokenSilently } = useAuth0();
 
     useEffect(() => {
         const checkFeedbackStatus = async () => {
-            if (!userId) {
-                console.error('User ID is not found in session storage');
+            if (!user?.sub) {
+                console.error('User not logged in');
                 setLoading(false);
                 return;
             }
 
             try {
-                const response = await fetch(`${baseUrl}/api/feedback/status?lessonId=${lessonId}&userId=${userId}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
+                const token = await getAccessTokenSilently();
+                const response = await fetch(`http://localhost:8080/api/feedback/status?lessonId=${lessonId}`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) throw new Error('Network response not ok');
                 const status = await response.text();
                 setFeedbackSubmitted(status === "Thank you for your feedback!");
             } catch (error) {
@@ -41,7 +48,7 @@ export function Lesson9() {
         };
 
         checkFeedbackStatus();
-    }, [userId]);
+    }, [user?.sub]);
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -55,27 +62,28 @@ export function Lesson9() {
     }, [location.search]);
 
     const sendFeedback = async (feedbackType: string) => {
-        if (!userId) {
-            console.error('User ID is not found in session storage');
+        if (!user?.sub) {
+            console.error('User is not logged in');
             return;
         }
 
         try {
-            const response = await fetch(`${baseUrl}/api/feedback/submit`, {
+            const token = await getAccessTokenSilently();
+            const response = await fetch(`http://localhost:8080/api/feedback/submit`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     lessonId: lessonId,
-                    userId: userId,
-                    feedback: feedbackType
+                    feedback: feedbackType,
                 }),
             });
 
             if (response.ok) {
-                const numericUserId = Number(userId);
-                await markLessonAsCompleted(lessonId, numericUserId);
+                await markLessonAsCompleted(lessonId);
                 setFeedbackSubmitted(true);
             } else {
                 console.error('Failed to send feedback');
@@ -85,14 +93,17 @@ export function Lesson9() {
         }
     };
 
-    const markLessonAsCompleted = async (lessonId: number, userId: number) => {
+    const markLessonAsCompleted = async (lessonId: number) => {
         try {
-            const response = await fetch(`${baseUrl}/api/feedback/complete`, {
+            const token = await getAccessTokenSilently();
+
+            const response = await fetch(`http://localhost:8080/api/feedback/complete`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ lessonId, userId })
+                body: JSON.stringify({ lessonId }),
             });
 
             if (!response.ok) {
@@ -112,22 +123,23 @@ export function Lesson9() {
     };
 
     const updateProgress = async () => {
-        const userId = sessionStorage.getItem('userId');
         const courseId = 1;
         const lessonId = 9;
 
-        if (!userId) {
-            console.error('User ID is not found in session storage');
-            return;
-        }
-
         try {
-            await fetch(`${baseUrl}/api/progress/update?userId=${userId}&courseId=${courseId}&lessonId=${lessonId}`, {
+            const token = await getAccessTokenSilently();
+
+            const response = await fetch(`http://localhost:8080/api/progress/update?courseId=${courseId}&lessonId=${lessonId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                }
+                    Authorization: `Bearer ${token}`,
+                },
             });
+
+            if (!response.ok) {
+                console.error('Failed to update progress');
+            }
         } catch (error) {
             console.error('Error updating progress:', error);
         }

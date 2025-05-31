@@ -3,6 +3,8 @@ package programming.tutorial.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import programming.tutorial.dao.*;
@@ -92,8 +94,6 @@ public class UserCourseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error.");
         }
     }
-
-
     public User getOrCreateUserByAuth0Id(String auth0UserId) {
         return userRepository.findByAuth0UserId(auth0UserId)
                 .orElseGet(() -> {
@@ -121,8 +121,9 @@ public class UserCourseController {
     }
 
 
-    @PutMapping("/completeCourse/{userId}/{courseId}")
-    public ResponseEntity<String> completeCourse(@PathVariable String userId, @PathVariable Integer courseId) {
+    @PutMapping("/completeCourse/{courseId}")
+    public ResponseEntity<String> completeCourse(@PathVariable Integer courseId, @AuthenticationPrincipal Jwt principal) {
+        String userId = principal.getSubject();
         List<UserCourse> userCourses = userCourseRepository.findByUser_Auth0UserIdAndCourseId(userId, courseId);
         System.out.println("Found " + userCourses.size() + " userCourse records");
 

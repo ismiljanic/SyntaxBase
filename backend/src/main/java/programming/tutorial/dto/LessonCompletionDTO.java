@@ -2,14 +2,11 @@ package programming.tutorial.dto;
 
 public class LessonCompletionDTO {
     private Integer lessonId;
-    private Integer userId;
-
     public LessonCompletionDTO() {
     }
 
-    public LessonCompletionDTO(Integer lessonId, Integer userId) {
+    public LessonCompletionDTO(Integer lessonId) {
         this.lessonId = lessonId;
-        this.userId = userId;
     }
 
     public Integer getLessonId() {
@@ -20,11 +17,4 @@ public class LessonCompletionDTO {
         this.lessonId = lessonId;
     }
 
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
 }

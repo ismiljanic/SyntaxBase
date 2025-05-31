@@ -1,24 +1,24 @@
 package programming.tutorial.dto;
 public class UserProgressDTO {
-    private Integer userId;
+    private String auth0UserId;
     private Integer courseId;
     private LessonDTO currentLesson;
 
     public UserProgressDTO() {
     }
 
-    public UserProgressDTO(Integer userId, Integer courseId, LessonDTO currentLesson) {
-        this.userId = userId;
+    public UserProgressDTO(String auth0UserId, Integer courseId, LessonDTO currentLesson) {
+        this.auth0UserId = auth0UserId;
         this.courseId = courseId;
         this.currentLesson = currentLesson;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public String getAuth0UserId() {
+        return auth0UserId;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setAuth0UserId(String auth0UserId) {
+        this.auth0UserId = auth0UserId;
     }
 
     public Integer getCourseId() {

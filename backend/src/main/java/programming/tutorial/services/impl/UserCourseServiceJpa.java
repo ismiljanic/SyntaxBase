@@ -3,9 +3,11 @@ package programming.tutorial.services.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import programming.tutorial.dao.CourseRepository;
+import programming.tutorial.dao.LessonRepository;
 import programming.tutorial.dao.UserCourseRepository;
 import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.Course;
+import programming.tutorial.domain.Lesson;
 import programming.tutorial.domain.UserCourse;
 import programming.tutorial.dto.CourseDTO;
 import programming.tutorial.dto.UserCourseDTO;
@@ -26,6 +28,9 @@ public class UserCourseServiceJpa implements UserCourseService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private LessonRepository lessonRepository;
+
     @Override
     public void enrollUserInCourse(UserCourseDTO userCourseDTO) {
         if (userCourseDTO.getAuth0UserId() == null || userCourseDTO.getCourseId() == null) {
@@ -40,15 +45,31 @@ public class UserCourseServiceJpa implements UserCourseService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         var course = courseRepository.findById(userCourseDTO.getCourseId())
                 .orElseThrow(() -> new IllegalArgumentException("Course not found"));
+
         UserCourse userCourse = new UserCourse();
-        System.out.println("User: " + user);
-        System.out.println("User Auth0 ID: " + user.getAuth0UserId());
-        System.out.println("Course: " + course);
         userCourse.setUser(user);
         userCourse.setCourse(course);
         userCourse.setCompleted(false);
         userCourseRepository.save(userCourse);
+
+        List<Lesson> existingLessons = lessonRepository.findByCourse_IdAndUser_Auth0UserId(course.getId(), user.getAuth0UserId());
+
+        if (existingLessons.isEmpty()) {
+            int totalLessons = course.getLength() != 0 ? course.getLength() : 10;
+            for (int i = 1; i <= totalLessons; i++) {
+                Lesson lesson = new Lesson();
+                lesson.setLessonName("Lesson " + i);
+                lesson.setCourse(course);
+                lesson.setUser(user);
+                lesson.setCompleted(false);
+                lessonRepository.save(lesson);
+            }
+            System.out.println("Created " + totalLessons + " lessons for user " + user.getUsername() + " in course " + course.getId());
+        } else {
+            System.out.println("Lessons already exist for user " + user.getUsername() + " in course " + course.getId());
+        }
     }
+
 
     @Override
     public List<CourseDTO> getCoursesByUserId(String userId) {
