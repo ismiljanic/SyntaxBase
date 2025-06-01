@@ -5,6 +5,7 @@ import '../styles/AccountInformation.css';
 import { Header } from './Header';
 import { Footer2 } from './Footer2';
 import { Footer } from './Footer';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface User {
     name: string;
@@ -37,14 +38,22 @@ export function AccountInformation() {
     const [showMorePosts, setShowMorePosts] = useState<boolean>(false);
     const [showMoreDeletedPosts, setShowMoreDeletedPosts] = useState<boolean>(false);
     const initialPostCount = 5;
-    const baseUrl = process.env.REACT_APP_API_BASE_URL;
+    const { getAccessTokenSilently, isAuthenticated } = useAuth0();
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
                 if (userId) {
-                    const response = await axios.get<UserAccount>(`${baseUrl}/api/users/accountInformation/${userId}`);
-                    console.log(response.data);
+                    const token = await getAccessTokenSilently();
+
+                    const response = await axios.get<UserAccount>(
+                        `http://localhost:8080/api/users/accountInformation/${encodeURIComponent(userId)}`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
                     setAccountInfo(response.data);
                 }
             } catch (error: any) {
@@ -58,6 +67,7 @@ export function AccountInformation() {
                 }
             }
         };
+
         fetchUserData();
     }, [userId]);
 

@@ -1,5 +1,7 @@
 package programming.tutorial.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -15,6 +17,7 @@ public class Course {
     private String description;
     private String category;
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Lesson> lessons;
 
     public Course() {

@@ -11,7 +11,8 @@ export function SettingsMenu() {
 
     const handleMenuToggle = () => setMenuOpen((prev) => !prev);
 
-    const { getAccessTokenSilently, logout } = useAuth0();
+    const { getAccessTokenSilently, logout, user } = useAuth0();
+    const auth0UserId = user?.sub;
 
     const handleLogout = async () => {
         try {
@@ -31,38 +32,34 @@ export function SettingsMenu() {
 
 
     const handleChangePersonalInfo = () => {
-        const userId = sessionStorage.getItem('userId');
-        if (userId) {
-            navigate(`/change-personal-info/${userId}`);
+        if (auth0UserId) {
+            navigate(`/change-personal-info/${auth0UserId}`);
         } else {
             console.error('User ID not found');
         }
     };
 
     const handleContact = () => {
-        const userId = sessionStorage.getItem('userId');
-        if (userId) {
-            navigate(`/contact/${userId}`);
+        if (auth0UserId) {
+            navigate(`/contact/${auth0UserId}`);
         } else {
             navigate('/contact');
         }
     };
 
     const handleAccountInformation = () => {
-        const userId = sessionStorage.getItem('userId');
-        if (userId) {
-            navigate(`/accountInformation/${userId}`);
+        if (auth0UserId) {
+            navigate(`/accountInformation/${auth0UserId}`);
         } else {
             console.error('User ID not found');
         }
     };
 
     const handleNotifications = () => {
-        const userId = sessionStorage.getItem('userId');
-        if (userId) {
-            navigate(`/notifications/${userId}`);
+        if (auth0UserId) {
+            navigate(`/notifications/${auth0UserId}`);
         } else {
-            console.error('User ID not found');
+            console.error('User ID not auth0UserId');
         }
     };
 

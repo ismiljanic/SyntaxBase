@@ -66,62 +66,67 @@ public class UserServiceJpa implements UserService {
         return Optional.ofNullable(userRepository.findByUsername(username));
     }
 
-    public void updateName(Long userId, String name) {
-        User existingUser = userRepository.findById(Math.toIntExact(userId))
+    public void updateName(String auth0UserId, String name) {
+        User existingUser = userRepository.findByAuth0UserId(auth0UserId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         existingUser.setName(name);
         userRepository.save(existingUser);
     }
 
-    public void updateSurname(Long userId, String lastName) {
-        User existingUser = userRepository.findById(Math.toIntExact(userId))
+    public void updateSurname(String userId, String lastName) {
+        User existingUser = userRepository.findByAuth0UserId(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         existingUser.setSurname(lastName);
         userRepository.save(existingUser);
     }
 
-    public void updateUsername(Long userId, String username) {
-        User existingUser = userRepository.findById(Math.toIntExact(userId))
+    public void updateUsername(String userId, String username) {
+        User existingUser = userRepository.findByAuth0UserId(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         existingUser.setUsername(username);
         userRepository.save(existingUser);
     }
 
-    public void changePassword(Long userId, String currentPassword, String newPassword) {
-        User user = userRepository.findById(Math.toIntExact(userId))
-                .orElseThrow(() -> new RuntimeException("User not found"));
+//    public void changePassword(String userId, String currentPassword, String newPassword) {
+//        User user = userRepository.findByAuth0UserId(userId)
+//                .orElseThrow(() -> new RuntimeException("User not found"));
+//
+//        if (!currentPassword.equals(user.getPassword())) {
+//            throw new RuntimeException("Current password is incorrect");
+//        }
+//
+//        user.setPassword(newPassword);
+//        userRepository.save(user);
+//    }
 
-        if (!currentPassword.equals(user.getPassword())) {
-            throw new RuntimeException("Current password is incorrect");
+    public void deleteUser(String auth0UserId, String password) {
+        Optional<User> userOptional = userRepository.findByAuth0UserId(auth0UserId);
+        if (userOptional.isEmpty()) {
+            throw new RuntimeException("User not found.");
         }
 
-        user.setPassword(newPassword);
-        userRepository.save(user);
-    }
-
-    public void deleteUser(Long userId, String password) {
-        User user = userRepository.findById(Math.toIntExact(userId))
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userOptional.get();
 
         if (!password.equals(user.getPassword())) {
             throw new RuntimeException("Password is incorrect");
         }
+
         userRepository.delete(user);
     }
 
-    public User getUserById(String id) throws UserNotFoundException {
-        System.out.println("Service layer: Fetching user by ID: " + id);
-        Optional<User> userOptional = userRepository.findById(Integer.valueOf(id));
+
+    public User findByAuth0UserId(String auth0Id) throws UserNotFoundException {
+        System.out.println("Service layer: Fetching user by Auth0 ID: " + auth0Id);
+        Optional<User> userOptional = userRepository.findByAuth0UserId(auth0Id);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             System.out.println("User found: " + user);
             return user;
         } else {
-            System.out.println("User not found with ID: " + id);
-            throw new UserNotFoundException("User not found with id: " + id);
+            System.out.println("User not found with Auth0 ID: " + auth0Id);
+            throw new UserNotFoundException("User not found with Auth0 ID: " + auth0Id);
         }
     }
-
     public User getOrCreateUserByAuth0Id(String auth0UserId) {
         return userRepository.findByAuth0UserId(auth0UserId)
                 .orElseGet(() -> {

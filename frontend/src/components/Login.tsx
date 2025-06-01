@@ -35,9 +35,6 @@ export function LoginComponent() {
                 }
                 const tokens = { accessToken, refreshToken };
 
-                console.log("accessToken: " + accessToken);
-                console.log("refreshToken: " + refreshToken);
-
                 const response = await fetch("http://localhost:8080/api/auth/login", {
                     method: "POST",
                     credentials: "include",

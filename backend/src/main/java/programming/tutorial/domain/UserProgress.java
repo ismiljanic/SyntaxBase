@@ -1,5 +1,6 @@
 package programming.tutorial.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import programming.tutorial.domain.Course;
 import programming.tutorial.domain.Lesson;
@@ -14,14 +15,17 @@ public class UserProgress {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
+    @JsonIgnore
     private Course course;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "current_lesson_id")
+    @JsonIgnore
     private Lesson currentLesson;
 
     public UserProgress() {

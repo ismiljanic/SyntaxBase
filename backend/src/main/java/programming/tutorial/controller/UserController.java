@@ -1,5 +1,8 @@
 package programming.tutorial.controller;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import jakarta.transaction.Transactional;
@@ -7,13 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import programming.tutorial.dao.PostRepository;
 import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.Role;
 import programming.tutorial.domain.User;
 import programming.tutorial.dto.*;
 import programming.tutorial.services.UserService;
+import programming.tutorial.services.impl.UserServiceJpa;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,25 +30,34 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class UserController {
     @Autowired
-    private UserService userService;
+    private UserServiceJpa userService;
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private PostRepository postRepository;
 
-    @GetMapping("/userInformation/{id}")
-    public User getUserInformation(@PathVariable String id) {
-        System.out.println("Fetching user information for ID: " + id);
-        User user = userService.getUserById(id);
-        if (user != null) {
-            System.out.println("User found: " + user);
-        } else {
-            System.out.println("User not found with ID: " + id);
-        }
-        return user;
-    }
+    @GetMapping("/userInformation")
+    public User getUserInformation(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
 
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+
+            try {
+                DecodedJWT decodedJWT = JWT.decode(token);
+                String auth0UserId = decodedJWT.getSubject();
+                System.out.println("Auth0 User ID: " + auth0UserId);
+
+                return userService.findByAuth0UserId(auth0UserId);
+
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token", e);
+            }
+        }
+
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing or invalid token");
+    }
     @PostMapping("/sync-auth0")
     @Transactional
     public ResponseEntity<String> syncAuth0User(
@@ -87,7 +103,8 @@ public class UserController {
     @GetMapping("/accountInformation/{userId}")
     public ResponseEntity<UserAccountDTO> getUserAccountInformation(@PathVariable String userId) {
         try {
-            Optional<User> userOptional = userRepository.findByAuth0UserId(userId);
+            String decodedUserId = URLDecoder.decode(userId, StandardCharsets.UTF_8);
+            Optional<User> userOptional = userRepository.findByAuth0UserId(decodedUserId);
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
                 List<PostDTO> userPosts = postRepository.findByUserId(user.getAuth0UserId())
@@ -119,12 +136,15 @@ public class UserController {
         }
     }
 
-    @PutMapping("/updateName/{userId}")
-    public ResponseEntity<String> updateName(@PathVariable Long userId, @RequestBody UserUpdateRequest request) {
+    @PutMapping("/updateName")
+    public ResponseEntity<String> updateName(@AuthenticationPrincipal Jwt jwt, @RequestBody UserUpdateRequest request) {
         try {
-            System.out.println("User ID: " + userId);
+            String auth0UserId = jwt.getClaimAsString("sub");
+
+            System.out.println("Auth0 User ID from token: " + auth0UserId);
             System.out.println("New Name: " + request.getName());
-            userService.updateName(userId, request.getName());
+
+            userService.updateName(auth0UserId, request.getName());
             return ResponseEntity.ok("Name updated successfully");
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -132,8 +152,9 @@ public class UserController {
         }
     }
 
+
     @PutMapping("/updateSurname/{userId}")
-    public ResponseEntity<String> updateSurname(@PathVariable Long userId, @RequestBody UserUpdateRequest request) {
+    public ResponseEntity<String> updateSurname(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
         try {
             userService.updateSurname(userId, request.getSurname());
             return ResponseEntity.ok("Surname updated successfully");
@@ -143,7 +164,7 @@ public class UserController {
     }
 
     @PutMapping("/updateUsername/{userId}")
-    public ResponseEntity<String> updateUsername(@PathVariable Long userId, @RequestBody UserUpdateRequest request) {
+    public ResponseEntity<String> updateUsername(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
         try {
             userService.updateUsername(userId, request.getUsername());
             return ResponseEntity.ok("Username updated successfully");
@@ -152,30 +173,35 @@ public class UserController {
         }
     }
 
-    @PutMapping("/changePassword/{userId}")
-    public ResponseEntity<String> changePassword(@PathVariable Long userId, @RequestBody ChangePasswordRequest request) {
-        try {
-            userService.changePassword(userId, request.getCurrentPassword(), request.getNewPassword());
-            return ResponseEntity.ok("Password changed successfully");
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
+//    @PutMapping("/changePassword/{userId}")
+//    public ResponseEntity<String> changePassword(@PathVariable String userId, @RequestBody ChangePasswordRequest request) {
+//        try {
+//            userService.changePassword(userId, request.getCurrentPassword(), request.getNewPassword());
+//            return ResponseEntity.ok("Password changed successfully");
+//        } catch (Exception e) {
+//            System.out.println("Error: " + e.getMessage());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+//        }
+//    }
 
 
     @DeleteMapping("/deleteAccount/{userId}")
-    public ResponseEntity<String> deleteAccount(@PathVariable Long userId, @RequestBody PasswordRequest request) {
+    public ResponseEntity<String> deleteAccount(@PathVariable String userId, @RequestBody PasswordRequest request,
+                                                @RequestHeader("Authorization") String authHeader) {
         try {
-            System.out.println("Received DELETE request for userId: " + userId);
+            String token = authHeader.replace("Bearer ", "");
+            String decodedUserId = URLDecoder.decode(userId, StandardCharsets.UTF_8);
+            System.out.println("Received DELETE request for userId: " + decodedUserId);
             System.out.println("Password received: " + request.getPassword());
-            userService.deleteUser(userId, request.getPassword());
+
+            userService.deleteUser(decodedUserId, request.getPassword());
             return ResponseEntity.ok("Account deleted successfully");
         } catch (Exception e) {
             System.out.println("Error deleting account: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
 
     @GetMapping("/allUsers")
     public ResponseEntity<List<UserDTO>> getAllUsers() {

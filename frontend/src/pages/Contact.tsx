@@ -5,6 +5,7 @@ import '../styles/Contact.css';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { Footer2 } from './Footer2';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface FormData {
     name: string;
@@ -18,7 +19,6 @@ interface FormData {
 export function Contact() {
     const navigate = useNavigate();
     const { userId } = useParams<{ userId?: string }>();
-    const baseUrl = process.env.REACT_APP_API_BASE_URL;
     const [formData, setFormData] = useState<FormData>({
         name: '',
         surname: '',
@@ -28,27 +28,40 @@ export function Contact() {
         message: ''
     });
     const [status, setStatus] = useState<string>('');
+    const { getAccessTokenSilently, isAuthenticated } = useAuth0();
 
     useEffect(() => {
         document.title = "Contact Us | SyntaxBase";
 
-        if (userId) {
-            axios.get(`${baseUrl}/api/users/userInformation/${userId}`)
-                .then(response => {
-                    console.log('User information fetched:', response.data);
-                    const { name, surname, username } = response.data;
-                    setFormData(prevData => ({
-                        ...prevData,
-                        name,
-                        surname,
-                        username
-                    }));
-                })
-                .catch(error => {
-                    console.error('Error fetching user information:', error);
+        const fetchData = async () => {
+            try {
+                const token = await getAccessTokenSilently();
+
+                const response = await axios.get(`http://localhost:8080/api/users/userInformation`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                    withCredentials: true
                 });
-        }
-    }, [userId]);
+
+                const { name = '', surname = '', username = '', email = '', phone = '' } = response.data;
+                setFormData(prevData => ({
+                    ...prevData,
+                    name,
+                    surname,
+                    username,
+                    email,
+                    phone
+                }));
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -60,8 +73,15 @@ export function Contact() {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
         try {
-            await axios.post(`${baseUrl}/api/contact/email`, formData);
+            const token = await getAccessTokenSilently();
+            await axios.post(`http://localhost:8080/api/contact/email`, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                withCredentials: true
+            });
             setStatus('Feedback submitted successfully!');
             setFormData({
                 name: '',
@@ -181,11 +201,11 @@ export function Contact() {
                         </div>
                         <div className='email'>
                             <h1>Other</h1>
-                            <a href="mailto:fudansfudans@gmail.com" className='contactEmailDiv' style={{marginLeft: '0.5em'}}>fudansfudans@gmail.com</a>
+                            <a href="mailto:fudansfudans@gmail.com" className='contactEmailDiv' style={{ marginLeft: '0.5em' }}>fudansfudans@gmail.com</a>
                         </div>
                         <div className='email'>
                             <h1>Other email</h1>
-                            <a href="mailto:ivan.smiljanic@fer.hr" className='contactEmailDiv' style={{marginLeft: '0.5em'}}>ivan.smiljanic@fer.hr</a>
+                            <a href="mailto:ivan.smiljanic@fer.hr" className='contactEmailDiv' style={{ marginLeft: '0.5em' }}>ivan.smiljanic@fer.hr</a>
                         </div>
                     </div>
                 </div>
