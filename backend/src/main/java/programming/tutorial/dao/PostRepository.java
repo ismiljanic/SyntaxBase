@@ -12,6 +12,12 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     public List<Post> findAllByParentPostId(Long parentPostId);
 
     List<Post> findAllByParentPostIsNull();
+
     List<Post> findByUserId(String userId);
+
     List<Post> findDeletedPostsByUserId(String userId);
+    List<Post> findByUserIdAndDeletedFalse(String userId);
+
+    List<Post> findByUserIdAndDeletedTrue(String userId);
+
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../styles/Footer2.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface FooterProps {
     bgColor?: string;
@@ -14,17 +15,17 @@ export function Footer2({ bgColor = '#333' }: FooterProps) {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const [userId, setUserId] = useState<string | null>(null);
     const navigate = useNavigate();
-    const baseUrl = process.env.REACT_APP_API_BASE_URL;
+    const { getAccessTokenSilently, isAuthenticated } = useAuth0();
 
-    useEffect(() => {
-        const storedUserId = sessionStorage.getItem('userId');
-        if (storedUserId) {
-            setUserId(storedUserId);
-            setIsLoggedIn(true);
-        } else {
-            setIsLoggedIn(false);
-        }
-    }, []);
+    // useEffect(() => {
+    //     const storedUserId = sessionStorage.getItem('userId');
+    //     if (storedUserId) {
+    //         setUserId(storedUserId);
+    //         setIsLoggedIn(true);
+    //     } else {
+    //         setIsLoggedIn(false);
+    //     }
+    // }, []);
 
     const handleScroll = () => {
         const targetSection = document.getElementById('getting-started');
@@ -49,17 +50,25 @@ export function Footer2({ bgColor = '#333' }: FooterProps) {
     };
 
     const handleContactClick = () => {
-        if (isLoggedIn && userId) {
-            navigate(`/contact/${userId}`);
-        } else {
-            navigate('/contact');
-        }
+        navigate('/contact');
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
         try {
-            await axios.post('http://localhost:8080/api/feedback/email', { email, message });
+            const token = await getAccessTokenSilently();
+
+            await axios.post(
+                'http://localhost:8080/api/feedback/email',
+                { email, message },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
             setStatus('Feedback submitted successfully!');
             setEmail('');
             setMessage('');

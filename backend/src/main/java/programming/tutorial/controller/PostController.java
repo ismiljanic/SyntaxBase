@@ -3,6 +3,8 @@ package programming.tutorial.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import programming.tutorial.dao.NotificationRepository;
 import programming.tutorial.dao.PostRepository;
@@ -82,9 +84,10 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePost(@PathVariable Integer id, @RequestParam String username) {
-        User user = userRepository.findByUsername(username);
+    public ResponseEntity<String> deletePost(@PathVariable Integer id, @AuthenticationPrincipal Jwt jwt) {
+        String auth0UserId = jwt.getSubject();
 
+        User user = userRepository.findByAuth0UserId(auth0UserId).orElse(null);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found.");
         }
@@ -94,20 +97,17 @@ public class PostController {
         }
 
         Post postToDelete = postRepository.findById(id).orElse(null);
-
         if (postToDelete == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post not found.");
         }
-        System.out.println(user.getRole());
-        if (!postToDelete.getUserId().equals(user.getId()) && !user.getRole().equals(Role.ADMIN)) {
+
+        if (!postToDelete.getUserId().equals(auth0UserId) && !user.getRole().equals(Role.ADMIN)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to delete this post.");
         }
 
         postRepository.delete(postToDelete);
-
         return ResponseEntity.ok("Post and its replies deleted successfully.");
     }
-
 
     @GetMapping("/notifications/{userId}")
     public ResponseEntity<List<NotificationDTO>> getNotifications(@PathVariable String userId) {

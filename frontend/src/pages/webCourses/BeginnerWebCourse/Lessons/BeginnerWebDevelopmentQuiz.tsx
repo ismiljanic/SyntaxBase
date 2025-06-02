@@ -4,10 +4,27 @@ import { Header } from '../../../Header';
 import { Footer } from '../../../Footer';
 import { Footer2 } from '../../../Footer2';
 import { useNavigate } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export function BeginnerWebDevelopmentQuiz() {
     const navigate = useNavigate();
-    const userId = sessionStorage.getItem('userId');
+    const { user, isAuthenticated, loginWithRedirect, isLoading } = useAuth0();
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+    const [score, setScore] = useState(0);
+    const [isQuizCompleted, setIsQuizCompleted] = useState(false);
+    const [feedback, setFeedback] = useState<string>('');
+
+    if (isLoading) return <div>Loading...</div>;
+    console.log("prije provjere auth-a");
+    if (!isAuthenticated) {
+        console.log("provjera auth-a")
+        loginWithRedirect();
+        return null;
+    }
+    console.log("nakon provjere auth-a")
+    const userId = user?.sub;
+
 
     const quizQuestions = [
         {
@@ -26,12 +43,6 @@ export function BeginnerWebDevelopmentQuiz() {
             correctAnswer: 'To make the webpage interactive',
         },
     ];
-
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-    const [score, setScore] = useState(0);
-    const [isQuizCompleted, setIsQuizCompleted] = useState(false);
-    const [feedback, setFeedback] = useState<string>('');
 
     const handleAnswerSelect = (answer: string) => {
         setSelectedAnswer(answer);

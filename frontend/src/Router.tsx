@@ -113,8 +113,9 @@ export function Router() {
           <Route path="/accountInformation/:userId" element={<AccountInformation />} />
           <Route path="/help" element={<Help />} />
           <Route path="/about" element={<About />} />
+          <Route path="/beginnerWebCourse/quiz" element={<BeginnerWebDevelopmentQuiz />} />
           <Route path="/beginnerWebCourse/:userId" element={<MainPageBeginnerWebCourse />} />
-          <Route path="/course/:courseId/lesson/:lessonId" element={<PrivateRoute><Lesson1/></PrivateRoute>}/>
+          <Route path="/course/:courseId/lesson/:lessonId" element={<PrivateRoute><Lesson1 /></PrivateRoute>} />
           <Route path="/course/:courseId/lesson/2" element={<Lesson2 />} />
           <Route path="/course/:courseId/lesson/3" element={<Lesson3 />} />
           <Route path="/course/:courseId/lesson/4" element={<Lesson4 />} />
@@ -151,7 +152,6 @@ export function Router() {
           <Route path="/beginnerWebTutorial/lesson/4" element={<BeginnerWebTutorialLesson4 />} />
           <Route path="/beginnerWebTutorial/lesson/5" element={<BeginnerWebTutorialLesson5 />} />
           <Route path="/course/:courseId/lesson/finish" element={<FinishCourse />} />
-          <Route path="/beginnerWebDevelopmentQuiz" element={<BeginnerWebDevelopmentQuiz />} />
           <Route path="/adminPage" element={<AdminPage />} />
           <Route path="/community/:userId" element={<Community />} />
           <Route path="/notifications/:userId" element={<Notifications />} />
