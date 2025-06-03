@@ -14,6 +14,7 @@ interface FormData {
     email: string;
     username: string;
     message: string;
+    role?: string;
 }
 
 export function Contact() {
@@ -44,15 +45,26 @@ export function Contact() {
                     withCredentials: true
                 });
 
-                const { name = '', surname = '', username = '', email = '', phone = '' } = response.data;
+                const {
+                    name = '',
+                    surname = '',
+                    username = '',
+                    email = '',
+                    phone = '',
+                    role = ''
+                } = response.data;
+
                 setFormData(prevData => ({
                     ...prevData,
                     name,
                     surname,
                     username,
                     email,
-                    phone
+                    phone,
+                    role
                 }));
+
+                console.log("User role:", role);
             } catch (error) {
                 console.error('Error fetching user info:', error);
             }
@@ -60,7 +72,6 @@ export function Contact() {
 
         fetchData();
     }, []);
-
 
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

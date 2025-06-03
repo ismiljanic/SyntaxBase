@@ -11,16 +11,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import programming.tutorial.dao.InstructorRequestRepository;
 import programming.tutorial.dao.PostRepository;
 import programming.tutorial.dao.UserRepository;
+import programming.tutorial.domain.InstructorRequest;
+import programming.tutorial.domain.InstructorRequestStatus;
 import programming.tutorial.domain.Role;
 import programming.tutorial.domain.User;
 import programming.tutorial.dto.*;
 import programming.tutorial.services.UserService;
+import programming.tutorial.services.impl.InstructorRequestServiceJpa;
 import programming.tutorial.services.impl.UserServiceJpa;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,10 +42,15 @@ public class UserController {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private InstructorRequestRepository instructorRequestRepository;
+    @Autowired
+    private InstructorRequestServiceJpa instructorRequestServiceJpa;
+
     @GetMapping("/userInformation")
     public User getUserInformation(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
-
+        System.out.println("Pozvan je userInfomation");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
 
@@ -58,6 +68,7 @@ public class UserController {
 
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing or invalid token");
     }
+
     @PostMapping("/sync-auth0")
     @Transactional
     public ResponseEntity<String> syncAuth0User(
@@ -65,7 +76,7 @@ public class UserController {
             @RequestBody Auth0UserDTO auth0User
     ) {
         String auth0UserId = jwt.getSubject();
-
+        System.out.println("Auth0UserDTO received: " + auth0User.getAuth0UserId());
         Optional<User> existingUser = userRepository.findByAuth0UserId(auth0UserId);
 
         if (existingUser.isEmpty()) {
@@ -86,7 +97,6 @@ public class UserController {
             return ResponseEntity.ok("User already exists");
         }
     }
-
 
     @RequestMapping(value = "/register", method = {RequestMethod.POST, RequestMethod.OPTIONS})
     ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
@@ -227,5 +237,32 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("User not found with Auth0 ID: " + auth0Id);
         }
+    }
+
+    @PostMapping("/request-instructor")
+    public ResponseEntity<?> requestInstructorRole(@RequestBody InstructorRequestDTO dto, Principal principal) {
+        Optional<User> userOpt = userRepository.findByAuth0UserId(principal.getName());
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        User user = userOpt.get();
+
+        if (instructorRequestRepository.existsByUserAndStatus(user, InstructorRequestStatus.PENDING)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You already have a pending instructor request.");
+        }
+
+        InstructorRequest request = new InstructorRequest();
+        request.setUser(user);
+        request.setInstitution(dto.getInstitution());
+        request.setPhone(dto.getPhone());
+        request.setAddress(dto.getAddress());
+        request.setCredentials(dto.getCredentials());
+        request.setStatus(InstructorRequestStatus.PENDING);
+        request.setRequestDate(LocalDateTime.now());
+        request.setEmail(dto.getEmail());
+
+        instructorRequestServiceJpa.submitRequest(request);
+
+        return ResponseEntity.ok("Instructor request submitted successfully.");
     }
 }

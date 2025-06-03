@@ -12,7 +12,7 @@ root.render(
     authorizationParams={{
       redirect_uri: window.location.origin + '/login',
       audience: "https://dev-azim8sfu2yz6kzyp.us.auth0.com/api/v2/",
-      scope: "read:current_user update:current_user_metadata offline_access"
+      scope: "openid profile email read:current_user update:current_user_metadata offline_access"
     }}
     useRefreshTokens={true}
     cacheLocation="localstorage"
