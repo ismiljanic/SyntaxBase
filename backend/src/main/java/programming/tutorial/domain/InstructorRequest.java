@@ -9,7 +9,8 @@ public class InstructorRequest {
     @Id
     @GeneratedValue
     private Long id;
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "user_userid")
     private User user;
     private String institution;
     private String phone;

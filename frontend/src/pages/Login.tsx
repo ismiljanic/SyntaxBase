@@ -14,7 +14,7 @@ export function Login() {
       try {
         const token = await getAccessTokenSilently();
 
-        await fetch("http://localhost:8080/api/users/sync-auth0", {
+        const response = await fetch("http://localhost:8080/api/users/sync-auth0", {
           method: "POST",
           credentials: "include",
           headers: {
@@ -28,7 +28,16 @@ export function Login() {
           }),
         });
 
-        navigate(`/homepage/${encodeURIComponent(user.sub || "")}`);
+        if (!response.ok) {
+          throw new Error("Sync failed");
+        }
+
+        const userData = await response.json();
+        if (userData.role === "ADMIN") {
+          navigate('/admin');
+        } else {
+          navigate(`/homepage/${encodeURIComponent(user.sub || "")}`);
+        }
       } catch (error) {
         console.error("User sync failed", error);
       }
@@ -36,6 +45,7 @@ export function Login() {
 
     syncUserWithBackend();
   }, [isAuthenticated, user, getAccessTokenSilently, isLoading, navigate]);
+
 
   return (
     <div>

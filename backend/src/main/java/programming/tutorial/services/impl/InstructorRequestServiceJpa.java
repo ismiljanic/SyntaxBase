@@ -1,11 +1,16 @@
 package programming.tutorial.services.impl;
 
+import org.antlr.v4.runtime.misc.LogManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import programming.tutorial.dao.InstructorRequestRepository;
+import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.InstructorRequest;
+import programming.tutorial.domain.Role;
 import programming.tutorial.domain.User;
 import programming.tutorial.domain.InstructorRequestStatus;
+import programming.tutorial.services.EmailService;
 import programming.tutorial.services.InstructorRequestService;
 
 import java.time.LocalDateTime;
@@ -15,8 +20,13 @@ import java.util.Optional;
 @Service
 @Transactional
 public class InstructorRequestServiceJpa implements InstructorRequestService {
-
+    @Autowired
     private final InstructorRequestRepository instructorRequestRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private EmailServiceJpa emailService;
 
     public InstructorRequestServiceJpa(InstructorRequestRepository repository) {
         this.instructorRequestRepository = repository;
@@ -51,6 +61,15 @@ public class InstructorRequestServiceJpa implements InstructorRequestService {
             InstructorRequest request = optional.get();
             request.setStatus(status);
             request.setDecisionDate(LocalDateTime.now());
+
+            if (status == InstructorRequestStatus.APPROVED) {
+                User user = request.getUser();
+                if (Role.USER.equals(user.getRole())) {
+                    user.setRole(Role.INSTRUCTOR);
+                    userRepository.save(user);
+                    emailService.sendApprovalEmail(request.getEmail(), user.getName());
+                }
+            }
             return instructorRequestRepository.save(request);
         }
         throw new RuntimeException("Instructor request not found");

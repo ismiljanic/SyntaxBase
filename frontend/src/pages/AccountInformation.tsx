@@ -93,9 +93,12 @@ export function AccountInformation() {
             <h1 className='account'>Account Information</h1>
             <div className="account-container">
                 <div className="account-info-section">
-                    <button onClick={() => window.location.href = '/request-instructor'}>
-                        Become Instructor
-                    </button>
+                    <div className="become-instructor-container">
+                        <button className="become-instructor-button" onClick={() => window.location.href = '/request-instructor'}>
+                            Become Instructor
+                        </button>
+                    </div>
+
                     <div className="account-info-title">About Your Account</div>
                     <div className="account-info-item">
                         <strong>Name:</strong> <span className="account-info-value">{accountInfo?.name}</span>

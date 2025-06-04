@@ -9,11 +9,7 @@ import programming.tutorial.services.EmailService;
 @Service
 public class EmailServiceJpa implements EmailService {
 
-    private JavaMailSender emailSender;
-
-    public void EmailService(JavaMailSender emailSender) {
-        this.emailSender = emailSender;
-    }
+    private final JavaMailSender emailSender;
 
     public EmailServiceJpa(JavaMailSender emailSender) {
         this.emailSender = emailSender;
@@ -31,6 +27,18 @@ public class EmailServiceJpa implements EmailService {
                         "Username: " + contactForm.getUsername() + "\n" +
                         "Feedback: " + contactForm.getMessage()
         );
+        emailSender.send(message);
+    }
+
+    public void sendApprovalEmail(String toEmail, String name) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("Instructor Request Approved");
+        message.setText("Dear " + name + ",\n\n" +
+                "Congratulations! Your request to become an instructor has been approved.\n" +
+                "You can now start creating content on our platform.\n\n" +
+                "Best regards,\nSyntaxBase Team");
+
         emailSender.send(message);
     }
 }

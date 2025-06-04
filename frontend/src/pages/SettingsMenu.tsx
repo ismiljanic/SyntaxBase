@@ -4,15 +4,17 @@ import axios from 'axios';
 import '../styles/SettingsMenu.css';
 import { useAuth0 } from '@auth0/auth0-react';
 
-export function SettingsMenu() {
+type SettingsMenuProps = {
+    role: string;
+};
+
+export function SettingsMenu({ role }: SettingsMenuProps) {
     const [menuOpen, setMenuOpen] = useState(false);
     const navigate = useNavigate();
-    const baseUrl = process.env.REACT_APP_API_BASE_URL;
-
-    const handleMenuToggle = () => setMenuOpen((prev) => !prev);
-
     const { getAccessTokenSilently, logout, user } = useAuth0();
     const auth0UserId = user?.sub;
+
+    const handleMenuToggle = () => setMenuOpen(prev => !prev);
 
     const handleLogout = async () => {
         try {
@@ -20,16 +22,13 @@ export function SettingsMenu() {
             await fetch("http://localhost:8080/api/auth/logout", {
                 method: "POST",
                 credentials: "include",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                headers: { Authorization: `Bearer ${token}` },
             });
             logout({ logoutParams: { returnTo: window.location.origin } });
         } catch (e) {
             console.error("Logout failed", e);
         }
     };
-
 
     const handleChangePersonalInfo = () => {
         if (auth0UserId) {
@@ -64,20 +63,28 @@ export function SettingsMenu() {
     };
 
     return (
-        <div className="settings-menu">
+        <div className={`settings-menu ${role === 'ADMIN' ? 'admin-menu' : 'user-menu'}`}>
             <button className="settings-button" onClick={handleMenuToggle}>
                 <div className="line"></div>
                 <div className="line"></div>
                 <div className="line"></div>
             </button>
             <div className={`settings-dropdown ${menuOpen ? 'show' : ''}`}>
-                <button onClick={handleAccountInformation}>Account Information</button>
-                <button onClick={handleChangePersonalInfo}>Change Personal Information</button>
-                <button onClick={handleContact}>Contact Us</button>
-                <button onClick={handleNotifications}>New Messages</button>
-                <button className="logout-button" onClick={handleLogout}>
-                    Logout
-                </button>
+                {role === 'ADMIN' ? (
+                    <>
+                        <button onClick={() => navigate('/admin/users')}>Manage Users</button>
+                        <button onClick={() => navigate('/admin/settings')}>Admin Settings</button>
+                        <button onClick={handleLogout} className="logout-button">Logout</button>
+                    </>
+                ) : (
+                    <>
+                        <button onClick={() => navigate(`/accountInformation/${auth0UserId}`)}>Account Information</button>
+                        <button onClick={() => navigate(`/change-personal-info/${auth0UserId}`)}>Change Personal Information</button>
+                        <button onClick={() => navigate(`/contact/${auth0UserId}`)}>Contact Us</button>
+                        <button onClick={() => navigate(`/notifications/${auth0UserId}`)}>New Messages</button>
+                        <button onClick={handleLogout} className="logout-button">Logout</button>
+                    </>
+                )}
             </div>
         </div>
     );

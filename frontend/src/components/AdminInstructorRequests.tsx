@@ -16,26 +16,53 @@ interface InstructorRequest {
 
 export function AdminInstructorRequests() {
     const [requests, setRequests] = useState<InstructorRequest[]>([]);
+    const [error, setError] = useState<string | null>(null);
     const { getAccessTokenSilently } = useAuth0();
 
     useEffect(() => {
         const fetchRequests = async () => {
-            const token = await getAccessTokenSilently();
-            const response = await axios.get<InstructorRequest[]>('http://localhost:8080/api/admin/instructor-requests/pending', {
-                headers: { Authorization: `Bearer ${token}` },
-                withCredentials: true
-            });
-            setRequests(response.data);
+            try {
+                const token = await getAccessTokenSilently();
+                const response = await axios.get('http://localhost:8080/api/admin/instructor-requests/pending', {
+                    withCredentials: true,
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setRequests(response.data);
+                setError(null);
+            } catch (err: any) {
+                if (axios.isAxiosError(err) && err.response?.status === 403) {
+                    setError('Unauthorized: You do not have permission to view this page.');
+                } else {
+                    setError('An error occurred while fetching requests.');
+                }
+            }
         };
         fetchRequests();
-    }, []);
+    }, [getAccessTokenSilently]);
+
+    if (error) {
+        return (
+            <div className="error-container">
+                <h2 className="error-title">Access Denied</h2>
+                <p className="error-message">{error}</p>
+                <div className="button-group">
+                    <button
+                        className="primary-button"
+                        onClick={() => (window.location.href = '/')}
+                    >
+                        Go to Homepage
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     const updateStatus = async (id: number, status: 'APPROVED' | 'REJECTED') => {
         try {
             const token = await getAccessTokenSilently();
             await axios.put(`http://localhost:8080/api/admin/instructor-requests/${id}/${status.toLowerCase()}`, {}, {
+                withCredentials: true,
                 headers: { Authorization: `Bearer ${token}` },
-                withCredentials: true
             });
             setRequests((prev) => prev.filter((r) => r.id !== id));
             alert(`Request ${status.toLowerCase()} successfully.`);
@@ -46,21 +73,32 @@ export function AdminInstructorRequests() {
     };
 
     return (
-        <div>
-            <h2>Pending Instructor Requests</h2>
-            {requests.length === 0 && <p>No pending requests.</p>}
-            {requests.map((req) => (
-                <div key={req.id} style={{ border: '1px solid black', padding: '10px', margin: '10px' }}>
-                    <p><strong>User:</strong> {req.user.username}</p>
-                    <p><strong>Institution:</strong> {req.institution}</p>
-                    <p><strong>Phone:</strong> {req.phone}</p>
-                    <p><strong>Address:</strong> {req.address}</p>
-                    <p><strong>Credentials:</strong> {req.credentials}</p>
-                    <p><strong>Email:</strong> {req.email}</p>
-                    <button onClick={() => updateStatus(req.id, 'APPROVED')}>Approve</button>
-                    <button onClick={() => updateStatus(req.id, 'REJECTED')}>Reject</button>
-                </div>
-            ))}
+        <div className="admin-container">
+            <h2 className="admin-title">Pending Instructor Requests</h2>
+
+            {requests.length === 0 ? (
+                <p className="no-requests">No pending requests.</p>
+            ) : (
+                requests.map((req) => (
+                    <div key={req.id} className="request-card">
+                        <p className="request-info"><strong>User:</strong> {req.user.username}</p>
+                        <p className="request-info"><strong>Institution:</strong> {req.institution}</p>
+                        <p className="request-info"><strong>Phone:</strong> {req.phone}</p>
+                        <p className="request-info"><strong>Address:</strong> {req.address}</p>
+                        <p className="request-info"><strong>Credentials:</strong> {req.credentials}</p>
+                        <p className="request-info"><strong>Email:</strong> {req.email}</p>
+
+                        <div className="button-group">
+                            <button className="btn btn-approve" onClick={() => updateStatus(req.id, 'APPROVED')}>
+                                Approve
+                            </button>
+                            <button className="btn btn-reject" onClick={() => updateStatus(req.id, 'REJECTED')}>
+                                Reject
+                            </button>
+                        </div>
+                    </div>
+                ))
+            )}
         </div>
     );
 }

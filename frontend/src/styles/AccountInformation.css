@@ -184,3 +184,29 @@
     cursor: not-allowed;
     color: #666666;
 }
+
+.become-instructor-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.become-instructor-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.become-instructor-button:hover {
+    background-color: #218838;
+}
+
+.become-instructor-button:active {
+    transform: scale(0.95);
+}

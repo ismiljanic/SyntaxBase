@@ -48,8 +48,6 @@ export function LoginComponent() {
                 if (!response.ok) {
                     const errorText = await response.text();
                     console.error("Failed to send tokens to backend:", errorText);
-                } else {
-                    console.log("Tokens sent to backend, cookies should be set");
                 }
             } catch (error) {
                 console.error("Error sending tokens to backend", error);

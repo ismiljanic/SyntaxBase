@@ -71,32 +71,38 @@ public class UserController {
 
     @PostMapping("/sync-auth0")
     @Transactional
-    public ResponseEntity<String> syncAuth0User(
+    public ResponseEntity<?> syncAuth0User(
             @AuthenticationPrincipal Jwt jwt,
             @RequestBody Auth0UserDTO auth0User
     ) {
         String auth0UserId = jwt.getSubject();
-        System.out.println("Auth0UserDTO received: " + auth0User.getAuth0UserId());
         Optional<User> existingUser = userRepository.findByAuth0UserId(auth0UserId);
 
+        User user;
         if (existingUser.isEmpty()) {
-            User newUser = new User();
-            newUser.setAuth0UserId(auth0UserId);
-            newUser.setUsername(auth0User.getEmail());
-            newUser.setName(auth0User.getName());
-            newUser.setSurname(auth0User.getSurname());
-            newUser.setPassword("");
-            newUser.setDateCreated(LocalDateTime.now());
-            newUser.setRole(Role.USER);
+            user = new User();
+            user.setAuth0UserId(auth0UserId);
+            user.setUsername(auth0User.getEmail());
+            user.setName(auth0User.getName());
+            user.setSurname(auth0User.getSurname());
+            user.setPassword("");
+            user.setDateCreated(LocalDateTime.now());
+            user.setRole(Role.USER);
 
-            userRepository.save(newUser);
-            System.out.println("New Auth0 user created: " + newUser.getUsername());
-            return ResponseEntity.ok("User created");
+            userRepository.save(user);
+            System.out.println("New Auth0 user created: " + user.getUsername());
         } else {
-            System.out.println("User already exists: " + existingUser.get().getUsername());
-            return ResponseEntity.ok("User already exists");
+            user = existingUser.get();
+            System.out.println("User already exists: " + user.getUsername());
         }
+
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("email", user.getUsername());
+        responseBody.put("role", user.getRole().toString());
+
+        return ResponseEntity.ok(responseBody);
     }
+
 
     @RequestMapping(value = "/register", method = {RequestMethod.POST, RequestMethod.OPTIONS})
     ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
@@ -264,5 +270,14 @@ public class UserController {
         instructorRequestServiceJpa.submitRequest(request);
 
         return ResponseEntity.ok("Instructor request submitted successfully.");
+    }
+
+    @GetMapping("/role/{auth0UserId}")
+    public ResponseEntity<Map<String, String>> getUserRole(@PathVariable String auth0UserId) {
+        Optional<User> user = userRepository.findByAuth0UserId(auth0UserId);
+        if (user.isPresent()) {
+            return ResponseEntity.ok(Map.of("role", user.get().getRole().name()));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 }

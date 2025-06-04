@@ -1,33 +1,31 @@
 package programming.tutorial.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.stereotype.Component;
-import programming.tutorial.dao.UserRepository;
-import programming.tutorial.domain.User;
 
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
-public class CustomJwtAuthenticationConverter extends JwtAuthenticationConverter {
+public class CustomJwtAuthenticationConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
 
-    @Autowired
-    private UserRepository userRepository;
+    private static final String ROLES_CLAIM = "https://SyntaxBase.com/roles";
 
-    protected List<GrantedAuthority> extractAuthorities(Jwt jwt) {
-        String auth0UserId = jwt.getClaimAsString("sub");
-        Optional<User> userOpt = userRepository.findByAuth0UserId(auth0UserId);
+    @Override
+    public Collection<GrantedAuthority> convert(Jwt jwt) {
+        List<String> roles = jwt.getClaimAsStringList(ROLES_CLAIM);
 
-        if (userOpt.isEmpty()) {
-            return Collections.emptyList();
+        if (roles == null || roles.isEmpty()) {
+            return List.of();
         }
+        System.out.println("Extracted roles: " + roles);
 
-        String role = userOpt.get().getRole().name();
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role));
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
+                .collect(Collectors.toList());
     }
 }

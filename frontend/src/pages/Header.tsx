@@ -16,6 +16,7 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
   const location = useLocation();
   const headerRef = useRef<HTMLElement>(null);
   const [headerVisible, setHeaderVisible] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTokenAndSetUser = async () => {
@@ -28,14 +29,40 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
     fetchTokenAndSetUser();
   }, [isAuthenticated, user]);
 
-  const handleProtectedNavigation = (path: string) => {
-    if (!isAuthenticated) {
-      sessionStorage.setItem('redirectAfterLogin', path);
-      navigate('/login');
-    } else {
-      navigate(path);
-    }
-  };
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (isAuthenticated && user?.sub) {
+        setUserId(user.sub);
+
+        try {
+          const token = await getAccessTokenSilently();
+
+          const response = await fetch(`http://localhost:8080/api/users/role/${encodeURIComponent(user.sub)}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: 'include',
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            setUserRole(data.role);
+          } else {
+            setUserRole(null);
+          }
+        } catch (error) {
+          console.error('Failed to fetch user role', error);
+          setUserRole(null);
+        }
+      } else {
+        setUserId(null);
+        setUserRole(null);
+      }
+    };
+
+    fetchUserRole();
+  }, [isAuthenticated, user, getAccessTokenSilently]);
 
   const handleScroll = () => {
     if (location.pathname === '/') {
@@ -131,9 +158,9 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
       </div>
 
       {isAuthenticated && userId ? (
-        <SettingsMenu />
+        <SettingsMenu role={userRole ?? ''} />
       ) : (
-        <button style={{paddingRight: '5.5em'}} className="divni1" onClick={handleContactClick}>
+        <button style={{ paddingRight: '5.5em' }} className="divni1" onClick={handleContactClick}>
           Contact
         </button>
       )}
