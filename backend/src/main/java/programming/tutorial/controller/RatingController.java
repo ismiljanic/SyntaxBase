@@ -18,37 +18,28 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/ratings")
 public class RatingController {
+
     @Autowired
     private RatingService ratingService;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RatingRepository ratingRepository;
-
     @GetMapping("/{courseId}")
     public ResponseEntity<Rating> getRating(@PathVariable Long courseId) {
-        Rating rating = ratingService.getRating(courseId);
-        return ResponseEntity.ok(rating);
+        return ResponseEntity.ok(ratingService.getRating(courseId));
     }
 
     @PostMapping("/save")
     public ResponseEntity<?> saveRating(@RequestBody Rating rating) {
         try {
-            Rating savedRating = ratingService.saveRating(rating);
-            return ResponseEntity.ok(savedRating);
+            return ResponseEntity.ok(ratingService.saveRating(rating));
         } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Rating already exists for this user and course");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save rating");
         }
     }
+
     @GetMapping("/user/{auth0UserId}")
     public ResponseEntity<List<RatingDTO>> getUserRatingsByAuth0Id(@PathVariable String auth0UserId) {
-        User user = userRepository.findByAuth0UserId(auth0UserId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        List<RatingDTO> ratings = ratingService.getUserRatings(user.getAuth0UserId());
-        return ResponseEntity.ok(ratings);
+        return ResponseEntity.ok(ratingService.getUserRatings(auth0UserId));
     }
 }

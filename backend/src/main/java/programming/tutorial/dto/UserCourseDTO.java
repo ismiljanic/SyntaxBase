@@ -24,6 +24,11 @@ public class UserCourseDTO {
         this.isCourseCompleted = isCourseCompleted;
     }
 
+    public UserCourseDTO(String auth0UserId, Integer courseId) {
+        this.auth0UserId = auth0UserId;
+        this.courseId = courseId;
+    }
+
     public Boolean getCourseCompleted() {
         return isCourseCompleted;
     }

@@ -1,11 +1,9 @@
 package programming.tutorial.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import programming.tutorial.dao.NotificationRepository;
-import programming.tutorial.domain.Notification;
+import programming.tutorial.services.NotificationService;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -13,18 +11,15 @@ import programming.tutorial.domain.Notification;
 public class NotificationController {
 
     @Autowired
-    private NotificationRepository notificationRepository;
+    private NotificationService notificationService;
 
     @PutMapping("/{id}/mark-read")
     public ResponseEntity<?> markNotificationAsRead(@PathVariable Long id) {
-        Notification notification = notificationRepository.findById(id).orElse(null);
-        if (notification == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Notification not found.");
+        try {
+            notificationService.markAsRead(id);
+            return ResponseEntity.ok("Notification marked as read.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
         }
-
-        notification.setRead(true);
-        notificationRepository.save(notification);
-
-        return ResponseEntity.ok("Notification marked as read.");
     }
 }

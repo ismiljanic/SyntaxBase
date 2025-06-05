@@ -19,6 +19,12 @@ public class LessonDTO {
         this.completed = completed;
     }
 
+    public LessonDTO(Integer id, String lessonName, Integer courseId) {
+        this.id = id;
+        this.lessonName = lessonName;
+        this.courseId = courseId;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -46,6 +52,7 @@ public class LessonDTO {
     public Integer getUserId() {
         return userId;
     }
+
     public void setUserId(Integer userId) {
         this.userId = userId;
     }

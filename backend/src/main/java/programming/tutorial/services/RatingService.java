@@ -8,7 +8,7 @@ import java.util.List;
 
 @Service
 public interface RatingService {
-    public Rating getRating(Long courseId);
-    public Rating saveRating(Rating rating);
-    public List<RatingDTO> getUserRatings(String userId);
+    Rating getRating(Long courseId);
+    Rating saveRating(Rating rating);
+    List<RatingDTO> getUserRatings(String auth0UserId);
 }

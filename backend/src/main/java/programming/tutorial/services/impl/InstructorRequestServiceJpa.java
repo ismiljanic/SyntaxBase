@@ -2,6 +2,8 @@ package programming.tutorial.services.impl;
 
 import org.antlr.v4.runtime.misc.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import programming.tutorial.dao.InstructorRequestRepository;
@@ -10,6 +12,7 @@ import programming.tutorial.domain.InstructorRequest;
 import programming.tutorial.domain.Role;
 import programming.tutorial.domain.User;
 import programming.tutorial.domain.InstructorRequestStatus;
+import programming.tutorial.dto.InstructorRequestDTO;
 import programming.tutorial.services.EmailService;
 import programming.tutorial.services.InstructorRequestService;
 
@@ -73,5 +76,37 @@ public class InstructorRequestServiceJpa implements InstructorRequestService {
             return instructorRequestRepository.save(request);
         }
         throw new RuntimeException("Instructor request not found");
+    }
+
+    public List<InstructorRequest> getPendingRequests() {
+        return instructorRequestRepository.findByStatus(InstructorRequestStatus.PENDING);
+    }
+
+    @Override
+    public ResponseEntity<?> submitInstructorRequest(InstructorRequestDTO dto, String auth0UserId) {
+        Optional<User> userOpt = userRepository.findByAuth0UserId(auth0UserId);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        User user = userOpt.get();
+
+        if (instructorRequestRepository.existsByUserAndStatus(user, InstructorRequestStatus.PENDING)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You already have a pending instructor request.");
+        }
+
+        InstructorRequest request = new InstructorRequest();
+        request.setUser(user);
+        request.setInstitution(dto.getInstitution());
+        request.setPhone(dto.getPhone());
+        request.setAddress(dto.getAddress());
+        request.setCredentials(dto.getCredentials());
+        request.setStatus(InstructorRequestStatus.PENDING);
+        request.setRequestDate(LocalDateTime.now());
+        request.setEmail(dto.getEmail());
+
+        instructorRequestRepository.save(request);
+
+        return ResponseEntity.ok("Instructor request submitted successfully.");
     }
 }

@@ -37,14 +37,6 @@ public class UserController {
     @Autowired
     private UserServiceJpa userService;
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private InstructorRequestRepository instructorRequestRepository;
-    @Autowired
     private InstructorRequestServiceJpa instructorRequestServiceJpa;
 
     @GetMapping("/userInformation")
@@ -70,39 +62,12 @@ public class UserController {
     }
 
     @PostMapping("/sync-auth0")
-    @Transactional
     public ResponseEntity<?> syncAuth0User(
             @AuthenticationPrincipal Jwt jwt,
             @RequestBody Auth0UserDTO auth0User
     ) {
-        String auth0UserId = jwt.getSubject();
-        Optional<User> existingUser = userRepository.findByAuth0UserId(auth0UserId);
-
-        User user;
-        if (existingUser.isEmpty()) {
-            user = new User();
-            user.setAuth0UserId(auth0UserId);
-            user.setUsername(auth0User.getEmail());
-            user.setName(auth0User.getName());
-            user.setSurname(auth0User.getSurname());
-            user.setPassword("");
-            user.setDateCreated(LocalDateTime.now());
-            user.setRole(Role.USER);
-
-            userRepository.save(user);
-            System.out.println("New Auth0 user created: " + user.getUsername());
-        } else {
-            user = existingUser.get();
-            System.out.println("User already exists: " + user.getUsername());
-        }
-
-        Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("email", user.getUsername());
-        responseBody.put("role", user.getRole().toString());
-
-        return ResponseEntity.ok(responseBody);
+        return userService.syncAuth0User(auth0User, jwt.getSubject());
     }
-
 
     @RequestMapping(value = "/register", method = {RequestMethod.POST, RequestMethod.OPTIONS})
     ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
@@ -120,33 +85,10 @@ public class UserController {
     public ResponseEntity<UserAccountDTO> getUserAccountInformation(@PathVariable String userId) {
         try {
             String decodedUserId = URLDecoder.decode(userId, StandardCharsets.UTF_8);
-            Optional<User> userOptional = userRepository.findByAuth0UserId(decodedUserId);
-            if (userOptional.isPresent()) {
-                User user = userOptional.get();
-                List<PostDTO> userPosts = postRepository.findByUserId(user.getAuth0UserId())
-                        .stream()
-                        .map(post -> new PostDTO(post.getId(), post.getContent(), post.getUserId(),
-                                user.getUsername(), post.getCreatedAt()))
-                        .collect(Collectors.toList());
-
-                List<PostDTO> deletedPosts = postRepository.findDeletedPostsByUserId(user.getAuth0UserId())
-                        .stream()
-                        .map(post -> new PostDTO(post.getId(), post.getContent(), post.getUserId(),
-                                user.getUsername(), post.getCreatedAt()))
-                        .collect(Collectors.toList());
-
-                UserAccountDTO userAccountDTO = new UserAccountDTO();
-                userAccountDTO.setName(user.getName());
-                userAccountDTO.setSurname(user.getSurname());
-                userAccountDTO.setUsername(user.getUsername());
-                userAccountDTO.setDateCreated(user.getDateCreated().toString());
-                userAccountDTO.setUserPosts(userPosts);
-                userAccountDTO.setDeletedPosts(deletedPosts);
-
-                return ResponseEntity.ok(userAccountDTO);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
+            UserAccountDTO userAccountDTO = userService.getUserAccountInformation(decodedUserId);
+            return ResponseEntity.ok(userAccountDTO);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -189,18 +131,6 @@ public class UserController {
         }
     }
 
-//    @PutMapping("/changePassword/{userId}")
-//    public ResponseEntity<String> changePassword(@PathVariable String userId, @RequestBody ChangePasswordRequest request) {
-//        try {
-//            userService.changePassword(userId, request.getCurrentPassword(), request.getNewPassword());
-//            return ResponseEntity.ok("Password changed successfully");
-//        } catch (Exception e) {
-//            System.out.println("Error: " + e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-//        }
-//    }
-
-
     @DeleteMapping("/deleteAccount/{userId}")
     public ResponseEntity<String> deleteAccount(@PathVariable String userId, @RequestBody PasswordRequest request,
                                                 @RequestHeader("Authorization") String authHeader) {
@@ -218,66 +148,32 @@ public class UserController {
         }
     }
 
-
     @GetMapping("/allUsers")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        List<UserDTO> userDTOs = users.stream().map(user -> {
-            UserDTO dto = new UserDTO();
-            dto.setId(user.getId());
-            dto.setUsername(user.getUsername());
-            dto.setRole(user.getRole());
-            return dto;
-        }).collect(Collectors.toList());
-
-        return ResponseEntity.ok(userDTOs);
+        List<UserDTO> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/by-auth0-id/{auth0Id}")
     public ResponseEntity<?> getUserIdByAuth0Id(@PathVariable String auth0Id) {
-        Optional<User> userOpt = userRepository.findByAuth0UserId(auth0Id);
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            return ResponseEntity.ok(new UserIdDTO(user.getAuth0UserId()));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("User not found with Auth0 ID: " + auth0Id);
-        }
+        Optional<UserIdDTO> userIdDto = userService.getUserIdByAuth0Id(auth0Id);
+        return userIdDto
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("User not found with Auth0 ID: " + auth0Id));
     }
 
     @PostMapping("/request-instructor")
     public ResponseEntity<?> requestInstructorRole(@RequestBody InstructorRequestDTO dto, Principal principal) {
-        Optional<User> userOpt = userRepository.findByAuth0UserId(principal.getName());
-        if (userOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
-        User user = userOpt.get();
-
-        if (instructorRequestRepository.existsByUserAndStatus(user, InstructorRequestStatus.PENDING)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You already have a pending instructor request.");
-        }
-
-        InstructorRequest request = new InstructorRequest();
-        request.setUser(user);
-        request.setInstitution(dto.getInstitution());
-        request.setPhone(dto.getPhone());
-        request.setAddress(dto.getAddress());
-        request.setCredentials(dto.getCredentials());
-        request.setStatus(InstructorRequestStatus.PENDING);
-        request.setRequestDate(LocalDateTime.now());
-        request.setEmail(dto.getEmail());
-
-        instructorRequestServiceJpa.submitRequest(request);
-
-        return ResponseEntity.ok("Instructor request submitted successfully.");
+        return instructorRequestServiceJpa.submitInstructorRequest(dto, principal.getName());
     }
 
     @GetMapping("/role/{auth0UserId}")
     public ResponseEntity<Map<String, String>> getUserRole(@PathVariable String auth0UserId) {
-        Optional<User> user = userRepository.findByAuth0UserId(auth0UserId);
-        if (user.isPresent()) {
-            return ResponseEntity.ok(Map.of("role", user.get().getRole().name()));
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        Optional<String> roleOpt = userService.getUserRoleByAuth0Id(auth0UserId);
+        return roleOpt
+                .<ResponseEntity<Map<String, String>>>map(role -> ResponseEntity.ok(Map.of("role", role)))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
+
 }

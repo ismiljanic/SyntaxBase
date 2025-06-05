@@ -18,14 +18,12 @@ import java.util.List;
 @RequestMapping("/api/admin/instructor-requests")
 public class InstructorRequestAdminController {
     private final InstructorRequestService instructorRequestService;
-    private final InstructorRequestRepository instructorRequestRepository;
 
     public InstructorRequestAdminController(
-            InstructorRequestService instructorRequestService,
-            InstructorRequestRepository instructorRequestRepository) {
+            InstructorRequestService instructorRequestService) {
         this.instructorRequestService = instructorRequestService;
-        this.instructorRequestRepository = instructorRequestRepository;
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/approved")
     public ResponseEntity<?> approveRequest(@PathVariable Long id) {
@@ -51,8 +49,6 @@ public class InstructorRequestAdminController {
     @GetMapping("/pending")
     @PreAuthorize("hasRole('ADMIN')")
     public List<InstructorRequest> getPendingRequests() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Granted authorities: " + auth.getAuthorities());
-        return instructorRequestRepository.findByStatus(InstructorRequestStatus.PENDING);
+        return instructorRequestService.getPendingRequests();
     }
 }

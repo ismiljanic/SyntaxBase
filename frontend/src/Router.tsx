@@ -114,7 +114,7 @@ export function Router() {
           <Route path="/accountInformation/:userId" element={<AccountInformation />} />
           <Route path="/help" element={<Help />} />
           <Route path="/about" element={<About />} />
-          <Route path="/beginnerWebCourse/quiz" element={<BeginnerWebDevelopmentQuiz />} />
+          <Route path="/beginnerWebDevelopmentQuiz" element={<BeginnerWebDevelopmentQuiz />} />
           <Route path="/beginnerWebCourse/:userId" element={<MainPageBeginnerWebCourse />} />
           <Route path="/course/:courseId/lesson/:lessonId" element={<PrivateRoute><Lesson1 /></PrivateRoute>} />
           <Route path="/course/:courseId/lesson/2" element={<Lesson2 />} />

@@ -18,11 +18,9 @@ export function BeginnerWebDevelopmentQuiz() {
     if (isLoading) return <div>Loading...</div>;
     console.log("prije provjere auth-a");
     if (!isAuthenticated) {
-        console.log("provjera auth-a")
         loginWithRedirect();
         return null;
     }
-    console.log("nakon provjere auth-a")
     const userId = user?.sub;
 
 

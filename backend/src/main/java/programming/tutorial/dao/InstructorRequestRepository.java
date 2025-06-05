@@ -11,5 +11,6 @@ import java.util.List;
 @Repository
 public interface InstructorRequestRepository extends JpaRepository<InstructorRequest, Long> {
     boolean existsByUserAndStatus(User user, InstructorRequestStatus status);
+
     List<InstructorRequest> findByStatus(InstructorRequestStatus status);
 }

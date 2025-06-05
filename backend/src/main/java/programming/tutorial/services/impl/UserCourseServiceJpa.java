@@ -2,17 +2,14 @@ package programming.tutorial.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import programming.tutorial.dao.CourseRepository;
-import programming.tutorial.dao.LessonRepository;
-import programming.tutorial.dao.UserCourseRepository;
-import programming.tutorial.dao.UserRepository;
-import programming.tutorial.domain.Course;
-import programming.tutorial.domain.Lesson;
-import programming.tutorial.domain.UserCourse;
+import programming.tutorial.dao.*;
+import programming.tutorial.domain.*;
 import programming.tutorial.dto.CourseDTO;
+import programming.tutorial.dto.StartCourseRequest;
 import programming.tutorial.dto.UserCourseDTO;
 import programming.tutorial.services.UserCourseService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +27,9 @@ public class UserCourseServiceJpa implements UserCourseService {
 
     @Autowired
     private LessonRepository lessonRepository;
+    @Autowired
+    private UserProgressRepository userProgressRepository;
+
 
     @Override
     public void enrollUserInCourse(UserCourseDTO userCourseDTO) {
@@ -86,4 +86,53 @@ public class UserCourseServiceJpa implements UserCourseService {
     public boolean isUserEnrolledInCourse(String userId, Integer courseId) {
         return userCourseRepository.existsByUser_Auth0UserIdAndCourseId(userId, courseId);
     }
+
+    private User createNewUser(String auth0UserId) {
+        User newUser = new User();
+        newUser.setAuth0UserId(auth0UserId);
+        newUser.setName("Unknown");
+        newUser.setSurname("User");
+        newUser.setPassword("");
+        newUser.setUsername("user_" + auth0UserId.substring(Math.max(0, auth0UserId.length() - 5)));
+        newUser.setDateCreated(LocalDateTime.now());
+        newUser.setRole(Role.USER);
+        return userRepository.save(newUser);
+    }
+
+
+    @Override
+    public void startCourseForUser(StartCourseRequest request) {
+        String auth0UserId = request.getAuth0UserId();
+        Integer courseId = request.getCourseId();
+
+        User user = userRepository.findByAuth0UserId(auth0UserId)
+                .orElseGet(() -> createNewUser(auth0UserId));
+
+        if (!courseRepository.existsById(courseId)) {
+            throw new IllegalArgumentException("Invalid course ID");
+        }
+
+        enrollUserInCourse(new UserCourseDTO(auth0UserId, courseId));
+
+        boolean progressExists = userProgressRepository.findByUser_Auth0UserIdAndCourse_Id(auth0UserId, courseId).isPresent();
+        if (!progressExists) {
+            UserProgress progress = new UserProgress();
+            progress.setUser(user);
+            progress.setCourse(courseRepository.findById(courseId).orElseThrow());
+            progress.setCurrentLesson(lessonRepository.findById(1).orElse(null));
+            userProgressRepository.save(progress);
+        }
+    }
+
+    @Override
+    public boolean markCourseAsCompleted(String auth0UserId, Integer courseId) {
+        List<UserCourse> userCourses = userCourseRepository.findByUser_Auth0UserIdAndCourseId(auth0UserId, courseId);
+        if (userCourses.isEmpty()) return false;
+
+        UserCourse userCourse = userCourses.get(0);
+        userCourse.setCompleted(true);
+        userCourseRepository.save(userCourse);
+        return true;
+    }
+
 }

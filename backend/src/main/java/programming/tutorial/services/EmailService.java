@@ -4,6 +4,6 @@ import org.springframework.stereotype.Service;
 import programming.tutorial.domain.ContactForm;
 @Service
 public interface EmailService {
-    public void sendContactEmail(ContactForm contactForm);
-    public void sendApprovalEmail(String toEmail, String name);
+    void sendContactEmail(ContactForm contactForm);
+    void sendApprovalEmail(String toEmail, String name);
 }

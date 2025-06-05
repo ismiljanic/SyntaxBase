@@ -22,24 +22,24 @@ public class RatingServiceJpa implements RatingService {
         return ratingRepository.findByCourseId(courseId);
     }
 
+    @Override
     public Rating saveRating(Rating rating) {
-        String auth0UserId = rating.getAuth0UserId();
-        Long courseId = rating.getCourseId();
+        Optional<Rating> existing = ratingRepository.findByAuth0UserIdAndCourseId(
+                rating.getAuth0UserId(), rating.getCourseId()
+        );
 
-        Optional<Rating> existingRating = ratingRepository.findByAuth0UserIdAndCourseId(auth0UserId, courseId);
-
-        if (existingRating.isPresent()) {
-            throw new IllegalStateException("User has already rated this course");
+        if (existing.isPresent()) {
+            throw new IllegalStateException("Rating already exists for this user and course");
         }
 
         return ratingRepository.save(rating);
     }
 
-
-    public List<RatingDTO> getUserRatings(String userId) {
-        List<Rating> ratings = ratingRepository.findByAuth0UserId(userId);
-        return ratings.stream().map(rating -> new RatingDTO(Math.toIntExact(rating.getCourseId()), rating.getRating()))
+    @Override
+    public List<RatingDTO> getUserRatings(String auth0UserId) {
+        return ratingRepository.findByAuth0UserId(auth0UserId)
+                .stream()
+                .map(r -> new RatingDTO(Math.toIntExact(r.getCourseId()), r.getRating()))
                 .collect(Collectors.toList());
     }
-
 }
