@@ -27,18 +27,15 @@ body {
     }
 }
 
-/* Initial hidden state for text */
 .hidden {
     opacity: 0;
     transform: translateY(20px);
 }
 
-/* Slide-in and fade-in animation for text */
 .slide-in {
     animation: slideInFade 1s ease-out forwards;
 }
 
-/* Header styling (static) */
 .mainp-header {
     display: flex;
     flex-direction: column;
@@ -49,11 +46,9 @@ body {
     padding: 60px 20px;
     border-radius: 0 0 8px 8px;
     height: 100vh;
-    /* Full viewport height */
     text-align: center;
 }
 
-/* Text specific styling */
 .mainp-header h1 {
     font-size: 6rem;
     margin-bottom: 2em;
@@ -79,7 +74,6 @@ body {
 }
 
 
-/* Animation for features */
 @keyframes slideIn {
     from {
         opacity: 0;
@@ -115,7 +109,7 @@ body {
 }
 
 .feature {
-    background-color:#c0d5ebb7;
+    background-color: #c0d5ebb7;
     border: 1px solid #ddd;
     border-radius: 8px;
     width: 39.2%;
@@ -137,9 +131,7 @@ body {
 }
 
 .feature:hover .feature-content {
-    /* Slightly enlarge the contents */
     color: #000;
-    /* Optional: Change text color for contrast */
 }
 
 .feature::before {
@@ -152,7 +144,7 @@ body {
     border-radius: 8px;
     z-index: 1;
     transition: opacity 0.3s ease, background-color 0.3s ease;
-    background-color:rgb(247, 250, 251);
+    background-color: rgb(247, 250, 251);
     opacity: 0;
 }
 
@@ -208,22 +200,23 @@ body {
 .feature-description {
     font-size: 0.9em;
     color: #666;
-    opacity: 0; /* Hide by default */
-    transform: translateY(-1em); /* Move off-screen or out of view */
+    opacity: 0;
+    transform: translateY(-1em);
     transition: opacity 0.3s ease, transform 0.5s ease;
 }
+
 .feature:hover .feature-description {
-    opacity: 1; /* Show on hover */
-    transform: translateY(1.5em); /* Slide into view */
+    opacity: 1;
+    transform: translateY(1.5em);
 }
 
 .feature:hover .feature-button {
-    opacity: 1; /* Show on hover */
-    transform: translateY(1.5em); /* Slide into view */
+    opacity: 1;
+    transform: translateY(1.5em);
 }
 
 .feature:hover .feature-head {
-    transform: translateY(1em); /* Adjust the value to control how far down it moves */
+    transform: translateY(1em);
     transition: transform 0.5s ease;
 }
 
@@ -232,7 +225,7 @@ body {
     font-size: 1.1em;
     font-weight: normal;
     color: #555;
-    transition: transform 0.3s ease; /* Ensure smooth animation */
+    transition: transform 0.3s ease;
 }
 
 .featureHeader {
@@ -262,14 +255,12 @@ body {
     animation: slideOut 1.5s ease-out forwards;
 }
 
-/* Feature text */
 .feature h3 {
     font-size: 1.82rem;
     margin-bottom: 10px;
     text-align: justify;
     width: 100%;
     word-spacing: 0.1em;
-    /* Adjust as needed */
 }
 
 .feature p {
@@ -287,7 +278,6 @@ body {
     font-size: 6rem;
 }
 
-/* Footer styling */
 .mainp-footer {
     margin-top: auto;
     padding: 20px;
@@ -318,9 +308,7 @@ body {
     margin: 0em -2em;
     padding: 1em;
     flex: 0 0 auto;
-    /* Prevents flex items from shrinking or growing */
     width: 20em;
-    /* Fixed width for each email block */
     font-size: 26px;
     margin-top: 1em;
     margin-right: 5em;
@@ -345,9 +333,7 @@ body {
 .projectsDiv {
     margin-top: 1.85em;
     font-size: 1.7em;
-    /* Adjust font size as needed */
     color: #333;
-    /* Darker color for better readability */
 }
 
 .projectsNumber {
@@ -359,7 +345,6 @@ body {
 
 .storyDiv2 {
     margin: 0em -2em;
-    /* Space between each email block */
     padding: 1em;
     flex: 0 0 auto;
     width: 20em;
@@ -406,25 +391,19 @@ body {
     font-size: 36px;
     font-weight: bold;
     color: #000000;
-    /* Default text color */
     text-transform: uppercase;
     font-weight: bold;
     text-decoration: none;
-    /* Remove underline */
     display: inline-block;
     cursor: pointer;
     transition: color 0.3s ease, background-color 0.3s ease;
     margin: 0 1em;
-    /* Space between links */
 }
 
-/* Hover effect */
 .areaDiv:hover {
     color: #007bff;
-    /* Change text color on hover */
 }
 
-/* Marker bar effect */
 .areaDiv::before {
     content: '';
     position: absolute;
@@ -482,18 +461,18 @@ body {
     padding-top: 2em;
     padding-bottom: 5em;
     position: relative;
-    
+
 }
 
 .featureDiv::before {
     content: '';
     position: absolute;
-    top: 0; /* Aligns the border with the top */
-    left: 50%; /* Start from the middle */
-    transform: translateX(-50%); /* Shift it left by 50% of its own width */
-    width: 89%; /* Border spans 80% of the width */
-    height: 1px; /* The height of the top border */
-    background-color: rgb(247, 250, 251) /* Same color as your original border */
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 89%;
+    height: 1px;
+    background-color: rgb(247, 250, 251)
 }
 
 
@@ -559,9 +538,9 @@ body {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background-color: rgba(0, 123, 255, 0.3); 
+    background-color: rgba(0, 123, 255, 0.3);
     transform: translate(-50%, -50%);
-    z-index: 0; 
+    z-index: 0;
     transition: background-color 0.3s ease;
 }
 
@@ -588,7 +567,7 @@ body {
 .reactDiv:hover .webCourses::before,
 .reactImage:hover::after,
 .webCourses:hover::before {
-    background-color: #007bff; /* Adjust color if needed */
+    background-color: #007bff;
 }
 
 .reactDiv:hover .reactImage,
@@ -604,8 +583,8 @@ body {
     color: #000;
     max-width: 20em;
     font-weight: bold;
-    display: inline-block; /* Ensure proper width calculation */
-    overflow: hidden; /* Hide overflow of the pseudo-element */
+    display: inline-block;
+    overflow: hidden;
     margin-top: -1em;
     margin-left: 1em;
 }
@@ -635,6 +614,7 @@ body {
     transform-origin: bottom right;
     transition: transform 0.4s ease;
 }
+
 .webCourses:active,
 .webCourses:focus {
     color: #0056b3;
@@ -688,7 +668,6 @@ body {
     transition: border-color 0.3s ease;
 }
 
-/* Hover effect for arrow */
 .reactDiv:hover .arrow-circle {
     border-color: #ffffff;
     background-color: rgba(0, 123, 255, 0.703);
@@ -699,21 +678,22 @@ body {
 }
 
 .featureDiv2.background-change .reactDiv {
-    color: #ffffff; /* Adjust text color as needed */
+    color: #ffffff;
 }
 
 .featureDiv2.background-change .webCourses {
-    color: #ffffff; /* Adjust text color as needed */
+    color: #ffffff;
 }
 
 .featureDiv2.background-change .arrow-circle {
-    border-color: #ffffff; /* Adjust border color as needed */
+    border-color: #ffffff;
 }
+
 .featureDiv2.background-change .reactDiv:hover .reactImage,
 .featureDiv2.background-change .reactDiv:hover .webCourses,
 .featureDiv2.background-change .reactImage:hover,
 .featureDiv2.background-change .webCourses:hover {
-    color: #007bff; /* Adjust hover color as needed */
+    color: #007bff;
 }
 
 .featureDiv2.background-change .reactDiv:hover .reactImage {
@@ -721,16 +701,15 @@ body {
 }
 
 .featureDiv2.background-change .reactDiv:hover .webCourses::before {
-    background-color: #007bff; /* Adjust hover color as needed */
+    background-color: #007bff;
 }
 
-/* When featureDiv2 has a black background */
 .featureDiv2.background-change .arrow-circle {
-    border-color: #ffffff; /* Border color when background is black */
+    border-color: #ffffff;
 }
 
 .featureDiv2.background-change .arrow-circle::before {
-    border-color: #ffffff; /* Arrow border color when background is black */
+    border-color: #ffffff;
 }
 
 .featureDiv2.slide-in {
@@ -759,18 +738,18 @@ body {
 
 .featureDiv2.background-change {
     color: whitesmoke;
-    background-color: #000000; /* Desired color when scrolled */
+    background-color: #000000;
 }
 
 .featureDiv2::before {
     content: '';
     position: absolute;
-    top: 0; /* Aligns the border with the top */
-    left: 50%; /* Start from the middle */
-    transform: translateX(-50%); /* Shift it left by 50% of its own width */
-    width: 89%; /* Border spans 80% of the width */
-    height: 1px; /* The height of the top border */
-    background-color: rgb(247, 250, 251); /* Same color as your original border */
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 89%;
+    height: 1px;
+    background-color: rgb(247, 250, 251);
 }
 
 .features3 {
@@ -804,6 +783,7 @@ body {
     margin-top: 2em;
     margin-left: 30em;
 }
+
 .offerDiv5 {
     font-size: 30px;
     word-spacing: 0.05cm;

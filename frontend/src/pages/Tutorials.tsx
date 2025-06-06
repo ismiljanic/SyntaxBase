@@ -49,13 +49,13 @@ export function Tutorials() {
 
     return (
         <div className="mainp-container">
-            <Header bgColor="#f5f5f5"></Header>
-            <div className={`featureDiv2 feature2 ${featureDiv2Visible2 ? 'slide-in' : ''}`}>
+            <Header bgColor="#f9f9f9"></Header>
+            <div style={{ backgroundColor: '#f9f9f9' }}>
                 <header className="featureHeader2">TUTORIALS</header>
                 <div className="offerDiv2" style={{ paddingTop: '3em', marginBottom: '-5em' }}>
                     WEB DEVELOPMENT
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/beginnerWebTutorial/lesson/1" className="reactDiv">
                         <img src={web1} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -64,7 +64,7 @@ export function Tutorials() {
                         <div className="arrow-circle"></div>
                     </a>
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/intermediateWebTutorial/lesson/1" className="reactDiv">
                         <img src={web2} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -73,7 +73,7 @@ export function Tutorials() {
                         <div className="arrow-circle"></div>
                     </a>
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/advancedWebTutorial/lesson/1" className="reactDiv">
                         <img src={web3} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -85,7 +85,7 @@ export function Tutorials() {
                 <div className="offerDiv2" style={{ paddingTop: '3em', marginBottom: '-5em' }}>
                     GAME DEVELOPMENT
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/gameEnginesTutorial/lesson/1" className="reactDiv">
                         <img src={picture2} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -94,7 +94,7 @@ export function Tutorials() {
                         <div className="arrow-circle"></div>
                     </a>
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/beginnerGameTutorial/lesson/1" className="reactDiv">
                         <img src={game1} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -103,7 +103,7 @@ export function Tutorials() {
                         <div className="arrow-circle"></div>
                     </a>
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/intermediateGameTutorial/lesson/1" className="reactDiv">
                         <img src={game2} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -115,7 +115,7 @@ export function Tutorials() {
                 <div className="offerDiv2" style={{ paddingTop: '3em', marginBottom: '-5em' }}>
                     DATABASE MANAGMENT
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/beginnerDbTutorial/lesson/1" className="reactDiv">
                         <img src={db1} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -124,7 +124,7 @@ export function Tutorials() {
                         <div className="arrow-circle"></div>
                     </a>
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/intermediateDbTutorial/lesson/1" className="reactDiv">
                         <img src={db3} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -133,7 +133,7 @@ export function Tutorials() {
                         <div className="arrow-circle"></div>
                     </a>
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/advancedDbTutorial/lesson/1" className="reactDiv">
                         <img src={database} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -145,7 +145,7 @@ export function Tutorials() {
                 <div className="offerDiv2" style={{ paddingTop: '3em', marginBottom: '-5em' }}>
                     PROBLEM SOLVING
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/beginnerPsTutorial/lesson/1" className="reactDiv">
                         <img src={problem1} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -154,7 +154,7 @@ export function Tutorials() {
                         <div className="arrow-circle"></div>
                     </a>
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/intermediatePsTutorial/lesson/1" className="reactDiv">
                         <img src={problem2} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -163,7 +163,7 @@ export function Tutorials() {
                         <div className="arrow-circle"></div>
                     </a>
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/advancedPsTutorial/lesson/1" className="reactDiv">
                         <img src={problem3} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -175,7 +175,7 @@ export function Tutorials() {
                 <div className="offerDiv2" style={{ paddingTop: '3em', marginBottom: '-5em' }}>
                     INSTRUCTIONS
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/calculusTutorial/lesson/1" className="reactDiv">
                         <img src={calculus1} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -184,7 +184,7 @@ export function Tutorials() {
                         <div className="arrow-circle"></div>
                     </a>
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/programmingTutoria/lesson/1" className="reactDiv">
                         <img src={instr2} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -193,7 +193,7 @@ export function Tutorials() {
                         <div className="arrow-circle"></div>
                     </a>
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/linearAlgebraTutorial/lesson/1" className="reactDiv">
                         <img src={instr3} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -202,7 +202,7 @@ export function Tutorials() {
                         <div className="arrow-circle"></div>
                     </a>
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/oopTutorial/lesson/1" className="reactDiv">
                         <img src={instr4} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -211,7 +211,7 @@ export function Tutorials() {
                         <div className="arrow-circle"></div>
                     </a>
                 </div>
-                <div className='features3'>
+                <div className='features3' style={{ borderTop: '1px solid #dee2e6' }}>
                     <a href="/algorithmAndDSTutorial/lesson/1" className="reactDiv">
                         <img src={instr5} alt="Logo SyntaxBase" className="reactImage" />
                         <div className="webCourses">
@@ -221,8 +221,8 @@ export function Tutorials() {
                     </a>
                 </div>
             </div>
-            <Footer2 bgColor="#f5f5f5"></Footer2>
-            <Footer bgColor="#f5f5f5"></Footer>
+            <Footer2 bgColor="#f9f9f9"></Footer2>
+            <Footer bgColor="#f9f9f9"></Footer>
         </div>
     );
 }
