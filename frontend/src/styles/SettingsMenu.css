@@ -14,10 +14,6 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.settings-button:hover {
-    transform: scale(1.1);
-}
-
 .line {
     width: 30px;
     height: 5px;

@@ -12,6 +12,8 @@ public class PostDTO {
     private List<PostDTO> replies;
     private String category;
 
+    private boolean deleted;
+
     public PostDTO(Integer id, String content, String userId, String username, Date createdAt, List<PostDTO> replies) {
         this.id = id;
         this.content = content;
@@ -21,12 +23,13 @@ public class PostDTO {
         this.replies = replies;
     }
 
-    public PostDTO(Integer id, String content, String userId, String username, Date createdAt) {
+    public PostDTO(Integer id, String content, String userId, String username, Date createdAt, boolean deleted) {
         this.id = id;
         this.content = content;
         this.userId = userId;
         this.username = username;
         this.createdAt = createdAt;
+        this.deleted = deleted;
     }
 
     public Integer getId() {
@@ -83,5 +86,13 @@ public class PostDTO {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

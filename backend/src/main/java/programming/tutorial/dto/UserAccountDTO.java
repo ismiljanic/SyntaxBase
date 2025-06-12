@@ -1,5 +1,7 @@
 package programming.tutorial.dto;
 
+import programming.tutorial.domain.Role;
+
 import java.util.List;
 
 public class UserAccountDTO {
@@ -9,6 +11,10 @@ public class UserAccountDTO {
     private String dateCreated;
     private List<PostDTO> userPosts;
     private List<PostDTO> deletedPosts;
+
+    private List<CourseProgressDTO> courses;
+    private Role role;
+    private boolean active;
 
     public UserAccountDTO() {
     }
@@ -59,6 +65,30 @@ public class UserAccountDTO {
 
     public void setDeletedPosts(List<PostDTO> deletedPosts) {
         this.deletedPosts = deletedPosts;
+    }
+
+    public List<CourseProgressDTO> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<CourseProgressDTO> courses) {
+        this.courses = courses;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override

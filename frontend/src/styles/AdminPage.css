@@ -115,7 +115,6 @@
     border-radius: 16px;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07);
     color: #1e293b;
-    /* dark slate */
 }
 
 .admin-title {
@@ -195,4 +194,29 @@
     color: #64748b;
     margin-top: 40px;
     font-style: italic;
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 12px;
+    margin: 50px 120px;
+}
+
+.tab {
+    padding: 10px 20px;
+    border: none;
+    background: #ddd;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.tab.active {
+    background: #007bff;
+    color: white;
+}
+.tab-content {
+    margin-left: 120px;
+    margin-right: 120px;
 }

@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { AdminInstructorRequests } from './AdminInstructorRequests';
+import { AdminInstructorRequests } from '../../components/admin/AdminInstructorRequests';
 import { useAuth0 } from '@auth0/auth0-react';
-import '../styles/AdminPage.css';
-import { Header } from '../pages/Header';
+import '../../styles/AdminPage.css';
+import { Header } from '../../pages/Header';
+import { AdminUserManagement } from '../../components/admin/AdminUserManagment';
 
 export function AdminPage() {
   const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } = useAuth0();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'users' | 'requests'>('users');
 
   useEffect(() => {
     const checkAccess = async () => {
@@ -55,8 +57,27 @@ export function AdminPage() {
 
   return (
     <div className="page-container">
-      <Header bgColor='#f5f5f5'></Header>
-      <AdminInstructorRequests />
+      <Header bgColor='#f5f5f5' />
+
+      <div className="admin-tabs">
+        <button
+          className={activeTab === 'users' ? 'tab active' : 'tab'}
+          onClick={() => setActiveTab('users')}
+        >
+          Users
+        </button>
+        <button
+          className={activeTab === 'requests' ? 'tab active' : 'tab'}
+          onClick={() => setActiveTab('requests')}
+        >
+          Instructor Requests
+        </button>
+      </div>
+
+      <div className="tab-content">
+        {activeTab === 'users' && <AdminUserManagement />}
+        {activeTab === 'requests' && <AdminInstructorRequests />}
+      </div>
     </div>
   );
 }

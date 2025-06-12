@@ -7,10 +7,13 @@ import programming.tutorial.domain.InstructorRequestStatus;
 import programming.tutorial.domain.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface InstructorRequestRepository extends JpaRepository<InstructorRequest, Long> {
     boolean existsByUserAndStatus(User user, InstructorRequestStatus status);
 
     List<InstructorRequest> findByStatus(InstructorRequestStatus status);
+
+    Optional<InstructorRequest> findFirstByUserOrderByRequestDateDesc(User user);
 }

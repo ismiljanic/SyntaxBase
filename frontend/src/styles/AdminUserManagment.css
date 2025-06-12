@@ -1,0 +1,135 @@
+.admin-user-table {
+    border-collapse: collapse;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    margin-top: 20px;
+    margin-left: -20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.admin-user-table thead {
+    background-color: #f7f9fc;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.admin-user-table th,
+.admin-user-table td {
+    text-align: left;
+    padding: 16px 20px;
+    font-size: 14px;
+}
+
+.admin-user-table tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.admin-user-table tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+.admin-user-table select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    background-color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.admin-user-table tbody td.username-cell .username-link {
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+    cursor: pointer;
+    color: inherit;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.admin-user-table tbody td.username-cell .username-link:hover {
+    transform: scale(1.05);
+    transition: 0.3s;
+    color: #3b82f6;
+}
+
+.admin-user-table select:focus {
+    border-color: #3b82f6;
+}
+
+.admin-user-table button {
+    padding: 8px 12px;
+    margin: 0 4px;
+    font-size: 13px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.admin-user-table button:hover {
+    opacity: 0.5;
+    transition: 0.3s;
+}
+
+.admin-user-table button:first-child {
+    background-color: #ef4444;
+    color: white;
+}
+
+.admin-user-table button:last-child {
+    background-color: #10b981;
+    color: white;
+}
+
+.admin-user-management-container {
+    padding: 20px;
+}
+
+.search-bar {
+    text-align: left;
+}
+
+.search-bar input {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    font-size: 14px;
+    width: 450px;
+    transition: border-color 0.2s ease;
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+    margin-left: -20px;
+    align-items: center;
+}
+
+.filters .search-bar input {
+    width: 300px;
+    flex-shrink: 0;
+}
+
+.filters select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    font-size: 14px;
+    background-color: #fff;
+    transition: border-color 0.2s ease;
+    outline: none;
+    min-width: 160px;
+}
+
+.filters select:focus {
+    border-color: #3b82f6;
+}

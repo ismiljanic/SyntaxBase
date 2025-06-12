@@ -34,6 +34,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
+
+
     @ManyToMany
     @JoinTable(
             name = "user_courses",
@@ -46,7 +50,7 @@ public class User {
     public User() {
     }
 
-    public User(Integer id, String name, String surname, String password, String username, LocalDateTime dateCreated, Set<Course> myCourses) {
+    public User(Integer id, String name, String surname, String password, String username, LocalDateTime dateCreated, Set<Course> myCourses, boolean active) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -54,6 +58,7 @@ public class User {
         this.username = username;
         this.dateCreated = dateCreated;
         this.myCourses = myCourses;
+        this.active = active;
     }
 
     public Integer getId() {
@@ -129,16 +134,26 @@ public class User {
         this.auth0UserId = auth0UserId;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", auth0UserId='" + auth0UserId + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", password='" + password + '\'' +
                 ", username='" + username + '\'' +
                 ", dateCreated=" + dateCreated +
                 ", role=" + role +
+                ", active=" + active +
                 ", myCourses=" + myCourses +
                 '}';
     }

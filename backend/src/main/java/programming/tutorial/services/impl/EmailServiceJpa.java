@@ -41,4 +41,18 @@ public class EmailServiceJpa implements EmailService {
 
         emailSender.send(message);
     }
+
+    public void sendRoleChangeNotification(String toEmail, String newRole, String name) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("Your User Role Has Been Updated");
+        message.setText("Dear " + name + ",\n\n" +
+                "Your role has been changed to: " + newRole + ".\n" +
+                "If you have any questions, please contact support.\n\n" +
+                "Best regards,\n" +
+                "SyntaxBase Team");
+
+        emailSender.send(message);
+    }
+
 }

@@ -2,6 +2,7 @@ package programming.tutorial.services;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import programming.tutorial.domain.Role;
 import programming.tutorial.domain.User;
 import programming.tutorial.dto.*;
 import programming.tutorial.services.impl.UserNotFoundException;
@@ -25,7 +26,9 @@ public interface UserService {
 
     void updateSurname(String userId, String lastName);
 
-    public void deleteUser(String userId, String password);
+    void deleteUser(String userId);
+
+    void deleteUserAsAdmin(String auth0UserId);
 
     User findByAuth0UserId(String auth0UserId);
 
@@ -38,4 +41,12 @@ public interface UserService {
     Optional<String> getUserRoleByAuth0Id(String auth0UserId);
 
     ResponseEntity<?> syncAuth0User(Auth0UserDTO auth0User, String auth0UserId);
+
+    void setUserActiveStatus(String userId, boolean b);
+
+    void updateUserRoles(String userId, Role roles);
+
+    UserDTO getUserDTOByAuth0UserId(String auth0Id);
+
+    UserAccountDTO getUserAccountDTOByAuth0UserId(String userId);
 }

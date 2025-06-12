@@ -6,4 +6,6 @@ import programming.tutorial.domain.ContactForm;
 public interface EmailService {
     void sendContactEmail(ContactForm contactForm);
     void sendApprovalEmail(String toEmail, String name);
+    void sendRoleChangeNotification(String toEmail, String newRole, String name);
+
 }

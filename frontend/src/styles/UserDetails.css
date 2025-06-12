@@ -1,0 +1,166 @@
+.ud-container {
+    margin: 3rem auto;
+    width: 85%;
+    padding: 3rem 2.8rem;
+    background-color: #f5f5f5;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(58, 141, 222, 0.15);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #1e2a38;
+}
+
+.ud-header {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #3a8dde;
+    border-bottom: 3px solid #3a8dde;
+    padding-bottom: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ud-mainGrid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.ud-sidebar {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 12px rgba(58, 141, 222, 0.1);
+}
+
+.ud-userInfo p {
+    margin: 0.6rem 0;
+    font-size: 1.05rem;
+    color: #2c3e50;
+    line-height: 1.5;
+}
+
+.ud-mainContent {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.ud-subheader {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #3a8dde;
+    border-bottom: 2px solid #3a8dde55;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.ud-coursesGrid {
+    display: grid;
+}
+
+.ud-course {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(58, 141, 222, 0.12);
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.ud-course:hover {
+    box-shadow: 0 6px 16px rgba(58, 141, 222, 0.25);
+}
+
+.ud-sidebar:hover {
+    box-shadow: 0 6px 16px rgba(58, 141, 222, 0.25);
+}
+
+.ud-course strong {
+    color: #3a8dde;
+}
+
+.ud-progressBar {
+    background: #dbeafe;
+    border-radius: 8px;
+    height: 14px;
+    margin: 0.5rem 0 1rem;
+    overflow: hidden;
+}
+
+.ud-progressBarFill {
+    background: linear-gradient(90deg, #3a8dde, #1e90ff);
+    height: 100%;
+    width: 0%;
+    border-radius: 8px;
+    transition: width 0.6s ease-in-out;
+}
+
+.ud-postsList {
+    list-style: none;
+    padding: 0;
+}
+
+.ud-postsListItem {
+    background: #ffffff;
+    padding: 1rem 1.2rem;
+    border-radius: 10px;
+    margin-bottom: 0.8rem;
+    box-shadow: 0 2px 6px rgba(58, 141, 222, 0.1);
+    transition: background 0.2s;
+}
+
+.ud-postsListItem:hover {
+    background: #e8f1fc;
+}
+
+.ud-postDate {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-left: 0.4rem;
+}
+
+.ud-postActions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.ud-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+    border: none;
+}
+
+.ud-btn-delete {
+    background-color: #ff4d4f;
+    color: white;
+}
+
+.ud-btn-delete:hover {
+    background-color: #cc393b;
+}
+
+.ud-btn-view {
+    background-color: #3a8dde;
+    color: white;
+}
+
+.ud-btn-view:hover {
+    background-color: #3173c9;
+}
+
+.ud-post-deleted {
+    color: gray;
+    font-style: italic;
+}
+
+.ud-postActions button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

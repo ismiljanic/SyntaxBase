@@ -6,13 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import programming.tutorial.dao.InstructorRequestRepository;
-import programming.tutorial.dao.PostRepository;
-import programming.tutorial.dao.UserRepository;
-import programming.tutorial.domain.Course;
-import programming.tutorial.domain.Role;
-import programming.tutorial.domain.User;
+import programming.tutorial.dao.*;
+import programming.tutorial.domain.*;
 import programming.tutorial.dto.*;
+import programming.tutorial.services.PostService;
 import programming.tutorial.services.UserService;
 
 import java.time.LocalDateTime;
@@ -32,6 +29,19 @@ public class UserServiceJpa implements UserService {
 
     @Autowired
     private InstructorRequestRepository instructorRequestRepository;
+
+    @Autowired
+    private EmailServiceJpa emailService;
+
+    @Autowired
+    private PostService postService;
+
+    @Autowired
+    private LessonRepository lessonRepository;
+
+    @Autowired
+    private RatingRepository ratingRepository;
+
 
     @Override
     public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO) {
@@ -53,6 +63,7 @@ public class UserServiceJpa implements UserService {
             user.setSurname(userDTO.getSurname());
             user.setDateCreated(LocalDateTime.now());
             user.setRole(Role.USER);
+            user.setActive(true);
             System.out.println(user.toString());
 
             userRepository.save(user);
@@ -99,21 +110,23 @@ public class UserServiceJpa implements UserService {
         userRepository.save(existingUser);
     }
 
-    public void deleteUser(String auth0UserId, String password) {
+    public void deleteUser(String auth0UserId) {
         Optional<User> userOptional = userRepository.findByAuth0UserId(auth0UserId);
         if (userOptional.isEmpty()) {
             throw new RuntimeException("User not found.");
         }
 
-        User user = userOptional.get();
-
-        if (!password.equals(user.getPassword())) {
-            throw new RuntimeException("Password is incorrect");
-        }
-
-        userRepository.delete(user);
+        userRepository.delete(userOptional.get());
     }
 
+    public void deleteUserAsAdmin(String auth0UserId) {
+        Optional<User> userOptional = userRepository.findByAuth0UserId(auth0UserId);
+        if (userOptional.isEmpty()) {
+            throw new RuntimeException("User not found.");
+        }
+
+        userRepository.delete(userOptional.get());
+    }
 
     public User findByAuth0UserId(String auth0Id) throws UserNotFoundException {
         System.out.println("Service layer: Fetching user by Auth0 ID: " + auth0Id);
@@ -128,6 +141,71 @@ public class UserServiceJpa implements UserService {
         }
     }
 
+    public UserDTO getUserDTOByAuth0UserId(String auth0Id) throws UserNotFoundException {
+        User user = findByAuth0UserId(auth0Id);
+        return new UserDTO(user.getAuth0UserId(), user.getUsername(), user.getRole(), user.isActive());
+    }
+
+    public UserAccountDTO getUserAccountDTOByAuth0UserId(String auth0UserId) throws UserNotFoundException {
+        User user = userRepository.findByAuth0UserId(auth0UserId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        UserAccountDTO dto = new UserAccountDTO();
+        dto.setName(user.getName());
+        dto.setSurname(user.getSurname());
+        dto.setUsername(user.getUsername());
+        dto.setDateCreated(user.getDateCreated().toString());
+        dto.setRole(user.getRole());
+        dto.setActive(user.isActive());
+
+        List<PostDTO> activePosts = postRepository.findByUserId(auth0UserId)
+                .stream()
+                .map(post -> new PostDTO(post.getId(), post.getContent(), post.getUserId(),
+                        user.getUsername(), post.getCreatedAt(), post.isDeleted()))
+                .toList();
+
+        List<PostDTO> deletedPosts = postRepository.findDeletedPostsByUserId(auth0UserId)
+                .stream()
+                .map(post -> new PostDTO(post.getId(), post.getContent(), post.getUserId(),
+                        user.getUsername(), post.getCreatedAt(), post.isDeleted()))
+                .collect(Collectors.toList());
+
+
+        dto.setUserPosts(activePosts);
+        dto.setDeletedPosts(deletedPosts);
+
+        List<Rating> ratings = ratingRepository.findByAuth0UserId(auth0UserId);
+        Map<Long, Integer> ratingMap = ratings.stream()
+                .collect(Collectors.toMap(
+                        Rating::getCourseId,
+                        Rating::getRating,
+                        (existing, replacement) -> replacement
+                ));
+        List<CourseProgressDTO> courseDTOs = user.getMyCourses().stream().map(course -> {
+            Integer rating = ratingMap.get(Long.valueOf(course.getId()));
+
+            CourseProgressDTO cp = new CourseProgressDTO();
+            cp.setCourseId(course.getId());
+            cp.setCourseName(course.getCourseName());
+            cp.setDescription(course.getDescription());
+
+            Long totalLessons = lessonRepository.getCourseLength(course.getId());
+            Long completedLessons = lessonRepository.countCompletedLessonsForUserAndCourse(course.getId(), user.getId());
+            double progress = totalLessons > 0 ? (completedLessons / (double) totalLessons) * 100 : 0;
+
+            cp.setTotalLessons(totalLessons.intValue());
+            cp.setCompletedLessons(completedLessons.intValue());
+            cp.setProgress(progress);
+            cp.setRating(rating);
+            return cp;
+        }).collect(Collectors.toList());
+
+        dto.setCourses(courseDTOs);
+
+
+        return dto;
+    }
+
     @Override
     public UserAccountDTO getUserAccountInformation(String auth0UserId) {
         User user = userRepository.findByAuth0UserId(auth0UserId)
@@ -136,13 +214,13 @@ public class UserServiceJpa implements UserService {
         List<PostDTO> userPosts = postRepository.findByUserId(auth0UserId)
                 .stream()
                 .map(post -> new PostDTO(post.getId(), post.getContent(), post.getUserId(),
-                        user.getUsername(), post.getCreatedAt()))
+                        user.getUsername(), post.getCreatedAt(), post.isDeleted()))
                 .collect(Collectors.toList());
 
         List<PostDTO> deletedPosts = postRepository.findDeletedPostsByUserId(auth0UserId)
                 .stream()
                 .map(post -> new PostDTO(post.getId(), post.getContent(), post.getUserId(),
-                        user.getUsername(), post.getCreatedAt()))
+                        user.getUsername(), post.getCreatedAt(), post.isDeleted()))
                 .collect(Collectors.toList());
 
         UserAccountDTO userAccountDTO = new UserAccountDTO();
@@ -159,11 +237,12 @@ public class UserServiceJpa implements UserService {
     @Override
     public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return users.stream().map(user -> {
+        return users.stream().filter(user -> user.getRole() != Role.ADMIN).map(user -> {
             UserDTO dto = new UserDTO();
-            dto.setId(user.getId());
+            dto.setAuth0UserId(user.getAuth0UserId());
             dto.setUsername(user.getUsername());
             dto.setRole(user.getRole());
+            dto.setActive(user.isActive());
             return dto;
         }).collect(Collectors.toList());
     }
@@ -195,6 +274,7 @@ public class UserServiceJpa implements UserService {
             user.setPassword("");
             user.setDateCreated(LocalDateTime.now());
             user.setRole(Role.USER);
+            user.setActive(true);
 
             userRepository.save(user);
             System.out.println("New Auth0 user created: " + user.getUsername());
@@ -208,6 +288,33 @@ public class UserServiceJpa implements UserService {
         responseBody.put("role", user.getRole().toString());
 
         return ResponseEntity.ok(responseBody);
+    }
+
+    @Override
+    public void setUserActiveStatus(String userId, boolean active) {
+        User user = userRepository.findByAuth0UserId(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setActive(active);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUserRoles(String userId, Role role) {
+        User user = userRepository.findByAuth0UserId(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setRole(role);
+        userRepository.save(user);
+
+        String email = instructorRequestRepository.findFirstByUserOrderByRequestDateDesc(user)
+                .map(InstructorRequest::getEmail)
+                .orElse(null);
+
+        if (email != null) {
+            emailService.sendRoleChangeNotification(email, role.name(), user.getName());
+        } else {
+            System.out.println("No email found for user " + user.getUsername() + " to send role change notification.");
+        }
     }
 
     public User getOrCreateUserByAuth0Id(String auth0UserId) {

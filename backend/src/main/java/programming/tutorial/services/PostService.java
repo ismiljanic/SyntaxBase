@@ -9,4 +9,8 @@ public interface PostService {
     Post createPost(Post post);
     void deletePost(Integer id, String requesterAuth0Id);
     PostDTO getPost(Integer postId);
+
+    void softDeletePost(Integer postId);
+
+    void restorePost(Integer postId);
 }

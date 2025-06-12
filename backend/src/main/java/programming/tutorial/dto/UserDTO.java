@@ -13,6 +13,8 @@ public class UserDTO {
     public Role role;
     public String email;
     public LocalDateTime dateCreated;
+    public boolean active;
+    public String auth0UserId;
 
     public UserDTO(String name, String surname, String password, String username, LocalDateTime dateCreated) {
         this.name = name;
@@ -27,6 +29,13 @@ public class UserDTO {
         this.surname = surname;
         this.username = username;
         this.dateCreated = dateCreated;
+    }
+
+    public UserDTO(String auth0UserId, String username, Role role, boolean active) {
+        this.auth0UserId = auth0UserId;
+        this.username = username;
+        this.role = role;
+        this.active = active;
     }
 
     public Role getRole() {
@@ -96,15 +105,35 @@ public class UserDTO {
         this.dateCreated = dateCreated;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String getAuth0UserId() {
+        return auth0UserId;
+    }
+
+    public void setAuth0UserId(String auth0UserId) {
+        this.auth0UserId = auth0UserId;
+    }
+
     @Override
     public String toString() {
         return "UserDTO{" +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", password='" + password + '\'' +
                 ", username='" + username + '\'' +
+                ", role=" + role +
+                ", email='" + email + '\'' +
                 ", dateCreated=" + dateCreated +
+                ", active=" + active +
+                ", auth0UserId='" + auth0UserId + '\'' +
                 '}';
     }
-
 }

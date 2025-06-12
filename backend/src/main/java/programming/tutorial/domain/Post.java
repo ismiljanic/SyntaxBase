@@ -26,6 +26,7 @@ public class Post {
     @OneToMany(mappedBy = "parentPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> replies;
 
+    @Column(nullable = false)
     private boolean deleted = false;
 
     public Post() {

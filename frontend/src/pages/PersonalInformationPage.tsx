@@ -30,7 +30,7 @@ const PersonalInformation: React.FC = () => {
   const navigate = useNavigate();
   const { id: userId } = useParams<{ id: string }>();
 
-  const { getAccessTokenSilently } = useAuth0();
+  const { logout, getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,38 +88,34 @@ const PersonalInformation: React.FC = () => {
 
   const handleDeleteAccount = async () => {
     if (!userId) {
-      alert('User ID is not found.');
+      alert('User ID not found.');
       return;
     }
 
-    const confirmDelete = window.confirm('Are you sure you want to delete your account?');
+    const confirmDelete = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
     if (!confirmDelete) return;
-
-    const password = prompt('Please enter your password to confirm deletion:');
-    if (!password) {
-      alert('Password is required to delete the account.');
-      return;
-    }
 
     try {
       const token = await getAccessTokenSilently();
 
       setDeleted(true);
-      await axios.delete(
-        `http://localhost:8080/api/users/deleteAccount/${encodeURIComponent(userId)}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          data: { password },
-        }
-      );
+      await axios.delete('http://localhost:8080/api/users/deleteAccount', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      alert('Your account has been deleted successfully.');
+      logout({
+        logoutParams: { returnTo: window.location.origin },
+      });
     } catch (error) {
       const axiosError = error as AxiosError;
       console.error('Error deleting account:', axiosError);
       alert('Error deleting account. Please try again.');
     }
   };
+
 
   const openConfirmationModal = (field: string) => {
     setFieldToUpdate(field);

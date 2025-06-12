@@ -131,22 +131,18 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/deleteAccount/{userId}")
-    public ResponseEntity<String> deleteAccount(@PathVariable String userId, @RequestBody PasswordRequest request,
-                                                @RequestHeader("Authorization") String authHeader) {
+    @DeleteMapping("/deleteAccount")
+    public ResponseEntity<String> deleteOwnAccount(Principal principal) {
         try {
-            String token = authHeader.replace("Bearer ", "");
-            String decodedUserId = URLDecoder.decode(userId, StandardCharsets.UTF_8);
-            System.out.println("Received DELETE request for userId: " + decodedUserId);
-            System.out.println("Password received: " + request.getPassword());
-
-            userService.deleteUser(decodedUserId, request.getPassword());
+            String auth0UserId = principal.getName();
+            userService.deleteUser(auth0UserId);
             return ResponseEntity.ok("Account deleted successfully");
         } catch (Exception e) {
-            System.out.println("Error deleting account: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting account: " + e.getMessage());
         }
     }
+
 
     @GetMapping("/allUsers")
     public ResponseEntity<List<UserDTO>> getAllUsers() {

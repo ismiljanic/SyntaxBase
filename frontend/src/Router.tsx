@@ -73,8 +73,9 @@ import { BeginnerWebDevelopmentQuiz } from "./pages/webCourses/BeginnerWebCourse
 import { Community } from "./pages/Community";
 import { Notifications } from "./pages/Notifications";
 import { PrivateRoute } from "./components/PrivateRoute";
-import { AdminPage } from './components/AdminPage';
+import { AdminPage } from "./pages/admin/AdminPage";
 import { InstructorRequestForm } from "./pages/InstructorRequestForm";
+import UserDetails from "./components/UserDetails";
 
 export function Router() {
   return (
@@ -156,6 +157,7 @@ export function Router() {
           <Route path="/request-instructor" element={<InstructorRequestForm />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/adminPage" element={<AdminPage />} />
+          <Route path="/admin/users/:userId" element={<UserDetails />} />
           <Route path="/community/:userId" element={<Community />} />
           <Route path="/notifications/:userId" element={<Notifications />} />
           <Route path="*" element={<NotFound />} />

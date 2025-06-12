@@ -11,6 +11,7 @@ import programming.tutorial.dto.PostDTO;
 import programming.tutorial.services.NotificationService;
 import programming.tutorial.services.PostService;
 import org.springframework.security.oauth2.jwt.Jwt;
+
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,19 +71,27 @@ public class PostServiceJpa implements PostService {
     }
 
     @Override
-    public void deletePost(Integer id, String requesterAuth0Id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Post not found."));
+    public void deletePost(Integer postId, String userId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
 
-        User user = userRepository.findByAuth0UserId(requesterAuth0Id)
+        User user = userRepository.findByAuth0UserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
 
-        if (!post.getUserId().equals(requesterAuth0Id) && user.getRole() != Role.ADMIN) {
+        if (!post.getUserId().equals(userId) && user.getRole() != Role.ADMIN) {
             throw new SecurityException("Permission denied.");
         }
 
-        postRepository.delete(post);
+        post.setDeleted(true);
+        postRepository.save(post);
+
+        List<Post> replies = postRepository.findAllByParentPost(post);
+        for (Post reply : replies) {
+            reply.setDeleted(true);
+        }
+        postRepository.saveAll(replies);
     }
+
 
     @Override
     public PostDTO getPost(Integer postId) {
@@ -98,6 +107,29 @@ public class PostServiceJpa implements PostService {
                 .collect(Collectors.toList());
 
         return new PostDTO(post.getId(), post.getContent(), post.getUserId(), username, post.getCreatedAt(), replies);
+    }
+
+    @Override
+    public void softDeletePost(Integer postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+
+        if (!post.isDeleted()) {
+            post.setDeleted(true);
+            postRepository.save(post);
+        }
+        System.out.println("Soft deleting post: " + postId);
+    }
+
+    @Override
+    public void restorePost(Integer postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+
+        if (post.isDeleted()) {
+            post.setDeleted(false);
+            postRepository.save(post);
+        }
     }
 
     private String getUsername(String userId) {

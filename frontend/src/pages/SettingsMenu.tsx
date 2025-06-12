@@ -72,7 +72,7 @@ export function SettingsMenu({ role }: SettingsMenuProps) {
             <div className={`settings-dropdown ${menuOpen ? 'show' : ''}`}>
                 {role === 'ADMIN' ? (
                     <>
-                        <button onClick={() => navigate('/admin/users')}>Manage Users</button>
+                        <button onClick={() => navigate('/admin')}>Manage Users</button>
                         <button onClick={() => navigate('/admin/settings')}>Admin Settings</button>
                         <button onClick={handleLogout} className="logout-button">Logout</button>
                     </>
