@@ -32,3 +32,26 @@
 .unauthorized-message:hover {
   background-color: #f8d7da;
 }
+
+.instructor-badge {
+  color: #0369a1;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 12px;
+  margin: 32px;
+  font-size: 1.2rem;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -230,6 +230,7 @@ public class UserServiceJpa implements UserService {
         userAccountDTO.setDateCreated(user.getDateCreated().toString());
         userAccountDTO.setUserPosts(userPosts);
         userAccountDTO.setDeletedPosts(deletedPosts);
+        userAccountDTO.setRole(user.getRole());
 
         return userAccountDTO;
     }
