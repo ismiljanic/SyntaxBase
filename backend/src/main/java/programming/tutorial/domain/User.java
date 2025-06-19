@@ -38,13 +38,7 @@ public class User {
     private boolean active = true;
 
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_courses",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id")
-    )
-    @JsonIgnore
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
     private Set<Course> myCourses;
 
     public User() {

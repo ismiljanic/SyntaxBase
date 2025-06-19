@@ -77,7 +77,7 @@ public class UserCourseServiceJpa implements UserCourseService {
         return userCourses.stream()
                 .map(userCourse -> {
                     Course course = userCourse.getCourse();
-                    return new CourseDTO(course.getId(), course.getCourseName(), course.getLength(), course.getDescription(), course.getCategory());
+                    return new CourseDTO(course.getId(), course.getCourseName(), course.getLength(), course.getDescription(), course.getCategory(), course.getCreator().getId(), course.isSystemCourse());
                 })
                 .collect(Collectors.toList());
     }

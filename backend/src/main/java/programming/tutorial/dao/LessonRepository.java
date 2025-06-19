@@ -14,11 +14,18 @@ public interface LessonRepository extends JpaRepository<Lesson, Integer> {
     @Query("SELECT l FROM Lesson l WHERE l.course.id = :courseId AND l.id = (SELECT MIN(l2.id) FROM Lesson l2 WHERE l2.course.id = :courseId AND l2.id > :currentLessonId)")
     Optional<Lesson> findNextLesson(@Param("courseId") Integer courseId, @Param("currentLessonId") Integer currentLessonId);
 
-    @Query("SELECT COUNT(l) FROM Lesson l WHERE l.course.id = :courseId")
+    @Query("SELECT COUNT(DISTINCT l.id) FROM Lesson l WHERE l.course.id = :courseId")
     Long getCourseLength(@Param("courseId") Integer courseId);
 
     @Query("SELECT COUNT(l) FROM Lesson l WHERE l.course.id = :courseId AND l.user.id = :userId AND l.completed = true")
     Long countCompletedLessonsForUserAndCourse(@Param("courseId") Integer courseId, @Param("userId") Integer userId);
 
     List<Lesson> findByCourse_IdAndUser_Auth0UserId(Integer id, String auth0UserId);
+    Optional<Lesson> findFirstByCourse_IdOrderByIdAsc(Integer courseId);
+
+    Optional<Lesson> findByIdAndCourse_Id(Integer lessonId, Integer courseId);
+
+    @Query("SELECT l FROM Lesson l WHERE l.course.id = :courseId AND l.id = (SELECT MAX(l2.id) FROM Lesson l2 WHERE l2.course.id = :courseId AND l2.id < :currentLessonId)")
+    Optional<Lesson> findPreviousLesson(@Param("courseId") Integer courseId, @Param("currentLessonId") Integer currentLessonId);
+
 }

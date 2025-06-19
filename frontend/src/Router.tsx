@@ -76,6 +76,9 @@ import { PrivateRoute } from "./components/PrivateRoute";
 import { AdminPage } from "./pages/admin/AdminPage";
 import { InstructorRequestForm } from "./pages/InstructorRequestForm";
 import UserDetails from "./components/UserDetails";
+import CreateCourse from "./pages/CreateCourse";
+import DynamicLessonRenderer from "./components/DynamicLessonRenderer";
+import { PlaceToStartCourse } from "./components/PlaceToStartCourse";
 
 export function Router() {
   return (
@@ -160,6 +163,9 @@ export function Router() {
           <Route path="/admin/users/:userId" element={<UserDetails />} />
           <Route path="/community/:userId" element={<Community />} />
           <Route path="/notifications/:userId" element={<Notifications />} />
+          <Route path="/create-course" element={<CreateCourse />} />
+          <Route path="/dynamic-course/:courseId/lesson/:lessonId" element={<DynamicLessonRenderer />} />
+          <Route path="/placetostartcourse/" element={<PlaceToStartCourse />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

@@ -189,11 +189,11 @@ public class UserServiceJpa implements UserService {
             cp.setCourseName(course.getCourseName());
             cp.setDescription(course.getDescription());
 
-            Long totalLessons = lessonRepository.getCourseLength(course.getId());
+            int totalLessons = course.getLength();
             Long completedLessons = lessonRepository.countCompletedLessonsForUserAndCourse(course.getId(), user.getId());
             double progress = totalLessons > 0 ? (completedLessons / (double) totalLessons) * 100 : 0;
 
-            cp.setTotalLessons(totalLessons.intValue());
+            cp.setTotalLessons(totalLessons);
             cp.setCompletedLessons(completedLessons.intValue());
             cp.setProgress(progress);
             cp.setRating(rating);

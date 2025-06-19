@@ -3,6 +3,7 @@ package programming.tutorial.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
 import java.util.List;
 
 @Entity
@@ -19,16 +20,25 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Lesson> lessons;
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    private User creator;
+
+    @Column(name = "system_course")
+    private boolean systemCourse;
 
     public Course() {
     }
 
-    public Course(String name, int length, String description, String category) {
+    public Course(String name, int length, String description, String category, User creator, boolean systemCourse) {
         this.courseName = name;
         this.length = length;
         this.description = description;
         this.category = category;
+        this.creator = creator;
+        this.systemCourse = systemCourse;
     }
+
 
     public Integer getId() {
         return id;
@@ -78,6 +88,22 @@ public class Course {
         this.lessons = lessons;
     }
 
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
+    }
+
+    public boolean isSystemCourse() {
+        return systemCourse;
+    }
+
+    public void setSystemCourse(boolean systemCourse) {
+        this.systemCourse = systemCourse;
+    }
+
     @Override
     public String toString() {
         return "Course{" +
@@ -86,7 +112,9 @@ public class Course {
                 ", length=" + length +
                 ", description='" + description + '\'' +
                 ", category='" + category + '\'' +
-                ", lessons=" + lessons.size() +
+                ", lessons=" + lessons +
+                ", creator=" + creator +
+                ", systemCourse=" + systemCourse +
                 '}';
     }
 }

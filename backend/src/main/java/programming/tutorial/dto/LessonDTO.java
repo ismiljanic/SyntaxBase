@@ -3,7 +3,6 @@ package programming.tutorial.dto;
 public class LessonDTO {
     private Integer id;
     private String lessonName;
-
     private Integer courseId;
     private Integer userId;
     private String completed;

@@ -13,6 +13,8 @@ interface Course {
     category?: string;
     length?: number;
     description?: string;
+    creatorId?: string;
+    systemCourse?: boolean;
 }
 
 interface FetchError {
@@ -26,21 +28,30 @@ interface Progress {
 }
 
 interface CoursesListProps {
-    userId: string;
+    userId?: string;
+    courses?: Course[];
+    title?: string;
+    role?: string;
 }
 
-const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
-    const { isAuthenticated, user, isLoading } = useAuth0();
-    const [courses, setCourses] = useState<Course[]>([]);
+const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses, title = "My courses", role }) => {
+    const { getAccessTokenSilently } = useAuth0();
+    const [courses, setCourses] = useState<Course[]>(propCourses || []);
     const [progressData, setProgressData] = useState<{ [key: number]: Progress }>({});
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(!propCourses);
     const [error, setError] = useState<FetchError | null>(null);
     const navigate = useNavigate();
     const [ratings, setRatings] = useState<{ [key: number]: number }>({});
     const [hoveredRating, setHoveredRating] = useState(0);
-    const { getAccessTokenSilently } = useAuth0();
 
     useEffect(() => {
+        if (propCourses) {
+            setCourses(propCourses);
+            setLoading(false);
+            setError(null);
+            return;
+        }
+
         const fetchCoursesAndProgress = async () => {
             if (!userId) {
                 setLoading(false);
@@ -49,6 +60,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
             }
 
             try {
+                setLoading(true);
                 const token = await getAccessTokenSilently();
                 const encodedUserId = encodeURIComponent(userId);
 
@@ -63,7 +75,6 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
                 );
 
                 setCourses(coursesResponse.data);
-
                 const progressResponses = await Promise.all(
                     coursesResponse.data.map(course =>
                         axios.get<Progress>(
@@ -76,7 +87,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
                         )
                     )
                 );
-
+                console.log('Progress responses:', progressResponses);
                 const progressDataMap = progressResponses.reduce((acc, response, index) => {
                     const courseId = coursesResponse.data[index].courseId;
                     acc[courseId] = response.data;
@@ -84,8 +95,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
                 }, {} as { [key: number]: Progress });
 
                 setProgressData(progressDataMap);
-
-
+                setError(null);
             } catch (err) {
                 console.error('Error fetching courses or progress:', err);
                 setError(
@@ -99,10 +109,12 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
         };
 
         fetchCoursesAndProgress();
-    }, [userId, getAccessTokenSilently]);
+    }, [userId, propCourses, getAccessTokenSilently]);
 
     useEffect(() => {
         const fetchRatings = async () => {
+            if (!userId) return;
+
             try {
                 const token = await getAccessTokenSilently();
 
@@ -125,33 +137,48 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
             }
         };
 
-        if (userId) {
-            fetchRatings();
-        }
-    }, [userId, getAccessTokenSilently]);
+        fetchRatings();
+    }, [userId, courses, getAccessTokenSilently]);
 
-    const handleCourseClick = async (courseId: number) => {
+    const getFirstLessonId = async (courseId: number, token: string) => {
+        const res = await axios.get(`http://localhost:8080/api/progress/lessons/first`, {
+            params: { courseId },
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return res.data?.id;
+    };
+
+    const handleCourseClick = async (course: Course) => {
+        if (!userId) return;
         try {
             const token = await getAccessTokenSilently();
 
-            const response = await axios.get(`http://localhost:8080/api/progress/current-lesson`, {
-                params: { userId, courseId },
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                withCredentials: true,
-            });
-
-
-            const lesson = response.data;
-            navigate(`/course/${courseId}/lesson/${lesson?.id || 1}`);
+            if (course.systemCourse) {
+                const res = await axios.get(`http://localhost:8080/api/progress/current-lesson`, {
+                    params: { userId, courseId: course.courseId },
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                const lessonId = res.data?.id || 1;
+                navigate(`/course/${course.courseId}/lesson/${lessonId}`);
+            } else {
+                const lessonId = await getFirstLessonId(course.courseId, token);
+                navigate(`/dynamic-course/${course.courseId}/lesson/${lessonId || 1}`);
+            }
         } catch (err) {
-            console.error('Error fetching user progress:', err);
-            navigate(`/course/${courseId}/lesson/1`);
+            console.error("Error fetching lesson info:", err);
+            if (course.systemCourse) {
+                navigate(`/course/${course.courseId}/lesson/1`);
+            } else {
+                navigate(`/dynamic-course/${course.courseId}/lesson/1`);
+            }
         }
     };
 
+
+
     const handleRating = async (index: number, courseId: number) => {
+        if (!userId) return;
+
         const newRating = index + 1;
 
         if (ratings[courseId]) {
@@ -176,7 +203,6 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
         } catch (err) {
             console.error('Error saving rating:', err);
         }
-
     };
 
     const handleMouseEnter = (index: number) => {
@@ -218,10 +244,8 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
     return (
         <div className="bigDaddyContainer" style={{ paddingTop: '13em' }}>
             <div className="container2">
-                <div className="webCourseDiv3">My courses</div>
-                <a href="/courses" className="moreCoursesDiv">
-                    More courses
-                </a>
+                <div className="webCourseDiv3">{title}</div>
+                <a href="/courses" className="moreCoursesDiv">More courses</a>
                 <div className="lineDiv"></div>
             </div>
             <div className="pictureContainer2">
@@ -229,7 +253,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
                     <div
                         key={course.courseId}
                         className="imageWithDescription2"
-                        onClick={() => handleCourseClick(course.courseId)}
+                        onClick={() => handleCourseClick(course)}
                         style={{ marginLeft: '1em', cursor: 'pointer' }}
                     >
                         <img src={web4} alt={course.courseName} className="courseImage2" />
@@ -238,20 +262,22 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
                         </div>
                     </div>
                 ))}
-                {courses.map(course => (
-                    <div key={`progress-${course.courseId}`} className="progress-section2">
-                        <h2>Your Progress</h2>
-                        <AnimatedProgressBar progress={progressData[course.courseId]?.progress || 0} />
-                        <p>
-                            You have completed{' '}
-                            <AnimatedCounter targetNumber={progressData[course.courseId]?.completedLessons || 0} /> /{' '}
-                            {progressData[course.courseId]?.totalLessons || 0} lessons
-                        </p>
-
-                    </div>
-                ))}
-                <div className="ratingContainer">
-                    {courses.map(course => (
+                {courses
+                    .filter(course => course.creatorId !== userId)
+                    .map(course => (
+                        <div key={`progress-${course.courseId}`} className="progress-section2">
+                            <h2>Your Progress</h2>
+                            <AnimatedProgressBar progress={progressData[course.courseId]?.progress || 0} />
+                            <p>
+                                You have completed{' '}
+                                <AnimatedCounter targetNumber={progressData[course.courseId]?.completedLessons || 0} /> /{' '}
+                                {progressData[course.courseId]?.totalLessons || 0} lessons
+                            </p>
+                        </div>
+                    ))}
+                {courses
+                    .filter(course => course.creatorId !== userId)
+                    .map(course => (
                         <div key={`rating-${course.courseId}`} className="rateCourseDiv">
                             <span style={{ marginLeft: '1.8em' }}>Rate course: </span>
                             <div style={{ marginLeft: '1.6em', marginBottom: '1em' }}>
@@ -272,7 +298,6 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId }) => {
                             ))}
                         </div>
                     ))}
-                </div>
             </div>
         </div>
     );

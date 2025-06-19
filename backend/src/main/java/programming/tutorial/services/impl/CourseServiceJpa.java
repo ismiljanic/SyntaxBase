@@ -3,19 +3,31 @@ package programming.tutorial.services.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import programming.tutorial.dao.CourseRepository;
+import programming.tutorial.dao.LessonRepository;
+import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.Course;
+import programming.tutorial.domain.Lesson;
+import programming.tutorial.domain.User;
 import programming.tutorial.dto.CourseDTO;
+import programming.tutorial.dto.CourseWithLessonsDTO;
 import programming.tutorial.services.CourseService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class CourseServiceJpa implements CourseService {
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private LessonRepository lessonRepository;
 
     @Override
     public Optional<Course> findByName(CourseDTO courseDTO) {
@@ -52,6 +64,37 @@ public class CourseServiceJpa implements CourseService {
         }
         return courses.stream()
                 .map(course -> new CourseDTO(course.getId(), course.getCourseName(), course.getLength(), course.getDescription(), course.getCategory()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void createCourseWithLessons(CourseWithLessonsDTO dto) {
+        User creator = userRepository.findByAuth0UserId(dto.getAuth0UserId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found for Auth0 ID: " + dto.getAuth0UserId()));
+
+        Course course = new Course(dto.getCourseName(), dto.getCourseLength(), dto.getDescription(), dto.getCategory(), creator, false);
+        course = courseRepository.save(course);
+
+        if (dto.getLessons() != null && !dto.getLessons().isEmpty()) {
+            for (String lessonTitle : dto.getLessons()) {
+                Lesson lesson = new Lesson();
+                lesson.setLessonName(lessonTitle);
+                lesson.setCourse(course);
+                lessonRepository.save(lesson);
+            }
+        }
+    }
+
+    @Override
+    public List<CourseDTO> getCoursesByUserAuth0Id(String auth0UserId) {
+        User user = userRepository.findByAuth0UserId(auth0UserId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Set<Course> courses = user.getMyCourses();
+
+        return courses.stream()
+                .map(course -> new CourseDTO(course.getId(), course.getCourseName(), course.getLength(),
+                        course.getDescription(), course.getCategory()))
                 .collect(Collectors.toList());
     }
 }

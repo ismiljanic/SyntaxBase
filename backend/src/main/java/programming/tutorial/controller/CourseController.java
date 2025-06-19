@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import programming.tutorial.domain.Course;
+import programming.tutorial.domain.User;
 import programming.tutorial.dto.CourseDTO;
+import programming.tutorial.dto.CourseWithLessonsDTO;
 import programming.tutorial.services.CourseService;
 
 import java.util.List;
@@ -62,4 +64,20 @@ public class CourseController {
         }
         return courses;
     }
+
+    @PostMapping("/create-with-lessons")
+    public ResponseEntity<?> createCourseWithLessons(@RequestBody CourseWithLessonsDTO dto) {
+        try {
+            courseService.createCourseWithLessons(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Course and lessons created");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+    @GetMapping("/user/{auth0UserId}")
+    public ResponseEntity<List<CourseDTO>> getCoursesForUser(@PathVariable String auth0UserId) {
+        List<CourseDTO> courses = courseService.getCoursesByUserAuth0Id(auth0UserId);
+        return ResponseEntity.ok(courses);
+    }
+
 }
