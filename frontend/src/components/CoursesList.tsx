@@ -32,9 +32,10 @@ interface CoursesListProps {
     courses?: Course[];
     title?: string;
     role?: string;
+    isCreatorList?: boolean;
 }
 
-const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses, title = "My courses", role }) => {
+const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses, title = "My courses", role, isCreatorList }) => {
     const { getAccessTokenSilently } = useAuth0();
     const [courses, setCourses] = useState<Course[]>(propCourses || []);
     const [progressData, setProgressData] = useState<{ [key: number]: Progress }>({});
@@ -43,6 +44,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
     const navigate = useNavigate();
     const [ratings, setRatings] = useState<{ [key: number]: number }>({});
     const [hoveredRating, setHoveredRating] = useState(0);
+    const [deletingCourseId, setDeletingCourseId] = useState<number | null>(null);
 
     useEffect(() => {
         if (propCourses) {
@@ -225,6 +227,33 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
         );
     }
 
+    const handleDeleteCourse = async (courseId: number) => {
+        if (!userId) return;
+
+        const confirmDelete = window.confirm("Are you sure you want to delete this course? This action cannot be undone.");
+        if (!confirmDelete) return;
+
+        setDeletingCourseId(courseId);
+
+        try {
+            const token = await getAccessTokenSilently();
+
+            await axios.delete(`http://localhost:8080/api/courses/${courseId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            setCourses(prevCourses => prevCourses.filter(course => course.courseId !== courseId));
+            alert("Course successfully deleted.");
+        } catch (error) {
+            console.error("Error deleting course:", error);
+            alert("Failed to delete course. Please try again later.");
+        } finally {
+            setDeletingCourseId(null);
+        }
+    };
+
     if (courses.length === 0) {
         return (
             <div
@@ -254,29 +283,44 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
                         key={course.courseId}
                         className="imageWithDescription2"
                         onClick={() => handleCourseClick(course)}
-                        style={{ marginLeft: '1em', cursor: 'pointer' }}
+                        style={{ marginLeft: '1em', cursor: 'pointer', position: 'relative' }}
                     >
                         <img src={web4} alt={course.courseName} className="courseImage2" />
                         <div className="imageDescription2">
                             {course.description || 'No description available.'}
                         </div>
+
+                        {isCreatorList && !course.systemCourse && (
+                            <button 
+                                className="deleteCourseButton"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteCourse(course.courseId);
+                                }}
+                                disabled={deletingCourseId === course.courseId}
+                            >
+                                {deletingCourseId === course.courseId ? "Deleting..." : "Delete"}
+                            </button>
+                        )}
+
                     </div>
                 ))}
+
                 {courses
                     .filter(course => course.creatorId !== userId)
                     .map(course => (
                         <div key={`progress-${course.courseId}`} className="progress-section2">
-                            <h2>Your Progress</h2>
-                            <AnimatedProgressBar progress={progressData[course.courseId]?.progress || 0} />
-                            <p>
-                                You have completed{' '}
-                                <AnimatedCounter targetNumber={progressData[course.courseId]?.completedLessons || 0} /> /{' '}
-                                {progressData[course.courseId]?.totalLessons || 0} lessons
-                            </p>
+                            {!isCreatorList && (
+                            <><h2>Your Progress</h2><AnimatedProgressBar progress={progressData[course.courseId]?.progress || 0} /><p>
+                                    You have completed{' '}
+                                    <AnimatedCounter targetNumber={progressData[course.courseId]?.completedLessons || 0} /> /{' '}
+                                    {progressData[course.courseId]?.totalLessons || 0} lessons
+                                </p></>
+                            )}
                         </div>
                     ))}
                 {courses
-                    .filter(course => course.creatorId !== userId)
+                    .filter(course => course.creatorId !== userId && !isCreatorList)
                     .map(course => (
                         <div key={`rating-${course.courseId}`} className="rateCourseDiv">
                             <span style={{ marginLeft: '1.8em' }}>Rate course: </span>

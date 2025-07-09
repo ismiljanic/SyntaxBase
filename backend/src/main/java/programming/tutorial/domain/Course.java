@@ -21,6 +21,7 @@ public class Course {
     @JsonIgnore
     private List<Lesson> lessons;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "creator_id")
     private User creator;
 
@@ -112,7 +113,6 @@ public class Course {
                 ", length=" + length +
                 ", description='" + description + '\'' +
                 ", category='" + category + '\'' +
-                ", lessons=" + lessons +
                 ", creator=" + creator +
                 ", systemCourse=" + systemCourse +
                 '}';

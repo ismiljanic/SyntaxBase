@@ -6,6 +6,8 @@ public class LessonDTO {
     private Integer courseId;
     private Integer userId;
     private String completed;
+    private String content;
+    private boolean editable;
 
     public LessonDTO() {
     }
@@ -62,5 +64,21 @@ public class LessonDTO {
 
     public void setCompleted(String completed) {
         this.completed = completed;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 }

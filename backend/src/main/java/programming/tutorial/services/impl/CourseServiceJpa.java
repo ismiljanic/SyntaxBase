@@ -5,13 +5,12 @@ import org.springframework.stereotype.Service;
 import programming.tutorial.dao.CourseRepository;
 import programming.tutorial.dao.LessonRepository;
 import programming.tutorial.dao.UserRepository;
-import programming.tutorial.domain.Course;
-import programming.tutorial.domain.Lesson;
-import programming.tutorial.domain.User;
+import programming.tutorial.domain.*;
 import programming.tutorial.dto.CourseDTO;
 import programming.tutorial.dto.CourseWithLessonsDTO;
 import programming.tutorial.services.CourseService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -72,17 +71,61 @@ public class CourseServiceJpa implements CourseService {
         User creator = userRepository.findByAuth0UserId(dto.getAuth0UserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found for Auth0 ID: " + dto.getAuth0UserId()));
 
+        int requestedLessonCount = getRequestedLessonCount(dto, creator);
+
         Course course = new Course(dto.getCourseName(), dto.getCourseLength(), dto.getDescription(), dto.getCategory(), creator, false);
         course = courseRepository.save(course);
 
-        if (dto.getLessons() != null && !dto.getLessons().isEmpty()) {
-            for (String lessonTitle : dto.getLessons()) {
-                Lesson lesson = new Lesson();
-                lesson.setLessonName(lessonTitle);
-                lesson.setCourse(course);
-                lessonRepository.save(lesson);
-            }
+        boolean isFreeUser = creator.getTier().equals(Tier.FREE);
+
+        List<Lesson> lessons = getDefaultLessons(course, isFreeUser);
+        lessonRepository.saveAll(lessons);
+    }
+
+    private List<Lesson> getDefaultLessons(Course course, boolean isFreeUser) {
+        List<String> titles = List.of("Introduction", "Basic Concepts", "Getting Started", "Common Pitfalls", "Summary & Next Steps");
+        List<String> contents = List.of(
+                "Welcome to this course!",
+                "Let's cover some fundamentals.",
+                "Getting your environment ready.",
+                "Things to avoid early on.",
+                "Summary and what's next."
+        );
+
+        int limit = isFreeUser ? 5 : titles.size();
+
+        List<Lesson> lessons = new ArrayList<>();
+        for (int i = 0; i < limit; i++) {
+            Lesson lesson = new Lesson();
+            lesson.setLessonName(titles.get(i));
+            lesson.setContent(contents.get(i));
+            lesson.setEditable(true);
+            lesson.setCourse(course);
+            lessons.add(lesson);
         }
+
+        return lessons;
+    }
+
+
+    private static int getRequestedLessonCount(CourseWithLessonsDTO dto, User creator) {
+        if (creator.getRole() != Role.INSTRUCTOR) {
+            throw new IllegalStateException("Only users with INSTRUCTOR role can create courses.");
+        }
+
+
+        Tier tier = creator.getTier();
+        int maxAllowedLessons = switch (tier) {
+            case FREE -> 5;
+            case PROFESSIONAL -> 15;
+            case ULTIMATE -> Integer.MAX_VALUE;
+        };
+
+        int requestedLessonCount = dto.getLessons() != null ? dto.getLessons().size() : 0;
+        if (requestedLessonCount > maxAllowedLessons) {
+            throw new IllegalArgumentException("Your tier (" + tier + ") allows a maximum of " + maxAllowedLessons + " lessons per course.");
+        }
+        return requestedLessonCount;
     }
 
     @Override

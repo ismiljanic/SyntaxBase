@@ -42,7 +42,6 @@ public class UserController {
     @GetMapping("/userInformation")
     public User getUserInformation(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
-        System.out.println("Pozvan je userInfomation");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
 

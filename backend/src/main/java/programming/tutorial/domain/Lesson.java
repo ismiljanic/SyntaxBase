@@ -23,6 +23,10 @@ public class Lesson {
     @JsonIgnore
     private List<LessonFeedback> feedbackList = new ArrayList<>();
 
+    @Column(length = 10000, nullable = false)
+    private String content;
+    @Column(name = "editable")
+    private boolean editable = false;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
@@ -86,12 +90,27 @@ public class Lesson {
         this.completed = completed;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
     @Override
     public String toString() {
         return "Lesson{" +
                 "id=" + id +
                 ", lessonName='" + lessonName + '\'' +
-                ", course=" + course +
                 ", feedbackList=" + feedbackList +
                 ", user=" + user +
                 ", completed=" + completed +

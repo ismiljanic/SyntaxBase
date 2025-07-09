@@ -32,7 +32,7 @@ public class LessonServiceJpa implements LessonService {
         dto.setCourseId(lesson.getCourse() != null ? lesson.getCourse().getId() : null);
         dto.setUserId(lesson.getUser() != null ? lesson.getUser().getId() : null);
         dto.setCompleted(lesson.isCompleted() ? "true" : "false");
-
+        dto.setContent(lesson.getContent());
         return dto;
     }
 

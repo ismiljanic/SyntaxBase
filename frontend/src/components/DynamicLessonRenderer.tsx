@@ -4,32 +4,37 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { LessonTemplate } from './LessonTemplate';
 
-interface LessonContent {
+// interface LessonContent {
+//     title: string;
+//     sections: Array<{
+//         subtitle?: string;
+//         paragraphs: string[];
+//         images?: { src: string; alt?: string; caption?: string }[];
+//     }>;
+//     objectives: string[];
+// }
+
+interface LessonDB {
+    id: number;
     title: string;
-    sections: Array<{
-        subtitle?: string;
-        paragraphs: string[];
-        images?: { src: string; alt?: string; caption?: string }[];
-    }>;
-    objectives: string[];
+    description: string;
+    active: boolean;
 }
 
-const someLessonData = {
-    title: "Intro to Web Dev",
-    objectives: ["Understand basics", "Build a simple page"],
-    sections: [
-        {
-            subtitle: "What is Web Development?",
-            paragraphs: ["It is the creation of websites..."],
-            images: [{ src: "image.png", alt: "Example" }],
-        },
-    ],
-};
+interface LessonAPIResponse {
+    id: number;
+    lessonName: string;
+    content: string;
+    completed: string;
+    editable: boolean;
+    courseId: number;
+    userId: number | null;
+}
 
 const DynamicLessonRenderer = () => {
     const { courseId, lessonId } = useParams();
     const { getAccessTokenSilently } = useAuth0();
-    const [lessonContent, setLessonContent] = useState<LessonContent | null>(null);
+    const [lessonContent, setLessonContent] = useState<LessonAPIResponse | null>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -52,47 +57,72 @@ const DynamicLessonRenderer = () => {
     };
 
     const handleNext = async () => {
-        const token = await getAccessTokenSilently();
         try {
-            const response = await axios.get(`http://localhost:8080/api/progress/lessons/next`, {
-                params: { courseId, currentLessonId: lessonId },
-                headers: { Authorization: `Bearer ${token}` },
-                withCredentials: true,
-            });
+            const token = await getAccessTokenSilently();
+            const response = await axios.get<{ id?: number }>(
+                `http://localhost:8080/api/progress/lessons/next`,
+                {
+                    params: { courseId, currentLessonId: lessonId },
+                    headers: { Authorization: `Bearer ${token}` },
+                    withCredentials: true,
+                }
+            );
+
             if (response.data?.id) {
                 goToLesson(response.data.id);
             } else {
-                alert('No next lesson.');
+                navigate('/homepage');
             }
-        } catch (err) {
-            console.error('Error fetching next lesson:', err);
+        } catch (err: any) {
+            if (axios.isAxiosError(err) && err.response?.status === 404) {
+                navigate('/homepage');
+            } else {
+                console.error('Error fetching next lesson:', err);
+            }
         }
     };
 
+
     const handlePrevious = async () => {
-        const token = await getAccessTokenSilently();
         try {
-            const response = await axios.get(`http://localhost:8080/api/progress/lessons/previous`, {
-                params: { courseId, currentLessonId: lessonId },
-                headers: { Authorization: `Bearer ${token}` },
-                withCredentials: true,
-            });
+            const token = await getAccessTokenSilently();
+            const response = await axios.get<{ id?: number }>(
+                `http://localhost:8080/api/progress/lessons/previous`,
+                {
+                    params: { courseId, currentLessonId: lessonId },
+                    headers: { Authorization: `Bearer ${token}` },
+                    withCredentials: true,
+                }
+            );
+
             if (response.data?.id) {
                 goToLesson(response.data.id);
             } else {
-                alert('No previous lesson.');
+                navigate('/homepage');
             }
-        } catch (err) {
-            console.error('Error fetching previous lesson:', err);
+        } catch (err: any) {
+            if (axios.isAxiosError(err) && err.response?.status === 404) {
+                navigate('/homepage');
+            } else {
+                console.error('Error fetching previous lesson:', err);
+            }
         }
     };
+
 
 
     if (!lessonContent) return <p>Loading lesson...</p>;
 
+    const lessonForTemplate: LessonDB = {
+        id: lessonContent.id,
+        title: lessonContent.lessonName,
+        description: lessonContent.content,
+        active: !lessonContent.editable ? true : false,
+    };
+
     return (
         <LessonTemplate
-            initialLesson={someLessonData}
+            lesson={lessonForTemplate}
             onNext={handleNext}
             onPrevious={handlePrevious}
         />
