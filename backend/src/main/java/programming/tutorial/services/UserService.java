@@ -3,6 +3,7 @@ package programming.tutorial.services;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import programming.tutorial.domain.Role;
+import programming.tutorial.domain.Tier;
 import programming.tutorial.domain.User;
 import programming.tutorial.dto.*;
 import programming.tutorial.services.impl.UserNotFoundException;
@@ -49,4 +50,6 @@ public interface UserService {
     UserDTO getUserDTOByAuth0UserId(String auth0Id);
 
     UserAccountDTO getUserAccountDTOByAuth0UserId(String userId);
+
+    void upgradeTier(String auth0Id, Tier tier);
 }

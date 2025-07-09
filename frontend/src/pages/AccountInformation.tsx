@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/AccountInformation.css';
 import { Header } from './Header';
@@ -22,6 +22,9 @@ interface Post {
     createdAt: string;
 }
 
+type Tier = "Free" | "Professional" | "Ultimate";
+
+
 interface UserAccount {
     name: string;
     surname: string;
@@ -30,6 +33,7 @@ interface UserAccount {
     role: string;
     userPosts: Post[];
     deletedPosts: Post[];
+    tier: Tier;
 }
 
 export function AccountInformation() {
@@ -40,6 +44,7 @@ export function AccountInformation() {
     const [showMoreDeletedPosts, setShowMoreDeletedPosts] = useState<boolean>(false);
     const initialPostCount = 5;
     const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -88,90 +93,102 @@ export function AccountInformation() {
         setShowMoreDeletedPosts(!showMoreDeletedPosts);
     };
 
+    const handleUpgradeAccountTier = async () => {
+        navigate('/upgrade-account-tier');
+    };
+
     return (
         <div className='accountDiv'>
             <Header bgColor='#fcfafa' />
             <h1 className='account'>Account Information</h1>
             <div className="account-container">
                 <div className="account-info-section">
-                        {accountInfo.role === 'INSTRUCTOR' ? (
-                            <p className="instructor-badge">You are an Instructor</p>
-                        ) : (
-                            <div className="become-instructor-container">
-                                <button
-                                    className="become-instructor-button"
-                                    onClick={() => window.location.href = '/request-instructor'}
-                                >
-                                    Become Instructor
-                                </button>
-                            </div>
-                        )}
+                    {accountInfo.role === 'INSTRUCTOR' ? (
+                        <p className="instructor-badge">You are an Instructor</p>
+                    ) : (
+                        <div className="become-instructor-container">
+                            <button
+                                className="become-instructor-button"
+                                onClick={() => window.location.href = '/request-instructor'}
+                            >
+                                Become Instructor
+                            </button>
+                        </div>
+                    )}
 
 
-                        <div className="account-info-title">About Your Account</div>
-                        <div className="account-info-item">
-                            <strong>Name:</strong> <span className="account-info-value">{accountInfo?.name}</span>
-                        </div>
-                        <div className="account-info-item">
-                            <strong>Surname:</strong> <span className="account-info-value">{accountInfo?.surname}</span>
-                        </div>
-                        <div className="account-info-item">
-                            <strong>Username:</strong> <span className="account-info-value">{accountInfo?.username}</span>
-                        </div>
-                        <div className="account-info-item">
-                            <strong>Date Created:</strong> <span className="account-info-value">{new Date(accountInfo?.dateCreated).toLocaleDateString()}</span>
-                        </div>
+                    <div className="account-info-title">About Your Account</div>
+                    <div className="account-info-item">
+                        <strong>Name:</strong> <span className="account-info-value">{accountInfo?.name}</span>
                     </div>
-
-                    <div className="user-posts-section">
-                        <h2 className="user-posts-title">Your Posts</h2>
-                        <div className="user-posts-content">
-                            {accountInfo.userPosts.length > 0 ? (
-                                accountInfo.userPosts.slice(0, showMorePosts ? accountInfo.userPosts.length : initialPostCount).map(post => (
-                                    <div key={post.id} className="user-post-item">
-                                        <div className="user-post-header">
-                                            <strong className="user-post-date">{new Date(post.createdAt).toLocaleString()}</strong>
-                                        </div>
-                                        <p className="user-post-content">{post.content}</p>
-                                    </div>
-                                ))
-                            ) : (
-                                <p className="no-posts-message">No posts found.</p>
-                            )}
-                            {accountInfo.userPosts.length > initialPostCount && (
-                                <button className="show-more-button" onClick={toggleShowMorePosts}>
-                                    {showMorePosts ? 'Show Less' : 'Show More'}
-                                </button>
-                            )}
-                        </div>
+                    <div className="account-info-item">
+                        <strong>Surname:</strong> <span className="account-info-value">{accountInfo?.surname}</span>
                     </div>
-
-                    <div className="deleted-posts-section">
-                        <h2 className="deleted-posts-title">Deleted Posts</h2>
-                        <div className="deleted-posts-content">
-                            {accountInfo.deletedPosts.length > 0 ? (
-                                accountInfo.deletedPosts.slice(0, showMoreDeletedPosts ? accountInfo.deletedPosts.length : initialPostCount).map(post => (
-                                    <div key={post.id} className="deleted-post-item">
-                                        <div className="deleted-post-header">
-                                            <strong className="deleted-post-date">{new Date(post.createdAt).toLocaleString()}</strong>
-                                            <span className="deleted-post-status"> (Deleted)</span>
-                                        </div>
-                                        <p className="deleted-post-content">{post.content}</p>
-                                    </div>
-                                ))
-                            ) : (
-                                <p className="no-deleted-posts-message">No deleted posts found.</p>
-                            )}
-                            {accountInfo.deletedPosts.length > initialPostCount && (
-                                <button className="show-more-button" onClick={toggleShowMoreDeletedPosts}>
-                                    {showMoreDeletedPosts ? 'Show Less' : 'Show More'}
-                                </button>
-                            )}
-                        </div>
+                    <div className="account-info-item">
+                        <strong>Username:</strong> <span className="account-info-value">{accountInfo?.username}</span>
+                    </div>
+                    <div className="account-info-item">
+                        <strong>Date Created:</strong> <span className="account-info-value">{new Date(accountInfo?.dateCreated).toLocaleDateString()}</span>
+                    </div>
+                    <div className="account-info-item">
+                        <strong>Current tier:</strong> <span className="account-info-value">{accountInfo?.tier}</span>
                     </div>
                 </div>
-                <Footer2 bgColor='rgb(227, 238, 246)' />
-                <Footer bgColor='rgb(227, 238, 246)' />
+                <div className="account-info-section">
+                    <div className="account-info-title">Upgrade Your Account</div>
+                    <button onClick={handleUpgradeAccountTier} className="upgrade-tier-button">
+                        + Upgrade Account
+                    </button>
+                </div>
+                <div className="user-posts-section">
+                    <h2 className="user-posts-title">Your Posts</h2>
+                    <div className="user-posts-content">
+                        {accountInfo.userPosts.length > 0 ? (
+                            accountInfo.userPosts.slice(0, showMorePosts ? accountInfo.userPosts.length : initialPostCount).map(post => (
+                                <div key={post.id} className="user-post-item">
+                                    <div className="user-post-header">
+                                        <strong className="user-post-date">{new Date(post.createdAt).toLocaleString()}</strong>
+                                    </div>
+                                    <p className="user-post-content">{post.content}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="no-posts-message">No posts found.</p>
+                        )}
+                        {accountInfo.userPosts.length > initialPostCount && (
+                            <button className="show-more-button" onClick={toggleShowMorePosts}>
+                                {showMorePosts ? 'Show Less' : 'Show More'}
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                <div className="deleted-posts-section">
+                    <h2 className="deleted-posts-title">Deleted Posts</h2>
+                    <div className="deleted-posts-content">
+                        {accountInfo.deletedPosts.length > 0 ? (
+                            accountInfo.deletedPosts.slice(0, showMoreDeletedPosts ? accountInfo.deletedPosts.length : initialPostCount).map(post => (
+                                <div key={post.id} className="deleted-post-item">
+                                    <div className="deleted-post-header">
+                                        <strong className="deleted-post-date">{new Date(post.createdAt).toLocaleString()}</strong>
+                                        <span className="deleted-post-status"> (Deleted)</span>
+                                    </div>
+                                    <p className="deleted-post-content">{post.content}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="no-deleted-posts-message">No deleted posts found.</p>
+                        )}
+                        {accountInfo.deletedPosts.length > initialPostCount && (
+                            <button className="show-more-button" onClick={toggleShowMoreDeletedPosts}>
+                                {showMoreDeletedPosts ? 'Show Less' : 'Show More'}
+                            </button>
+                        )}
+                    </div>
+                </div>
             </div>
-            );
+            <Footer2 bgColor='rgb(227, 238, 246)' />
+            <Footer bgColor='rgb(227, 238, 246)' />
+        </div>
+    );
 }

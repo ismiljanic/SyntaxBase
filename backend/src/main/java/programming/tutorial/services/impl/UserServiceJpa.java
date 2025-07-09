@@ -207,6 +207,20 @@ public class UserServiceJpa implements UserService {
     }
 
     @Override
+    public void upgradeTier(String auth0Id, Tier newTier) {
+        User user = userRepository.findByAuth0UserId(auth0Id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (newTier.ordinal() == user.getTier().ordinal()) {
+            throw new IllegalArgumentException("You are already on this tier.");
+        }
+
+        user.setTier(newTier);
+        userRepository.save(user);
+    }
+
+
+    @Override
     public UserAccountDTO getUserAccountInformation(String auth0UserId) {
         User user = userRepository.findByAuth0UserId(auth0UserId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -231,7 +245,7 @@ public class UserServiceJpa implements UserService {
         userAccountDTO.setUserPosts(userPosts);
         userAccountDTO.setDeletedPosts(deletedPosts);
         userAccountDTO.setRole(user.getRole());
-
+        userAccountDTO.setTier(user.getTier());
         return userAccountDTO;
     }
 
@@ -326,4 +340,5 @@ public class UserServiceJpa implements UserService {
                     return userRepository.save(newUser);
                 });
     }
+
 }

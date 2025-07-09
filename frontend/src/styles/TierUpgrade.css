@@ -1,0 +1,168 @@
+.tierContainer {
+    max-width: 1400px;
+    margin: 60px auto;
+    padding: 50px;
+    border: 1px solid #e0e0e0;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+    font-family: "Segoe UI", Roboto, sans-serif;
+    background-color: #fff;
+}
+
+.tierHeading {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 40px;
+    color: #1a1a1a;
+    text-align: center;
+}
+
+.tier-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 32px;
+    margin-top: 24px;
+}
+
+.tier-button {
+    width: 380px;
+    padding: 32px 24px;
+    font-size: 1.1rem;
+    height: 500px;
+    position: relative;
+    overflow: hidden;
+    font-weight: 500;
+    border: 1px solid #d0d0d0;
+    border-radius: 12px;
+    background: #1a73e8;
+    color: white;
+    cursor: pointer;
+    transition: 0.4s ease-in-out;
+    min-height: 220px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(26, 115, 232, 0.1);
+}
+
+.tier-button:hover {
+    background-color: whitesmoke;
+    transition: 0.4s ease-in-out;
+    color: black;
+    box-shadow: 0 8px 20px rgba(26, 115, 232, 0.3);
+}
+
+.tier-button:disabled {
+    background: #f0f0f0;
+    color: #888;
+    cursor: not-allowed;
+    box-shadow: none;
+    border: 1px dashed #bbb;
+}
+
+.tier-button:disabled:hover {
+    transform: none;
+}
+
+.tier-button h4 {
+    font-size: 1.25rem;
+    margin-bottom: 12px;
+}
+
+.tier-button p {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    line-height: 1.4;
+}
+
+.error {
+    color: #d32f2f;
+    margin-top: 30px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.tier-button {
+    width: 380px;
+    height: 520px;
+    padding: 24px 20px;
+    border: 1px solid #d0d0d0;
+    border-radius: 16px;
+    background-color: #ffffff;
+    color: #1a1a1a;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.tier-button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(26, 115, 232, 0.2);
+    border-color: #1a73e8;
+}
+
+.tier-button:disabled {
+    background-color: #f9f9f9;
+    color: #999;
+    cursor: not-allowed;
+    border-style: dashed;
+}
+
+.tier-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #1a73e8;
+    text-align: center;
+}
+
+.tier-description-list {
+    opacity: 0;
+    list-style: none;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.5s ease;
+    margin-top: 20px;
+}
+
+.tier-description-list li {
+    position: relative;
+    padding-left: 24px;
+    margin-bottom: 12px;
+}
+
+.tier-description-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #1a73e8;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.tier-button:hover .tier-description-list {
+    opacity: 1;
+    max-height: 300px;
+}
+
+.tier-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background-color: #1a73e8;
+    color: white;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.current-tier {
+    border: 2px solid #1a73e8;
+    box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.15);
+}

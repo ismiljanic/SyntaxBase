@@ -1,6 +1,7 @@
 package programming.tutorial.dto;
 
 import programming.tutorial.domain.Role;
+import programming.tutorial.domain.Tier;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class UserAccountDTO {
     private List<CourseProgressDTO> courses;
     private Role role;
     private boolean active;
-
+    private Tier tier;
     public UserAccountDTO() {
     }
 
@@ -89,6 +90,14 @@ public class UserAccountDTO {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public Tier getTier() {
+        return tier;
+    }
+
+    public void setTier(Tier tier) {
+        this.tier = tier;
     }
 
     @Override

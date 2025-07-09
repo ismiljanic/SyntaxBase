@@ -3,21 +3,20 @@ package programming.tutorial.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import programming.tutorial.dao.InstructorRequestRepository;
 import programming.tutorial.dao.PostRepository;
 import programming.tutorial.dao.UserRepository;
-import programming.tutorial.domain.InstructorRequest;
-import programming.tutorial.domain.InstructorRequestStatus;
-import programming.tutorial.domain.Role;
-import programming.tutorial.domain.User;
+import programming.tutorial.domain.*;
 import programming.tutorial.dto.*;
 import programming.tutorial.services.UserService;
 import programming.tutorial.services.impl.InstructorRequestServiceJpa;
@@ -171,4 +170,23 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
+    @PostMapping("/upgrade-tier")
+    public ResponseEntity<String> upgradeTier(@RequestBody TierUpgradeRequestDTO request, Authentication authentication) {
+        try {
+            JwtAuthenticationToken jwtAuthToken = (JwtAuthenticationToken) authentication;
+            Jwt jwt = jwtAuthToken.getToken();
+            String auth0Id = jwt.getSubject();
+
+            Tier newTier = Tier.valueOf(request.getNewTier().toUpperCase());
+
+            userService.upgradeTier(auth0Id, newTier);
+            return ResponseEntity.ok("Tier successfully upgraded to " + newTier);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid tier selection: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Upgrade failed: " + e.getMessage());
+        }
+    }
 }

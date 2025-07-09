@@ -79,6 +79,7 @@ import UserDetails from "./components/UserDetails";
 import CreateCourse from "./pages/CreateCourse";
 import DynamicLessonRenderer from "./components/DynamicLessonRenderer";
 import { PlaceToStartCourse } from "./components/PlaceToStartCourse";
+import TierUpgradePage from './pages/instructor/TierUpgradePage'
 
 export function Router() {
   return (
@@ -166,6 +167,7 @@ export function Router() {
           <Route path="/create-course" element={<CreateCourse />} />
           <Route path="/dynamic-course/:courseId/lesson/:lessonId" element={<DynamicLessonRenderer />} />
           <Route path="/placetostartcourse/" element={<PlaceToStartCourse />} />
+          <Route path="/upgrade-account-tier" element={<TierUpgradePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
