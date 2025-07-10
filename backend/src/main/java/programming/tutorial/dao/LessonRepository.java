@@ -28,4 +28,6 @@ public interface LessonRepository extends JpaRepository<Lesson, Integer> {
     @Query("SELECT l FROM Lesson l WHERE l.course.id = :courseId AND l.id = (SELECT MAX(l2.id) FROM Lesson l2 WHERE l2.course.id = :courseId AND l2.id < :currentLessonId)")
     Optional<Lesson> findPreviousLesson(@Param("courseId") Integer courseId, @Param("currentLessonId") Integer currentLessonId);
 
+    List<Lesson> findByCourse_IdOrderByIdAsc(Integer courseId);
+
 }

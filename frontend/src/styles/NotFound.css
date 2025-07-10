@@ -1,11 +1,9 @@
-.error {
+.errorNotFound {
     display: flex;
     flex-direction: column;
     align-content: center;
     align-items: center;
-    width: 100vw;
-    height: 100vh;
     padding: 0px;
+    color: black;
     justify-content: space-around;
-    background-color: #dee2e6;
 }

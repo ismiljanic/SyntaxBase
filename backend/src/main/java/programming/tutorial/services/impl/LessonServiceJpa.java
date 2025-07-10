@@ -7,6 +7,7 @@ import programming.tutorial.domain.Lesson;
 import programming.tutorial.dto.LessonDTO;
 import programming.tutorial.services.LessonService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,13 +40,29 @@ public class LessonServiceJpa implements LessonService {
 
     @Override
     public Optional<LessonDTO> getLessonByCourseIdAndLessonId(Integer courseId, Integer lessonId) {
-        Optional<Lesson> lessonOpt = lessonRepository.findByIdAndCourse_Id(lessonId, courseId);
-        System.out.println("Looking for lessonId=" + lessonId + ", courseId=" + courseId);
-        System.out.println("Found? " + lessonOpt.isPresent());
+        List<Lesson> lessons = lessonRepository.findByCourse_IdOrderByIdAsc(courseId);
 
-        return lessonRepository.findByIdAndCourse_Id(lessonId, courseId)
-                .map(this::convertToDto);
+        Optional<Lesson> targetLessonOpt = lessons.stream()
+                .filter(lesson -> lesson.getId().equals(lessonId))
+                .findFirst();
+
+        if (targetLessonOpt.isEmpty()) {
+            System.out.println("Lesson not found for courseId=" + courseId + ", lessonId=" + lessonId);
+            return Optional.empty();
+        }
+
+        Lesson lesson = targetLessonOpt.get();
+
+        boolean isFirst = lessons.get(0).getId().equals(lesson.getId());
+        boolean isLast = lessons.get(lessons.size() - 1).getId().equals(lesson.getId());
+
+        LessonDTO dto = convertToDto(lesson);
+        dto.setFirst(isFirst);
+        dto.setLast(isLast);
+
+        return Optional.of(dto);
     }
+
 
     public Optional<LessonDTO> getNextLesson(Integer courseId, Integer currentLessonId) {
         return lessonRepository.findNextLesson(courseId, currentLessonId)

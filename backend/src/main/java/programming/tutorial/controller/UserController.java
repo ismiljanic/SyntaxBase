@@ -80,25 +80,49 @@ public class UserController {
     }
 
     @GetMapping("/accountInformation/{userId}")
-    public ResponseEntity<UserAccountDTO> getUserAccountInformation(@PathVariable String userId) {
+    public ResponseEntity<UserAccountDTO> getUserAccountInformation(
+            @PathVariable String userId,
+            Authentication authentication) {
+
+        String loggedInUserId = extractAuth0UserIdFromAuthentication(authentication);
+
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!loggedInUserId.equals(userId) && !isAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         try {
             String decodedUserId = URLDecoder.decode(userId, StandardCharsets.UTF_8);
             UserAccountDTO userAccountDTO = userService.getUserAccountInformation(decodedUserId);
             return ResponseEntity.ok(userAccountDTO);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
+
     @PutMapping("/updateName")
-    public ResponseEntity<String> updateName(@AuthenticationPrincipal Jwt jwt, @RequestBody UserUpdateRequest request) {
+    public ResponseEntity<String> updateName(@AuthenticationPrincipal Jwt jwt, @RequestBody UserUpdateRequest request, Authentication authentication) {
         try {
             String auth0UserId = jwt.getClaimAsString("sub");
 
             System.out.println("Auth0 User ID from token: " + auth0UserId);
             System.out.println("New Name: " + request.getName());
+
+            if (request.getName() == null || request.getName().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Name cannot be empty.");
+            }
+
+            boolean isUser = authentication.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_USER"));
+
+            if (!isUser) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied.");
+            }
 
             userService.updateName(auth0UserId, request.getName());
             return ResponseEntity.ok("Name updated successfully");
@@ -109,20 +133,22 @@ public class UserController {
     }
 
 
-    @PutMapping("/updateSurname/{userId}")
-    public ResponseEntity<String> updateSurname(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
+    @PutMapping("/updateSurname")
+    public ResponseEntity<String> updateSurname(@AuthenticationPrincipal Jwt jwt, @RequestBody UserUpdateRequest request) {
         try {
-            userService.updateSurname(userId, request.getSurname());
+            String auth0UserId = jwt.getClaimAsString("sub");
+            userService.updateSurname(auth0UserId, request.getSurname());
             return ResponseEntity.ok("Surname updated successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-    @PutMapping("/updateUsername/{userId}")
-    public ResponseEntity<String> updateUsername(@PathVariable String userId, @RequestBody UserUpdateRequest request) {
+    @PutMapping("/updateUsername")
+    public ResponseEntity<String> updateUsername(@AuthenticationPrincipal Jwt jwt, @RequestBody UserUpdateRequest request) {
         try {
-            userService.updateUsername(userId, request.getUsername());
+            String auth0UserId = jwt.getClaimAsString("sub");
+            userService.updateUsername(auth0UserId, request.getUsername());
             return ResponseEntity.ok("Username updated successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -140,7 +166,6 @@ public class UserController {
                     .body("Error deleting account: " + e.getMessage());
         }
     }
-
 
     @GetMapping("/allUsers")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -189,4 +214,10 @@ public class UserController {
                     .body("Upgrade failed: " + e.getMessage());
         }
     }
+
+    private String extractAuth0UserIdFromAuthentication(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        return jwt.getClaim("sub");
+    }
+
 }

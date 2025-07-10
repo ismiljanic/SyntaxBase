@@ -23,4 +23,6 @@ public interface CourseService {
     void createCourseWithLessons(CourseWithLessonsDTO dto);
 
     List<CourseDTO> getCoursesByUserAuth0Id(String auth0UserId);
+
+    boolean isCourseOwner(String userId, Integer courseId);
 }

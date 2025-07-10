@@ -140,4 +140,11 @@ public class CourseServiceJpa implements CourseService {
                         course.getDescription(), course.getCategory()))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public boolean isCourseOwner(String userId, Integer courseId) {
+        Course course = courseRepository.findById(courseId).orElse(null);
+        return course != null && course.getCreator().getAuth0UserId().equals(userId);
+    }
+
 }

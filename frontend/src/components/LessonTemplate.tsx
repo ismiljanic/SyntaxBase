@@ -15,11 +15,13 @@ interface LessonTemplateProps {
     lesson: LessonDB;
     onNext: () => void;
     onPrevious: () => void;
+    first: boolean;
+    last: boolean;
 }
 
-export function LessonTemplate({ lesson, onNext, onPrevious }: LessonTemplateProps) {
+export function LessonTemplate({ lesson, onNext, onPrevious, first, last }: LessonTemplateProps) {
     if (!lesson.active) return <div>This lesson is inactive.</div>;
-
+    console.log(first, last, lesson);
     return (
         <div className='mainContainer'>
             <Header bgColor="rgb(247, 250, 251)" />
@@ -31,12 +33,12 @@ export function LessonTemplate({ lesson, onNext, onPrevious }: LessonTemplatePro
                 <p style={{ fontSize: "1.1rem" }}>{lesson.description}</p>
             </div>
 
-            <div style={{ display: 'flex', marginTop: "2em"}}>
-                <div className='goToPreviousLessonDiv' onClick={onPrevious} style={{ marginLeft: '6em'}}>
-                    Previous Lesson
+            <div style={{ display: 'flex', marginTop: "2em" }}>
+                <div className='goToPreviousLessonDiv' onClick={onPrevious} style={{ marginLeft: '6em' }}>
+                    {first ? 'Homepage' : 'Previous Lesson'}
                 </div>
                 <div className='moreCoursesDiv' onClick={onNext} style={{ cursor: "pointer", marginLeft: '62.5em' }}>
-                    Next Lesson
+                    {last ? 'Finish Lesson' : 'Next Lesson'}
                 </div>
             </div>
 

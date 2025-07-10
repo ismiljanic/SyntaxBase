@@ -113,7 +113,6 @@ public class Course {
                 ", length=" + length +
                 ", description='" + description + '\'' +
                 ", category='" + category + '\'' +
-                ", creator=" + creator +
                 ", systemCourse=" + systemCourse +
                 '}';
     }

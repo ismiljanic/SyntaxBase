@@ -4,16 +4,6 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { LessonTemplate } from './LessonTemplate';
 
-// interface LessonContent {
-//     title: string;
-//     sections: Array<{
-//         subtitle?: string;
-//         paragraphs: string[];
-//         images?: { src: string; alt?: string; caption?: string }[];
-//     }>;
-//     objectives: string[];
-// }
-
 interface LessonDB {
     id: number;
     title: string;
@@ -29,31 +19,76 @@ interface LessonAPIResponse {
     editable: boolean;
     courseId: number;
     userId: number | null;
+    first: boolean;
+    last: boolean;
 }
+
 
 const DynamicLessonRenderer = () => {
     const { courseId, lessonId } = useParams();
-    const { getAccessTokenSilently } = useAuth0();
     const [lessonContent, setLessonContent] = useState<LessonAPIResponse | null>(null);
     const navigate = useNavigate();
+    const { user, getAccessTokenSilently } = useAuth0();
+    const [role, setRole] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!user) {
+            navigate('/login');
+            return;
+        }
+
+        const fetchUserRole = async () => {
+            try {
+                const token = await getAccessTokenSilently();
+                const response = await axios.get(`http://localhost:8080/api/users/role/${user.sub}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setRole(response.data.role);
+            } catch (error) {
+                console.error('Error fetching user role:', error);
+                navigate('/error');
+            }
+        };
+
+        fetchUserRole();
+    }, [user, getAccessTokenSilently, navigate]);
+
+    useEffect(() => {
+        if (role && role !== 'INSTRUCTOR') {
+            navigate('/forbidden');
+        }
+    }, [role, navigate]);
+
 
     useEffect(() => {
         const fetchLesson = async () => {
-            const token = await getAccessTokenSilently();
-            const response = await axios.get(`http://localhost:8080/api/progress/lessons/${courseId}/${lessonId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                withCredentials: true,
-            });
-            setLessonContent(response.data);
+            try {
+                const token = await getAccessTokenSilently();
+                const response = await axios.get(`http://localhost:8080/api/progress/lessons/${courseId}/${lessonId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                    withCredentials: true,
+                });
+                setLessonContent(response.data);
+            } catch (error) {
+                if (axios.isAxiosError(error) && error.response?.status === 403) {
+                    navigate('/forbidden');
+                } else {
+                    console.error('Failed to fetch lesson:', error);
+                    navigate('/error');
+                }
+            }
         };
 
         fetchLesson();
-    }, [courseId, lessonId, getAccessTokenSilently]);
+    }, [courseId, lessonId, getAccessTokenSilently, navigate]);
+
 
     const goToLesson = (lessonIdToGo: number) => {
-        navigate(`/dynamic-course/${courseId}/lesson/${lessonIdToGo}`);
+        navigate(`/dynamic-course/${courseId}/Lesson/${lessonIdToGo}`);
     };
 
     const handleNext = async () => {
@@ -109,15 +144,13 @@ const DynamicLessonRenderer = () => {
         }
     };
 
-
-
     if (!lessonContent) return <p>Loading lesson...</p>;
 
     const lessonForTemplate: LessonDB = {
         id: lessonContent.id,
         title: lessonContent.lessonName,
         description: lessonContent.content,
-        active: !lessonContent.editable ? true : false,
+        active: !lessonContent.editable,
     };
 
     return (
@@ -125,6 +158,8 @@ const DynamicLessonRenderer = () => {
             lesson={lessonForTemplate}
             onNext={handleNext}
             onPrevious={handlePrevious}
+            first={lessonContent.first}
+            last={lessonContent.last}
         />
     );
 };

@@ -8,6 +8,8 @@ public class LessonDTO {
     private String completed;
     private String content;
     private boolean editable;
+    private boolean isFirst;
+    private boolean isLast;
 
     public LessonDTO() {
     }
@@ -80,5 +82,21 @@ public class LessonDTO {
 
     public void setEditable(boolean editable) {
         this.editable = editable;
+    }
+
+    public boolean isFirst() {
+        return isFirst;
+    }
+
+    public void setFirst(boolean isFirst) {
+        this.isFirst = isFirst;
+    }
+
+    public boolean isLast() {
+        return isLast;
+    }
+
+    public void setLast(boolean isLast) {
+        this.isLast = isLast;
     }
 }

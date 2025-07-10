@@ -9,16 +9,18 @@ const TierUpgrade: React.FC<{ currentTier: Tier; onUpgrade: (newTier: Tier) => v
     const [loading, setLoading] = useState(false);
     const { getAccessTokenSilently } = useAuth0();
     const [error, setError] = useState<string | null>(null);
+    const [modalMessage, setModalMessage] = useState<string | null>(null);
 
     const tiers: Tier[] = ["Free", "Professional", "Ultimate"];
 
     const handleUpgrade = async (newTier: Tier) => {
         if (newTier === currentTier) {
-            alert("You are already on this tier.");
+            setModalMessage("You are already on this tier.");
             return;
         }
-        if (tiers.indexOf(newTier) == tiers.indexOf(currentTier)) {
-            alert("You cannot select the same tier.");
+
+        if (tiers.indexOf(newTier) === tiers.indexOf(currentTier)) {
+            setModalMessage("You cannot select the same tier.");
             return;
         }
 
@@ -31,7 +33,7 @@ const TierUpgrade: React.FC<{ currentTier: Tier; onUpgrade: (newTier: Tier) => v
                 headers: { Authorization: `Bearer ${token}` }
             });
             onUpgrade(newTier);
-            alert(`Successfully upgraded to ${newTier} tier.`);
+            setModalMessage(`Successfully upgraded to ${newTier} tier.`);
         } catch (err: any) {
             setError("Failed to upgrade tier. Please try again later.");
             console.error(err);
@@ -84,6 +86,14 @@ const TierUpgrade: React.FC<{ currentTier: Tier; onUpgrade: (newTier: Tier) => v
                     );
                 })}
             </div>
+            {modalMessage && (
+                <div className="tier-modal-overlay">
+                    <div className="tier-modal">
+                        <p>{modalMessage}</p>
+                        <button onClick={() => setModalMessage(null)}>Close</button>
+                    </div>
+                </div>
+            )}
             {error && <p className="error">{error}</p>}
         </div>
     );

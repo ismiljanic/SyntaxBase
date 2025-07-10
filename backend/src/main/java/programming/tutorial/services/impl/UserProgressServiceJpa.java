@@ -5,10 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import programming.tutorial.dao.CourseRepository;
-import programming.tutorial.dao.LessonRepository;
-import programming.tutorial.dao.UserProgressRepository;
-import programming.tutorial.dao.UserRepository;
+import programming.tutorial.dao.*;
 import programming.tutorial.domain.Course;
 import programming.tutorial.domain.Lesson;
 import programming.tutorial.domain.User;
@@ -32,6 +29,9 @@ public class UserProgressServiceJpa implements UserProgressService {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private UserCourseRepository userCourseRepository;
 
     @Override
     public Optional<LessonDTO> getCurrentLesson(String userId, Integer courseId) {
@@ -88,4 +88,14 @@ public class UserProgressServiceJpa implements UserProgressService {
 
         return ResponseEntity.ok(response);
     }
+
+    public boolean isUserEnrolled(String auth0UserId, Integer courseId) {
+        Optional<User> userOpt = userRepository.findByAuth0UserId(auth0UserId);
+        if (userOpt.isEmpty()) {
+            return false;
+        }
+        Integer userId = userOpt.get().getId();
+        return userCourseRepository.existsByUserIdAndCourseId(userId, courseId);
+    }
+
 }

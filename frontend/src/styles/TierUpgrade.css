@@ -166,3 +166,46 @@
     border: 2px solid #1a73e8;
     box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.15);
 }
+
+.tier-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+}
+
+.tier-modal {
+    background: white;
+    padding: 2rem;
+    padding-top: 2em;
+    height: 150px;
+    width: 450px;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    text-align: center;
+    font-size: 1.4em;
+}
+
+.tier-modal button {
+    margin-top: 2.5rem;
+    padding: 0.7rem 1.5rem;
+    background: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+.tier-modal button:hover {
+    transition: 0.3s ease-in-out;
+    background-color: #00459e;
+}

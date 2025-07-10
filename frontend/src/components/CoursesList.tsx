@@ -45,6 +45,8 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
     const [ratings, setRatings] = useState<{ [key: number]: number }>({});
     const [hoveredRating, setHoveredRating] = useState(0);
     const [deletingCourseId, setDeletingCourseId] = useState<number | null>(null);
+    const [modalMessage, setModalMessage] = useState<string | null>(null);
+
 
     useEffect(() => {
         if (propCourses) {
@@ -75,7 +77,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
                         withCredentials: true,
                     }
                 );
-
+                console.log('Courses response:', coursesResponse.data);
                 setCourses(coursesResponse.data);
                 const progressResponses = await Promise.all(
                     coursesResponse.data.map(course =>
@@ -154,7 +156,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
         if (!userId) return;
         try {
             const token = await getAccessTokenSilently();
-
+            console.log(course.systemCourse);
             if (course.systemCourse) {
                 const res = await axios.get(`http://localhost:8080/api/progress/current-lesson`, {
                     params: { userId, courseId: course.courseId },
@@ -184,7 +186,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
         const newRating = index + 1;
 
         if (ratings[courseId]) {
-            alert(`You've already rated this course: ${ratings[courseId]}`);
+            setModalMessage(`You've already rated this course: ${ratings[courseId]}`);
             return;
         }
 
@@ -245,10 +247,10 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
             });
 
             setCourses(prevCourses => prevCourses.filter(course => course.courseId !== courseId));
-            alert("Course successfully deleted.");
+            setModalMessage("Course successfully deleted.");
         } catch (error) {
             console.error("Error deleting course:", error);
-            alert("Failed to delete course. Please try again later.");
+            setModalMessage("Failed to delete course. Please try again later.");
         } finally {
             setDeletingCourseId(null);
         }
@@ -291,7 +293,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
                         </div>
 
                         {isCreatorList && !course.systemCourse && (
-                            <button 
+                            <button
                                 className="deleteCourseButton"
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -311,7 +313,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
                     .map(course => (
                         <div key={`progress-${course.courseId}`} className="progress-section2">
                             {!isCreatorList && (
-                            <><h2>Your Progress</h2><AnimatedProgressBar progress={progressData[course.courseId]?.progress || 0} /><p>
+                                <><h2>Your Progress</h2><AnimatedProgressBar progress={progressData[course.courseId]?.progress || 0} /><p>
                                     You have completed{' '}
                                     <AnimatedCounter targetNumber={progressData[course.courseId]?.completedLessons || 0} /> /{' '}
                                     {progressData[course.courseId]?.totalLessons || 0} lessons
@@ -343,6 +345,14 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
                         </div>
                     ))}
             </div>
+            {modalMessage && (
+                <div className="tier-modal-overlay">
+                    <div className="tier-modal">
+                        <p>{modalMessage}</p>
+                        <button onClick={() => setModalMessage(null)}>Close</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

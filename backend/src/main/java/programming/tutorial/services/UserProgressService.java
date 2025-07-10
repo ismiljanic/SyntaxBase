@@ -13,5 +13,7 @@ public interface UserProgressService {
     String updateProgress(String auth0UserId, Integer courseId, Integer lessonId);
 
     ResponseEntity<?> getProgressBar(String userId, Integer courseId);
+
+    boolean isUserEnrolled(String userId, Integer courseId);
 }
 

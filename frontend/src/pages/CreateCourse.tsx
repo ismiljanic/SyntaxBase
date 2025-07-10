@@ -5,6 +5,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { Footer2 } from './Footer2';
+import { tierLessonLimits } from '../models/tierLimits';
+import { useNavigate } from 'react-router-dom';
 
 interface CourseTemplate {
     name: string;
@@ -21,7 +23,7 @@ const templates: CourseTemplate[] = [
     {
         name: "Free Tier Starter Course",
         description: "5 lessons free tier course.",
-        category: "General",
+        category: "Premade templates",
         length: 5,
         lessons: [
             "Introduction",
@@ -34,18 +36,30 @@ const templates: CourseTemplate[] = [
     },
     {
         name: "PROFESSIONAL TIER",
-        description: "DESCRIPTION",
-        category: "Web Development",
+        description: "Up to 15 lessons professional tier course.",
+        category: "Premade templates",
         length: 5,
-        lessons: ["JSX Basics", "State & Props", "Hooks", "Routing", "Project Setup"],
+        lessons: [
+            "Introduction PROFESSIONAL",
+            "Basic Concepts PROFESSIONAL",
+            "Getting Started PROFESSIONAL",
+            "Common Pitfalls PROFESSIONAL",
+            "Summary & Next Steps PROFESSIONAL"
+        ],
         tier: "Professional",
     },
     {
         name: "ULTIMATE TIER",
-        description: "DESCRIPTION",
-        category: "Data Science",
-        length: 6,
-        lessons: ["Intro to Python", "Numpy", "Pandas", "Visualization", "Stats", "Mini Project"],
+        description: "Unlimited lessons ultimate tier course.",
+        category: "Premade templates",
+        length: 5,
+        lessons: [
+            "Introduction ULTIMATE",
+            "Basic Concepts ULTIMATE",
+            "Getting Started ULTIMATE",
+            "Common Pitfalls ULTIMATE",
+            "Summary & Next Steps ULTIMATE"
+        ],
         tier: "Ultimate",
     }
 ];
@@ -61,6 +75,33 @@ const CreateCourse: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const { getAccessTokenSilently, user } = useAuth0();
     const [userTier, setUserTier] = useState<Tier | null>(null);
+    const [modalMessage, setModalMessage] = useState<string | null>(null);
+    const navigate = useNavigate();
+    const [role, setRole] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!user) {
+            navigate('/login');
+            return;
+        }
+
+        const fetchUserRole = async () => {
+            try {
+                const token = await getAccessTokenSilently();
+                const response = await axios.get(`http://localhost:8080/api/users/role/${user.sub}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setRole(response.data.role);
+            } catch (error) {
+                console.error('Error fetching user role:', error);
+                navigate('/error');
+            }
+        };
+
+        fetchUserRole();
+    }, [user, getAccessTokenSilently, navigate]);
 
     //zbog backenda u kojem je sve upercase
     const normalizeTier = (tier: string): Tier => {
@@ -70,6 +111,8 @@ const CreateCourse: React.FC = () => {
         if (t === "ultimate") return "Ultimate";
         return "Free";
     };
+
+
     useEffect(() => {
         const fetchUserTier = async () => {
             if (!user) return;
@@ -102,14 +145,14 @@ const CreateCourse: React.FC = () => {
         };
 
         if (userTier && tierHierarchy[userTier] < tierHierarchy[selected.tier]) {
-            alert(`Your tier (${userTier}) does not permit creating courses of the ${selected.tier} tier.`);
+            setModalMessage(`Your tier (${userTier}) does not permit creating courses of the ${selected.tier} tier.`);
             setLoading(false);
             return;
         }
 
         const lessonCount = selected.lessons.length;
-        if (userTier && lessonCount > tierLimits[userTier]) {
-            alert(`Your tier (${userTier}) allows a maximum of ${tierLimits[userTier]} lessons per course. Selected course has ${lessonCount}.`);
+        if (userTier && selected.lessons.length > tierLessonLimits[userTier]) {
+            setModalMessage(`Your tier (${userTier}) allows a maximum of ${tierLessonLimits[userTier]} lessons per course. Selected course has ${selected.lessons.length}.`);
             setLoading(false);
             return;
         }
@@ -133,19 +176,24 @@ const CreateCourse: React.FC = () => {
                 }
             });
 
-            alert("Course successfully created!");
+            setModalMessage("Course successfully created!");
             setSelected(null);
         } catch (error: any) {
             console.error("Error creating course:", error);
             if (error.response && error.response.data && error.response.data.message) {
-                alert("Error: " + error.response.data.message);
+                setModalMessage("Error: " + error.response.data.message);
             } else {
-                alert("Failed to create course. Please try again.");
+                setModalMessage("Failed to create course. Please try again.");
             }
         } finally {
             setLoading(false);
         }
     };
+
+    if (role !== 'INSTRUCTOR') {
+        navigate('/forbidden');
+        return null;
+    }
 
     return (
         <div>
@@ -218,7 +266,14 @@ const CreateCourse: React.FC = () => {
                         </div>
                     )}
                 </div>
-
+                {modalMessage && (
+                    <div className="tier-modal-overlay">
+                        <div className="tier-modal">
+                            <p>{modalMessage}</p>
+                            <button onClick={() => setModalMessage(null)}>Close</button>
+                        </div>
+                    </div>
+                )}
             </div>
             <Footer2 bgColor='#f5f5f5' />
             <Footer bgColor='#f5f5f5' />

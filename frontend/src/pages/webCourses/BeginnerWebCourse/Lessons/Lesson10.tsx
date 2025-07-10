@@ -20,6 +20,36 @@ export function Lesson10() {
     const { user, getAccessTokenSilently } = useAuth0();
     const { courseId } = useParams();
 
+    const [isEnrolled, setIsEnrolled] = useState<boolean | null>(null);
+
+    useEffect(() => {
+        async function checkEnrollment() {
+            if (!user) {
+                navigate('/login');
+                return;
+            }
+            try {
+                const token = await getAccessTokenSilently();
+                const response = await fetch(
+                    `http://localhost:8080/api/progress/isEnrolled?courseId=${courseId}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+                if (response.status === 403) {
+                    navigate('/forbidden');
+                    return;
+                }
+                if (!response.ok) throw new Error('Network error');
+                setIsEnrolled(true);
+            } catch (err) {
+                console.error(err);
+                navigate('/error');
+            }
+        }
+        checkEnrollment();
+    }, [user, courseId, getAccessTokenSilently, navigate]);
+
     useEffect(() => {
         const checkFeedbackStatus = async () => {
             if (!user?.sub) {

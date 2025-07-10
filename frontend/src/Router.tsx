@@ -74,12 +74,15 @@ import { Community } from "./pages/Community";
 import { Notifications } from "./pages/Notifications";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { AdminPage } from "./pages/admin/AdminPage";
-import { InstructorRequestForm } from "./pages/InstructorRequestForm";
+import { InstructorRequestForm } from "./pages/instructor/InstructorRequestForm";
 import UserDetails from "./components/UserDetails";
 import CreateCourse from "./pages/CreateCourse";
 import DynamicLessonRenderer from "./components/DynamicLessonRenderer";
 import { PlaceToStartCourse } from "./components/PlaceToStartCourse";
 import TierUpgradePage from './pages/instructor/TierUpgradePage'
+import ProtectedRoute from "./models/ProtectedRoute";
+import Unauthorized from "./pages/Unauthorized";
+import Forbidden from "./pages/Forbidden";
 
 export function Router() {
   return (
@@ -90,10 +93,16 @@ export function Router() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/contact/:userId" element={<Contact />} />
-          <Route path="/homepage/:id" element={<Homepage />} />
+          <Route path="/contact/:userId" element={<ProtectedRoute>
+            <Contact />
+          </ProtectedRoute>} />
+          <Route path="/homepage/:id" element={<ProtectedRoute>
+            <Homepage />
+          </ProtectedRoute>} />
           <Route path="/homepage" element={<Homepage />} />
-          <Route path="/changeSettings/:id" element={<PersonalInformationPage />} />
+          <Route path="/changeSettings/:id" element={<ProtectedRoute>
+            <PersonalInformationPage />
+          </ProtectedRoute>} />
           <Route path="/webDevelopment" element={<WebDevelopmentPage />} />
           <Route path="/gameDevelopment" element={<GameDevelopmentPage />} />
           <Route path="/databaseManagment" element={<DatabaseManagment />} />
@@ -101,7 +110,9 @@ export function Router() {
           <Route path="/instructions" element={<InstructionsPage />} />
           <Route path="/tutorials" element={<Tutorials />} />
           <Route path="/courses" element={<Courses />} />
-          <Route path="/myCourses/:id" element={<MyCourses />} />
+          <Route path="/myCourses/:id" element={<ProtectedRoute>
+            <MyCourses />
+          </ProtectedRoute>} />
           <Route path="/beginnerWebCourse" element={<BeginnerWebCourse />} />
           <Route path="/intermediateWebCourse" element={<IntermediateWebCourse />} />
           <Route path="/advancedWebCourse" element={<AdvancedWebCourse />} />
@@ -114,61 +125,164 @@ export function Router() {
           <Route path="/beginnerProblemSolvingCourse" element={<BeginnerProblemSolvingCourse />} />
           <Route path="/intermediateProblemSolvingCourse" element={<IntermediateProblemSolvingCourse />} />
           <Route path="/advancedProblemSolvingCourse" element={<AdvancedProblemSolvingCourse />} />
-          <Route path="/simpleFrontendApplication" element={<SimpleFrontendApplication />} />
-          <Route path="/change-personal-info/:id" element={<PersonalInformationPage />} />
-          <Route path="/accountInformation/:userId" element={<AccountInformation />} />
+          <Route path="/simpleFrontendApplication" element={<ProtectedRoute>
+            <SimpleFrontendApplication />
+          </ProtectedRoute>} />
+          <Route path="/change-personal-info/:id" element={<ProtectedRoute>
+            <PersonalInformationPage />
+          </ProtectedRoute>} />
+          <Route path="/accountInformation/:userId" element={<ProtectedRoute>
+            <AccountInformation />
+          </ProtectedRoute>} />
           <Route path="/help" element={<Help />} />
           <Route path="/about" element={<About />} />
-          <Route path="/beginnerWebDevelopmentQuiz" element={<BeginnerWebDevelopmentQuiz />} />
-          <Route path="/beginnerWebCourse/:userId" element={<MainPageBeginnerWebCourse />} />
-          <Route path="/course/:courseId/lesson/:lessonId" element={<PrivateRoute><Lesson1 /></PrivateRoute>} />
-          <Route path="/course/:courseId/lesson/2" element={<Lesson2 />} />
-          <Route path="/course/:courseId/lesson/3" element={<Lesson3 />} />
-          <Route path="/course/:courseId/lesson/4" element={<Lesson4 />} />
-          <Route path="/course/:courseId/lesson/5" element={<Lesson5 />} />
-          <Route path="/course/:courseId/lesson/6" element={<Lesson6 />} />
-          <Route path="/course/:courseId/lesson/7" element={<Lesson7 />} />
-          <Route path="/course/:courseId/lesson/8" element={<Lesson8 />} />
-          <Route path="/course/:courseId/lesson/9" element={<Lesson9 />} />
-          <Route path="/course/:courseId/lesson/10" element={<Lesson10 />} />
-          <Route path="/showCase1/lesson2" element={<ShowCase1 />} />
-          <Route path="/showCase2/lesson2" element={<ShowCase2 />} />
-          <Route path="/showCase3/lesson2" element={<ShowCase3 />} />
-          <Route path="/showCase4/lesson2" element={<ShowCase4 />} />
-          <Route path="/showCase1Lesson3/lesson3" element={<ShowCase1Lesson3 />} />
-          <Route path="/showCase2Lesson3/lesson3" element={<ShowCase2Lesson3 />} />
-          <Route path="/showCase3Lesson3/lesson3" element={<ShowCase3Lesson3 />} />
-          <Route path="/showCase4Lesson3/lesson3" element={<ShowCase4Lesson3 />} />
-          <Route path="/showCase1Lesson4/lesson4" element={<ShowCase1Lesson4 />} />
-          <Route path="/showCase2Lesson4/lesson4" element={<ShowCase2Lesson4 />} />
-          <Route path="/showCase3Lesson4/lesson4" element={<ShowCase3Lesson4 />} />
-          <Route path="/showCase4Lesson4/lesson4" element={<ShowCase4Lesson4 />} />
-          <Route path="/showCase5Lesson4/lesson4" element={<ShowCase5Lesson4 />} />
-          <Route path="/showCase1Lesson5/lesson5" element={<ShowCase1Lesson5 />} />
-          <Route path="/showCase2Lesson5/lesson5" element={<ShowCase2Lesson5 />} />
-          <Route path="/showCase3Lesson5/lesson5" element={<ShowCase3Lesson5 />} />
-          <Route path="/showCase4Lesson5/lesson5" element={<ShowCase4Lesson5 />} />
-          <Route path="/showCase5Lesson5/lesson5" element={<ShowCase5Lesson5 />} />
-          <Route path="/showCase6Lesson5/lesson5" element={<ShowCase6Lesson5 />} />
-          <Route path="/showCase7Lesson5/lesson5" element={<ShowCase7Lesson5 />} />
-          <Route path="/beginnerWebCourse/project/portfolio" element={<Lesson7PortfolioExample />} />
-          <Route path="/beginnerWebTutorial/lesson/1" element={<BeginnerWebTutorialLesson1 />} />
-          <Route path="/beginnerWebTutorial/lesson/2" element={<BeginnerWebTutorialLesson2 />} />
-          <Route path="/beginnerWebTutorial/lesson/3" element={<BeginnerWebTutorialLesson3 />} />
-          <Route path="/beginnerWebTutorial/lesson/4" element={<BeginnerWebTutorialLesson4 />} />
-          <Route path="/beginnerWebTutorial/lesson/5" element={<BeginnerWebTutorialLesson5 />} />
-          <Route path="/course/:courseId/lesson/finish" element={<FinishCourse />} />
-          <Route path="/request-instructor" element={<InstructorRequestForm />} />
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="/adminPage" element={<AdminPage />} />
-          <Route path="/admin/users/:userId" element={<UserDetails />} />
-          <Route path="/community/:userId" element={<Community />} />
-          <Route path="/notifications/:userId" element={<Notifications />} />
-          <Route path="/create-course" element={<CreateCourse />} />
-          <Route path="/dynamic-course/:courseId/lesson/:lessonId" element={<DynamicLessonRenderer />} />
-          <Route path="/placetostartcourse/" element={<PlaceToStartCourse />} />
-          <Route path="/upgrade-account-tier" element={<TierUpgradePage />} />
+          <Route path="/beginnerWebDevelopmentQuiz" element={<ProtectedRoute>
+            <BeginnerWebDevelopmentQuiz />
+          </ProtectedRoute>} />
+          <Route path="/beginnerWebCourse/:userId" element={<ProtectedRoute>
+            <MainPageBeginnerWebCourse />
+          </ProtectedRoute>} />
+          <Route path="/course/:courseId/lesson/:lessonId" element={<ProtectedRoute><Lesson1 /></ProtectedRoute>} />
+          <Route path="/course/:courseId/lesson/2" element={<ProtectedRoute>
+            <Lesson2 />
+          </ProtectedRoute>} />
+          <Route path="/course/:courseId/lesson/3" element={<ProtectedRoute>
+            <Lesson3 />
+          </ProtectedRoute>} />
+          <Route path="/course/:courseId/lesson/4" element={<ProtectedRoute>
+            <Lesson4 />
+          </ProtectedRoute>} />
+          <Route path="/course/:courseId/lesson/5" element={<ProtectedRoute>
+            <Lesson5 />
+          </ProtectedRoute>} />
+          <Route path="/course/:courseId/lesson/6" element={<ProtectedRoute>
+            <Lesson6 />
+          </ProtectedRoute>} />
+          <Route path="/course/:courseId/lesson/7" element={<ProtectedRoute>
+            <Lesson7 />
+          </ProtectedRoute>} />
+          <Route path="/course/:courseId/lesson/8" element={<ProtectedRoute>
+            <Lesson8 />
+          </ProtectedRoute>} />
+          <Route path="/course/:courseId/lesson/9" element={<ProtectedRoute>
+            <Lesson9 />
+          </ProtectedRoute>} />
+          <Route path="/course/:courseId/lesson/10" element={<ProtectedRoute>
+            <Lesson10 />
+          </ProtectedRoute>} />
+          <Route path="/showCase1/lesson2" element={<ProtectedRoute>
+            <ShowCase1 />
+          </ProtectedRoute>} />
+          <Route path="/showCase2/lesson2" element={<ProtectedRoute>
+            <ShowCase2 />
+          </ProtectedRoute>} />
+          <Route path="/showCase3/lesson2" element={<ProtectedRoute>
+            <ShowCase3 />
+          </ProtectedRoute>} />
+          <Route path="/showCase4/lesson2" element={<ProtectedRoute>
+            <ShowCase4 />
+          </ProtectedRoute>} />
+          <Route path="/showCase1Lesson3/lesson3" element={<ProtectedRoute>
+            <ShowCase1Lesson3 />
+          </ProtectedRoute>} />
+          <Route path="/showCase2Lesson3/lesson3" element={<ProtectedRoute>
+            <ShowCase2Lesson3 />
+          </ProtectedRoute>} />
+          <Route path="/showCase3Lesson3/lesson3" element={<ProtectedRoute>
+            <ShowCase3Lesson3 />
+          </ProtectedRoute>} />
+          <Route path="/showCase4Lesson3/lesson3" element={<ProtectedRoute>
+            <ShowCase4Lesson3 />
+          </ProtectedRoute>} />
+          <Route path="/showCase1Lesson4/lesson4" element={<ProtectedRoute>
+            <ShowCase1Lesson4 />
+          </ProtectedRoute>} />
+          <Route path="/showCase2Lesson4/lesson4" element={<ProtectedRoute>
+            <ShowCase2Lesson4 />
+          </ProtectedRoute>} />
+          <Route path="/showCase3Lesson4/lesson4" element={<ProtectedRoute>
+            <ShowCase3Lesson4 />
+          </ProtectedRoute>} />
+          <Route path="/showCase4Lesson4/lesson4" element={<ProtectedRoute>
+            <ShowCase4Lesson4 />
+          </ProtectedRoute>} />
+          <Route path="/showCase5Lesson4/lesson4" element={<ProtectedRoute>
+            <ShowCase5Lesson4 />
+          </ProtectedRoute>} />
+          <Route path="/showCase1Lesson5/lesson5" element={<ProtectedRoute>
+            <ShowCase1Lesson5 />
+          </ProtectedRoute>} />
+          <Route path="/showCase2Lesson5/lesson5" element={<ProtectedRoute>
+            <ShowCase2Lesson5 />
+          </ProtectedRoute>} />
+          <Route path="/showCase3Lesson5/lesson5" element={<ProtectedRoute>
+            <ShowCase3Lesson5 />
+          </ProtectedRoute>} />
+          <Route path="/showCase4Lesson5/lesson5" element={<ProtectedRoute>
+            <ShowCase4Lesson5 />
+          </ProtectedRoute>} />
+          <Route path="/showCase5Lesson5/lesson5" element={<ProtectedRoute>
+            <ShowCase5Lesson5 />
+          </ProtectedRoute>} />
+          <Route path="/showCase6Lesson5/lesson5" element={<ProtectedRoute>
+            <ShowCase6Lesson5 />
+          </ProtectedRoute>} />
+          <Route path="/showCase7Lesson5/lesson5" element={<ProtectedRoute>
+            <ShowCase7Lesson5 />
+          </ProtectedRoute>} />
+          <Route path="/beginnerWebCourse/:courseId/project/portfolio" element={<ProtectedRoute>
+            <Lesson7PortfolioExample />
+          </ProtectedRoute>} />
+          <Route path="/beginnerWebTutorial/lesson/1" element={
+            <BeginnerWebTutorialLesson1 />
+          } />
+          <Route path="/beginnerWebTutorial/lesson/2" element={
+            <BeginnerWebTutorialLesson2 />
+          } />
+          <Route path="/beginnerWebTutorial/lesson/3" element={
+            <BeginnerWebTutorialLesson3 />
+          } />
+          <Route path="/beginnerWebTutorial/lesson/4" element={
+            <BeginnerWebTutorialLesson4 />
+          } />
+          <Route path="/beginnerWebTutorial/lesson/5" element={
+            <BeginnerWebTutorialLesson5 />} />
+          <Route path="/course/:courseId/lesson/finish" element={<ProtectedRoute>
+            <FinishCourse />
+          </ProtectedRoute>} />
+          <Route path="/request-instructor" element={<ProtectedRoute>
+            <InstructorRequestForm />
+          </ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute requiredRoles={['ADMIN']}>
+            <AdminPage />
+          </ProtectedRoute>} />
+          <Route path="/adminPage" element={<ProtectedRoute requiredRoles={['ADMIN']}>
+            <AdminPage />
+          </ProtectedRoute>} />
+          <Route path="/admin/users/:userId" element={<ProtectedRoute requiredRoles={['ADMIN']}>
+            <UserDetails />
+          </ProtectedRoute>} />
+          <Route path="/community/:userId" element={<ProtectedRoute>
+            <Community />
+          </ProtectedRoute>} />
+          <Route path="/notifications/:userId" element={<ProtectedRoute>
+            <Notifications />
+          </ProtectedRoute>} />
+          <Route path="/create-course" element={<ProtectedRoute>
+            <CreateCourse />
+          </ProtectedRoute>} />
+          <Route path="/dynamic-course/:courseId/lesson/:lessonId" element={<ProtectedRoute>
+            <DynamicLessonRenderer />
+          </ProtectedRoute>} />
+          <Route path="/placetostartcourse/" element={<ProtectedRoute>
+            <PlaceToStartCourse />
+          </ProtectedRoute>} />
+          <Route path="/upgrade-account-tier" element={<ProtectedRoute>
+            <TierUpgradePage />
+          </ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="/forbidden" element={<Forbidden />} />
         </Routes>
       </div>
     </BrowserRouter>

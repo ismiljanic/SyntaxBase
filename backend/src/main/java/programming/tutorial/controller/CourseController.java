@@ -74,6 +74,7 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
     @GetMapping("/user/{auth0UserId}")
     public ResponseEntity<List<CourseDTO>> getCoursesForUser(@PathVariable String auth0UserId) {
         List<CourseDTO> courses = courseService.getCoursesByUserAuth0Id(auth0UserId);

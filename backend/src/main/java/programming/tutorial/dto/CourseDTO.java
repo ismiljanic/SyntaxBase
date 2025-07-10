@@ -34,6 +34,7 @@ public class CourseDTO {
         this.description = description;
         this.category = category;
         this.creatorId = String.valueOf(id1);
+        this.systemCourse = systemCourse;
     }
 
     public Integer getCourseId() {
