@@ -83,6 +83,9 @@ import TierUpgradePage from './pages/instructor/TierUpgradePage'
 import ProtectedRoute from "./models/ProtectedRoute";
 import Unauthorized from "./pages/Unauthorized";
 import Forbidden from "./pages/Forbidden";
+import Canceled from "./components/Canceled";
+import Success from "./components/Success";
+import Cancel from "./components/Canceled";
 
 export function Router() {
   return (
@@ -279,6 +282,12 @@ export function Router() {
           </ProtectedRoute>} />
           <Route path="/upgrade-account-tier" element={<ProtectedRoute>
             <TierUpgradePage />
+          </ProtectedRoute>} />
+          <Route path="/success" element={<ProtectedRoute>
+            <Success />
+          </ProtectedRoute>} />
+          <Route path="/cancel" element={<ProtectedRoute>
+            <Cancel />
           </ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
           <Route path="/unauthorized" element={<Unauthorized />} />

@@ -1,9 +1,10 @@
 package programming.tutorial.services;
 
+import org.springframework.stereotype.Service;
 import programming.tutorial.domain.Post;
 import programming.tutorial.dto.PostDTO;
 import java.util.List;
-
+@Service
 public interface PostService {
     List<PostDTO> getAllPosts();
     Post createPost(Post post);

@@ -7,9 +7,9 @@ type Tier = "Free" | "Professional" | "Ultimate";
 
 const TierUpgrade: React.FC<{ currentTier: Tier; onUpgrade: (newTier: Tier) => void }> = ({ currentTier, onUpgrade }) => {
     const [loading, setLoading] = useState(false);
-    const { getAccessTokenSilently } = useAuth0();
     const [error, setError] = useState<string | null>(null);
     const [modalMessage, setModalMessage] = useState<string | null>(null);
+    const { getAccessTokenSilently, user } = useAuth0();
 
     const tiers: Tier[] = ["Free", "Professional", "Ultimate"];
 
@@ -42,6 +42,41 @@ const TierUpgrade: React.FC<{ currentTier: Tier; onUpgrade: (newTier: Tier) => v
         }
     };
 
+    const purchase = async (tier: Tier) => {
+        try {
+            const token = await getAccessTokenSilently();
+
+            const auth0Id = user?.sub;
+
+            if (!auth0Id) {
+                setError("Unable to retrieve Auth0 ID.");
+                return;
+            }
+
+            const response = await fetch('http://localhost:8080/api/checkout/create-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ tier, auth0Id }),
+            });
+
+            const data = await response.json();
+
+            if (data.url) {
+                window.location.href = data.url;
+            } else {
+                setError("Stripe session creation failed.");
+            }
+
+        } catch (err) {
+            console.error("Stripe session creation failed", err);
+            setError("Unable to initiate payment.");
+        }
+    };
+
+
     return (
         <div>
             <div className="tier-buttons">
@@ -51,7 +86,13 @@ const TierUpgrade: React.FC<{ currentTier: Tier; onUpgrade: (newTier: Tier) => v
                         <button
                             key={tier}
                             disabled={loading || isCurrent}
-                            onClick={() => handleUpgrade(tier)}
+                            onClick={() => {
+                                if (tier === "Free") {
+                                    handleUpgrade(tier);
+                                } else {
+                                    purchase(tier);
+                                }
+                            }}
                             className={`tier-button ${isCurrent ? 'current-tier' : ''}`}
                         >
                             {isCurrent && <span className="tier-badge">Current Plan</span>}

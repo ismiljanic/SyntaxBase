@@ -1,12 +1,13 @@
 package programming.tutorial.services;
 
+import org.springframework.stereotype.Service;
 import programming.tutorial.domain.UserCourse;
 import programming.tutorial.dto.CourseDTO;
 import programming.tutorial.dto.StartCourseRequest;
 import programming.tutorial.dto.UserCourseDTO;
 
 import java.util.List;
-
+@Service
 public interface UserCourseService {
     void enrollUserInCourse(UserCourseDTO userCourseDTO);
 

@@ -1,0 +1,5 @@
+1) Terminal: ngrok http 8080
+2) Forwarding https://... -> http://localhost:8080
+3) copy paste https://... u webhooks u stripe
+4) dobijes: stripe.webhook.secret=whsec_//
+5) stavi u application.properties

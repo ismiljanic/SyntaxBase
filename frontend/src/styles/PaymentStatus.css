@@ -1,0 +1,34 @@
+.payment-container {
+    max-width: 480px;
+    margin: 4rem auto;
+    padding: 2rem 2.5rem;
+    border: 1px solid #ddd;
+    margin-bottom: 10em;
+    margin-top: 10em;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.payment-container h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
+    color: #2d3748;
+}
+
+.payment-container p {
+    font-size: 1.1rem;
+    color: #4a5568;
+}
+
+.success {
+    background-color: #ffffff;
+    color: #276749;
+}
+
+.cancel {
+    background-color: #ffffff;
+    color: #742a2a;
+}
