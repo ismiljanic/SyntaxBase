@@ -7,5 +7,6 @@ public interface EmailService {
     void sendContactEmail(ContactForm contactForm);
     void sendApprovalEmail(String toEmail, String name);
     void sendRoleChangeNotification(String toEmail, String newRole, String name);
+    void sendCourseInviteEmail(String toEmail, String inviterName, String courseName, String inviteLink);
 
 }

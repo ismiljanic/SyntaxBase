@@ -10,10 +10,7 @@ import programming.tutorial.dto.CourseDTO;
 import programming.tutorial.dto.CourseWithLessonsDTO;
 import programming.tutorial.services.CourseService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,46 +64,59 @@ public class CourseServiceJpa implements CourseService {
     }
 
     @Override
-    public void createCourseWithLessons(CourseWithLessonsDTO dto) {
+    public Course createCourseWithLessons(CourseWithLessonsDTO dto) {
         User creator = userRepository.findByAuth0UserId(dto.getAuth0UserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found for Auth0 ID: " + dto.getAuth0UserId()));
 
-        int requestedLessonCount = getRequestedLessonCount(dto, creator);
+        List<String> lessonTitles = dto.getLessons();
 
-        Course course = new Course(dto.getCourseName(), dto.getCourseLength(), dto.getDescription(), dto.getCategory(), creator, false);
-        course = courseRepository.save(course);
+        if (lessonTitles == null || lessonTitles.isEmpty()) {
+            throw new IllegalArgumentException("Lesson titles are required");
+        }
 
-        boolean isFreeUser = creator.getTier().equals(Tier.FREE);
+        int maxAllowed = getMaxLessonsByTier(creator.getTier());
+        if (lessonTitles.size() > maxAllowed) {
+            throw new IllegalArgumentException("Too many lessons for user tier: " + creator.getTier());
+        }
 
-        List<Lesson> lessons = getDefaultLessons(course, isFreeUser);
-        lessonRepository.saveAll(lessons);
-    }
+        UUID inviteToken = dto.getInviteToken() != null
+                ? dto.getInviteToken()
+                : UUID.randomUUID();
 
-    private List<Lesson> getDefaultLessons(Course course, boolean isFreeUser) {
-        List<String> titles = List.of("Introduction", "Basic Concepts", "Getting Started", "Common Pitfalls", "Summary & Next Steps");
-        List<String> contents = List.of(
-                "Welcome to this course!",
-                "Let's cover some fundamentals.",
-                "Getting your environment ready.",
-                "Things to avoid early on.",
-                "Summary and what's next."
+        Course course = new Course(
+                dto.getCourseName(),
+                dto.getCourseLength(),
+                dto.getDescription(),
+                dto.getCategory(),
+                creator,
+                false,
+                inviteToken
         );
 
-        int limit = isFreeUser ? 5 : titles.size();
+
+        course = courseRepository.save(course);
 
         List<Lesson> lessons = new ArrayList<>();
-        for (int i = 0; i < limit; i++) {
+        for (String title : lessonTitles) {
             Lesson lesson = new Lesson();
-            lesson.setLessonName(titles.get(i));
-            lesson.setContent(contents.get(i));
+            lesson.setLessonName(title);
+            lesson.setContent("Placeholder content");
             lesson.setEditable(true);
             lesson.setCourse(course);
             lessons.add(lesson);
         }
 
-        return lessons;
+        lessonRepository.saveAll(lessons);
+        return course;
     }
 
+    private int getMaxLessonsByTier(Tier tier) {
+        return switch (tier) {
+            case FREE -> 5;
+            case PROFESSIONAL -> 15;
+            case ULTIMATE -> Integer.MAX_VALUE;
+        };
+    }
 
     private static int getRequestedLessonCount(CourseWithLessonsDTO dto, User creator) {
         if (creator.getRole() != Role.INSTRUCTOR) {

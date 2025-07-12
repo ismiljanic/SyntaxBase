@@ -11,6 +11,7 @@ import programming.tutorial.dto.CourseWithLessonsDTO;
 import programming.tutorial.services.CourseService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -68,12 +69,14 @@ public class CourseController {
     @PostMapping("/create-with-lessons")
     public ResponseEntity<?> createCourseWithLessons(@RequestBody CourseWithLessonsDTO dto) {
         try {
-            courseService.createCourseWithLessons(dto);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Course and lessons created");
+            Course course = courseService.createCourseWithLessons(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("inviteToken", course.getInviteToken()));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+
 
     @GetMapping("/user/{auth0UserId}")
     public ResponseEntity<List<CourseDTO>> getCoursesForUser(@PathVariable String auth0UserId) {

@@ -1,6 +1,7 @@
 package programming.tutorial.dto;
 
 import java.util.List;
+import java.util.UUID;
 
 public class CourseWithLessonsDTO {
     private String courseName;
@@ -9,9 +10,8 @@ public class CourseWithLessonsDTO {
     private String category;
     private String auth0UserId;
     private List<String> lessons;
-
     private boolean systemCourse;
-
+    private UUID inviteToken;
 
     public String getCourseName() {
         return courseName;
@@ -67,5 +67,13 @@ public class CourseWithLessonsDTO {
 
     public void setSystemCourse(boolean systemCourse) {
         this.systemCourse = systemCourse;
+    }
+
+    public UUID getInviteToken() {
+        return inviteToken;
+    }
+
+    public void setInviteToken(UUID inviteToken) {
+        this.inviteToken = inviteToken;
     }
 }

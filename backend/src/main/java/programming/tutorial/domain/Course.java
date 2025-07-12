@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "courses")
@@ -27,17 +28,20 @@ public class Course {
 
     @Column(name = "system_course")
     private boolean systemCourse;
+    @Column(name = "invite_token", unique = true, updatable = false)
+    private UUID inviteToken = UUID.randomUUID();
 
     public Course() {
     }
 
-    public Course(String name, int length, String description, String category, User creator, boolean systemCourse) {
+    public Course(String name, int length, String description, String category, User creator, boolean systemCourse, UUID inviteToken) {
         this.courseName = name;
         this.length = length;
         this.description = description;
         this.category = category;
         this.creator = creator;
         this.systemCourse = systemCourse;
+        this.inviteToken = inviteToken;
     }
 
 
@@ -103,6 +107,14 @@ public class Course {
 
     public void setSystemCourse(boolean systemCourse) {
         this.systemCourse = systemCourse;
+    }
+
+    public UUID getInviteToken() {
+        return inviteToken;
+    }
+
+    public void setInviteToken(UUID inviteToken) {
+        this.inviteToken = inviteToken;
     }
 
     @Override

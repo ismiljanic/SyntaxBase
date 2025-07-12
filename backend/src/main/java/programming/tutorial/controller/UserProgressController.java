@@ -12,6 +12,8 @@ import programming.tutorial.services.CourseService;
 import programming.tutorial.services.LessonService;
 import programming.tutorial.services.UserProgressService;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/progress")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
@@ -160,17 +162,13 @@ public class UserProgressController {
     }
 
     @GetMapping("/isEnrolled")
-    public ResponseEntity<Boolean> isEnrolled(
+    public ResponseEntity<Map<String, Boolean>> isEnrolled(
             @RequestParam Integer courseId,
             Authentication authentication) {
 
         String userId = extractUserId(authentication);
         boolean enrolled = userProgressService.isUserEnrolled(userId, courseId);
-        if (!enrolled) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(false);
-        }
-        return ResponseEntity.ok(true);
+
+        return ResponseEntity.ok(Map.of("enrolled", enrolled));
     }
-
-
 }

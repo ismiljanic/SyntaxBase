@@ -86,6 +86,8 @@ import Forbidden from "./pages/Forbidden";
 import Canceled from "./components/Canceled";
 import Success from "./components/Success";
 import Cancel from "./components/Canceled";
+import InviteHandler from "./components/InviteHandler";
+import AcceptInvite from "./components/AcceptInvite";
 
 export function Router() {
   return (
@@ -289,6 +291,11 @@ export function Router() {
           <Route path="/cancel" element={<ProtectedRoute>
             <Cancel />
           </ProtectedRoute>} />
+          <Route path="/invite/:token" element={<ProtectedRoute>
+            <InviteHandler />
+          </ProtectedRoute>} />
+          <Route path="/accept-invite" element={
+             <AcceptInvite /> } />
           <Route path="*" element={<NotFound />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/forbidden" element={<Forbidden />} />

@@ -20,7 +20,7 @@ public interface CourseService {
 
     List<CourseDTO> getAllCourses();
 
-    void createCourseWithLessons(CourseWithLessonsDTO dto);
+    Course createCourseWithLessons(CourseWithLessonsDTO dto);
 
     List<CourseDTO> getCoursesByUserAuth0Id(String auth0UserId);
 

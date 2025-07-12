@@ -78,6 +78,8 @@ const CreateCourse: React.FC = () => {
     const [modalMessage, setModalMessage] = useState<string | null>(null);
     const navigate = useNavigate();
     const [role, setRole] = useState<string | null>(null);
+    const [inviteToken, setInviteToken] = useState<string | null>(null);
+    const [inviteLink, setInviteLink] = useState<string | null>(null);
 
     useEffect(() => {
         if (!user) {
@@ -145,7 +147,7 @@ const CreateCourse: React.FC = () => {
         };
 
         if (userTier && tierHierarchy[userTier] < tierHierarchy[selected.tier]) {
-            setModalMessage(`Your tier (${userTier}) does not permit creating courses of the ${selected.tier} tier.`);
+            setModalMessage(`Your tier (${userTier}) does not permit creating cour ses of the ${selected.tier} tier.`);
             setLoading(false);
             return;
         }
@@ -174,8 +176,12 @@ const CreateCourse: React.FC = () => {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
+            }).then((response) => {
+                const tokenFromBackend = response.data.inviteToken;
+                setInviteToken(tokenFromBackend);
+                setInviteLink(`http://localhost:8080/invite/${tokenFromBackend}`);
+                setModalMessage(`Course created successfully! Invite link: http://localhost:8080/invite/${tokenFromBackend}`);
             });
-
             setModalMessage("Course successfully created!");
             setSelected(null);
         } catch (error: any) {
@@ -272,6 +278,14 @@ const CreateCourse: React.FC = () => {
                             <p>{modalMessage}</p>
                             <button onClick={() => setModalMessage(null)}>Close</button>
                         </div>
+                    </div>
+                )}
+                {modalMessage && inviteToken && (
+                    <div>
+                        <p>Invite Link: <code>{inviteLink}</code></p>
+                        <button onClick={() => inviteLink && navigator.clipboard.writeText(inviteLink)}>
+                            Copy Invite Link
+                        </button>
                     </div>
                 )}
             </div>

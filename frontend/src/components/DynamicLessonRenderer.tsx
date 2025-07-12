@@ -30,6 +30,7 @@ const DynamicLessonRenderer = () => {
     const navigate = useNavigate();
     const { user, getAccessTokenSilently } = useAuth0();
     const [role, setRole] = useState<string | null>(null);
+    const [enrolled, setEnrolled] = useState<boolean>(false);
 
     useEffect(() => {
         if (!user) {
@@ -56,10 +57,38 @@ const DynamicLessonRenderer = () => {
     }, [user, getAccessTokenSilently, navigate]);
 
     useEffect(() => {
-        if (role && role !== 'INSTRUCTOR') {
-            navigate('/forbidden');
+        if (!user) {
+            navigate('/login');
+            return;
         }
-    }, [role, navigate]);
+
+        const checkAccess = async () => {
+            try {
+                const token = await getAccessTokenSilently();
+                const roleRes = await axios.get(`http://localhost:8080/api/users/role/${user.sub}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                const userRole = roleRes.data.role;
+
+                const response = await axios.get(`http://localhost:8080/api/progress/isEnrolled?courseId=${courseId}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                const isEnrolled = response.data.enrolled;
+                if (!isEnrolled && userRole !== 'INSTRUCTOR') {
+                    navigate('/forbidden');
+                } else {
+                    setRole(userRole);
+                    setEnrolled(isEnrolled);
+                }
+            } catch (error) {
+                console.error("Access check failed", error);
+                navigate('/error');
+            }
+        };
+
+        checkAccess();
+    }, [user, getAccessTokenSilently, navigate, courseId]);
 
 
     useEffect(() => {

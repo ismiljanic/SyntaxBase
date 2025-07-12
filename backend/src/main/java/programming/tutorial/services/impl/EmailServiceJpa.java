@@ -55,4 +55,18 @@ public class EmailServiceJpa implements EmailService {
         emailSender.send(message);
     }
 
+    @Override
+    public void sendCourseInviteEmail(String toEmail, String inviterName, String courseName, String inviteLink) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("You're invited to join the course: " + courseName);
+        message.setText("Hello,\n\n" +
+                inviterName + " has invited you to join the course \"" + courseName + "\".\n" +
+                "Click the link below to accept the invitation and enroll:\n" +
+                inviteLink + "\n\n" +
+                "This link expires in 7 days.\n\n" +
+                "Best regards,\nSyntaxBase Team");
+        emailSender.send(message);
+    }
+
 }
