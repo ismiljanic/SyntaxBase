@@ -1,15 +1,27 @@
 package programming.tutorial.services.impl;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.ContactForm;
+import programming.tutorial.domain.User;
 import programming.tutorial.services.EmailService;
+
+import java.io.File;
 
 @Service
 public class EmailServiceJpa implements EmailService {
 
     private final JavaMailSender emailSender;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public EmailServiceJpa(JavaMailSender emailSender) {
         this.emailSender = emailSender;
@@ -69,4 +81,26 @@ public class EmailServiceJpa implements EmailService {
         emailSender.send(message);
     }
 
+    @Override
+    public void sendCertificate(String username, String filePath) {
+        User user = userRepository.findByUsername(username);
+
+        try {
+            MimeMessage message = emailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            helper.setTo(user.getUsername());
+            helper.setSubject("Your Course Completion Certificate");
+            helper.setText("Dear " + user.getName() + ",\n\nCongratulations on completing the course! Your certificate is attached.\n\nBest regards,\n SyntaxBase Team");
+
+            FileSystemResource file = new FileSystemResource(new File(filePath));
+            helper.addAttachment("certificate.pdf", file);
+
+            emailSender.send(message);
+
+            System.out.println("Certificate sent to " + user.getUsername());
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send certificate email", e);
+        }
+    }
 }

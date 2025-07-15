@@ -36,9 +36,9 @@ const AcceptInvite = () => {
                 }
 
                 const data = await res.json();
-                const { courseId, lessonId } = data;
+                const { courseId, lessonNumber } = data;
 
-                navigate(`/dynamic-course/${courseId}/lesson/${lessonId}`);
+                navigate(`/dynamic-course/${courseId}/lesson/${lessonNumber}`);
             } catch (error) {
                 console.error('Invite error:', error);
                 alert('Invalid or expired invite link.');

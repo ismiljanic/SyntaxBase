@@ -3,7 +3,6 @@ package programming.tutorial.dto;
 public class StartCourseRequest {
     public String auth0UserId;
     public Integer courseId;
-
     public String getAuth0UserId() {
         return auth0UserId;
     }

@@ -1,20 +1,32 @@
 package programming.tutorial.dto;
 
+import programming.tutorial.domain.Lesson;
+
 public class LessonDTO {
     private Integer id;
     private String lessonName;
     private Integer courseId;
     private Integer userId;
-    private String completed;
+    private boolean completed;
     private String content;
     private boolean editable;
     private boolean isFirst;
     private boolean isLast;
+    private Integer lessonNumber;
 
     public LessonDTO() {
     }
 
-    public LessonDTO(Integer id, String lessonName, Integer courseId, Integer userId, String completed) {
+    public LessonDTO(Integer id, String lessonName, Integer courseId, Integer userId, boolean editable, boolean completed) {
+        this.id = id;
+        this.lessonName = lessonName;
+        this.courseId = courseId;
+        this.userId = userId;
+        this.editable = editable;
+        this.completed = completed;
+    }
+
+    public LessonDTO(Integer id, String lessonName, Integer courseId, Integer userId, boolean completed) {
         this.id = id;
         this.lessonName = lessonName;
         this.courseId = courseId;
@@ -60,11 +72,11 @@ public class LessonDTO {
         this.userId = userId;
     }
 
-    public String getCompleted() {
+    public boolean getCompleted() {
         return completed;
     }
 
-    public void setCompleted(String completed) {
+    public void setCompleted(boolean completed) {
         this.completed = completed;
     }
 
@@ -98,5 +110,30 @@ public class LessonDTO {
 
     public void setLast(boolean isLast) {
         this.isLast = isLast;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public Integer getLessonNumber() {
+        return lessonNumber;
+    }
+
+    public void setLessonNumber(Integer lessonNumber) {
+        this.lessonNumber = lessonNumber;
+    }
+
+    public static LessonDTO fromEntity(Lesson lesson) {
+        LessonDTO dto = new LessonDTO();
+        dto.setId(lesson.getId());
+        dto.setLessonName(lesson.getLessonName());
+        dto.setCourseId(lesson.getCourse().getId());
+        dto.setUserId(lesson.getUser().getId());
+        dto.setCompleted(lesson.isCompleted());
+        dto.setContent(lesson.getContent());
+        dto.setEditable(lesson.isEditable());
+        dto.setLessonNumber(lesson.getLessonNumber());
+        return dto;
     }
 }

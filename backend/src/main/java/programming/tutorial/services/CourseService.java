@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import programming.tutorial.domain.Course;
 import programming.tutorial.dto.CourseDTO;
 import programming.tutorial.dto.CourseWithLessonsDTO;
+import programming.tutorial.dto.LessonDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,4 +26,6 @@ public interface CourseService {
     List<CourseDTO> getCoursesByUserAuth0Id(String auth0UserId);
 
     boolean isCourseOwner(String userId, Integer courseId);
+
+    List<LessonDTO> getLessonsForCourse(Integer courseId);
 }

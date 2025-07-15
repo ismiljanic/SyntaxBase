@@ -32,16 +32,6 @@ import { AdvancedProblemSolvingCourse } from "./pages/problemSolvingCourses/Adva
 import { SimpleFrontendApplication } from "./pages/webCourses/BeginnerWebCourse/pages/SimpleFrontendApplication";
 import { AccountInformation } from "./pages/AccountInformation";
 import { MainPageBeginnerWebCourse } from "./pages/webCourses/BeginnerWebCourse/MainPageBeginnerWebCourse/MainPageBeginnerWebCourse";
-import { Lesson1 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson1";
-import { Lesson2 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson2";
-import { Lesson3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson3";
-import { Lesson4 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson4";
-import { Lesson5 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson5";
-import { Lesson6 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson6";
-import { Lesson7 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson7";
-import { Lesson8 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson8";
-import { Lesson9 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson9";
-import { Lesson10 } from "./pages/webCourses/BeginnerWebCourse/Lessons/Lesson10";
 import { ShowCase1 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase1";
 import { ShowCase2 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase2";
 import { ShowCase3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase3";
@@ -88,6 +78,7 @@ import Success from "./components/Success";
 import Cancel from "./components/Canceled";
 import InviteHandler from "./components/InviteHandler";
 import AcceptInvite from "./components/AcceptInvite";
+import { LessonLoader } from "./components/LessonLoader";
 
 export function Router() {
   return (
@@ -144,37 +135,7 @@ export function Router() {
           <Route path="/beginnerWebDevelopmentQuiz" element={<ProtectedRoute>
             <BeginnerWebDevelopmentQuiz />
           </ProtectedRoute>} />
-          <Route path="/beginnerWebCourse/:userId" element={<ProtectedRoute>
-            <MainPageBeginnerWebCourse />
-          </ProtectedRoute>} />
-          <Route path="/course/:courseId/lesson/:lessonId" element={<ProtectedRoute><Lesson1 /></ProtectedRoute>} />
-          <Route path="/course/:courseId/lesson/2" element={<ProtectedRoute>
-            <Lesson2 />
-          </ProtectedRoute>} />
-          <Route path="/course/:courseId/lesson/3" element={<ProtectedRoute>
-            <Lesson3 />
-          </ProtectedRoute>} />
-          <Route path="/course/:courseId/lesson/4" element={<ProtectedRoute>
-            <Lesson4 />
-          </ProtectedRoute>} />
-          <Route path="/course/:courseId/lesson/5" element={<ProtectedRoute>
-            <Lesson5 />
-          </ProtectedRoute>} />
-          <Route path="/course/:courseId/lesson/6" element={<ProtectedRoute>
-            <Lesson6 />
-          </ProtectedRoute>} />
-          <Route path="/course/:courseId/lesson/7" element={<ProtectedRoute>
-            <Lesson7 />
-          </ProtectedRoute>} />
-          <Route path="/course/:courseId/lesson/8" element={<ProtectedRoute>
-            <Lesson8 />
-          </ProtectedRoute>} />
-          <Route path="/course/:courseId/lesson/9" element={<ProtectedRoute>
-            <Lesson9 />
-          </ProtectedRoute>} />
-          <Route path="/course/:courseId/lesson/10" element={<ProtectedRoute>
-            <Lesson10 />
-          </ProtectedRoute>} />
+          <Route path="/course/:courseId/lesson/:lessonNumber" element={<ProtectedRoute><LessonLoader /></ProtectedRoute>} />
           <Route path="/showCase1/lesson2" element={<ProtectedRoute>
             <ShowCase1 />
           </ProtectedRoute>} />
@@ -276,7 +237,7 @@ export function Router() {
           <Route path="/create-course" element={<ProtectedRoute>
             <CreateCourse />
           </ProtectedRoute>} />
-          <Route path="/dynamic-course/:courseId/lesson/:lessonId" element={<ProtectedRoute>
+          <Route path="/dynamic-course/:courseId/lesson/:lessonNumber" element={<ProtectedRoute>
             <DynamicLessonRenderer />
           </ProtectedRoute>} />
           <Route path="/placetostartcourse/" element={<ProtectedRoute>

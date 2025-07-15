@@ -43,7 +43,7 @@ public class UserProgressServiceJpa implements UserProgressService {
     }
 
     @Override
-    public String updateProgress(String auth0UserId, Integer courseId, Integer lessonId) {
+    public String updateProgress(String auth0UserId, Integer courseId, Integer currentLessonNumber) {
         Optional<UserProgress> userProgressOpt = userProgressRepository.findByUser_Auth0UserIdAndCourse_Id(auth0UserId, courseId);
 
         if (userProgressOpt.isEmpty()) {
@@ -51,15 +51,16 @@ public class UserProgressServiceJpa implements UserProgressService {
         }
 
         UserProgress userProgress = userProgressOpt.get();
-        Optional<Lesson> nextLessonOpt = lessonRepository.findNextLesson(courseId, lessonId);
+
+        Optional<Lesson> nextLessonOpt = lessonRepository.findNextLesson(courseId, currentLessonNumber);
 
         if (nextLessonOpt.isPresent()) {
             userProgress.setCurrentLesson(nextLessonOpt.get());
             userProgressRepository.save(userProgress);
             return "Progress updated successfully.";
+        } else {
+            return "No more lessons. Course might be complete.";
         }
-
-        return "No more lessons. Course might be complete.";
     }
 
     @Override

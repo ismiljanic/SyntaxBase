@@ -8,6 +8,7 @@ import programming.tutorial.domain.Course;
 import programming.tutorial.domain.User;
 import programming.tutorial.dto.CourseDTO;
 import programming.tutorial.dto.CourseWithLessonsDTO;
+import programming.tutorial.dto.LessonDTO;
 import programming.tutorial.services.CourseService;
 
 import java.util.List;
@@ -76,7 +77,11 @@ public class CourseController {
         }
     }
 
-
+    @GetMapping("/{courseId}/lessons")
+    public ResponseEntity<List<LessonDTO>> getLessonsForCourse(@PathVariable Integer courseId) {
+        List<LessonDTO> lessons = courseService.getLessonsForCourse(courseId);
+        return ResponseEntity.ok(lessons);
+    }
 
     @GetMapping("/user/{auth0UserId}")
     public ResponseEntity<List<CourseDTO>> getCoursesForUser(@PathVariable String auth0UserId) {

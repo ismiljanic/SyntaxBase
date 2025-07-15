@@ -8,10 +8,16 @@ import java.util.Optional;
 @Service
 public interface LessonService {
 
-    Optional<LessonDTO> getFirstLesson(Integer courseId);
+    Optional<LessonDTO> getFirstLesson(Integer courseId, Integer userId);
 
     Optional<LessonDTO> getLessonByCourseIdAndLessonId(Integer courseId, Integer lessonId);
 
     Optional<LessonDTO> getNextLesson(Integer courseId, Integer currentLessonId);
     Optional<LessonDTO> getPreviousLesson(Integer courseId, Integer currentLessonId);
+
+    Optional<LessonDTO> getLessonByCourseIdAndLessonNumber(Integer courseId, Integer lessonId);
+
+    Optional<LessonDTO> getLessonByCourseIdAndCurrentUserProgress(Integer courseId, String userId);
+
+    Integer findLessonIdByCourseAndNumberAndUser(String courseId, int lessonNumber, String userId);
 }

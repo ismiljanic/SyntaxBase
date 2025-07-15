@@ -24,10 +24,37 @@ export function Lesson1() {
     const [loading, setLoading] = useState<boolean>(true);
     const [feedbackSubmitted, setFeedbackSubmitted] = useState<boolean>(false);
     const { user, getAccessTokenSilently } = useAuth0();
-    const lessonId = 1;
     const { courseId } = useParams();
     const auth0UserId = user?.sub;
     const [isEnrolled, setIsEnrolled] = useState<boolean | null>(null);
+    const { lessonNumber } = useParams<{ lessonNumber: string }>();
+    const lessonIdNumber = lessonNumber ? parseInt(lessonNumber, 10) : null;
+    const [lessonId, setLessonId] = useState<number | null>(null);
+
+
+    async function fetchLessonId() {
+        if (!courseId || !lessonNumber) return;
+
+        try {
+            const token = await getAccessTokenSilently();
+            const response = await fetch(
+                `http://localhost:8080/api/progress/getLessonId?courseId=${courseId}&lessonNumber=${lessonNumber}`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+            if (!response.ok) throw new Error('Failed to fetch lessonId');
+
+            const data = await response.json();
+            setLessonId(data.lessonId);
+        } catch (error) {
+            console.error('Error fetching lessonId:', error);
+        }
+    }
+
+    useEffect(() => {
+        fetchLessonId();
+    }, [courseId, lessonNumber, getAccessTokenSilently]);
 
     useEffect(() => {
         async function checkEnrollment() {
@@ -58,13 +85,12 @@ export function Lesson1() {
     }, [user, courseId, getAccessTokenSilently, navigate]);
 
     useEffect(() => {
-        const checkFeedbackStatus = async () => {
-            if (!user?.sub) {
-                console.error('User not logged in');
-                setLoading(false);
-                return;
-            }
+        if (!user?.sub || lessonId === null) {
+            setLoading(false);
+            return;
+        }
 
+        const checkFeedbackStatus = async () => {
             try {
                 const token = await getAccessTokenSilently();
                 const response = await fetch(`http://localhost:8080/api/feedback/status?lessonId=${lessonId}`, {
@@ -87,7 +113,13 @@ export function Lesson1() {
         };
 
         checkFeedbackStatus();
-    }, [user?.sub]);
+    }, [user?.sub, lessonId, getAccessTokenSilently]);
+
+
+
+    if (lessonIdNumber === null) {
+        return <p>Lesson ID is missing or invalid.</p>;
+    }
 
     const sendFeedback = async (feedbackType: string) => {
         if (!user?.sub) {
@@ -111,7 +143,11 @@ export function Lesson1() {
             });
 
             if (response.ok) {
-                await markLessonAsCompleted(lessonId);
+                if (lessonId !== null) {
+                    await markLessonAsCompleted(lessonId);
+                } else {
+                    console.error('lessonId is null, cannot mark lesson as completed');
+                }
                 setFeedbackSubmitted(true);
             } else {
                 console.error('Failed to send feedback');
@@ -137,6 +173,8 @@ export function Lesson1() {
 
             if (!response.ok) {
                 console.error('Failed to mark lesson as completed');
+            } else {
+                await fetchLessonId();
             }
         } catch (error) {
             console.error('Error marking lesson as completed:', error);
@@ -152,18 +190,24 @@ export function Lesson1() {
     };
 
     const updateProgress = async () => {
-        const courseId = 1;
-        const lessonId = 1;
+        if (!auth0UserId) {
+            console.error('User is not authenticated');
+            return;
+        }
 
         try {
             const token = await getAccessTokenSilently();
 
-            const response = await fetch(`http://localhost:8080/api/progress/update?courseId=${courseId}&lessonId=${lessonId}`, {
+            const response = await fetch(`http://localhost:8080/api/progress/update`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
+                body: JSON.stringify({
+                    courseId: courseId,
+                    lessonId: lessonIdNumber,
+                }),
             });
 
             if (!response.ok) {
@@ -174,12 +218,12 @@ export function Lesson1() {
         }
     };
 
-
-
     const handleNextLesson = async () => {
         await updateProgress();
-        navigate(`/course/${courseId}/lesson/2`);
+        const nextLessonId = lessonIdNumber + 1;
+        navigate(`/course/${courseId}/lesson/${nextLessonId}`);
     };
+
 
     if (loading) return <p>Loading...</p>;
 

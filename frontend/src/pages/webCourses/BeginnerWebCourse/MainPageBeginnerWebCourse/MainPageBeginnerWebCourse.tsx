@@ -8,6 +8,8 @@ import "reactjs-popup/dist/index.css";
 import '../../../../styles/webCourses/MainPageBeginnerWebCourse/MainPageBeginnerWebCourse.css';
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useParams } from 'react-router-dom';
+
 
 export function MainPageBeginnerWebCourse() {
     const navigate = useNavigate();
@@ -15,7 +17,7 @@ export function MainPageBeginnerWebCourse() {
     const [progress, setProgress] = useState(0);
     const [completedLessons, setCompletedLessons] = useState(0);
     const [totalLessons, setTotalLessons] = useState(0);
-
+    const { lessonId } = useParams();
     const { user, isAuthenticated, getAccessTokenSilently, isLoading } = useAuth0();
 
     useEffect(() => {
@@ -65,7 +67,7 @@ export function MainPageBeginnerWebCourse() {
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={() => navigate(`/course/${courseId}/lesson/1`)}
+                            onClick={() => navigate(`/course/${courseId}/lesson/${lessonId}`)}
                             className="divni1"
                         >
                             Get Started

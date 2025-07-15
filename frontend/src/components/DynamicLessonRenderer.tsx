@@ -21,11 +21,12 @@ interface LessonAPIResponse {
     userId: number | null;
     first: boolean;
     last: boolean;
+    lessonNumber: number;
 }
 
 
 const DynamicLessonRenderer = () => {
-    const { courseId, lessonId } = useParams();
+    const { courseId, lessonNumber } = useParams();
     const [lessonContent, setLessonContent] = useState<LessonAPIResponse | null>(null);
     const navigate = useNavigate();
     const { user, getAccessTokenSilently } = useAuth0();
@@ -95,7 +96,7 @@ const DynamicLessonRenderer = () => {
         const fetchLesson = async () => {
             try {
                 const token = await getAccessTokenSilently();
-                const response = await axios.get(`http://localhost:8080/api/progress/lessons/${courseId}/${lessonId}`, {
+                const response = await axios.get(`http://localhost:8080/api/progress/lessons/${courseId}/number/${lessonNumber}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     },
@@ -113,27 +114,26 @@ const DynamicLessonRenderer = () => {
         };
 
         fetchLesson();
-    }, [courseId, lessonId, getAccessTokenSilently, navigate]);
+    }, [courseId, lessonNumber, getAccessTokenSilently, navigate]);
 
 
     const goToLesson = (lessonIdToGo: number) => {
-        navigate(`/dynamic-course/${courseId}/Lesson/${lessonIdToGo}`);
+        navigate(`/dynamic-course/${courseId}/lesson/${lessonIdToGo}`);
     };
 
     const handleNext = async () => {
         try {
             const token = await getAccessTokenSilently();
-            const response = await axios.get<{ id?: number }>(
+            const response = await axios.get<LessonAPIResponse>(
                 `http://localhost:8080/api/progress/lessons/next`,
                 {
-                    params: { courseId, currentLessonId: lessonId },
+                    params: { courseId, currentLessonNumber: lessonNumber },
                     headers: { Authorization: `Bearer ${token}` },
                     withCredentials: true,
                 }
             );
-
-            if (response.data?.id) {
-                goToLesson(response.data.id);
+            if (response.data?.lessonNumber) {
+                navigate(`/dynamic-course/${courseId}/lesson/${response.data.lessonNumber}`);
             } else {
                 navigate('/homepage');
             }
@@ -150,17 +150,17 @@ const DynamicLessonRenderer = () => {
     const handlePrevious = async () => {
         try {
             const token = await getAccessTokenSilently();
-            const response = await axios.get<{ id?: number }>(
+            const response = await axios.get<LessonAPIResponse>(
                 `http://localhost:8080/api/progress/lessons/previous`,
                 {
-                    params: { courseId, currentLessonId: lessonId },
+                    params: { courseId, currentLessonNumber: lessonNumber },
                     headers: { Authorization: `Bearer ${token}` },
                     withCredentials: true,
                 }
             );
 
-            if (response.data?.id) {
-                goToLesson(response.data.id);
+            if (response.data?.lessonNumber) {
+                goToLesson(response.data.lessonNumber);
             } else {
                 navigate('/homepage');
             }

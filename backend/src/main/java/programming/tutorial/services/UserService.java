@@ -38,6 +38,7 @@ public interface UserService {
     List<UserDTO> getAllUsers();
 
     Optional<UserIdDTO> getUserIdByAuth0Id(String auth0Id);
+    Integer getUserId(String auth0Id);
 
     Optional<String> getUserRoleByAuth0Id(String auth0UserId);
 

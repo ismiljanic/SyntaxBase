@@ -62,10 +62,10 @@ public class InviteServiceJpa implements InviteService {
         invite.setUsed(true);
         inviteRepository.save(invite);
 
-        Lesson firstLesson = lessonRepository.findFirstByCourse_IdOrderByIdAsc(course.getId())
+        Lesson firstLesson = lessonRepository.findFirstByCourseIdOrderByLessonNumberAsc(course.getId())
                 .orElseThrow(() -> new RuntimeException("No lessons in course"));
 
-        return new InviteResponse(course.getId(), firstLesson.getId());
+        return new InviteResponse(course.getId(), firstLesson.getLessonNumber());
     }
 
     public String generateInviteToken(Long courseId, Long lessonId, String invitedByUserId, String email) {
@@ -77,9 +77,9 @@ public class InviteServiceJpa implements InviteService {
         CourseInviteToken token = new CourseInviteToken();
         token.setToken(UUID.randomUUID().toString());
         token.setCourse(course);
-        token.setLessonId(Long.valueOf(lesson.getId()));
+        token.setLesson(lesson);
         token.setInvitedByUserId(invitedByUserId);
-        token.setExpiresAt(LocalDateTime.now().plusDays(7));
+        token.setExpiresAt(LocalDateTime.now().plusDays(1));
         token.setInvitedEmail(email);
 
         inviteRepository.save(token);

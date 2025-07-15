@@ -13,10 +13,7 @@ import programming.tutorial.services.PostService;
 import programming.tutorial.services.UserService;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -266,6 +263,13 @@ public class UserServiceJpa implements UserService {
     public Optional<UserIdDTO> getUserIdByAuth0Id(String auth0Id) {
         return userRepository.findByAuth0UserId(auth0Id)
                 .map(user -> new UserIdDTO(user.getAuth0UserId()));
+    }
+
+    @Override
+    public Integer getUserId(String auth0Id) {
+        return userRepository.findByAuth0UserId(auth0Id)
+                .map(User::getId)
+                .orElseThrow(() -> new NoSuchElementException("User not found with Auth0 ID: " + auth0Id));
     }
 
     @Override

@@ -19,7 +19,9 @@ public class CourseInviteToken {
     @JoinColumn(name = "course_id")
     private Course course;
 
-    private Long lessonId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lesson_id")
+    private Lesson lesson;
 
     private String invitedByUserId;
     private String invitedEmail;
@@ -51,12 +53,12 @@ public class CourseInviteToken {
         this.course = course;
     }
 
-    public Long getLessonId() {
-        return lessonId;
+    public Lesson getLesson() {
+        return lesson;
     }
 
-    public void setLessonId(Long lessonId) {
-        this.lessonId = lessonId;
+    public void setLesson(Lesson lesson) {
+        this.lesson = lesson;
     }
 
     public String getInvitedByUserId() {

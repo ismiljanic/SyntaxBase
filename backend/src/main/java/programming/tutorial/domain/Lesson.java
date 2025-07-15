@@ -34,6 +34,9 @@ public class Lesson {
     @Column(name = "completed")
     private boolean completed;
 
+    @Column(name = "lesson_number_id")
+    private Integer lessonNumber;
+
     public Lesson() {
     }
 
@@ -64,6 +67,7 @@ public class Lesson {
 
     public void setLessonName(String lessonName) {
         this.lessonName = lessonName;
+        this.lessonNumber = extractLessonNumber(lessonName);
     }
 
     public Course getCourse() {
@@ -104,6 +108,23 @@ public class Lesson {
 
     public void setEditable(boolean editable) {
         this.editable = editable;
+    }
+
+    public Integer getLessonNumber() {
+        return lessonNumber;
+    }
+
+    public void setLessonNumber(Integer lessonNumber) {
+        this.lessonNumber = lessonNumber;
+    }
+
+    private Integer extractLessonNumber(String name) {
+        try {
+            String[] parts = name.split(" ");
+            return Integer.parseInt(parts[1]);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override

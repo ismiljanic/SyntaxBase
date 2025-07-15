@@ -8,6 +8,7 @@ import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.*;
 import programming.tutorial.dto.CourseDTO;
 import programming.tutorial.dto.CourseWithLessonsDTO;
+import programming.tutorial.dto.LessonDTO;
 import programming.tutorial.services.CourseService;
 
 import java.util.*;
@@ -97,14 +98,17 @@ public class CourseServiceJpa implements CourseService {
         course = courseRepository.save(course);
 
         List<Lesson> lessons = new ArrayList<>();
-        for (String title : lessonTitles) {
+        for (int i = 0; i < lessonTitles.size(); i++) {
+            String title = lessonTitles.get(i);
             Lesson lesson = new Lesson();
             lesson.setLessonName(title);
             lesson.setContent("Placeholder content");
             lesson.setEditable(true);
             lesson.setCourse(course);
+            lesson.setLessonNumber(i + 1);
             lessons.add(lesson);
         }
+
 
         lessonRepository.saveAll(lessons);
         return course;
@@ -157,4 +161,18 @@ public class CourseServiceJpa implements CourseService {
         return course != null && course.getCreator().getAuth0UserId().equals(userId);
     }
 
+    @Override
+    public List<LessonDTO> getLessonsForCourse(Integer courseId) {
+        List<Lesson> lessons = lessonRepository.findByCourseIdOrderByIdAsc(courseId);
+        return lessons.stream()
+                .map(lesson -> new LessonDTO(
+                        lesson.getId(),
+                        lesson.getLessonName(),
+                        lesson.getCourse().getId(),
+                        lesson.getUser().getId(),
+                        lesson.isEditable(),
+                        lesson.isCompleted()
+                ))
+                .collect(Collectors.toList());
+    }
 }

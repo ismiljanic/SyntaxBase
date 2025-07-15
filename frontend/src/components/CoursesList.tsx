@@ -144,29 +144,30 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
         fetchRatings();
     }, [userId, courses, getAccessTokenSilently]);
 
-    const getFirstLessonId = async (courseId: number, token: string) => {
-        const res = await axios.get(`http://localhost:8080/api/progress/lessons/first`, {
-            params: { courseId },
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        return res.data?.id;
-    };
-
     const handleCourseClick = async (course: Course) => {
         if (!userId) return;
         try {
             const token = await getAccessTokenSilently();
-            console.log(course.systemCourse);
             if (course.systemCourse) {
-                const res = await axios.get(`http://localhost:8080/api/progress/current-lesson`, {
-                    params: { userId, courseId: course.courseId },
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                const lessonId = res.data?.id || 1;
-                navigate(`/course/${course.courseId}/lesson/${lessonId}`);
+                const res = await axios.get(
+                    `http://localhost:8080/api/progress/current-lesson`,
+                    {
+                        params: { courseId: course.courseId, userId },
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+                const lessonNumber = res.data?.lessonNumber || 1;
+                navigate(`/course/${course.courseId}/lesson/${lessonNumber}`);
             } else {
-                const lessonId = await getFirstLessonId(course.courseId, token);
-                navigate(`/dynamic-course/${course.courseId}/lesson/${lessonId || 1}`);
+                const res = await axios.get(
+                    `http://localhost:8080/api/progress/lessons/first`,
+                    {
+                        params: { courseId: course.courseId },
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+                const lessonNumber = res.data?.lessonNumber || 1;
+                navigate(`/dynamic-course/${course.courseId}/lesson/${lessonNumber}`);
             }
         } catch (err) {
             console.error("Error fetching lesson info:", err);
@@ -177,7 +178,6 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
             }
         }
     };
-
 
 
     const handleRating = async (index: number, courseId: number) => {

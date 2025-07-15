@@ -2,11 +2,11 @@ package programming.tutorial.domain;
 
 public class InviteResponse {
     private Integer courseId;
-    private Integer lessonId;
+    private Integer lessonNumber;
 
-    public InviteResponse(Integer courseId, Integer lessonId) {
+    public InviteResponse(Integer courseId, Integer lessonNumber) {
         this.courseId = courseId;
-        this.lessonId = lessonId;
+        this.lessonNumber = lessonNumber;
     }
 
     public Integer getCourseId() {
@@ -17,11 +17,11 @@ public class InviteResponse {
         this.courseId = courseId;
     }
 
-    public Integer getLessonId() {
-        return lessonId;
+    public Integer getLessonNumber() {
+        return lessonNumber;
     }
 
-    public void setLessonId(Integer lessonId) {
-        this.lessonId = lessonId;
+    public void setLessonNumber(Integer lessonNumber) {
+        this.lessonNumber = lessonNumber;
     }
 }
