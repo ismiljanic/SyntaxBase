@@ -13,10 +13,7 @@ import programming.tutorial.services.PostService;
 import programming.tutorial.services.UserService;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -189,11 +186,11 @@ public class UserServiceJpa implements UserService {
             cp.setCourseName(course.getCourseName());
             cp.setDescription(course.getDescription());
 
-            Long totalLessons = lessonRepository.getCourseLength(course.getId());
+            int totalLessons = course.getLength();
             Long completedLessons = lessonRepository.countCompletedLessonsForUserAndCourse(course.getId(), user.getId());
             double progress = totalLessons > 0 ? (completedLessons / (double) totalLessons) * 100 : 0;
 
-            cp.setTotalLessons(totalLessons.intValue());
+            cp.setTotalLessons(totalLessons);
             cp.setCompletedLessons(completedLessons.intValue());
             cp.setProgress(progress);
             cp.setRating(rating);
@@ -205,6 +202,20 @@ public class UserServiceJpa implements UserService {
 
         return dto;
     }
+
+    @Override
+    public void upgradeTier(String auth0Id, Tier newTier) {
+        User user = userRepository.findByAuth0UserId(auth0Id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (newTier.ordinal() == user.getTier().ordinal()) {
+            throw new IllegalArgumentException("You are already on this tier.");
+        }
+
+        user.setTier(newTier);
+        userRepository.save(user);
+    }
+
 
     @Override
     public UserAccountDTO getUserAccountInformation(String auth0UserId) {
@@ -230,7 +241,8 @@ public class UserServiceJpa implements UserService {
         userAccountDTO.setDateCreated(user.getDateCreated().toString());
         userAccountDTO.setUserPosts(userPosts);
         userAccountDTO.setDeletedPosts(deletedPosts);
-
+        userAccountDTO.setRole(user.getRole());
+        userAccountDTO.setTier(user.getTier());
         return userAccountDTO;
     }
 
@@ -251,6 +263,13 @@ public class UserServiceJpa implements UserService {
     public Optional<UserIdDTO> getUserIdByAuth0Id(String auth0Id) {
         return userRepository.findByAuth0UserId(auth0Id)
                 .map(user -> new UserIdDTO(user.getAuth0UserId()));
+    }
+
+    @Override
+    public Integer getUserId(String auth0Id) {
+        return userRepository.findByAuth0UserId(auth0Id)
+                .map(User::getId)
+                .orElseThrow(() -> new NoSuchElementException("User not found with Auth0 ID: " + auth0Id));
     }
 
     @Override
@@ -325,4 +344,5 @@ public class UserServiceJpa implements UserService {
                     return userRepository.save(newUser);
                 });
     }
+
 }

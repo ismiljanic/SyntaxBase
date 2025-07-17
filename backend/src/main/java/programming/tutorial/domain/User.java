@@ -37,14 +37,11 @@ public class User {
     @Column(name = "active", nullable = false)
     private boolean active = true;
 
-
-    @ManyToMany
-    @JoinTable(
-            name = "user_courses",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id")
-    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tier", nullable = false)
+    private Tier tier = Tier.FREE;
     @JsonIgnore
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
     private Set<Course> myCourses;
 
     public User() {
@@ -142,6 +139,14 @@ public class User {
         this.active = active;
     }
 
+    public Tier getTier() {
+        return tier;
+    }
+
+    public void setTier(Tier tier) {
+        this.tier = tier;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -154,7 +159,6 @@ public class User {
                 ", dateCreated=" + dateCreated +
                 ", role=" + role +
                 ", active=" + active +
-                ", myCourses=" + myCourses +
                 '}';
     }
 }

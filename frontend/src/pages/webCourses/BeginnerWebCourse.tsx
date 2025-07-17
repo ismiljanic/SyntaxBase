@@ -48,7 +48,25 @@ export function BeginnerWebCourse() {
                 }
             );
 
-            navigate(`/beginnerWebCourse/${user.sub}`);
+            const response = await axios.get(
+                'http://localhost:8080/api/progress/lessons/first',
+                {
+                    params: { courseId: 1 },
+                    headers: { Authorization: `Bearer ${token}` },
+                    withCredentials: true,
+                }
+            );
+
+            const lesson = response.data;
+            const lessonNumber = lesson?.lessonNumber;
+            console.log("lesson: " + JSON.stringify(lesson));
+            if (!lessonNumber) {
+                setPopupMessage("First lesson not found.");
+                setShowPopup(true);
+                return;
+            }
+
+            navigate(`/course/1/lesson/${lessonNumber}`);
 
         } catch (error: any) {
             if (axios.isAxiosError(error)) {

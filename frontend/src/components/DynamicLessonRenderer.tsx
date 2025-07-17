@@ -1,0 +1,196 @@
+import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useAuth0 } from '@auth0/auth0-react';
+import { LessonTemplate } from './LessonTemplate';
+
+interface LessonDB {
+    id: number;
+    title: string;
+    description: string;
+    active: boolean;
+}
+
+interface LessonAPIResponse {
+    id: number;
+    lessonName: string;
+    content: string;
+    completed: string;
+    editable: boolean;
+    courseId: number;
+    userId: number | null;
+    first: boolean;
+    last: boolean;
+    lessonNumber: number;
+}
+
+
+const DynamicLessonRenderer = () => {
+    const { courseId, lessonNumber } = useParams();
+    const [lessonContent, setLessonContent] = useState<LessonAPIResponse | null>(null);
+    const navigate = useNavigate();
+    const { user, getAccessTokenSilently } = useAuth0();
+    const [role, setRole] = useState<string | null>(null);
+    const [enrolled, setEnrolled] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (!user) {
+            navigate('/login');
+            return;
+        }
+
+        const fetchUserRole = async () => {
+            try {
+                const token = await getAccessTokenSilently();
+                const response = await axios.get(`http://localhost:8080/api/users/role/${user.sub}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setRole(response.data.role);
+            } catch (error) {
+                console.error('Error fetching user role:', error);
+                navigate('/error');
+            }
+        };
+
+        fetchUserRole();
+    }, [user, getAccessTokenSilently, navigate]);
+
+    useEffect(() => {
+        if (!user) {
+            navigate('/login');
+            return;
+        }
+
+        const checkAccess = async () => {
+            try {
+                const token = await getAccessTokenSilently();
+                const roleRes = await axios.get(`http://localhost:8080/api/users/role/${user.sub}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                const userRole = roleRes.data.role;
+
+                const response = await axios.get(`http://localhost:8080/api/progress/isEnrolled?courseId=${courseId}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                const isEnrolled = response.data.enrolled;
+                if (!isEnrolled && userRole !== 'INSTRUCTOR') {
+                    navigate('/forbidden');
+                } else {
+                    setRole(userRole);
+                    setEnrolled(isEnrolled);
+                }
+            } catch (error) {
+                console.error("Access check failed", error);
+                navigate('/error');
+            }
+        };
+
+        checkAccess();
+    }, [user, getAccessTokenSilently, navigate, courseId]);
+
+
+    useEffect(() => {
+        const fetchLesson = async () => {
+            try {
+                const token = await getAccessTokenSilently();
+                const response = await axios.get(`http://localhost:8080/api/progress/lessons/${courseId}/number/${lessonNumber}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                    withCredentials: true,
+                });
+                setLessonContent(response.data);
+            } catch (error) {
+                if (axios.isAxiosError(error) && error.response?.status === 403) {
+                    navigate('/forbidden');
+                } else {
+                    console.error('Failed to fetch lesson:', error);
+                    navigate('/error');
+                }
+            }
+        };
+
+        fetchLesson();
+    }, [courseId, lessonNumber, getAccessTokenSilently, navigate]);
+
+
+    const goToLesson = (lessonIdToGo: number) => {
+        navigate(`/dynamic-course/${courseId}/lesson/${lessonIdToGo}`);
+    };
+
+    const handleNext = async () => {
+        try {
+            const token = await getAccessTokenSilently();
+            const response = await axios.get<LessonAPIResponse>(
+                `http://localhost:8080/api/progress/lessons/next`,
+                {
+                    params: { courseId, currentLessonNumber: lessonNumber },
+                    headers: { Authorization: `Bearer ${token}` },
+                    withCredentials: true,
+                }
+            );
+            if (response.data?.lessonNumber) {
+                navigate(`/dynamic-course/${courseId}/lesson/${response.data.lessonNumber}`);
+            } else {
+                navigate('/homepage');
+            }
+        } catch (err: any) {
+            if (axios.isAxiosError(err) && err.response?.status === 404) {
+                navigate('/homepage');
+            } else {
+                console.error('Error fetching next lesson:', err);
+            }
+        }
+    };
+
+
+    const handlePrevious = async () => {
+        try {
+            const token = await getAccessTokenSilently();
+            const response = await axios.get<LessonAPIResponse>(
+                `http://localhost:8080/api/progress/lessons/previous`,
+                {
+                    params: { courseId, currentLessonNumber: lessonNumber },
+                    headers: { Authorization: `Bearer ${token}` },
+                    withCredentials: true,
+                }
+            );
+
+            if (response.data?.lessonNumber) {
+                goToLesson(response.data.lessonNumber);
+            } else {
+                navigate('/homepage');
+            }
+        } catch (err: any) {
+            if (axios.isAxiosError(err) && err.response?.status === 404) {
+                navigate('/homepage');
+            } else {
+                console.error('Error fetching previous lesson:', err);
+            }
+        }
+    };
+
+    if (!lessonContent) return <p>Loading lesson...</p>;
+
+    const lessonForTemplate: LessonDB = {
+        id: lessonContent.id,
+        title: lessonContent.lessonName,
+        description: lessonContent.content,
+        active: !lessonContent.editable,
+    };
+
+    return (
+        <LessonTemplate
+            lesson={lessonForTemplate}
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+            first={lessonContent.first}
+            last={lessonContent.last}
+        />
+    );
+};
+
+export default DynamicLessonRenderer;

@@ -23,12 +23,19 @@ public class Lesson {
     @JsonIgnore
     private List<LessonFeedback> feedbackList = new ArrayList<>();
 
+    @Column(length = 10000, nullable = false)
+    private String content;
+    @Column(name = "editable")
+    private boolean editable = false;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
     private User user;
     @Column(name = "completed")
     private boolean completed;
+
+    @Column(name = "lesson_number_id")
+    private Integer lessonNumber;
 
     public Lesson() {
     }
@@ -60,6 +67,7 @@ public class Lesson {
 
     public void setLessonName(String lessonName) {
         this.lessonName = lessonName;
+        this.lessonNumber = extractLessonNumber(lessonName);
     }
 
     public Course getCourse() {
@@ -86,12 +94,44 @@ public class Lesson {
         this.completed = completed;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
+    public Integer getLessonNumber() {
+        return lessonNumber;
+    }
+
+    public void setLessonNumber(Integer lessonNumber) {
+        this.lessonNumber = lessonNumber;
+    }
+
+    private Integer extractLessonNumber(String name) {
+        try {
+            String[] parts = name.split(" ");
+            return Integer.parseInt(parts[1]);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     @Override
     public String toString() {
         return "Lesson{" +
                 "id=" + id +
                 ", lessonName='" + lessonName + '\'' +
-                ", course=" + course +
                 ", feedbackList=" + feedbackList +
                 ", user=" + user +
                 ", completed=" + completed +

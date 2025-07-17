@@ -12,23 +12,53 @@ import portfolioExampleDetails from '../../../../../../pages/webCourses/Beginner
 import portfolioExampleContact from '../../../../../../pages/webCourses/BeginnerWebCourse/images/portfolioExampleContact.png';
 import contL from '../../../../../../pages/webCourses/BeginnerWebCourse/images/contL.png';
 import '../examples/Lesson7PortfolioExample.css';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export function Lesson7PortfolioExample() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(true);
     const location = useLocation();
-
-    const userId = sessionStorage.getItem('userId');
+    const { user, getAccessTokenSilently } = useAuth0();
+    const { courseId } = useParams();
+    const [isEnrolled, setIsEnrolled] = useState<boolean | null>(null);
+    console.log(courseId)
+    useEffect(() => {
+        async function checkEnrollment() {
+            if (!user) {
+                navigate('/login');
+                return;
+            }
+            try {
+                const token = await getAccessTokenSilently();
+                const response = await fetch(
+                    `http://localhost:8080/api/progress/isEnrolled?courseId=${courseId}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+                if (response.status === 403) {
+                    navigate('/forbidden');
+                    return;
+                }
+                if (!response.ok) throw new Error('Network error');
+                setIsEnrolled(true);
+            } catch (err) {
+                console.error(err);
+                navigate('/error');
+            }
+        }
+        checkEnrollment();
+    }, [user, courseId, getAccessTokenSilently, navigate]);
 
     const services = [
         {
-            title: { en: "Portfolio structure"},
+            title: { en: "Portfolio structure" },
             text: "First create folder for your portfolio. Inside that folder you will create your React app. You can name it whatever you want. In this example we will name it 'myportfolio'. Inside src folder you will folders to maintain your project. You can name them whatever you want. For example you can name them assets, components, pages, styles, etc. Inside assets folder you will put your images and .css files. Inside components folder you will put your components like headers and footers. Inside pages folder you will put your pages which will represent your portfolio.",
             image: projectStructure,
         },
         {
             title: { en: "Header and Footer" },
-            text : "You can create your header and footer in components folder. You can name them Header.tsx and Footer.tsx. You can use the same code as in previous examples. Keep it simple and clean. In header you can put your logo and navigation. In footer you can put your contact information and social media links.",
+            text: "You can create your header and footer in components folder. You can name them Header.tsx and Footer.tsx. You can use the same code as in previous examples. Keep it simple and clean. In header you can put your logo and navigation. In footer you can put your contact information and social media links.",
             image: structure,
         },
         {
@@ -52,23 +82,11 @@ export function Lesson7PortfolioExample() {
             image: portfolioExampleContact,
         },
         {
-            title: { en: "Finishing touches"},
+            title: { en: "Finishing touches" },
             text: "You can add finishing touches to your portfolio. You can add your logo, your color scheme, your fonts, etc. Be creative and make the most out of it.",
             image: contL,
         },
     ];
-
-    useEffect(() => {
-        const checkFeedbackStatus = async () => {
-            if (!userId) {
-                console.error('User ID is not found in session storage');
-                setLoading(false);
-                return;
-            }
-        };
-
-        checkFeedbackStatus();
-    }, [userId]);
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -97,7 +115,7 @@ export function Lesson7PortfolioExample() {
                                 <p>{service.text}</p>
                             </div>
                             <div className="service-image">
-                                <img src={service.image}/>
+                                <img src={service.image} />
                             </div>
                         </div>
                     </div>

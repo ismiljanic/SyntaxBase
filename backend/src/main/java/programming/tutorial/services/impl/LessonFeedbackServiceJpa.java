@@ -66,7 +66,9 @@ public class LessonFeedbackServiceJpa implements LessonFeedbackService {
 
     @Override
     public ResponseEntity<String> submitFeedback(LessonFeedbackRequestDTO feedbackDTO, String auth0UserId) {
-        Lesson lesson = lessonRepository.findById(feedbackDTO.getLessonId()).orElse(null);
+        Lesson lesson = lessonRepository.findById(feedbackDTO.getLessonId())
+                .orElseThrow(() -> new RuntimeException("Lesson not found with id: " + feedbackDTO.getLessonId()));
+
         User user = userRepository.findByAuth0UserId(auth0UserId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

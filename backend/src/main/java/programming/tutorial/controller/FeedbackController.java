@@ -35,6 +35,7 @@ public class FeedbackController {
 
     @PostMapping("/complete")
     public ResponseEntity<String> markLessonAsCompleted(@RequestBody LessonCompletionDTO completionDTO) {
+        System.out.println("Received lessonId: " + completionDTO.getLessonId());
         String auth0UserId = SecurityContextHolder.getContext().getAuthentication().getName();
         return feedbackService.markLessonAsCompleted(completionDTO, auth0UserId);
     }

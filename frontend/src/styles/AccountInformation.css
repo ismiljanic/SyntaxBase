@@ -210,3 +210,39 @@
 .become-instructor-button:active {
     transform: scale(0.95);
 }
+
+.upgrade-tier-button {
+    background-color: #1a73e8;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(26, 115, 232, 0.4);
+    transition: background-color 0.4s ease-in-out;
+    user-select: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.upgrade-tier-button:hover {
+    background-color: #ffffff;
+    color: black;
+    transition: 0.4s ease;
+    box-shadow: 0 6px 12px rgba(22, 105, 193, 0.6);
+}
+
+.upgrade-tier-button:active {
+    background-color: #0f4a8a;
+    box-shadow: 0 3px 6px rgba(15, 74, 138, 0.8);
+    transform: translateY(1px);
+}
+
+.upgrade-tier-button:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.7;
+}

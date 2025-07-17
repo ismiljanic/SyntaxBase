@@ -5,10 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import programming.tutorial.domain.Course;
+import programming.tutorial.domain.User;
 import programming.tutorial.dto.CourseDTO;
+import programming.tutorial.dto.CourseWithLessonsDTO;
+import programming.tutorial.dto.LessonDTO;
 import programming.tutorial.services.CourseService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -62,4 +66,27 @@ public class CourseController {
         }
         return courses;
     }
+
+    @PostMapping("/create-with-lessons")
+    public ResponseEntity<?> createCourseWithLessons(@RequestBody CourseWithLessonsDTO dto) {
+        try {
+            Course course = courseService.createCourseWithLessons(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("inviteToken", course.getInviteToken()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{courseId}/lessons")
+    public ResponseEntity<List<LessonDTO>> getLessonsForCourse(@PathVariable Integer courseId) {
+        List<LessonDTO> lessons = courseService.getLessonsForCourse(courseId);
+        return ResponseEntity.ok(lessons);
+    }
+
+    @GetMapping("/user/{auth0UserId}")
+    public ResponseEntity<List<CourseDTO>> getCoursesForUser(@PathVariable String auth0UserId) {
+        List<CourseDTO> courses = courseService.getCoursesByUserAuth0Id(auth0UserId);
+        return ResponseEntity.ok(courses);
+    }
+
 }

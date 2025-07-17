@@ -16,18 +16,74 @@ export function Lesson8() {
     const [loading, setLoading] = useState<boolean>(true);
     const [feedbackSubmitted, setFeedbackSubmitted] = useState<boolean>(false);
     const location = useLocation();
-    const lessonId = 8;
-    const { courseId } = useParams();
     const { user, getAccessTokenSilently } = useAuth0();
+    const auth0UserId = user?.sub;
+    const [isEnrolled, setIsEnrolled] = useState<boolean | null>(null);
+    const { lessonNumber } = useParams<{ lessonNumber: string }>();
+    const lessonIdNumber = lessonNumber ? parseInt(lessonNumber, 10) : null;
+    const [lessonId, setLessonId] = useState<number | null>(null);
+    const { courseId } = useParams();
+
+    async function fetchLessonId() {
+        if (!courseId || !lessonNumber) return;
+
+        try {
+            const token = await getAccessTokenSilently();
+            const response = await fetch(
+                `http://localhost:8080/api/progress/getLessonId?courseId=${courseId}&lessonNumber=${lessonNumber}`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+            if (!response.ok) throw new Error('Failed to fetch lessonId');
+
+            const data = await response.json();
+            setLessonId(data.lessonId);
+        } catch (error) {
+            console.error('Error fetching lessonId:', error);
+        }
+    }
 
     useEffect(() => {
-        const checkFeedbackStatus = async () => {
-            if (!user?.sub) {
-                console.error('User not logged in');
-                setLoading(false);
+        fetchLessonId();
+    }, [courseId, lessonNumber, getAccessTokenSilently]);
+
+
+    useEffect(() => {
+        async function checkEnrollment() {
+            if (!user) {
+                navigate('/login');
                 return;
             }
+            try {
+                const token = await getAccessTokenSilently();
+                const response = await fetch(
+                    `http://localhost:8080/api/progress/isEnrolled?courseId=${courseId}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+                if (response.status === 403) {
+                    navigate('/forbidden');
+                    return;
+                }
+                if (!response.ok) throw new Error('Network error');
+                setIsEnrolled(true);
+            } catch (err) {
+                console.error(err);
+                navigate('/error');
+            }
+        }
+        checkEnrollment();
+    }, [user, courseId, getAccessTokenSilently, navigate]);
 
+    useEffect(() => {
+        if (!user?.sub || lessonId === null) {
+            setLoading(false);
+            return;
+        }
+
+        const checkFeedbackStatus = async () => {
             try {
                 const token = await getAccessTokenSilently();
                 const response = await fetch(`http://localhost:8080/api/feedback/status?lessonId=${lessonId}`, {
@@ -50,7 +106,7 @@ export function Lesson8() {
         };
 
         checkFeedbackStatus();
-    }, [user?.sub]);
+    }, [user?.sub, lessonId, getAccessTokenSilently]);
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -62,14 +118,6 @@ export function Lesson8() {
             }
         }
     }, [location.search]);
-
-    const handleScrollToSection = (sectionId: string) => {
-        const targetSection = document.getElementById(sectionId);
-        if (targetSection) {
-            window.history.pushState(null, '', `?scrollTo=${sectionId}`);
-            targetSection.scrollIntoView({ behavior: 'smooth' });
-        }
-    };
 
     const sendFeedback = async (feedbackType: string) => {
         if (!user?.sub) {
@@ -93,7 +141,11 @@ export function Lesson8() {
             });
 
             if (response.ok) {
-                await markLessonAsCompleted(lessonId);
+                if (lessonId !== null) {
+                    await markLessonAsCompleted(lessonId);
+                } else {
+                    console.error('lessonId is null, cannot mark lesson as completed');
+                }
                 setFeedbackSubmitted(true);
             } else {
                 console.error('Failed to send feedback');
@@ -118,6 +170,8 @@ export function Lesson8() {
 
             if (!response.ok) {
                 console.error('Failed to mark lesson as completed');
+            } else {
+                await fetchLessonId();
             }
         } catch (error) {
             console.error('Error marking lesson as completed:', error);
@@ -133,18 +187,24 @@ export function Lesson8() {
     };
 
     const updateProgress = async () => {
-        const courseId = 1;
-        const lessonId = 8;
+        if (!auth0UserId) {
+            console.error('User is not authenticated');
+            return;
+        }
 
         try {
             const token = await getAccessTokenSilently();
 
-            const response = await fetch(`http://localhost:8080/api/progress/update?courseId=${courseId}&lessonId=${lessonId}`, {
+            const response = await fetch(`http://localhost:8080/api/progress/update`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
+                body: JSON.stringify({
+                    courseId: courseId,
+                    lessonId: lessonIdNumber,
+                }),
             });
 
             if (!response.ok) {
@@ -155,16 +215,19 @@ export function Lesson8() {
         }
     };
 
-
-
+    if (lessonIdNumber === null) {
+        return <p>Lesson ID is missing or invalid.</p>;
+    }
     const handleNextLesson = async () => {
         await updateProgress();
-        navigate(`/course/${courseId}/lesson/9`);
+        const nextLessonId = lessonIdNumber + 1;
+        navigate(`/course/${courseId}/lesson/${nextLessonId}`);
     };
 
     const handlePreviousLesson = async () => {
         await updateProgress();
-        navigate(`/course/${courseId}/lesson/7`);
+        const previousLessonId = lessonIdNumber - 1;
+        navigate(`/course/${courseId}/lesson/${previousLessonId}`);
     };
 
     if (loading) return <p>Loading...</p>;

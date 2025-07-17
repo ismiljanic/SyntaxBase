@@ -7,10 +7,12 @@ import programming.tutorial.domain.*;
 import programming.tutorial.dto.CourseDTO;
 import programming.tutorial.dto.StartCourseRequest;
 import programming.tutorial.dto.UserCourseDTO;
+import programming.tutorial.services.CertificateService;
 import programming.tutorial.services.UserCourseService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +31,11 @@ public class UserCourseServiceJpa implements UserCourseService {
     private LessonRepository lessonRepository;
     @Autowired
     private UserProgressRepository userProgressRepository;
+    @Autowired
+    private CertificateRepository certificateRepository;
 
+    @Autowired
+    private CertificateService certificateService;
 
     @Override
     public void enrollUserInCourse(UserCourseDTO userCourseDTO) {
@@ -62,6 +68,7 @@ public class UserCourseServiceJpa implements UserCourseService {
                 lesson.setCourse(course);
                 lesson.setUser(user);
                 lesson.setCompleted(false);
+                lesson.setLessonNumber(i);
                 lessonRepository.save(lesson);
             }
             System.out.println("Created " + totalLessons + " lessons for user " + user.getUsername() + " in course " + course.getId());
@@ -70,14 +77,13 @@ public class UserCourseServiceJpa implements UserCourseService {
         }
     }
 
-
     @Override
     public List<CourseDTO> getCoursesByUserId(String userId) {
         List<UserCourse> userCourses = userCourseRepository.findByUser_Auth0UserId(userId);
         return userCourses.stream()
                 .map(userCourse -> {
                     Course course = userCourse.getCourse();
-                    return new CourseDTO(course.getId(), course.getCourseName(), course.getLength(), course.getDescription(), course.getCategory());
+                    return new CourseDTO(course.getId(), course.getCourseName(), course.getLength(), course.getDescription(), course.getCategory(), course.getCreator().getId(), course.isSystemCourse());
                 })
                 .collect(Collectors.toList());
     }
@@ -104,7 +110,6 @@ public class UserCourseServiceJpa implements UserCourseService {
     public void startCourseForUser(StartCourseRequest request) {
         String auth0UserId = request.getAuth0UserId();
         Integer courseId = request.getCourseId();
-
         User user = userRepository.findByAuth0UserId(auth0UserId)
                 .orElseGet(() -> createNewUser(auth0UserId));
 
@@ -116,10 +121,13 @@ public class UserCourseServiceJpa implements UserCourseService {
 
         boolean progressExists = userProgressRepository.findByUser_Auth0UserIdAndCourse_Id(auth0UserId, courseId).isPresent();
         if (!progressExists) {
+            Lesson firstLesson = lessonRepository
+                    .findFirstByCourse_IdAndUser_IdOrderByIdAsc(courseId, user.getId())
+                    .orElseThrow(() -> new IllegalStateException("No lessons found for this course and user"));
             UserProgress progress = new UserProgress();
             progress.setUser(user);
             progress.setCourse(courseRepository.findById(courseId).orElseThrow());
-            progress.setCurrentLesson(lessonRepository.findById(1).orElse(null));
+            progress.setCurrentLesson(firstLesson);
             userProgressRepository.save(progress);
         }
     }
@@ -132,6 +140,11 @@ public class UserCourseServiceJpa implements UserCourseService {
         UserCourse userCourse = userCourses.get(0);
         userCourse.setCompleted(true);
         userCourseRepository.save(userCourse);
+
+        boolean alreadyIssued = certificateRepository.existsByUser_Auth0UserIdAndCourse_Id(auth0UserId, courseId);
+        if (!alreadyIssued) {
+            certificateService.generateAndSendCertificate(userCourse.getUser(), userCourse.getCourse());
+        }
         return true;
     }
 

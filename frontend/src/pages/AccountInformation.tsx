@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/AccountInformation.css';
 import { Header } from './Header';
@@ -22,13 +22,18 @@ interface Post {
     createdAt: string;
 }
 
+type Tier = "Free" | "Professional" | "Ultimate";
+
+
 interface UserAccount {
     name: string;
     surname: string;
     username: string;
     dateCreated: string;
+    role: string;
     userPosts: Post[];
     deletedPosts: Post[];
+    tier: Tier;
 }
 
 export function AccountInformation() {
@@ -39,6 +44,7 @@ export function AccountInformation() {
     const [showMoreDeletedPosts, setShowMoreDeletedPosts] = useState<boolean>(false);
     const initialPostCount = 5;
     const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -87,17 +93,29 @@ export function AccountInformation() {
         setShowMoreDeletedPosts(!showMoreDeletedPosts);
     };
 
+    const handleUpgradeAccountTier = async () => {
+        navigate('/upgrade-account-tier');
+    };
+
     return (
         <div className='accountDiv'>
             <Header bgColor='#fcfafa' />
             <h1 className='account'>Account Information</h1>
             <div className="account-container">
                 <div className="account-info-section">
-                    <div className="become-instructor-container">
-                        <button className="become-instructor-button" onClick={() => window.location.href = '/request-instructor'}>
-                            Become Instructor
-                        </button>
-                    </div>
+                    {accountInfo.role === 'INSTRUCTOR' ? (
+                        <p className="instructor-badge">You are an Instructor</p>
+                    ) : (
+                        <div className="become-instructor-container">
+                            <button
+                                className="become-instructor-button"
+                                onClick={() => window.location.href = '/request-instructor'}
+                            >
+                                Become Instructor
+                            </button>
+                        </div>
+                    )}
+
 
                     <div className="account-info-title">About Your Account</div>
                     <div className="account-info-item">
@@ -112,8 +130,16 @@ export function AccountInformation() {
                     <div className="account-info-item">
                         <strong>Date Created:</strong> <span className="account-info-value">{new Date(accountInfo?.dateCreated).toLocaleDateString()}</span>
                     </div>
+                    <div className="account-info-item">
+                        <strong>Current tier:</strong> <span className="account-info-value">{accountInfo?.tier}</span>
+                    </div>
                 </div>
-
+                <div className="account-info-section">
+                    <div className="account-info-title">Upgrade Your Account</div>
+                    <button onClick={handleUpgradeAccountTier} className="upgrade-tier-button">
+                        + Upgrade Account
+                    </button>
+                </div>
                 <div className="user-posts-section">
                     <h2 className="user-posts-title">Your Posts</h2>
                     <div className="user-posts-content">

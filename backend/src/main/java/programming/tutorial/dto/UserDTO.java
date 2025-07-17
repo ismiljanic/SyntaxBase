@@ -1,6 +1,7 @@
 package programming.tutorial.dto;
 
 import programming.tutorial.domain.Role;
+import programming.tutorial.domain.Tier;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +16,7 @@ public class UserDTO {
     public LocalDateTime dateCreated;
     public boolean active;
     public String auth0UserId;
+    public Tier tier;
 
     public UserDTO(String name, String surname, String password, String username, LocalDateTime dateCreated) {
         this.name = name;
@@ -119,6 +121,14 @@ public class UserDTO {
 
     public void setAuth0UserId(String auth0UserId) {
         this.auth0UserId = auth0UserId;
+    }
+
+    public Tier getTier() {
+        return tier;
+    }
+
+    public void setTier(Tier tier) {
+        this.tier = tier;
     }
 
     @Override

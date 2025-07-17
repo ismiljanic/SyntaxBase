@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
-import { Header } from './Header';
-import { Footer2 } from './Footer2';
-import { Footer } from './Footer';
+import { Header } from '../Header';
+import { Footer2 } from '../Footer2';
+import { Footer } from '../Footer';
 
 export function InstructorRequestForm() {
     const [institution, setInstitution] = useState('');

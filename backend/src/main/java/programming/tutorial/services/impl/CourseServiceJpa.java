@@ -3,19 +3,28 @@ package programming.tutorial.services.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import programming.tutorial.dao.CourseRepository;
-import programming.tutorial.domain.Course;
+import programming.tutorial.dao.LessonRepository;
+import programming.tutorial.dao.UserRepository;
+import programming.tutorial.domain.*;
 import programming.tutorial.dto.CourseDTO;
+import programming.tutorial.dto.CourseWithLessonsDTO;
+import programming.tutorial.dto.LessonDTO;
 import programming.tutorial.services.CourseService;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class CourseServiceJpa implements CourseService {
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private LessonRepository lessonRepository;
 
     @Override
     public Optional<Course> findByName(CourseDTO courseDTO) {
@@ -52,6 +61,118 @@ public class CourseServiceJpa implements CourseService {
         }
         return courses.stream()
                 .map(course -> new CourseDTO(course.getId(), course.getCourseName(), course.getLength(), course.getDescription(), course.getCategory()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Course createCourseWithLessons(CourseWithLessonsDTO dto) {
+        User creator = userRepository.findByAuth0UserId(dto.getAuth0UserId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found for Auth0 ID: " + dto.getAuth0UserId()));
+
+        List<String> lessonTitles = dto.getLessons();
+
+        if (lessonTitles == null || lessonTitles.isEmpty()) {
+            throw new IllegalArgumentException("Lesson titles are required");
+        }
+
+        int maxAllowed = getMaxLessonsByTier(creator.getTier());
+        if (lessonTitles.size() > maxAllowed) {
+            throw new IllegalArgumentException("Too many lessons for user tier: " + creator.getTier());
+        }
+
+        UUID inviteToken = dto.getInviteToken() != null
+                ? dto.getInviteToken()
+                : UUID.randomUUID();
+
+        Course course = new Course(
+                dto.getCourseName(),
+                dto.getCourseLength(),
+                dto.getDescription(),
+                dto.getCategory(),
+                creator,
+                false,
+                inviteToken
+        );
+
+
+        course = courseRepository.save(course);
+
+        List<Lesson> lessons = new ArrayList<>();
+        for (int i = 0; i < lessonTitles.size(); i++) {
+            String title = lessonTitles.get(i);
+            Lesson lesson = new Lesson();
+            lesson.setLessonName(title);
+            lesson.setContent("Placeholder content");
+            lesson.setEditable(true);
+            lesson.setCourse(course);
+            lesson.setLessonNumber(i + 1);
+            lessons.add(lesson);
+        }
+
+
+        lessonRepository.saveAll(lessons);
+        return course;
+    }
+
+    private int getMaxLessonsByTier(Tier tier) {
+        return switch (tier) {
+            case FREE -> 5;
+            case PROFESSIONAL -> 15;
+            case ULTIMATE -> Integer.MAX_VALUE;
+        };
+    }
+
+    private static int getRequestedLessonCount(CourseWithLessonsDTO dto, User creator) {
+        if (creator.getRole() != Role.INSTRUCTOR) {
+            throw new IllegalStateException("Only users with INSTRUCTOR role can create courses.");
+        }
+
+
+        Tier tier = creator.getTier();
+        int maxAllowedLessons = switch (tier) {
+            case FREE -> 5;
+            case PROFESSIONAL -> 15;
+            case ULTIMATE -> Integer.MAX_VALUE;
+        };
+
+        int requestedLessonCount = dto.getLessons() != null ? dto.getLessons().size() : 0;
+        if (requestedLessonCount > maxAllowedLessons) {
+            throw new IllegalArgumentException("Your tier (" + tier + ") allows a maximum of " + maxAllowedLessons + " lessons per course.");
+        }
+        return requestedLessonCount;
+    }
+
+    @Override
+    public List<CourseDTO> getCoursesByUserAuth0Id(String auth0UserId) {
+        User user = userRepository.findByAuth0UserId(auth0UserId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Set<Course> courses = user.getMyCourses();
+
+        return courses.stream()
+                .map(course -> new CourseDTO(course.getId(), course.getCourseName(), course.getLength(),
+                        course.getDescription(), course.getCategory()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isCourseOwner(String userId, Integer courseId) {
+        Course course = courseRepository.findById(courseId).orElse(null);
+        return course != null && course.getCreator().getAuth0UserId().equals(userId);
+    }
+
+    @Override
+    public List<LessonDTO> getLessonsForCourse(Integer courseId) {
+        List<Lesson> lessons = lessonRepository.findByCourseIdOrderByIdAsc(courseId);
+        return lessons.stream()
+                .map(lesson -> new LessonDTO(
+                        lesson.getId(),
+                        lesson.getLessonName(),
+                        lesson.getCourse().getId(),
+                        lesson.getUser().getId(),
+                        lesson.isEditable(),
+                        lesson.isCompleted()
+                ))
                 .collect(Collectors.toList());
     }
 }
