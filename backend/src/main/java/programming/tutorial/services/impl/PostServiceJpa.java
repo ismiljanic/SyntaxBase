@@ -32,15 +32,37 @@ public class PostServiceJpa implements PostService {
                 .map(post -> {
                     User user = userRepository.findByAuth0UserId(post.getUserId()).orElse(null);
                     String username = user != null ? user.getUsername() : "Unknown User";
+                    Role userRole = user != null ? user.getRole() : Role.USER;
 
                     List<PostDTO> replies = postRepository.findAllByParentPost(post).stream()
                             .map(reply -> {
                                 User replyUser = userRepository.findByAuth0UserId(reply.getUserId()).orElse(null);
                                 String replyUsername = replyUser != null ? replyUser.getUsername() : "Unknown User";
-                                return new PostDTO(reply.getId(), reply.getContent(), reply.getUserId(), replyUsername, reply.getCreatedAt(), null);
+                                Role replyUserRole = replyUser != null ? replyUser.getRole() : Role.USER;
+                                return new PostDTO(
+                                        reply.getId(),
+                                        reply.getContent(),
+                                        reply.getUserId(),
+                                        replyUsername,
+                                        reply.getCreatedAt(),
+                                        null,
+                                        reply.getCategory(),
+                                        replyUserRole,
+                                        reply.getUpdatedAt()
+                                );
                             }).collect(Collectors.toList());
 
-                    return new PostDTO(post.getId(), post.getContent(), post.getUserId(), username, post.getCreatedAt(), replies);
+                    return new PostDTO(
+                            post.getId(),
+                            post.getContent(),
+                            post.getUserId(),
+                            username,
+                            post.getCreatedAt(),
+                            replies,
+                            post.getCategory(),
+                            userRole,
+                            post.getUpdatedAt()
+                    );
                 })
                 .collect(Collectors.toList());
     }
@@ -97,16 +119,39 @@ public class PostServiceJpa implements PostService {
     public PostDTO getPost(Integer postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Post not found."));
-        String username = getUsername(post.getUserId());
+        User user = userRepository.findByAuth0UserId(post.getUserId()).orElse(null);
+        String username = user != null ? user.getUsername() : "Unknown User";
+        Role userRole = user != null ? user.getRole() : Role.USER;
 
         List<PostDTO> replies = postRepository.findAllByParentPost(post).stream()
-                .map(reply -> new PostDTO(
-                        reply.getId(), reply.getContent(),
-                        reply.getUserId(), getUsername(reply.getUserId()),
-                        reply.getCreatedAt(), null))
-                .collect(Collectors.toList());
+                .map(reply -> {
+                    User replyUser = userRepository.findByAuth0UserId(reply.getUserId()).orElse(null);
+                    String replyUsername = replyUser != null ? replyUser.getUsername() : "Unknown User";
+                    Role replyUserRole = replyUser != null ? replyUser.getRole() : Role.USER;
+                    return new PostDTO(
+                            reply.getId(),
+                            reply.getContent(),
+                            reply.getUserId(),
+                            replyUsername,
+                            reply.getCreatedAt(),
+                            null,
+                            reply.getCategory(),
+                            replyUserRole,
+                            reply.getUpdatedAt()
+                    );
+                }).collect(Collectors.toList());
 
-        return new PostDTO(post.getId(), post.getContent(), post.getUserId(), username, post.getCreatedAt(), replies);
+        return new PostDTO(
+                post.getId(),
+                post.getContent(),
+                post.getUserId(),
+                username,
+                post.getCreatedAt(),
+                replies,
+                post.getCategory(),
+                userRole,
+                post.getUpdatedAt()
+        );
     }
 
     @Override
@@ -131,6 +176,21 @@ public class PostServiceJpa implements PostService {
             postRepository.save(post);
         }
     }
+
+    @Override
+    public void updatePost(Integer id, PostDTO postDTO, String authenticatedUserId) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+
+        if (!post.getUserId().equals(authenticatedUserId)) {
+            throw new SecurityException("You are not authorized to edit this post");
+        }
+
+        post.setContent(postDTO.getContent());
+        post.setUpdatedAt(new Date());
+        postRepository.save(post);
+    }
+
 
     private String getUsername(String userId) {
         return userRepository.findByAuth0UserId(userId)

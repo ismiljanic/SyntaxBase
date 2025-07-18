@@ -29,10 +29,16 @@ public class Post {
     @Column(nullable = false)
     private boolean deleted = false;
 
+    @Column(name = "category")
+    private String category;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+
     public Post() {
     }
 
-    public Post(Integer id, String content, String userId, Date createdAt, Post parentPost, List<Post> replies, boolean deleted) {
+    public Post(Integer id, String content, String userId, Date createdAt, Post parentPost, List<Post> replies, boolean deleted, String category, Date updatedAt) {
         this.id = id;
         this.content = content;
         this.userId = userId;
@@ -40,6 +46,8 @@ public class Post {
         this.parentPost = parentPost;
         this.replies = replies;
         this.deleted = deleted;
+        this.category = category;
+        this.updatedAt = updatedAt;
     }
 
     public Integer getId() {
@@ -96,6 +104,22 @@ public class Post {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Override

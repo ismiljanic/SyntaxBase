@@ -14,4 +14,6 @@ public interface PostService {
     void softDeletePost(Integer postId);
 
     void restorePost(Integer postId);
+
+    void updatePost(Integer id, PostDTO postDTO, String authenticatedUserId);
 }
