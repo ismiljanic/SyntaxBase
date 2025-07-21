@@ -79,6 +79,7 @@ import Cancel from "./components/Canceled";
 import InviteHandler from "./components/InviteHandler";
 import AcceptInvite from "./components/AcceptInvite";
 import { LessonLoader } from "./components/LessonLoader";
+import { SuspendedPage } from "./pages/SuspendedPage";
 
 export function Router() {
   return (
@@ -256,10 +257,11 @@ export function Router() {
             <InviteHandler />
           </ProtectedRoute>} />
           <Route path="/accept-invite" element={
-             <AcceptInvite /> } />
+            <AcceptInvite />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/forbidden" element={<Forbidden />} />
+          <Route path="/suspended" element={<SuspendedPage />} />
         </Routes>
       </div>
     </BrowserRouter>

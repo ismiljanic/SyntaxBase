@@ -274,12 +274,17 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
 
     return (
         <div className="bigDaddyContainer" style={{ paddingTop: '13em' }}>
-            <div className="container2">
-                <div className="webCourseDiv3">Enrolled Courses</div>
-                <a href="/courses" className="moreCoursesDiv">More courses</a>
-                <div className="lineDiv"></div>
+            <div className={`container2 ${isCreatorList ? 'creator-margin' : ''}`}>
+                <div className="container2">
+                    <div className="webCourseDiv3">{title}</div>
+                    {!isCreatorList && (
+                        <>
+                            <a href="/courses" className="moreCoursesDiv">More courses</a>
+                            <div className="lineDiv"></div>
+                        </>
+                    )}
+                </div>
             </div>
-
             <div className="pictureContainerCoursesList">
                 {courses.map(course => (
                     <div

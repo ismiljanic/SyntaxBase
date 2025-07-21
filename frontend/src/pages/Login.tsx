@@ -33,11 +33,18 @@ export function Login() {
         }
 
         const userData = await response.json();
+        
+        if (!userData.active) {
+          navigate('/suspended');
+          return;
+        }
+
         if (userData.role === "ADMIN") {
           navigate('/admin');
         } else {
           navigate(`/homepage/${encodeURIComponent(user.sub || "")}`);
         }
+
       } catch (error) {
         console.error("User sync failed", error);
       }

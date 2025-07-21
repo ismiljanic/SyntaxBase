@@ -114,4 +114,16 @@ public class UserAdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post not found");
         }
     }
+
+    @DeleteMapping("/{userId}/courses/{courseId}")
+    public ResponseEntity<String> removeUserFromCourse(
+            @PathVariable String userId,
+            @PathVariable Integer courseId) {
+        try {
+            userService.removeUserFromCourse(userId, courseId);
+            return ResponseEntity.ok("User removed from course successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }

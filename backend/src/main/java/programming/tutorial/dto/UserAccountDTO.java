@@ -12,7 +12,6 @@ public class UserAccountDTO {
     private String dateCreated;
     private List<PostDTO> userPosts;
     private List<PostDTO> deletedPosts;
-
     private List<CourseProgressDTO> courses;
     private Role role;
     private boolean active;

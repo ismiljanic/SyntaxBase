@@ -54,6 +54,7 @@ export default function UserDetails() {
                 if (!res.ok) throw new Error('Failed to fetch user data');
                 const data = await res.json();
                 setUser(data);
+                console.log("courses: " + JSON.stringify(data));
             } catch (err: any) {
                 setError(err.message);
             } finally {
@@ -128,6 +129,41 @@ export default function UserDetails() {
         }
     };
 
+    const handleRemoveUserFromCourse = async (courseId: number) => {
+        const confirmed = window.confirm('Are you sure you want to remove this user from this course?');
+        if (!confirmed) return;
+        if (!userId) {
+            alert('User ID is not defined.');
+            return;
+        }
+
+        try {
+            const token = await getAccessTokenSilently();
+            const res = await fetch(`http://localhost:8080/api/admin/users/${encodeURIComponent(userId)}/courses/${courseId}`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            });
+
+            if (!res.ok) throw new Error('Failed to remove user from course');
+
+            setUser(prev => {
+                if (!prev) return prev;
+                return {
+                    ...prev,
+                    courses: prev.courses.filter(course => course.courseId !== courseId),
+                };
+            });
+
+            alert('User removed from course successfully');
+        } catch (err: any) {
+            alert(`Error: ${err.message}`);
+        }
+    };
+
     return (
         <div>
             <Header bgColor="#f5f5f5" />
@@ -155,10 +191,16 @@ export default function UserDetails() {
                                         <p>
                                             <strong>Progress:</strong> {course.completedLessons} / {course.totalLessons} ({course.progress.toFixed(1)}%)
                                         </p>
-                                        <div style={{ marginLeft: '30px' }}>
+                                        <div style={{ marginLeft: '45px' }}>
                                             <AnimatedProgressBar progress={course.progress} />
                                         </div>
                                         <p><strong>Rating:</strong> {course.rating ?? 'Not rated yet'}</p>
+                                        <button
+                                            className="ud-btn ud-btn-delete"
+                                            onClick={() => handleRemoveUserFromCourse(course.courseId)}
+                                        >
+                                            Remove from Course
+                                        </button>
                                     </div>
                                 ))}
                             </div>
