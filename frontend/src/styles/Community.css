@@ -478,3 +478,40 @@ button.post-button:hover {
 .edit-button:last-child {
     margin-right: 0;
 }
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    background: white;
+    padding: 2em;
+    border-radius: 8px;
+    max-width: 400px;
+    text-align: center;
+}
+
+.report-button {
+    background-color: transparent;
+    color: #cc0000;
+    border: 1px solid #cc0000;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-left: 8px;
+}
+
+.report-button:hover {
+    background-color: #cc0000;
+    color: white;
+}

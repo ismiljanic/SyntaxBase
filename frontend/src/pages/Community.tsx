@@ -4,7 +4,7 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { Footer2 } from './Footer2';
 import "../styles/Community.css";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 
 interface Post {
@@ -19,6 +19,7 @@ interface Post {
     category: string;
     userRole?: string;
     updatedAt: string;
+    deleted: boolean;
 }
 
 export function Community() {
@@ -33,6 +34,8 @@ export function Community() {
     const [editedReplyContent, setEditedReplyContent] = useState('');
     const [editingPostId, setEditingPostId] = React.useState<number | null>(null);
     const [editedPostContent, setEditedPostContent] = React.useState<string>("");
+    const [modalMessage, setModalMessage] = useState<string | null>(null);
+    const [autoExpandedPostId, setAutoExpandedPostId] = useState<number | null>(null);
 
     const categories = [
         'General',
@@ -47,6 +50,7 @@ export function Community() {
     const navigate = useNavigate();
     const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
     const [filterCategory, setFilterCategory] = useState('All');
+    const location = useLocation();
 
     const {
         user,
@@ -57,6 +61,40 @@ export function Community() {
 
     const userId = user?.sub;
     const username = user?.nickname || user?.name || 'Anonymous';
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const scrollToPost = params.get('scrollToPost');
+        if (!scrollToPost) return;
+
+        const postId = Number(scrollToPost);
+        if (autoExpandedPostId === postId) return;
+
+        let attempts = 0;
+        const maxAttempts = 10;
+
+        const scrollToElement = () => {
+            const el = document.getElementById(`post-${postId}`);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                setPosts((prevPosts) =>
+                    prevPosts.map(post =>
+                        post.id === postId ? { ...post, isExpanded: true } : post
+                    )
+                );
+                setAutoExpandedPostId(postId);
+            } else if (attempts < maxAttempts) {
+                attempts++;
+                setTimeout(scrollToElement, 300);
+            } else {
+                console.warn(`Post with id post-${postId} not found after ${maxAttempts} attempts.`);
+            }
+        };
+
+        scrollToElement();
+    }, [location.search, posts, autoExpandedPostId]);
+
 
     useEffect(() => {
         const fetchUserRole = async () => {
@@ -92,7 +130,6 @@ export function Community() {
                     },
                     withCredentials: true,
                 });
-
                 const structuredPosts = response.data.map(post => ({
                     ...post,
                     replies: post.replies || [],
@@ -103,6 +140,7 @@ export function Community() {
                     new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
                 );
                 setPosts(sortedPosts);
+                console.log(sortedPosts);
                 setErrorMessage('');
             } catch (error: any) {
                 if (axios.isAxiosError(error) && error.response?.status === 401) {
@@ -278,6 +316,30 @@ export function Community() {
 
     if (isLoading || loading) return <p>Loading...</p>;
 
+    const handleReport = async (postId: number) => {
+        if (!token || !userId) return;
+
+        const reason = window.prompt("Please enter reason for reporting this post:");
+        if (!reason || reason.trim().length === 0) return;
+
+        try {
+            await axios.post(`http://localhost:8080/api/reports`, {
+                postId,
+                reporterId: userId,
+                reason: reason.trim()
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            setModalMessage("Post has been reported. Thank you.");
+        } catch (error) {
+            console.error("Failed to report post:", error);
+            setModalMessage("Failed to report. Please try again.");
+        }
+    };
+
     return (
         <div className="community-container">
             <Header bgColor="rgb(247, 250, 251)" />
@@ -352,6 +414,7 @@ export function Community() {
                         .map((post) => (
                             <div
                                 key={post.id}
+                                id={`post-${post.id}`}
                                 className={`post ${post.isExpanded ? "expanded" : ""}`}
                                 onClick={() => toggleExpand(post.id)}
                             >
@@ -384,6 +447,17 @@ export function Community() {
                                                 }}
                                             >
                                                 Delete
+                                            </button>
+                                        )}
+                                        {post.userId !== userId && (
+                                            <button
+                                                className="report-button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleReport(post.id);
+                                                }}
+                                            >
+                                                Report
                                             </button>
                                         )}
                                     </div>
@@ -496,6 +570,17 @@ export function Community() {
                                                                 Edit
                                                             </button>
                                                         )}
+                                                        {reply.userId !== userId && (
+                                                            <button
+                                                                className="report-button"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleReport(reply.id);
+                                                                }}
+                                                            >
+                                                                Report
+                                                            </button>
+                                                        )}
                                                     </>
                                                 )}
                                                 {reply.updatedAt && new Date(reply.updatedAt).getTime() > new Date(reply.createdAt).getTime() && (
@@ -527,7 +612,14 @@ export function Community() {
                         ))}
                 </div>
             </div>
-
+            {modalMessage && (
+                <div className="modal-overlay">
+                    <div className="modal">
+                        <p>{modalMessage}</p>
+                        <button onClick={() => setModalMessage(null)}>Close</button>
+                    </div>
+                </div>
+            )}
             <Footer2 bgColor="rgb(247, 250, 251)" />
             <Footer bgColor="rgb(247, 250, 251)" />
         </div>

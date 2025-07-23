@@ -28,13 +28,14 @@ public class PostServiceJpa implements PostService {
 
     @Override
     public List<PostDTO> getAllPosts() {
-        return postRepository.findAllByParentPostIsNull().stream()
+        return postRepository.findAllByParentPostIsNullAndDeletedFalse()
+                .stream()
                 .map(post -> {
                     User user = userRepository.findByAuth0UserId(post.getUserId()).orElse(null);
                     String username = user != null ? user.getUsername() : "Unknown User";
                     Role userRole = user != null ? user.getRole() : Role.USER;
 
-                    List<PostDTO> replies = postRepository.findAllByParentPost(post).stream()
+                    List<PostDTO> replies = postRepository.findAllByParentPostAndDeletedFalse(post).stream()
                             .map(reply -> {
                                 User replyUser = userRepository.findByAuth0UserId(reply.getUserId()).orElse(null);
                                 String replyUsername = replyUser != null ? replyUser.getUsername() : "Unknown User";

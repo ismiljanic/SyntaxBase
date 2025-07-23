@@ -1,6 +1,8 @@
 package programming.tutorial.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import programming.tutorial.domain.Post;
 
@@ -10,15 +12,13 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findAllByParentPost(Post parentPost);
 
-    public List<Post> findAllByParentPostId(Long parentPostId);
-
+    List<Post> findAllByParentPostId(Long parentPostId);
     List<Post> findAllByParentPostIsNull();
-
     List<Post> findByUserId(String userId);
-
     List<Post> findDeletedPostsByUserId(String userId);
     List<Post> findByUserIdAndDeletedFalse(String userId);
-
     List<Post> findByUserIdAndDeletedTrue(String userId);
+    List<Post> findAllByParentPostIsNullAndDeletedFalse();
+    List<Post> findAllByParentPostAndDeletedFalse(Post parent);
 
 }

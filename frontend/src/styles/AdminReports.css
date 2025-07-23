@@ -1,0 +1,77 @@
+.reports-table {
+  border-collapse: collapse;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100%;
+  margin-top: 20px;
+  margin-left: -20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.reports-table thead {
+  background-color: #f5f7fa;
+}
+
+.reports-table th,
+.reports-table td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.95rem;
+}
+
+.reports-table th {
+  color: #333;
+  font-weight: 600;
+}
+
+.reports-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.view-button,
+.delete-button,
+.resolve-button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s ease;
+}
+
+.view-button {
+  background-color: #6c757d;
+  color: white;
+  transition: 0.3s ease-in-out
+}
+
+.view-button:hover {
+  background-color: #030303;
+  color: white;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+.resolve-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.resolve-button:hover {
+  background-color: #218838;
+}

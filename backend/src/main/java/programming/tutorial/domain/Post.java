@@ -1,8 +1,11 @@
 package programming.tutorial.domain;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Post {
@@ -24,7 +27,7 @@ public class Post {
     private Post parentPost;
 
     @OneToMany(mappedBy = "parentPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post> replies;
+    private List<Post> replies = new ArrayList<>();
 
     @Column(nullable = false)
     private boolean deleted = false;
@@ -133,5 +136,17 @@ public class Post {
                 ", replies=" + replies +
                 ", deleted=" + deleted +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Post post)) return false;
+        return deleted == post.deleted && Objects.equals(id, post.id) && Objects.equals(content, post.content) && Objects.equals(userId, post.userId) && Objects.equals(createdAt, post.createdAt) && Objects.equals(parentPost, post.parentPost) && Objects.equals(replies, post.replies) && Objects.equals(category, post.category) && Objects.equals(updatedAt, post.updatedAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, content, userId, createdAt, parentPost, replies, deleted, category, updatedAt);
     }
 }

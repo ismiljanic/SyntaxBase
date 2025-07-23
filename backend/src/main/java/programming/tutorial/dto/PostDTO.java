@@ -1,9 +1,9 @@
 package programming.tutorial.dto;
 
+import programming.tutorial.domain.Post;
 import programming.tutorial.domain.Role;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class PostDTO {
     private Integer id;
@@ -16,6 +16,7 @@ public class PostDTO {
     private String category;
     private Role userRole;
     private boolean deleted;
+    private PostDTO parentPost;
 
     public PostDTO() {
     }
@@ -39,6 +40,16 @@ public class PostDTO {
         this.username = username;
         this.createdAt = createdAt;
         this.deleted = deleted;
+    }
+
+    public PostDTO(Integer id, String content, String userId, Date createdAt, List<PostDTO> repliesDto, String category, Date updatedAt) {
+        this.id = id;
+        this.content = content;
+        this.userId = userId;
+        this.createdAt = createdAt;
+        this.replies = repliesDto;
+        this.category = category;
+        this.updatedAt = updatedAt;
     }
 
     public Integer getId() {
@@ -119,5 +130,13 @@ public class PostDTO {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public PostDTO getParentPost() {
+        return parentPost;
+    }
+
+    public void setParentPost(PostDTO parentPost) {
+        this.parentPost = parentPost;
     }
 }
