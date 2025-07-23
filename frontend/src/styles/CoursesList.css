@@ -16,6 +16,7 @@
     cursor: pointer;
     background-color: #f9f9f9;
     transition: box-shadow 0.3s ease;
+    margin-bottom: 3em;
     border-bottom: 1px solid #dee2e6;
 }
 
@@ -201,4 +202,8 @@
     color: #666;
     margin-right: 2.7em;
     transition: all 0.3s ease;
+}
+
+.creator-margin {
+    margin-bottom: 5em;
 }

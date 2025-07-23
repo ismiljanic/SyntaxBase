@@ -58,6 +58,7 @@
 
 .ud-coursesGrid {
     display: grid;
+    gap: 2em;
 }
 
 .ud-course {

@@ -39,6 +39,9 @@ public class UserServiceJpa implements UserService {
     @Autowired
     private RatingRepository ratingRepository;
 
+    @Autowired
+    private UserCourseRepository userCourseRepository;
+
 
     @Override
     public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO) {
@@ -147,6 +150,8 @@ public class UserServiceJpa implements UserService {
         User user = userRepository.findByAuth0UserId(auth0UserId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        List<UserCourse> userCourses = userCourseRepository.findByUser_Auth0UserId(auth0UserId);
+
         UserAccountDTO dto = new UserAccountDTO();
         dto.setName(user.getName());
         dto.setSurname(user.getSurname());
@@ -155,20 +160,20 @@ public class UserServiceJpa implements UserService {
         dto.setRole(user.getRole());
         dto.setActive(user.isActive());
 
-        List<PostDTO> activePosts = postRepository.findByUserId(auth0UserId)
+        List<PostDTO> allPosts = postRepository.findByUserId(auth0UserId)
                 .stream()
                 .map(post -> new PostDTO(post.getId(), post.getContent(), post.getUserId(),
                         user.getUsername(), post.getCreatedAt(), post.isDeleted()))
                 .toList();
 
-        List<PostDTO> deletedPosts = postRepository.findDeletedPostsByUserId(auth0UserId)
+        List<PostDTO> deletedPosts = postRepository.findByUserIdAndDeletedTrue(auth0UserId)
                 .stream()
                 .map(post -> new PostDTO(post.getId(), post.getContent(), post.getUserId(),
                         user.getUsername(), post.getCreatedAt(), post.isDeleted()))
                 .collect(Collectors.toList());
 
 
-        dto.setUserPosts(activePosts);
+        dto.setUserPosts(allPosts);
         dto.setDeletedPosts(deletedPosts);
 
         List<Rating> ratings = ratingRepository.findByAuth0UserId(auth0UserId);
@@ -178,7 +183,9 @@ public class UserServiceJpa implements UserService {
                         Rating::getRating,
                         (existing, replacement) -> replacement
                 ));
-        List<CourseProgressDTO> courseDTOs = user.getMyCourses().stream().map(course -> {
+
+        List<CourseProgressDTO> courseDTOs = userCourses.stream().map(userCourse -> {
+            Course course = userCourse.getCourse();
             Integer rating = ratingMap.get(Long.valueOf(course.getId()));
 
             CourseProgressDTO cp = new CourseProgressDTO();
@@ -199,7 +206,6 @@ public class UserServiceJpa implements UserService {
 
         dto.setCourses(courseDTOs);
 
-
         return dto;
     }
 
@@ -214,6 +220,24 @@ public class UserServiceJpa implements UserService {
 
         user.setTier(newTier);
         userRepository.save(user);
+    }
+
+    @Override
+    public void removeUserFromCourse(String auth0UserId, Integer courseId) {
+        List<UserCourse> userCourses = userCourseRepository.findByUser_Auth0UserIdAndCourseId(auth0UserId, courseId);
+
+        if (userCourses.isEmpty()) {
+            throw new RuntimeException("User is not enrolled in the specified course");
+        }
+
+        userCourseRepository.deleteAll(userCourses);
+    }
+
+    @Override
+    public boolean getUserActiveStatus(String auth0UserId) {
+        return userRepository.findByAuth0UserId(auth0UserId)
+                .map(User::isActive)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + auth0UserId));
     }
 
 
@@ -305,7 +329,7 @@ public class UserServiceJpa implements UserService {
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("email", user.getUsername());
         responseBody.put("role", user.getRole().toString());
-
+        responseBody.put("active", user.isActive());
         return ResponseEntity.ok(responseBody);
     }
 

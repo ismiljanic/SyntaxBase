@@ -220,4 +220,10 @@ public class UserController {
         return jwt.getClaim("sub");
     }
 
+    @GetMapping("/{auth0UserId}/status")
+    public ResponseEntity<Map<String, Boolean>> getUserStatus(@PathVariable String auth0UserId) {
+        boolean isActive = userService.getUserActiveStatus(auth0UserId);
+        return ResponseEntity.ok(Map.of("active", isActive));
+    }
+
 }

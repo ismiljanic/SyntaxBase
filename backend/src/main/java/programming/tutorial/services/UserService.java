@@ -53,4 +53,8 @@ public interface UserService {
     UserAccountDTO getUserAccountDTOByAuth0UserId(String userId);
 
     void upgradeTier(String auth0Id, Tier tier);
+
+    void removeUserFromCourse(String userId, Integer courseId);
+
+    boolean getUserActiveStatus(String auth0UserId);
 }

@@ -10,7 +10,6 @@ public class UserCourseDTO {
     private User user;
     private Course course;
     private String auth0UserId;
-
     private Boolean isCourseCompleted;
 
     public UserCourseDTO() {
