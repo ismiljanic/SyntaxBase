@@ -3,6 +3,7 @@ package programming.tutorial.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import programming.tutorial.dto.PostDTO;
 import programming.tutorial.services.NotificationService;
 import programming.tutorial.services.PostService;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -56,6 +58,20 @@ public class PostController {
         return ResponseEntity.ok(notificationService.getNotificationsForUser(userId));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatePost(@PathVariable Integer id, @RequestBody PostDTO postDTO, Authentication authentication) {
+        String authenticatedUserId = extractUserId(authentication);
+        try {
+            postService.updatePost(id, postDTO, authenticatedUserId);
+            return ResponseEntity.ok().build();
+        } catch (SecurityException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+
     @GetMapping("/{postId}")
     public ResponseEntity<?> getPost(@PathVariable Integer postId) {
         try {
@@ -63,5 +79,12 @@ public class PostController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    private String extractUserId(Authentication authentication) {
+        if (authentication.getPrincipal() instanceof Jwt jwt) {
+            return jwt.getClaimAsString("sub");
+        }
+        throw new IllegalStateException("Invalid authentication principal");
     }
 }

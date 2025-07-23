@@ -23,10 +23,58 @@
 }
 
 .post-form {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
+
+.post-form-header {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 8px;
+}
+
+.category-select {
+    font-size: 0.875rem;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    color: #333;
+    margin-right: 10px;
+    max-width: 200px;
+}
+
+.form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post-button {
+    padding: 8px 16px;
+    font-weight: bold;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.post-button:hover {
+    background-color: #0056b3;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.875rem;
+    margin-bottom: 8px;
+}
+
 
 .post-input {
     height: 500px;
@@ -35,6 +83,7 @@
     border-radius: 5px;
     resize: none;
     margin-left: 6em;
+    width: 90%;
     margin-right: 5.8em;
     font-size: 1.2em;
     margin-bottom: 10px;
@@ -113,10 +162,29 @@
 
 .post-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 10px;
+    gap: 12px;
 }
+
+.post-header-left {
+    flex: 1;
+}
+
+.post-header-center {
+    display: flex;
+    justify-content: center;
+    gap: 100px;
+    white-space: nowrap;
+}
+
+.post-header-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
 
 .post-user {
     font-weight: bold;
@@ -155,7 +223,6 @@
     border-radius: 8px;
     margin-bottom: 15px;
     padding: 15px;
-    margin-left: 4.8em;
     margin-right: 1em;
     transition: box-shadow 0.3s ease;
     cursor: pointer;
@@ -266,10 +333,185 @@ button.post-button:hover {
 
 .delete-button:hover {
     background-color: #ff1a1a;
-    transform: translateY(-2px);
 }
 
 .delete-button:active {
     background-color: #e60000;
     transform: translateY(0);
+}
+
+.post-category {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 12px;
+    margin-left: 10px;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background-color: var(--category-color, #888);
+}
+
+.post-category.General {
+    background-color: #6c757d;
+}
+
+.post-category.WebDevelopment {
+    background-color: #007bff;
+}
+
+.post-category.GameDevelopment {
+    background-color: #6610f2;
+}
+
+.post-category.DatabaseManipulation {
+    background-color: #20c997;
+}
+
+.post-category.ProblemSolving {
+    background-color: #fd7e14;
+}
+
+.post-category.Discussion {
+    background-color: #28a745;
+}
+
+
+.category-select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    margin: 1rem 0;
+    background-color: #f8f9fa;
+    color: #333;
+    transition: border-color 0.2s ease-in-out;
+}
+
+.category-select:focus {
+    outline: none;
+    border-color: #007bff;
+    background-color: #fff;
+}
+
+.community-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.user-role-badge {
+    background-color: #1a73e8;
+    color: white;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    vertical-align: middle;
+    user-select: none;
+}
+
+.user-role-badge.admin {
+    background-color: #d9534f;
+}
+
+.user-role-badge.instructor {
+    background-color: #f29108;
+}
+
+.user-role-badge.user {
+    background-color: #45cdf7;
+}
+
+.edit-input {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    box-sizing: border-box;
+    margin-bottom: 8px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.edit-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    margin-right: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.edit-button:hover {
+    background-color: #0056b3;
+}
+
+.reply-content {
+    margin: 8px 0;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.edited-label {
+    font-size: 0.8rem;
+    color: #777;
+    margin-left: 6px;
+    font-style: italic;
+}
+
+.edit-button:last-child {
+    margin-right: 0;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    background: white;
+    padding: 2em;
+    border-radius: 8px;
+    max-width: 400px;
+    text-align: center;
+}
+
+.report-button {
+    background-color: transparent;
+    color: #cc0000;
+    border: 1px solid #cc0000;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-left: 8px;
+}
+
+.report-button:hover {
+    background-color: #cc0000;
+    color: white;
 }

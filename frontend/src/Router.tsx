@@ -31,7 +31,6 @@ import { IntermediateProblemSolvingCourse } from "./pages/problemSolvingCourses/
 import { AdvancedProblemSolvingCourse } from "./pages/problemSolvingCourses/AdvancedProblemSolvingCourse";
 import { SimpleFrontendApplication } from "./pages/webCourses/BeginnerWebCourse/pages/SimpleFrontendApplication";
 import { AccountInformation } from "./pages/AccountInformation";
-import { MainPageBeginnerWebCourse } from "./pages/webCourses/BeginnerWebCourse/MainPageBeginnerWebCourse/MainPageBeginnerWebCourse";
 import { ShowCase1 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase1";
 import { ShowCase2 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase2";
 import { ShowCase3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase3";
@@ -62,7 +61,6 @@ import { FinishCourse } from "./pages/webCourses/BeginnerWebCourse/Lessons/Finis
 import { BeginnerWebDevelopmentQuiz } from "./pages/webCourses/BeginnerWebCourse/Lessons/BeginnerWebDevelopmentQuiz";
 import { Community } from "./pages/Community";
 import { Notifications } from "./pages/Notifications";
-import { PrivateRoute } from "./components/PrivateRoute";
 import { AdminPage } from "./pages/admin/AdminPage";
 import { InstructorRequestForm } from "./pages/instructor/InstructorRequestForm";
 import UserDetails from "./components/UserDetails";
@@ -256,7 +254,7 @@ export function Router() {
             <InviteHandler />
           </ProtectedRoute>} />
           <Route path="/accept-invite" element={
-             <AcceptInvite /> } />
+            <AcceptInvite />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/forbidden" element={<Forbidden />} />

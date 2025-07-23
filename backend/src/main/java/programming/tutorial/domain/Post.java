@@ -1,8 +1,11 @@
 package programming.tutorial.domain;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Post {
@@ -24,15 +27,21 @@ public class Post {
     private Post parentPost;
 
     @OneToMany(mappedBy = "parentPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post> replies;
+    private List<Post> replies = new ArrayList<>();
 
     @Column(nullable = false)
     private boolean deleted = false;
 
+    @Column(name = "category")
+    private String category;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+
     public Post() {
     }
 
-    public Post(Integer id, String content, String userId, Date createdAt, Post parentPost, List<Post> replies, boolean deleted) {
+    public Post(Integer id, String content, String userId, Date createdAt, Post parentPost, List<Post> replies, boolean deleted, String category, Date updatedAt) {
         this.id = id;
         this.content = content;
         this.userId = userId;
@@ -40,6 +49,8 @@ public class Post {
         this.parentPost = parentPost;
         this.replies = replies;
         this.deleted = deleted;
+        this.category = category;
+        this.updatedAt = updatedAt;
     }
 
     public Integer getId() {
@@ -98,6 +109,22 @@ public class Post {
         this.deleted = deleted;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
@@ -109,5 +136,17 @@ public class Post {
                 ", replies=" + replies +
                 ", deleted=" + deleted +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Post post)) return false;
+        return deleted == post.deleted && Objects.equals(id, post.id) && Objects.equals(content, post.content) && Objects.equals(userId, post.userId) && Objects.equals(createdAt, post.createdAt) && Objects.equals(parentPost, post.parentPost) && Objects.equals(replies, post.replies) && Objects.equals(category, post.category) && Objects.equals(updatedAt, post.updatedAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, content, userId, createdAt, parentPost, replies, deleted, category, updatedAt);
     }
 }

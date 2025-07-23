@@ -4,12 +4,13 @@ import { useAuth0 } from '@auth0/auth0-react';
 import '../../styles/AdminPage.css';
 import { Header } from '../../pages/Header';
 import { AdminUserManagement } from '../../components/admin/AdminUserManagment';
+import { AdminReports } from '../../components/admin/AdminReports';
 
 export function AdminPage() {
   const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } = useAuth0();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'users' | 'requests'>('users');
+  const [activeTab, setActiveTab] = useState<'users' | 'requests' | 'reports'>('users');
 
   useEffect(() => {
     const checkAccess = async () => {
@@ -72,11 +73,18 @@ export function AdminPage() {
         >
           Instructor Requests
         </button>
+        <button
+          className={activeTab === 'reports' ? 'tab active' : 'tab'}
+          onClick={() => setActiveTab('reports')}
+        >
+          Reports
+        </button>
       </div>
 
       <div className="tab-content">
         {activeTab === 'users' && <AdminUserManagement />}
         {activeTab === 'requests' && <AdminInstructorRequests />}
+        {activeTab === 'reports' && <AdminReports />}
       </div>
     </div>
   );

@@ -275,118 +275,108 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
     return (
         <div className="bigDaddyContainer" style={{ paddingTop: '13em' }}>
             <div className="container2">
-                <div className="webCourseDiv3">{title}</div>
+                <div className="webCourseDiv3">Enrolled Courses</div>
                 <a href="/courses" className="moreCoursesDiv">More courses</a>
                 <div className="lineDiv"></div>
             </div>
-            <div className="pictureContainer2">
+
+            <div className="pictureContainerCoursesList">
                 {courses.map(course => (
                     <div
                         key={course.courseId}
-                        className="imageWithDescription2"
+                        className="courseWrapper"
                         onClick={() => handleCourseClick(course)}
-                        style={{ marginLeft: '1em', cursor: 'pointer', position: 'relative' }}
                     >
-                        <img src={web4} alt={course.courseName} className="courseImage2" />
-                        <div className="imageDescription2">
-                            {course.description || 'No description available.'}
+                        <div className="leftSide">
+                            <img src={web4} alt={course.courseName} className="courseImage2" />
+                            <div className="imageDescription2">
+                                <strong>{course.courseName}</strong>
+                                <p>{course.description || 'No description available.'}</p>
+                            </div>
                         </div>
 
-                        {isCreatorList && !course.systemCourse && (
-
-                            <div className="courseButtonsWrapper">
-                                <button
-                                    className="deleteCourseButton"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleDeleteCourse(course.courseId);
-                                    }}
-                                    disabled={deletingCourseId === course.courseId}
-                                >
-                                    {deletingCourseId === course.courseId ? "Deleting..." : "Delete"}
-                                </button>
-                                <button
-                                    className="shareCourseButton"
-                                    onClick={async (e) => {
-                                        e.stopPropagation();
-                                        try {
-                                            const email = prompt("Enter the email address of the invitee:");
-                                            if (!email) return;
-
-                                            const token = await getAccessTokenSilently();
-                                            await axios.post(
-                                                `http://localhost:8080/api/invite/send-invite`,
-                                                { email, courseId: course.courseId },
-                                                {
-                                                    headers: {
-                                                        Authorization: `Bearer ${token}`,
-                                                    },
-                                                }
-                                            );
-
-                                            setModalMessage("Invite link sent to " + email);
-                                        } catch (err) {
-                                            console.error("Error sending invite:", err);
-
-                                            if (axios.isAxiosError(err) && err.response?.data) {
-                                                const backendMessage = err.response.data;
-                                                setModalMessage(backendMessage);
-                                            } else {
-                                                setModalMessage("Failed to send invite link.");
-                                            }
-                                        }
-                                    }}
-                                >
-                                    Share Link
-                                </button>
-                            </div>
-
-                        )}
-                    </div>
-                ))
-                }
-
-                {
-                    courses
-                        .filter(course => course.creatorId !== userId)
-                        .map(course => (
-                            <div key={`progress-${course.courseId}`} className="progress-section2">
-                                {!isCreatorList && (
-                                    <><h2>Your Progress</h2><AnimatedProgressBar progress={progressData[course.courseId]?.progress || 0} /><p>
-                                        You have completed{' '}
+                        <div className="rightSide">
+                            {!isCreatorList && course.creatorId !== userId && (
+                                <div className="progress-section2">
+                                    <h2>Your Progress</h2>
+                                    <AnimatedProgressBar progress={progressData[course.courseId]?.progress || 0} />
+                                    <p>
+                                        Completed{' '}
                                         <AnimatedCounter targetNumber={progressData[course.courseId]?.completedLessons || 0} /> /{' '}
                                         {progressData[course.courseId]?.totalLessons || 0} lessons
-                                    </p></>
-                                )}
-                            </div>
-                        ))
-                }
-                {
-                    courses
-                        .filter(course => course.creatorId !== userId && !isCreatorList)
-                        .map(course => (
-                            <div key={`rating-${course.courseId}`} className="rateCourseDiv">
-                                <span style={{ marginLeft: '1.8em' }}>Rate course: </span>
-                                <div style={{ marginLeft: '1.6em', marginBottom: '1em' }}>
-                                    Your Rating: {ratings[course.courseId] || 0}
+                                    </p>
+                                    <div className="rateCourseDiv" onClick={(e) => e.stopPropagation()}>
+                                        <div className="rateLabel">Rate course:</div>
+                                        <div className="yourRating">Your Rating: {ratings[course.courseId] || 0}</div>
+                                        <div className="starsRow">
+                                            {[...Array(5)].map((_, index) => (
+                                                <span
+                                                    key={index}
+                                                    className={`star ${(hoveredRating || ratings[course.courseId] || 0) > index ? 'filled' : ''}`}
+                                                    onClick={() => handleRating(index, course.courseId)}
+                                                    onMouseEnter={() => handleMouseEnter(index)}
+                                                    onMouseLeave={handleMouseLeave}
+                                                    style={{ cursor: 'pointer' }}
+                                                >
+                                                    ★
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
-                                {[...Array(5)].map((_, index) => (
-                                    <span
-                                        key={index}
-                                        className={`star ${(hoveredRating || ratings[course.courseId] || 0) > index ? 'filled' : ''
-                                            }`}
-                                        onClick={() => handleRating(index, course.courseId)}
-                                        onMouseEnter={() => handleMouseEnter(index)}
-                                        onMouseLeave={handleMouseLeave}
-                                        style={{ transitionDelay: `${index * 0.1}s`, cursor: 'pointer' }}
+                            )}
+
+                            {isCreatorList && !course.systemCourse && (
+                                <div className="courseButtonsWrapper">
+                                    <button
+                                        className="deleteCourseButton"
+                                        onClick={e => {
+                                            e.stopPropagation();
+                                            handleDeleteCourse(course.courseId);
+                                        }}
+                                        disabled={deletingCourseId === course.courseId}
                                     >
-                                        ★
-                                    </span>
-                                ))}
-                            </div>
-                        ))
-                }
-            </div >
+                                        {deletingCourseId === course.courseId ? 'Deleting...' : 'Delete'}
+                                    </button>
+                                    <button
+                                        className="shareCourseButton"
+                                        onClick={async e => {
+                                            e.stopPropagation();
+                                            try {
+                                                const email = prompt('Enter the email address of the invitee:');
+                                                if (!email) return;
+
+                                                const token = await getAccessTokenSilently();
+                                                await axios.post(
+                                                    `http://localhost:8080/api/invite/send-invite`,
+                                                    { email, courseId: course.courseId },
+                                                    {
+                                                        headers: {
+                                                            Authorization: `Bearer ${token}`,
+                                                        },
+                                                    }
+                                                );
+
+                                                setModalMessage('Invite link sent to ' + email);
+                                            } catch (err) {
+                                                console.error('Error sending invite:', err);
+                                                if (axios.isAxiosError(err) && err.response?.data) {
+                                                    setModalMessage(err.response.data);
+                                                } else {
+                                                    setModalMessage('Failed to send invite link.');
+                                                }
+                                            }
+                                        }}
+                                    >
+                                        Share Link
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+
             {modalMessage && (
                 <div className="tier-modal-overlay">
                     <div className="tier-modal">
@@ -395,7 +385,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
                     </div>
                 </div>
             )}
-        </div >
+        </div>
     );
 };
 

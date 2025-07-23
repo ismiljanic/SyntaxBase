@@ -1,7 +1,9 @@
 package programming.tutorial.dto;
 
-import java.util.Date;
-import java.util.List;
+import programming.tutorial.domain.Post;
+import programming.tutorial.domain.Role;
+
+import java.util.*;
 
 public class PostDTO {
     private Integer id;
@@ -9,18 +11,26 @@ public class PostDTO {
     private String userId;
     private String username;
     private Date createdAt;
+    private Date updatedAt;
     private List<PostDTO> replies;
     private String category;
-
+    private Role userRole;
     private boolean deleted;
+    private PostDTO parentPost;
 
-    public PostDTO(Integer id, String content, String userId, String username, Date createdAt, List<PostDTO> replies) {
+    public PostDTO() {
+    }
+
+    public PostDTO(Integer id, String content, String userId, String username, Date createdAt, List<PostDTO> replies, String category, Role userRole, Date updatedAt) {
         this.id = id;
         this.content = content;
         this.userId = userId;
         this.username = username;
         this.createdAt = createdAt;
         this.replies = replies;
+        this.category = category;
+        this.userRole = userRole;
+        this.updatedAt = updatedAt;
     }
 
     public PostDTO(Integer id, String content, String userId, String username, Date createdAt, boolean deleted) {
@@ -30,6 +40,16 @@ public class PostDTO {
         this.username = username;
         this.createdAt = createdAt;
         this.deleted = deleted;
+    }
+
+    public PostDTO(Integer id, String content, String userId, Date createdAt, List<PostDTO> repliesDto, String category, Date updatedAt) {
+        this.id = id;
+        this.content = content;
+        this.userId = userId;
+        this.createdAt = createdAt;
+        this.replies = repliesDto;
+        this.category = category;
+        this.updatedAt = updatedAt;
     }
 
     public Integer getId() {
@@ -94,5 +114,29 @@ public class PostDTO {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Role getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(Role userRole) {
+        this.userRole = userRole;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public PostDTO getParentPost() {
+        return parentPost;
+    }
+
+    public void setParentPost(PostDTO parentPost) {
+        this.parentPost = parentPost;
     }
 }
