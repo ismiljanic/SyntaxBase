@@ -126,19 +126,6 @@ public class Post {
     }
 
     @Override
-    public String toString() {
-        return "Post{" +
-                "id=" + id +
-                ", content='" + content + '\'' +
-                ", userId=" + userId +
-                ", createdAt=" + createdAt +
-                ", parentPost=" + parentPost +
-                ", replies=" + replies +
-                ", deleted=" + deleted +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Post post)) return false;
