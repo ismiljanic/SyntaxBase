@@ -1,11 +1,15 @@
 package com.SyntaxBase.controller;
 
 import com.SyntaxBase.domain.Notification;
+import com.SyntaxBase.dto.NotificationDTO;
 import com.SyntaxBase.services.NotificationService;
+import com.SyntaxBase.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -15,10 +19,8 @@ public class NotificationController {
     @Autowired
     private NotificationService notificationService;
 
-    @GetMapping("/{userId}")
-    public List<Notification> getNotifications(@PathVariable String userId) {
-        return notificationService.getNotificationsForUser(userId);
-    }
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @PutMapping("/{id}/read")
     public ResponseEntity<?> markAsRead(@PathVariable Long id) {
@@ -34,5 +36,14 @@ public class NotificationController {
     public String ping() {
         System.out.println("Ping received");
         return "pong";
+    }
+
+    @GetMapping
+    public List<NotificationDTO> getNotifications(Principal principal) {
+        if (principal == null) {
+            throw new RuntimeException("Unauthorized - no principal found");
+        }
+        String userId = principal.getName();
+        return notificationService.getNotificationsForUser(userId, false);
     }
 }

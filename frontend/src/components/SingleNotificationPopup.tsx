@@ -23,18 +23,23 @@ const SingleNotificationPopup: React.FC<SingleNotificationPopupProps> = ({
     onDismiss,
     onClose,
 }) => {
-    return (
+    return (    
         <div className={`notification ${notification.read ? 'readNotification2' : 'unreadNotification2'}`}>
-            <button className="close-button" onClick={onClose}>
+            <button className="close-button" onClick={onClose} aria-label="Close notification">
                 &times;
             </button>
-            <div>
+
+            <div className="notification-content">
                 <div className="notification-text">
-                    <strong>{notification.username}:</strong> {notification.message}
+                    <strong>{notification.username}</strong>: {notification.message}
                 </div>
-                <small className="notification-date">{new Date(notification.createdAt).toLocaleString()}</small>
+                <small className="notification-date">
+                    {new Date(notification.createdAt).toLocaleString()}
+                </small>
+                <button className="mark-read-button" onClick={() => onDismiss(notification.id)}>
+                    Mark as read
+                </button>
             </div>
-            <button onClick={() => onDismiss(notification.id)}>Dismiss</button>
         </div>
     );
 };

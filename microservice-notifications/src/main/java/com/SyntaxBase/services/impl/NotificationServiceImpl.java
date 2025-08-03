@@ -2,23 +2,34 @@ package com.SyntaxBase.services.impl;
 
 import com.SyntaxBase.dao.NotificationRepository;
 import com.SyntaxBase.domain.Notification;
+import com.SyntaxBase.dto.NotificationDTO;
 import com.SyntaxBase.dto.ReplyCreatedEventDTO;
 import com.SyntaxBase.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
     private NotificationRepository notificationRepository;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     @Override
-    public List<Notification> getNotificationsForUser(String userId) {
-        return notificationRepository.findByUserId(userId);
+    public List<NotificationDTO> getNotificationsForUser(String userId, boolean unreadOnly) {
+        List<Notification> notifications = unreadOnly
+                ? notificationRepository.findByUserIdAndIsReadFalse(userId)
+                : notificationRepository.findByUserId(userId);
+
+        return notifications.stream()
+                .map(NotificationDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -38,6 +49,9 @@ public class NotificationServiceImpl implements NotificationService {
         n.setMessage(event.getReplyContent());
         n.setCreatedAt(new Date());
         n.setRead(false);
-        notificationRepository.save(n);
+        Notification saved = notificationRepository.save(n);
+
+        NotificationDTO dto = NotificationDTO.fromEntity(saved);
+        messagingTemplate.convertAndSend("/topic/notifications/" + dto.getUserId(), dto);
     }
 }
