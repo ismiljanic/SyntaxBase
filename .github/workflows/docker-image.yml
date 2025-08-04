@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - github-actions
+      - main
 
 env:
   REGISTRY: ghcr.io
