@@ -1,0 +1,43 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - github-actions
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_OWNER: ${{ github.repository_owner }}
+
+jobs:
+  docker-build-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.CR_PAT }}
+
+      - name: Build and push backend
+        run: |
+          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-backend:latest ./backend
+          docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-backend:latest
+
+      - name: Build and push microservice-notifications
+        run: |
+          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-notifications:latest ./microservice-notifications
+          docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-notifications:latest
+
+      - name: Build and push frontend
+        run: |
+          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-frontend:latest ./frontend --build-arg REACT_APP_API_BASE_URL=http://localhost:8080
+          docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-frontend:latest
