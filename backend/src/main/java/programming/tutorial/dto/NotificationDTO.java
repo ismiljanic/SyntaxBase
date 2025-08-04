@@ -16,8 +16,9 @@ public class NotificationDTO {
     private String message;
     private boolean isRead;
     private Date createdAt;
-
     String username;
+    private String replierUsername;
+    private String parentUserEmail;
 
     public NotificationDTO() {
     }
@@ -41,6 +42,19 @@ public class NotificationDTO {
         this.isRead = isRead;
         this.createdAt = createdAt;
         this.username = username;
+    }
+
+    public NotificationDTO(long id, String userId, long postId, Integer replyId, String message, boolean isRead, Date createdAt, String username, String replierUsername, String parentUserEmail) {
+        this.id = id;
+        this.userId = userId;
+        this.postId = postId;
+        this.replyId = replyId;
+        this.message = message;
+        this.isRead = isRead;
+        this.createdAt = createdAt;
+        this.username = username;
+        this.replierUsername = replierUsername;
+        this.parentUserEmail = parentUserEmail;
     }
 
     public Long getId() {
@@ -99,16 +113,27 @@ public class NotificationDTO {
         this.createdAt = createdAt;
     }
 
-    @Override
-    public String toString() {
-        return "Notification{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", postId=" + postId +
-                ", replyId=" + replyId +
-                ", message='" + message + '\'' +
-                ", isRead=" + isRead +
-                ", createdAt=" + createdAt +
-                '}';
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getReplierUsername() {
+        return replierUsername;
+    }
+
+    public void setReplierUsername(String replierUsername) {
+        this.replierUsername = replierUsername;
+    }
+
+    public String getParentUserEmail() {
+        return parentUserEmail;
+    }
+
+    public void setParentUserEmail(String parentUserEmail) {
+        this.parentUserEmail = parentUserEmail;
     }
 }

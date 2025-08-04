@@ -2,6 +2,7 @@ package programming.tutorial.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import programming.tutorial.dao.NotificationRepository;
 import programming.tutorial.dao.PostRepository;
 import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.Post;
@@ -9,9 +10,7 @@ import programming.tutorial.domain.Role;
 import programming.tutorial.domain.User;
 import programming.tutorial.dto.PostDTO;
 import programming.tutorial.dto.ReplyCreatedEventDTO;
-import programming.tutorial.services.NotificationService;
 import programming.tutorial.services.PostService;
-import org.springframework.security.oauth2.jwt.Jwt;
 import programming.tutorial.services.ReplyEventProducer;
 
 import java.util.Date;
@@ -26,7 +25,7 @@ public class PostServiceJpa implements PostService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private NotificationService notificationService;
+    private NotificationRepository notificationRepository;
 
     @Autowired
     private ReplyEventProducer replyEventProducer;
@@ -96,13 +95,20 @@ public class PostServiceJpa implements PostService {
                     .orElseThrow(() -> new IllegalArgumentException("Parent post not found."));
             System.out.println("Parent post found: " + parentPost);
 
+            User replyingUser = userRepository.findByAuth0UserId(savedPost.getUserId())
+                    .orElseThrow(() -> new RuntimeException("Replying user not found"));
+
+            User parentUser = userRepository.findByAuth0UserId(parentPost.getUserId())
+                    .orElseThrow(() -> new RuntimeException("Parent user not found"));
+
             ReplyCreatedEventDTO event = new ReplyCreatedEventDTO();
             event.setPostId(Long.valueOf(parentPost.getId()));
             event.setParentUserId(parentPost.getUserId());
             event.setReplyId(Long.valueOf(savedPost.getId()));
             event.setReplyUserId(savedPost.getUserId());
             event.setReplyContent(savedPost.getContent());
-
+            event.setReplierUserEmail(replyingUser.getUsername());
+            event.setParentUserEmail(parentUser.getUsername());
             System.out.println("Publishing reply created event: " + event);
             replyEventProducer.publishReplyCreatedEvent(event);
         }

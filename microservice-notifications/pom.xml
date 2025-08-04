@@ -8,7 +8,7 @@
         <version>3.5.4</version>
         <relativePath/>
     </parent>
-    <artifactId>demo</artifactId>
+    <artifactId>Microservice-notifications</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>microservice-notifications</name>
     <description>SyntaxBase microservice for notifications</description>
@@ -97,6 +97,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
     </dependencies>
 

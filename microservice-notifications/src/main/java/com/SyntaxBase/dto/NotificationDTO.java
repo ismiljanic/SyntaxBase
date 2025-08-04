@@ -13,7 +13,6 @@ public class NotificationDTO {
     private String message;
     private boolean isRead;
     private Date createdAt;
-
     String username;
 
     public NotificationDTO() {

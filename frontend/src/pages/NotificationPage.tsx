@@ -72,7 +72,7 @@ export function NotificationsPage() {
       <Header bgColor='#f6f6f6'></Header>
       <div className="notif-page">
         <h2>
-          Notifications for <span className="user-id">{userId}</span>
+          New messages and notifications
         </h2>
 
         <div className="notif-list">

@@ -518,15 +518,20 @@ export function Community() {
                                     <div className="replies-list">
                                         {(post.replies ?? []).map((reply) => (
                                             <div key={reply.id} className="reply">
-                                                <span className="reply-user">
-                                                    {reply.username} (Reply)
-                                                    {reply.userRole && (
-                                                        <span className={`user-role-badge ${reply.userRole.toLowerCase()}`}>
-                                                            {reply.userRole}
-                                                        </span>
-                                                    )}
-                                                </span>
+                                                <div className="reply-header">
+                                                    <span className="reply-user">
+                                                        {reply.username} (Reply)
+                                                        {reply.userRole && (
+                                                            <span className={`user-role-badge ${reply.userRole.toLowerCase()}`}>
+                                                                {reply.userRole}
+                                                            </span>
+                                                        )}
+                                                    </span>
 
+                                                    <small className="reply-date">
+                                                        {new Date(reply.createdAt).toLocaleString()}
+                                                    </small>
+                                                </div>
                                                 {editingReplyId === reply.id ? (
                                                     <>
                                                         <textarea

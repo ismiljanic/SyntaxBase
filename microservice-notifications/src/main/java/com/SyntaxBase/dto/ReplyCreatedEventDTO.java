@@ -6,6 +6,8 @@ public class ReplyCreatedEventDTO {
     private Long replyId;
     private String replyUserId;
     private String replyContent;
+    private String parentUserEmail;
+    private String replierUserEmail;
 
     public Long getPostId() {
         return postId;
@@ -45,5 +47,21 @@ public class ReplyCreatedEventDTO {
 
     public void setReplyContent(String replyContent) {
         this.replyContent = replyContent;
+    }
+
+    public String getParentUserEmail() {
+        return parentUserEmail;
+    }
+
+    public void setParentUserEmail(String parentUserEmail) {
+        this.parentUserEmail = parentUserEmail;
+    }
+
+    public String getReplierUserEmail() {
+        return replierUserEmail;
+    }
+
+    public void setReplierUserEmail(String replierUserEmail) {
+        this.replierUserEmail = replierUserEmail;
     }
 }
