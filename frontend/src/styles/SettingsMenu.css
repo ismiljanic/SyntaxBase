@@ -132,7 +132,7 @@
     box-sizing: border-box;
     position: relative;
     color: black;
-    overflow: hidden; 
+    overflow: hidden;
     transition: color 0.5s ease, transform 0.5s ease;
 }
 
@@ -165,4 +165,35 @@
 
 .settings-dropdown button:active {
     color: whitesmoke;
+}
+
+.notif-badge {
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    margin: 0.5em;
+    padding: 2px 7px;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.settings-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 999px;
+    padding: 0.15em 0.45em;
+    font-size: 0.7rem;
+    font-weight: bold;
+    z-index: 10;
+    box-shadow: 0 0 0 1px white;
+    transition: 0.3s ease-in-out;
+}
+
+.settings-badge:hover {
+    background-color: black;
+    
+    color: white;
 }

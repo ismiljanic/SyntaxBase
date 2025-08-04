@@ -2,15 +2,16 @@ package programming.tutorial.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import programming.tutorial.dao.NotificationRepository;
 import programming.tutorial.dao.PostRepository;
 import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.Post;
 import programming.tutorial.domain.Role;
 import programming.tutorial.domain.User;
 import programming.tutorial.dto.PostDTO;
-import programming.tutorial.services.NotificationService;
+import programming.tutorial.dto.ReplyCreatedEventDTO;
 import programming.tutorial.services.PostService;
-import org.springframework.security.oauth2.jwt.Jwt;
+import programming.tutorial.services.ReplyEventProducer;
 
 import java.util.Date;
 import java.util.List;
@@ -24,7 +25,10 @@ public class PostServiceJpa implements PostService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private NotificationService notificationService;
+    private NotificationRepository notificationRepository;
+
+    @Autowired
+    private ReplyEventProducer replyEventProducer;
 
     @Override
     public List<PostDTO> getAllPosts() {
@@ -70,26 +74,45 @@ public class PostServiceJpa implements PostService {
 
     @Override
     public Post createPost(Post post) {
+        System.out.println("Creating post: " + post);
+
         int wordCount = post.getContent().trim().isEmpty() ? 0 : post.getContent().trim().split("\\s+").length;
+        System.out.println("Word count: " + wordCount);
 
         if (wordCount > 1024) {
+            System.out.println("Post content too long");
             throw new RuntimeException("Post content exceeds the maximum length of 1024 words.");
         }
 
         post.setCreatedAt(new Date());
         Post savedPost = postRepository.save(post);
-        if (post.getParentPost() != null && post.getParentPost().getId() != null) {
-            Post parentPost = postRepository.findById(post.getParentPost().getId()).orElse(null);
-            if (parentPost == null) {
-                throw new RuntimeException("Parent post does not exist.");
-            }
+        System.out.println("Post saved with ID: " + savedPost.getId());
 
-            if (post.getParentPost() != null && post.getParentPost().getId() != null) {
-                parentPost = postRepository.findById(post.getParentPost().getId())
-                        .orElseThrow(() -> new IllegalArgumentException("Parent post not found."));
-                notificationService.createReplyNotification(parentPost, savedPost);
-            }
+        if (post.getParentPost() != null && post.getParentPost().getId() != null) {
+            System.out.println("Post is a reply to post ID: " + post.getParentPost().getId());
+
+            Post parentPost = postRepository.findById(post.getParentPost().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Parent post not found."));
+            System.out.println("Parent post found: " + parentPost);
+
+            User replyingUser = userRepository.findByAuth0UserId(savedPost.getUserId())
+                    .orElseThrow(() -> new RuntimeException("Replying user not found"));
+
+            User parentUser = userRepository.findByAuth0UserId(parentPost.getUserId())
+                    .orElseThrow(() -> new RuntimeException("Parent user not found"));
+
+            ReplyCreatedEventDTO event = new ReplyCreatedEventDTO();
+            event.setPostId(Long.valueOf(parentPost.getId()));
+            event.setParentUserId(parentPost.getUserId());
+            event.setReplyId(Long.valueOf(savedPost.getId()));
+            event.setReplyUserId(savedPost.getUserId());
+            event.setReplyContent(savedPost.getContent());
+            event.setReplierUserEmail(replyingUser.getUsername());
+            event.setParentUserEmail(parentUser.getUsername());
+            System.out.println("Publishing reply created event: " + event);
+            replyEventProducer.publishReplyCreatedEvent(event);
         }
+
         return savedPost;
     }
 

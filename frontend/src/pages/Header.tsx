@@ -4,6 +4,7 @@ import '../styles/Header.css';
 import picture from '../images/logoSyntaxBase.png';
 import { SettingsMenu } from './SettingsMenu';
 import { useAuth0 } from "@auth0/auth0-react";
+import axios from 'axios';
 
 interface HeaderProps {
   bgColor?: string;
@@ -17,6 +18,8 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
   const headerRef = useRef<HTMLElement>(null);
   const [headerVisible, setHeaderVisible] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const auth0UserId = user?.sub;
 
   useEffect(() => {
     const fetchTokenAndSetUser = async () => {
@@ -28,6 +31,26 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
     };
     fetchTokenAndSetUser();
   }, [isAuthenticated, user]);
+
+
+  useEffect(() => {
+    const fetchUnread = async () => {
+      if (!auth0UserId) return;
+      try {
+        const token = await getAccessTokenSilently();
+        const res = await axios.get('http://localhost:8090/api/notifications', {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        });
+        const unread = res.data.filter((n: any) => !n.read);
+        setUnreadCount(unread.length);
+      } catch (err) {
+        console.error('Failed to fetch unread count', err);
+      }
+    };
+    fetchUnread();
+  }, [auth0UserId, getAccessTokenSilently]);
+
 
 
   useEffect(() => {
@@ -158,9 +181,13 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
       </div>
 
       {isAuthenticated && userId ? (
-        <SettingsMenu role={userRole ?? ''} />
+        <SettingsMenu role={userRole ?? ''} unreadCount={unreadCount} />
       ) : (
-        <button style={{ paddingRight: '5.5em' }} className="divni1" onClick={handleContactClick}>
+        <button
+          style={{ paddingRight: '5.5em' }}
+          className="divni1"
+          onClick={handleContactClick}
+        >
           Contact
         </button>
       )}

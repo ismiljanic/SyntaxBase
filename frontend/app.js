@@ -10,7 +10,7 @@ const { PORT } = process.env;
 const { HOST } = process.env;
 const { API_BASE_URL } = process.env;
 
-// Proxy
+// Proxy API
 app.use(
     "/api",
     createProxyMiddleware({
@@ -24,6 +24,15 @@ app.use(
     })
 );
 
+app.use(
+    "/ws-notifications",
+    createProxyMiddleware({
+        target: "http://localhost:8090",
+        changeOrigin: true,
+        ws: true,
+    })
+);
+
 app.use(express.static(path.join(__dirname, 'build')))
 
 app.listen(PORT, HOST, () => {
@@ -31,6 +40,5 @@ app.listen(PORT, HOST, () => {
 });
 
 app.get("*", async (req, res) => {
-        res.sendFile(path.join(__dirname, 'build', 'index.html'))
-    }
-);
+    res.sendFile(path.join(__dirname, 'build', 'index.html'))
+});

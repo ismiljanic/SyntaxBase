@@ -7,6 +7,7 @@ import programming.tutorial.dao.NotificationRepository;
 import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.Notification;
 import programming.tutorial.domain.Post;
+import programming.tutorial.domain.User;
 import programming.tutorial.dto.NotificationDTO;
 import programming.tutorial.services.NotificationService;
 
@@ -32,8 +33,11 @@ public class NotificationServiceJpa implements NotificationService {
     }
 
     @Override
-    public void createReplyNotification(Post parentPost, Post reply) {
+    public void createReplyNotification(Post parentPost, Post reply, User replyingUser) {
         if (!parentPost.getUserId().equals(reply.getUserId())) {
+            User parentUser = userRepository.findByAuth0UserId(parentPost.getUserId())
+                    .orElseThrow(() -> new RuntimeException("Parent user not found"));
+
             Notification notification = new Notification();
             notification.setUserId(parentPost.getUserId());
             notification.setPostId(parentPost.getId());
@@ -41,6 +45,10 @@ public class NotificationServiceJpa implements NotificationService {
             notification.setMessage(reply.getContent());
             notification.setRead(false);
             notification.setCreatedAt(new Date());
+
+            notification.setReplierUserEmail(replyingUser.getUsername());
+            notification.setParentUserEmail(parentUser.getUsername());
+
             notificationRepository.save(notification);
         }
     }
@@ -52,7 +60,7 @@ public class NotificationServiceJpa implements NotificationService {
                     .map(u -> u.getUsername()).orElse("Unknown User");
             return new NotificationDTO(notification.getId(), notification.getUserId(), notification.getPostId(),
                     notification.getReplyId(), notification.getMessage(),
-                    notification.isRead(), notification.getCreatedAt(), username);
+                    notification.isRead(), notification.getCreatedAt(), username, notification.getReplierUserEmail(), notification.getParentUserEmail());
         }).collect(Collectors.toList());
     }
 }

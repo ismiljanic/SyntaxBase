@@ -515,3 +515,14 @@ button.post-button:hover {
     background-color: #cc0000;
     color: white;
 }
+
+.reply-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.reply-date {
+    color: #888;
+}

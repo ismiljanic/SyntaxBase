@@ -16,11 +16,13 @@ public class Notification {
     private String message;
     private boolean isRead;
     private Date createdAt;
+    private String replierUserEmail;
+    private String parentUserEmail;
 
     public Notification() {
     }
 
-    public Notification(Integer id, String userId, Integer postId, Integer replyId, String message, boolean isRead, Date createdAt) {
+    public Notification(Integer id, String userId, Integer postId, Integer replyId, String message, boolean isRead, Date createdAt, String replierUserEmail, String parentUserEmail) {
         this.id = id;
         this.userId = userId;
         this.postId = postId;
@@ -28,6 +30,8 @@ public class Notification {
         this.message = message;
         this.isRead = isRead;
         this.createdAt = createdAt;
+        this.replierUserEmail = replierUserEmail;
+        this.parentUserEmail = parentUserEmail;
     }
 
     public Integer getId() {
@@ -86,16 +90,19 @@ public class Notification {
         this.createdAt = createdAt;
     }
 
-    @Override
-    public String toString() {
-        return "Notification{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", postId=" + postId +
-                ", replyId=" + replyId +
-                ", message='" + message + '\'' +
-                ", isRead=" + isRead +
-                ", createdAt=" + createdAt +
-                '}';
+    public String getReplierUserEmail() {
+        return replierUserEmail;
+    }
+
+    public void setReplierUserEmail(String replierUserEmail) {
+        this.replierUserEmail = replierUserEmail;
+    }
+
+    public String getParentUserEmail() {
+        return parentUserEmail;
+    }
+
+    public void setParentUserEmail(String parentUserEmail) {
+        this.parentUserEmail = parentUserEmail;
     }
 }

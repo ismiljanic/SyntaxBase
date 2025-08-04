@@ -78,6 +78,7 @@ import InviteHandler from "./components/InviteHandler";
 import AcceptInvite from "./components/AcceptInvite";
 import { LessonLoader } from "./components/LessonLoader";
 import { SuspendedPage } from "./pages/SuspendedPage";
+import { NotificationsPage } from "./pages/NotificationPage";
 
 export function Router() {
   return (
@@ -230,9 +231,9 @@ export function Router() {
           <Route path="/community/:userId" element={<ProtectedRoute>
             <Community />
           </ProtectedRoute>} />
-          <Route path="/notifications/:userId" element={<ProtectedRoute>
+          {/* <Route path="/notifications/:userId" element={<ProtectedRoute>
             <Notifications />
-          </ProtectedRoute>} />
+          </ProtectedRoute>} /> */}
           <Route path="/create-course" element={<ProtectedRoute>
             <CreateCourse />
           </ProtectedRoute>} />
@@ -256,6 +257,9 @@ export function Router() {
           </ProtectedRoute>} />
           <Route path="/accept-invite" element={
             <AcceptInvite />} />
+          <Route path="/notifications/:userId" element={<ProtectedRoute>
+            <NotificationsPage />
+          </ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/forbidden" element={<Forbidden />} />

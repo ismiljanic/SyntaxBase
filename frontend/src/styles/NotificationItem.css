@@ -1,0 +1,40 @@
+.notif-item {
+    background-color: #f9fafb;
+    padding: 1rem 1.25rem;
+    border-left: 4px solid #3b82f6;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: background-color 0.2s ease-in-out;
+}
+
+.notif-item.read {
+    background-color: #f3f4f6;
+    border-left-color: #9ca3af;
+}
+
+.notif-item:hover {
+    background-color: #e5efff7a;
+}
+
+.notif-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    color: #0062ff;
+}
+
+.notif-header strong {
+    color: #1f2937;
+}
+
+.notif-item p {
+    font-size: 1.1rem;
+    margin-top: -0.1em;
+    margin-bottom: 0.5em;
+    color: #111827;
+    line-height: 1.4;
+}
+
+.notif-item:hover {
+    background-color: #eef2ff;
+}
