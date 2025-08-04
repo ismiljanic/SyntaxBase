@@ -67,23 +67,25 @@ jobs:
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
       APP_SECRETS: ${{ secrets.APPLICATION_SECRETS_PROPERTIES_CONTENT }}
-
+  
     steps:
-      - name: Checkout code
+      - name: Checkout microservice branch
         uses: actions/checkout@v4
-
+        with:
+          ref: microservice/notifications
+  
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
-
+  
       - name: Prepare application-secrets.properties (optional)
         if: env.APP_SECRETS != ''
         run: |
           mkdir -p ./microservice-notifications/src/test/resources/
           echo "$APP_SECRETS" > ./microservice-notifications/src/test/resources/application-secrets.properties
-
+  
       - name: Build microservice-notifications with Maven
         run: mvn clean install
         working-directory: ./microservice-notifications
