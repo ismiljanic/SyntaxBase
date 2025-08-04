@@ -9,6 +9,8 @@ on:
 jobs:
   build-backend:
     runs-on: ubuntu-latest
+    env:
+      APP_SECRETS: ${{ secrets.APPLICATION_SECRETS_PROPERTIES_CONTENT }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,9 +22,9 @@ jobs:
           java-version: '21'
 
       - name: Prepare application-secrets.properties (optional)
-        if: ${{ secrets.APPLICATION_SECRETS_PROPERTIES_CONTENT != '' }}
+        if: env.APP_SECRETS != ''
         run: |
-          echo "${{ secrets.APPLICATION_SECRETS_PROPERTIES_CONTENT }}" > ./backend/src/test/resources/application-secrets.properties
+          echo "${APP_SECRETS}" > ./backend/src/test/resources/application-secrets.properties
 
       - name: Build backend with Maven
         run: mvn clean install
@@ -31,6 +33,8 @@ jobs:
   build-microservice-notifications:
     runs-on: ubuntu-latest
     needs: build-backend
+    env:
+      APP_SECRETS: ${{ secrets.APPLICATION_SECRETS_PROPERTIES_CONTENT }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -42,12 +46,13 @@ jobs:
           java-version: '21'
 
       - name: Prepare application-secrets.properties (optional)
-        if: ${{ secrets.APPLICATION_SECRETS_PROPERTIES_CONTENT != '' }}
+        if: env.APP_SECRETS != ''
         run: |
-          echo "${{ secrets.APPLICATION_SECRETS_PROPERTIES_CONTENT }}" > ./microservice-notifications/src/test/resources/application-secrets.properties
+          echo "${APP_SECRETS}" > ./microservice-notifications/src/test/resources/application-secrets.properties
 
       - name: Build microservice-notifications with Maven
         run: mvn clean install
         working-directory: ./microservice-notifications
+
 
 
