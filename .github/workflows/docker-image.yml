@@ -33,10 +33,16 @@ jobs:
           docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-backend:latest ./backend
           docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-backend:latest
 
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
       - name: Build microservice-notifications JAR
         run: mvn clean package -DskipTests
         working-directory: ./microservice-notifications
-      
+
       - name: Build and push microservice-notifications
         run: |
           docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-notifications:latest ./microservice-notifications
