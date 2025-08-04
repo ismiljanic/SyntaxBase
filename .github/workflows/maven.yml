@@ -24,6 +24,7 @@ jobs:
       - name: Prepare application-secrets.properties (optional)
         if: env.APP_SECRETS != ''
         run: |
+          mkdir -p ./backend/src/test/resources/
           echo "${APP_SECRETS}" > ./backend/src/test/resources/application-secrets.properties
 
       - name: Build backend with Maven
@@ -48,11 +49,9 @@ jobs:
       - name: Prepare application-secrets.properties (optional)
         if: env.APP_SECRETS != ''
         run: |
+          mkdir -p ./microservice-notifications/src/test/resources/
           echo "${APP_SECRETS}" > ./microservice-notifications/src/test/resources/application-secrets.properties
 
       - name: Build microservice-notifications with Maven
         run: mvn clean install
         working-directory: ./microservice-notifications
-
-
-
