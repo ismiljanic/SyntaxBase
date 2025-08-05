@@ -55,6 +55,9 @@ Some core features in SyntaxBase include:
 - Authenticated users can apply for instructor role
 - After their request is approved they will receive email with confirmation
 - Ability to enroll course via shared link from instructor
+- Authenticated users can mark notifications as read
+- Authenticated users can report messages
+- Users can receive email containing unread notifications
 
 ### Admin
 
@@ -90,7 +93,33 @@ Instructors are verified users granted elevated privileges to create and manage 
 - Share enrollment links via email
 - Hold elevated Instructor role in forum discussions
 
-### And many more!
+### Forum / Community Module
+
+This module enables structured, role-based community interaction through a lightweight forum system.
+
+#### Core Features
+
+- **Section-Based Posting**  
+  Users can create posts in up to five predefined sections, promoting organized discussions and content categorization.
+
+- **Post Structure**  
+  Each post includes:
+    - Message body
+    - User name and role
+    - Timestamp of creation
+
+- **Author Permissions**  
+  Post creators can **edit** or **delete** their own posts at any time.
+
+- **Replies & Moderation**
+    - All posts support **threaded replies**
+    - Reply authors can **modify**, **delete**, or **report** replies
+    - Reporting enables community-driven moderation workflows
+
+- **Sorting Options**  
+  Posts can be sorted by:
+    - **Date** – for chronological relevance
+    - **Thread/Section** – to maintain contextual clarity
 
 ---
 # Tech stack
@@ -268,7 +297,16 @@ To start the backend application, follow these steps:
 ---
 ## Project structure
 
-### Project Structure (High Level) - v1
+### Project Structure (High Level) - v1.1
+
+```text
+SyntaxBase/
+├── .github/
+├── backend/
+├── docs/
+├── frontend/
+├── microservice-notifications/
+```
 
 ### Frontend
 <details>
@@ -285,7 +323,8 @@ src/
 │   ├── databaseCourses/     
 │   ├── gameCourses/         
 │   ├── problemSolvingCourses/
-│   └── webCourses/          
+│   └── webCourses/       
+├── services/   
 └── styles/
 ```
 
@@ -302,6 +341,22 @@ com/programming.tutorial/
 ├── services/
 └── TutorialApplication.java
 ```
+
+### Microservice-notifications
+ <details> <summary><strong>Backend Structure</strong></summary></details>
+
+```text
+com/SyntaxBase/
+├── config/
+├── controller/
+├── dao/
+├── domain/
+├── dto/
+├── listener/
+├── services/
+├── utils/
+└── MicroserviceNotificationsApplication.java
+```
 ---
 
 ## Demonstration
@@ -317,5 +372,13 @@ For a full visual walkthrough, visit [Full UI Showcase](docs/FEATURES_OVERVIEW.m
 
 ### User homepage
 <img src="docs/images/userHomepage.png" style="max-width: 100%; height: auto;" alt="userHomepage">
+
+### Forum
+<img src="docs/images/forumMessages.png" style="max-width: 100%; height: auto;" alt="userHomepage">
+
+### Apply to course example
+
+<img src="docs/images/course1Example.png" style="max-width: 100%; height: auto;" alt="course1Example1">
+<img src="docs/images/course1Example2.png" style="max-width: 100%; height: auto;" alt="course1Example1">
 
 ---

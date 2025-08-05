@@ -48,14 +48,16 @@ The following images provide a visual overview of some features and interface el
 
 <img src="images/authExample.png" style="max-width: 100%; height: auto;" alt="authExample">
 
-
 ### User homepage
-
 <img src="images/userHomepage.png" style="max-width: 100%; height: auto;" alt="userHomepage">
 
 ### User information
 <img src="images/accountinfo.png" style="max-width: 100%; height: auto;" alt="accountinfo">
 <img src="images/changepersonalinfo.png" style="max-width: 100%; height: auto;" alt="changepersonalinfo">
+
+### User notifications
+<img src="images/notifications.png" style="max-width: 100%; height: auto;" alt="changepersonalinfo">
+<img src="images/newMessages.png" style="max-width: 100%; height: auto;" alt="accountinfo">
 
 ### Instructor role request
 <img src="images/instructorrequest.png" style="max-width: 100%; height: auto;" alt="instructorrequest">
@@ -75,6 +77,9 @@ The following images provide a visual overview of some features and interface el
 ### Admin courses display
 <img src="images/adminCourses.png" style="max-width: 100%; height: auto;" alt="adminCoursesDisplay">
 
+### Admin reports display
+<img src="images/adminReportHandle.png" style="max-width: 100%; height: auto;" alt="adminCoursesDisplay">
+
 ### Deleted posts in admin user interface
 <img src="images/deletedPosts.png" style="max-width: 100%; height: auto;" alt="deletedPosts">
 
@@ -92,3 +97,6 @@ The following images provide a visual overview of some features and interface el
 
 ### Certificate email
 <img src="images/certificateEmail.png" style="max-width: 100%; height: auto;" alt="certificateEmail">
+
+### New notification email
+<img src="images/notificationEmail.png" style="max-width: 100%; height: auto;" alt="certificateEmail">
