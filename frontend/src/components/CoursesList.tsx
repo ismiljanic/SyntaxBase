@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import web4 from '../images/web4.png';
+import enrolledCourse from '../images/enrolledCourse.png';
 import '../styles/CoursesList.css';
 import { useAuth0 } from '@auth0/auth0-react';
 import AnimatedCounter from './AnimatedCounter';
@@ -293,7 +293,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
                         onClick={() => handleCourseClick(course)}
                     >
                         <div className="leftSide">
-                            <img src={web4} alt={course.courseName} className="courseImage2" />
+                            <img src={enrolledCourse} alt={course.courseName} className="courseImage2" />
                             <div className="imageDescription2">
                                 <strong>{course.courseName}</strong>
                                 <p>{course.description || 'No description available.'}</p>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Header } from "../../Header";
 import { Footer } from "../../Footer";
 import { Footer2 } from "../../Footer2";
@@ -15,9 +15,78 @@ import adv from '../../../images/adv.png';
 import desktop2 from '../../../images/desktop2.png';
 import gameL2 from '../../../images/gameL2.png';
 import database2 from '../../../images/database2.png';
-
+import Popup from "reactjs-popup";
+import "reactjs-popup/dist/index.css";
+import { useNavigate } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+import axios from "axios";
 
 export function IntermediateWebCourse() {
+    const { user, isAuthenticated, getAccessTokenSilently, isLoading } = useAuth0();
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState("");
+    const navigate = useNavigate();
+
+
+    const handleButtonClick = async () => {
+        if (!isAuthenticated || !user?.sub) {
+            navigate('/login', { state: { from: '/intermediateWebCourse' } });
+            return;
+        }
+        try {
+            const token = await getAccessTokenSilently();
+
+            await axios.post(
+                'http://localhost:8080/api/user-courses/startCourse',
+                {
+                    auth0UserId: user.sub,
+                    courseId: 2,
+                },
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                    withCredentials: true,
+                }
+            );
+
+            const response = await axios.get(
+                'http://localhost:8080/api/progress/lessons/first',
+                {
+                    params: { courseId: 2 },
+                    headers: { Authorization: `Bearer ${token}` },
+                    withCredentials: true,
+                }
+            );
+
+            const lesson = response.data;
+            const lessonNumber = lesson?.lessonNumber;
+            console.log("lesson: " + JSON.stringify(lesson));
+            if (!lessonNumber) {
+                setPopupMessage("First lesson not found.");
+                setShowPopup(true);
+                return;
+            }
+
+            navigate(`/course/2/lesson/${lessonNumber}`);
+
+        } catch (error: any) {
+            if (axios.isAxiosError(error)) {
+                if (error.response?.status === 409) {
+                    setPopupMessage(error.response.data || "You are already enrolled in this course.");
+                    setShowPopup(true);
+                } else if (error.response) {
+                    setPopupMessage(`Error: ${error.response.data || error.message}`);
+                    setShowPopup(true);
+                } else {
+                    setPopupMessage("Network error. Please try again.");
+                    setShowPopup(true);
+                }
+            } else {
+                setPopupMessage("Unexpected error occurred.");
+                setShowPopup(true);
+            }
+        }
+    }
+
     return (
         <div className="mainp-container" style={{ backgroundColor: 'rgb(247, 250, 251)' }}>
             <Header bgColor='rgb(247, 250, 251)' />
@@ -81,10 +150,20 @@ export function IntermediateWebCourse() {
                 </div>
             </div>
             <div className="buttonContainer">
-                <button className="courseButton">START COURSE</button>
+                <button className="courseButton" onClick={handleButtonClick}>START COURSE</button>
             </div>
-
-
+            <Popup
+                open={showPopup}
+                onClose={() => setShowPopup(false)}
+                modal
+                className="custom-popup"
+            >
+                <div className="custom-popup-content">
+                    <div className="custom-popup-header">Course Error</div>
+                    <p>{popupMessage}</p>
+                    <button className="custom-popup-button" onClick={() => setShowPopup(false)}>Close</button>
+                </div>
+            </Popup>
             <div className="bigDaddyContainer">
                 <div className="container2">
                     <div className="webCourseDiv3">

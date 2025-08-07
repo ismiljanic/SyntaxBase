@@ -211,8 +211,8 @@
     padding-top: 3em;
     margin-left: 5em;
     border-top: 1px solid #d1d7de;
-    border-bottom: 1px solid #d1d7de;
     margin-right: 5em;
+    padding-bottom: 11em;
 }
 
 
@@ -245,7 +245,7 @@
 }
 
 .pictureContainer {
-    padding-top: 30em;
+    padding-top: 10em;
     display: flex;
     flex-wrap: wrap;
     gap: 6em;
