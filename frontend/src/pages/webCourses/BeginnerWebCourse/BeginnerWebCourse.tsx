@@ -1,20 +1,20 @@
 import React, { useState } from "react";
-import { Header } from "../Header";
-import { Footer } from "../Footer";
-import { Footer2 } from "../Footer2";
-import '../../styles/webCourses/BeginnerWebCourse.css';
-import simple1 from '../../pages/webCourses/BeginnerWebCourse/images/simple1.png';
-import simple2 from '../../pages/webCourses/BeginnerWebCourse/images/simple2.png';
-import simple3 from '../../pages/webCourses/BeginnerWebCourse/images/simple3.png';
-import simple4 from '../../pages/webCourses/BeginnerWebCourse/images/simple4.png';
-import simple5 from '../../pages/webCourses/BeginnerWebCourse/images/simple5.png';
-import simple6 from '../../pages/webCourses/BeginnerWebCourse/images/simple6.png';
-import simple7 from '../../pages/webCourses/BeginnerWebCourse/images/simple7.png';
-import intermediateWebCourse from '../../images/intermediateWebCourse.png';
-import adv from '../../images/adv.png';
-import desktop2 from '../../images/desktop2.png';
-import gameL2 from '../../images/gameL2.png';
-import database2 from '../../images/database2.png';
+import { Header } from "../../Header"
+import { Footer } from "../../Footer";
+import { Footer2 } from "../../Footer2";
+import '../../../styles/webCourses/BeginnerWebCourse.css';
+import simple1 from '../../../pages/webCourses/BeginnerWebCourse/images/simple1.png';
+import simple2 from '../../../pages/webCourses/BeginnerWebCourse/images/simple2.png';
+import simple3 from '../../../pages/webCourses/BeginnerWebCourse/images/simple3.png';
+import simple4 from '../../../pages/webCourses/BeginnerWebCourse/images/simple4.png';
+import simple5 from '../../../pages/webCourses/BeginnerWebCourse/images/simple5.png';
+import simple6 from '../../../pages/webCourses/BeginnerWebCourse/images/simple6.png';
+import tenOutOften from '../../../pages/webCourses/BeginnerWebCourse/images/tenOutOften.png';
+import intermediateWebCourse from '../../../images/intermediateWebCourse.png';
+import adv from '../../../images/adv.png';
+import desktop2 from '../../../images/desktop2.png';
+import gameL2 from '../../../images/gameL2.png';
+import database2 from '../../../images/database2.png';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Popup from "reactjs-popup";
@@ -145,7 +145,7 @@ export function BeginnerWebCourse() {
                         <div className="imageDescription">Find out why node modules are heavy</div>
                     </div>
                     <div className="imageWithDescription">
-                        <img src={simple7} alt="" className="courseImage" />
+                        <img src={tenOutOften} alt="" className="courseImage" />
                         <div className="imageDescription">Finish all steps of course and get feedback</div>
                     </div>
                 </div>
