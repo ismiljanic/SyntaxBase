@@ -43,7 +43,7 @@ public class AuthController {
                 .path("/")
                 .maxAge(0)
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .sameSite("Strict")
                 .build();
 
@@ -51,7 +51,7 @@ public class AuthController {
                 .path("/")
                 .maxAge(0)
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .sameSite("Strict")
                 .build();
 
@@ -71,7 +71,7 @@ public class AuthController {
                 .httpOnly(true).secure(true).path("/").sameSite("Strict").maxAge(Duration.ofMinutes(15)).build();
 
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
-                .httpOnly(true).secure(true).path("/").sameSite("Strict").maxAge(Duration.ofHours(1)).build();
+                .httpOnly(true).secure(true).path("/").sameSite("Strict").maxAge(Duration.ofDays(7)).build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
@@ -132,7 +132,7 @@ public class AuthController {
 
         if (newRefreshToken != null) {
             ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", newRefreshToken)
-                    .httpOnly(true).secure(true).path("/").sameSite("Strict").maxAge(Duration.ofHours(1)).build();
+                    .httpOnly(true).secure(true).path("/").sameSite("Strict").maxAge(Duration.ofDays(7)).build();
             response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
             System.out.println("New cookies set: access + refresh");
         } else {

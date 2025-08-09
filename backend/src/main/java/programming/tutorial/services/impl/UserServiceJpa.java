@@ -41,6 +41,10 @@ public class UserServiceJpa implements UserService {
 
     @Autowired
     private UserCourseRepository userCourseRepository;
+    @Autowired
+    private UserProgressRepository userProgressRepository;
+    @Autowired
+    private LessonFeedbackRepository lessonFeedbackRepository;
 
 
     @Override
@@ -223,6 +227,7 @@ public class UserServiceJpa implements UserService {
     }
 
     @Override
+    @Transactional
     public void removeUserFromCourse(String auth0UserId, Integer courseId) {
         List<UserCourse> userCourses = userCourseRepository.findByUser_Auth0UserIdAndCourseId(auth0UserId, courseId);
 
@@ -230,8 +235,21 @@ public class UserServiceJpa implements UserService {
             throw new RuntimeException("User is not enrolled in the specified course");
         }
 
+        Integer userId = userRepository.findByAuth0UserId(auth0UserId)
+                .orElseThrow(() -> new RuntimeException("User not found with auth0UserId: " + auth0UserId))
+                .getId();
+
+        userProgressRepository.deleteByUserIdAndCourseId(userId, courseId);
+
+        lessonRepository.deleteByUserIdAndCourseId(userId, courseId);
+
+        lessonFeedbackRepository.deleteByUserIdAndCourseId(userId, courseId);
+
+        ratingRepository.deleteByAuth0UserIdAndCourseId(auth0UserId, courseId);
+
         userCourseRepository.deleteAll(userCourses);
     }
+
 
     @Override
     public boolean getUserActiveStatus(String auth0UserId) {

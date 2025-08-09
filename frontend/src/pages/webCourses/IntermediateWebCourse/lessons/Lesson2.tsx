@@ -1,32 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Header } from '../../../Header';
 import { Footer } from '../../../Footer';
 import { Footer2 } from '../../../Footer2';
 import '../../../../styles/webCourses/BeginnerWebCourse/Lesson1.css';
-import lesson11 from '../images/lesson11.png';
-import lesson12 from '../images/lesson12.png';
-import lesson13 from '../images/lesson13.png';
-import lesson14 from '../images/lesson14.png';
-import lesson15 from '../images/lesson15.png';
-import lesson16 from '../images/lesson16.png';
-import commandLine from '../images/commandLine.png';
-import contL from '../../../../pages/webCourses/BeginnerWebCourse/images/contL.png';
-import courseOverview from '../../../../pages/webCourses/BeginnerWebCourse/images/courseOverview.png';
+import react from '../../../../pages/webCourses/BeginnerWebCourse/images/react.png';
+import details from '../../../../pages/webCourses/BeginnerWebCourse/images/details.png';
+import html1 from '../../../../pages/webCourses/BeginnerWebCourse/images/html1.png';
+import css1 from '../../../../pages/webCourses/BeginnerWebCourse/images/css1.png';
+import typescript1 from '../../../../pages/webCourses/BeginnerWebCourse/images/typescript1.png';
+import finalp1 from '../../../../pages/webCourses/BeginnerWebCourse/images/finalp1.png';
+import firstExample from '../../../../pages/webCourses/BeginnerWebCourse/images/firstExample.png';
+import secondExample from '../../../../pages/webCourses/BeginnerWebCourse/images/secondExample.png';
+import thirdExample from '../../../../pages/webCourses/BeginnerWebCourse/images/thirdExample.png';
+import fourthExample from '../../../../pages/webCourses/BeginnerWebCourse/images/fourthExample.png';
 import { useAuth0 } from '@auth0/auth0-react';
 
-export function Lesson1() {
+
+export function Lesson2() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(true);
     const [feedbackSubmitted, setFeedbackSubmitted] = useState<boolean>(false);
-    const { user, getAccessTokenSilently } = useAuth0();
+    const location = useLocation();
     const { courseId } = useParams();
+    const { user, getAccessTokenSilently } = useAuth0();
     const auth0UserId = user?.sub;
     const [isEnrolled, setIsEnrolled] = useState<boolean | null>(null);
     const { lessonNumber } = useParams<{ lessonNumber: string }>();
     const lessonIdNumber = lessonNumber ? parseInt(lessonNumber, 10) : null;
     const [lessonId, setLessonId] = useState<number | null>(null);
-
 
     async function fetchLessonId() {
         if (!courseId || !lessonNumber) return;
@@ -111,7 +113,16 @@ export function Lesson1() {
         checkFeedbackStatus();
     }, [user?.sub, lessonId, getAccessTokenSilently]);
 
-
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const scrollTo = params.get('scrollTo');
+        if (scrollTo) {
+            const targetSection = document.getElementById(scrollTo);
+            if (targetSection) {
+                targetSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    }, [location.search]);
 
     if (lessonIdNumber === null) {
         return <p>Lesson ID is missing or invalid.</p>;
@@ -153,7 +164,6 @@ export function Lesson1() {
         }
     };
 
-
     const markLessonAsCompleted = async (lessonId: number) => {
         try {
             const token = await getAccessTokenSilently();
@@ -176,7 +186,6 @@ export function Lesson1() {
             console.error('Error marking lesson as completed:', error);
         }
     };
-
     const handleUnderstand = async () => {
         await sendFeedback('understood');
     };
@@ -220,6 +229,11 @@ export function Lesson1() {
         navigate(`/course/${courseId}/lesson/${nextLessonId}`);
     };
 
+    const handlePreviousLesson = async () => {
+        await updateProgress();
+        const previousLessonId = lessonIdNumber - 1;
+        navigate(`/course/${courseId}/lesson/${previousLessonId}`);
+    };
 
     if (loading) return <p>Loading...</p>;
 
@@ -227,128 +241,170 @@ export function Lesson1() {
         <div className='mainContainer'>
             <Header bgColor="rgb(247, 250, 251)" />
             <div className='lessonIntroduction'>
-                <h1>Lesson 1: Development Environment Setup</h1>
-                <p>Welcome to the <b>Intermediate Web Development Course</b>. In this first lesson, we’ll set up the tools and environment that will power your entire development workflow.</p>
+                <h1>Introduction to React Basics and Routing</h1>
+                <p>Welcome to <b>Lesson 2</b> of the <b>Intermediate Web Development course</b>.</p>
             </div>
             <div className='aboutBeginnerWeb'>
                 <div className="aboutCourseDiv2" style={{ paddingBottom: '7em' }}>
-                    <div className="introductionDiv">Your Developer Toolkit</div>
+                    <div className="introductionDiv">Introduction</div>
                     <div className="frontImageBeginner">
                         <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
                             <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                Setting Up for Success
+                                Getting Started with React
                             </div>
                             <div className="imageContainer">
-                                <img src={lesson11} alt="" className="imageForCourse" />
+                                <img src={react} alt="" className="imageForCourse" />
                             </div>
                         </h1>
                     </div>
+
                     <div className="descriptionOfCourse">
-                        As you move beyond beginner-level coding, having the right tools is critical.
-                        In this lesson, you'll install and configure the software needed to build modern, professional web applications using <b>TypeScript</b> and <b>React</b>.
+                        In this lesson, we'll dive into the fundamentals of React.
+                        You will learn how to create components, manage JSX syntax, and understand React's component lifecycle.
+                        Additionally, we'll cover routing with React Router to enable navigation between pages.
                     </div>
                 </div>
-                <div className="aboutCourseDiv2" style={{ marginBottom: '-8em' }}>
-                    <div className="introductionDiv" style={{ marginLeft: '0.2em' }}>KEY AREAS</div>
+                <div className="aboutCourseDiv2" style={{ paddingBottom: '2em' }}>
+                    <div className="introductionDiv">Semantic HTML</div>
                     <div className="frontImageBeginner">
                         <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
-                            <div className="headerContainer" style={{ width: 'fit-content', marginLeft: '0.1em' }}>
-                                Core Tools & Installation
+                            <div className="headerContainer" style={{ width: 'fit-content' }}>
+                                Why Semantics Matter
+                            </div>
+                            <div className="imageContainer">
+                                <img src={details} alt="" className="imageForCourse" />
                             </div>
                         </h1>
                     </div>
-                </div>
-                <div className='key-areas2'>
-                    <div className="imageContainerWebBeginner">
-                        <img src={lesson14} alt="" className="imageForWebBeginner" />
-                        <div className="overlay">
-                            <div className='keyAreasOfBeginnerWebDev'>
-                                <strong>Visual Studio Code (VSCode)</strong>
-                                <div className='keyDescription'>
-                                    A lightweight yet powerful code editor. Install extensions like React/TS plugin to start with your workflow.
-                                </div>
-                            </div>
-                        </div>
+
+                    <div className="descriptionOfCourse">
+                        React components allow you to build reusable UI elements.
+                        JSX is a syntax extension that looks like HTML but compiles to JavaScript.
+                        Understanding how to structure components and pass props is crucial for scalable React applications.
                     </div>
-                    <div className="imageContainerWebBeginner">
-                        <img src={lesson13} alt="" className="imageForWebBeginner" />
-                        <div className="overlay">
-                            <div className='keyAreasOfBeginnerWebDev2'><strong>Node.js & npm</strong>
-                                <div className='keyDescription'> Install the latest LTS version of Node.js. This gives you access to `npm`, which allows you to manage packages and run scripts for building and testing your app.
-                                </div>
-                            </div>
+                    <p className='paragraphP' style={{ paddingTop: '9em' }}>
+                        For example:
+                        <code>
+                            &lt;<span style={{ color: 'rgb(97, 218, 251)' }}>MyComponent</span> /&gt;
+                        </code>
+                        is a React component instance.
+                        <br />
+                        Components can be functional or class-based.
+                        <div className='htmlElementsDiv'>
+                            <ul>
+                                <li><code>Functional Components</code> - simple, stateless components</li>
+                                <li><code>Class Components</code> - components with state and lifecycle methods</li>
+                                <li><code>JSX Syntax</code> - JavaScript XML for templating UI</li>
+                            </ul>
                         </div>
-                    </div>
-                    <div className="imageContainerWebBeginner">
-                        <img src={lesson12} alt="" className="imageForWebBeginner" />
-                        <div className="overlay">
-                            <div className='keyAreasOfBeginnerWebDev'>
-                                <strong>Git & GitHub</strong>
-                                <div className='keyDescription'>
-                                    Learn to clone, commit, push, and branch effectively. Use GitHub for remote repo hosting and collaboration—even if it’s just you for now.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </p>
                 </div>
 
-                <h3 className='subsection-title'>Modern Project Structure</h3>
+                <h3 className='subsection-title'>Routing with React Router</h3>
                 <p className='paragraph'>
-                    We’ll use a modern <b>React + TypeScript</b> template with a structured folder layout. This mirrors what you’d see in professional codebases and prepares you for scalable application development.
+                    React Router enables dynamic navigation in your app without page reloads.
+                    Learn to configure routes, link components, and use route parameters to build multi-page experiences.
                 </p>
                 <div className='beginnerPictureContainer' style={{ marginBottom: '3em' }}>
-                    <div className="imageWithDescription">
-                        <img src={lesson15} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
-                        <div className="imageDescription">Clean Folder Architecture</div>
+                    <div
+                        className="imageWithDescription"
+                        onClick={() => window.open(`/showCase/1/lesson/2/course/${courseId}`, '_blank')}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <img
+                            src={firstExample}
+                            alt=""
+                            className="courseImage"
+                            style={{ width: '50em', height: '30em' }}
+                        />
+                        <div className='imageDescription'>Try it yourself</div>
                     </div>
-                    <div className="imageWithDescription">
-                        <img src={commandLine} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
-                        <div className="imageDescription">Command-Line Tools & Scripts</div>
+
+                    <div
+                        className="imageWithDescription"
+                        onClick={() => window.open(`/showCase/2/lesson/2/course/${courseId}`, '_blank')}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <img src={secondExample} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
+                        <div className="imageDescription">Try it yourself</div>
                     </div>
-                    <div className="imageWithDescription">
-                        <img src={lesson16} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
-                        <div className="imageDescription">Developer Workflows</div>
+
+                    <div
+                        className="imageWithDescription"
+                        onClick={() => window.open(`/showCase/3/lesson/2/course/${courseId}`, '_blank')}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <img src={thirdExample} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
+                        <div className="imageDescription">Try it yourself</div>
                     </div>
-                    <div className="imageWithDescription">
-                        <img src={contL} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
-                        <div className="imageDescription">Continuous Learning</div>
+
+                    <div
+                        className="imageWithDescription"
+                        onClick={() => window.open(`/showCase/4/lesson/2/course/${courseId}`, '_blank')}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <img src={fourthExample} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
+                        <div className="imageDescription">Try it yourself</div>
                     </div>
                 </div>
                 <div className="aboutCourseDiv2" style={{ paddingBottom: '7em' }}>
-                    <div className="introductionDiv">Developer Workflows</div>
+                    <div className="introductionDiv">Summary</div>
                     <div className="frontImageBeginner">
                         <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
                             <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                Beyond the Basics
+                                Lesson Summary
                             </div>
-                            <div className="imageContainer">
-                                <img src={courseOverview} alt="" className="imageForCourse" />
+                            <div className="imageContainer" style={{ marginTop: '15em' }}>
                             </div>
                         </h1>
                     </div>
 
                     <div className="descriptionOfCourse">
-                        Learn the foundations of efficient, real-world workflows:
-                        <ul>
-                            <li>Terminal commands & shortcuts</li>
-                            <li>Running local development servers</li>
-                            <li>Running TypeScript compilers and tests</li>
-                        </ul>
-                        These habits and tools will follow you throughout the course and into professional settings.
+                        This lesson covered the basics of React components, JSX, and routing.
+                        You now know how to build reusable UI elements and navigate your application efficiently.
+                        In the next lesson, we will explore state management using React hooks.
                     </div>
 
+                    <div className='key-areas3' style={{ marginTop: '-10em' }}>
+                        <div className="imageContainerWebBeginner2">
+                            <img src={react} alt="React Logo" className="imageForWebBeginner2" />
+                            <div className="overlay">
+                                <div className='keyAreasOfBeginnerWebDev3'>
+                                    <strong>React Components:</strong>
+                                    <div className='keyDescription2'>
+                                        Reusable building blocks of your UI that encapsulate logic and presentation.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="imageContainerWebBeginner2">
+                            <img src={react} alt="React Logo" className="imageForWebBeginner2" />
+                            <div className="overlay">
+                                <div className='keyAreasOfBeginnerWebDev3'>
+                                    <strong>Routing:</strong>
+                                    <div className='keyDescription2'>
+                                        <ul>
+                                            <li>Configure multiple routes and nested paths</li>
+                                            <li>Use <code>&lt;Link&gt;</code> to navigate without reload</li>
+                                            <li>Access route parameters for dynamic content</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div className='feedbackContainer'>
-                <h3>Was this setup process smooth?</h3>
+                <h3>Was this lesson easy to understand?</h3>
                 <div className='feedbackButtons'>
                     {!feedbackSubmitted ? (
                         <>
                             <button className='thumbsUp' onClick={handleUnderstand}>
-                                👍 Yes, All Set Up!
+                                👍 I Understand
                             </button>
                             <button className='thumbsDown' onClick={handleDidntUnderstand}>
-                                👎 I Had Issues
+                                👎 I Didn't Understand
                             </button>
                         </>
                     ) : (
@@ -357,9 +413,16 @@ export function Lesson1() {
                 </div>
             </div>
             {feedbackSubmitted && (
-                <div className='moreCoursesDiv' onClick={handleNextLesson}>
-                    Next Lesson
-                </div>
+                <>
+                    <div style={{ display: 'flex' }}>
+                        <div className='moreCoursesDiv' onClick={handleNextLesson}>
+                            Next Lesson
+                        </div>
+                        <div className='goToPreviousLessonDiv' onClick={handlePreviousLesson} style={{ marginLeft: '-77.5em' }}>
+                            Previous Lesson
+                        </div>
+                    </div>
+                </>
             )}
             <Footer2 bgColor="rgb(247, 250, 251)" />
             <Footer bgColor="rgb(247, 250, 251)" />

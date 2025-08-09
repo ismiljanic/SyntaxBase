@@ -35,6 +35,11 @@ public class UserProgressController {
     @Autowired
     private UserService userService;
 
+    public static class ProgressUpdateRequest {
+        public Integer courseId;
+        public Integer lessonId;
+    }
+
     @GetMapping("/current-lesson")
     public ResponseEntity<LessonNumberDTO> getCurrentLessonNumber(
             @RequestParam String userId,
@@ -50,23 +55,21 @@ public class UserProgressController {
 
     @PostMapping("/update")
     public ResponseEntity<String> updateProgress(
-            @RequestParam Integer courseId,
-            @RequestParam Integer lessonId,
+            @RequestBody ProgressUpdateRequest request,
             Authentication authentication) {
-
+        System.out.println("Update hit in updateProgressController");
         String userId = extractUserId(authentication);
-
-        boolean isEnrolled = userProgressService.isUserEnrolled(userId, courseId);
-        boolean isOwner = courseService.isCourseOwner(userId, courseId);
+        boolean isEnrolled = userProgressService.isUserEnrolled(userId, request.courseId);
+        boolean isOwner = courseService.isCourseOwner(userId, request.courseId);
 
         if (!isEnrolled && !isOwner) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String auth0UserId = auth.getName();
-        System.out.println("Authid: " + auth0UserId);
-        return ResponseEntity.ok(userProgressService.updateProgress(auth0UserId, courseId, lessonId));
+        String auth0UserId = authentication.getName();
+        return ResponseEntity.ok(
+                userProgressService.updateProgress(auth0UserId, request.courseId, request.lessonId)
+        );
     }
 
     @GetMapping("/progressBar")
@@ -117,7 +120,6 @@ public class UserProgressController {
         if (!isEnrolled && !isOwner) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
-        System.out.println("Lesson number je ovdje u userProgressController: " + lessonNumber);
         return lessonService.getLessonByCourseIdAndLessonNumber(courseId, lessonNumber)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -126,6 +128,7 @@ public class UserProgressController {
     @GetMapping("/lessons/next")
     public ResponseEntity<LessonDTO> getNextLesson(@RequestParam Integer courseId, @RequestParam Integer currentLessonNumber, Authentication authentication) {
         String auth0Id = extractUserId(authentication);
+        Integer userId = userService.findByAuth0UserId(auth0Id).getId();
 
         boolean isEnrolled = userProgressService.isUserEnrolled(auth0Id, courseId);
         boolean isOwner = courseService.isCourseOwner(auth0Id, courseId);
@@ -133,23 +136,25 @@ public class UserProgressController {
         if (!isEnrolled && !isOwner) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
-        return lessonService.getNextLesson(courseId, currentLessonNumber)
+        return lessonService. getNextLesson(courseId, currentLessonNumber, userId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+
     @GetMapping("/lessons/previous")
     public ResponseEntity<LessonDTO> getPreviousLesson(@RequestParam Integer courseId, @RequestParam Integer currentLessonNumber, Authentication authentication) {
-        String userId = extractUserId(authentication);
+        String auth0Id = extractUserId(authentication);
+        Integer userId = userService.findByAuth0UserId(auth0Id).getId();
 
-        boolean isEnrolled = userProgressService.isUserEnrolled(userId, courseId);
-        boolean isOwner = courseService.isCourseOwner(userId, courseId);
+        boolean isEnrolled = userProgressService.isUserEnrolled(auth0Id, courseId);
+        boolean isOwner = courseService.isCourseOwner(auth0Id, courseId);
 
         if (!isEnrolled && !isOwner) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
 
-        return lessonService.getPreviousLesson(courseId, currentLessonNumber)
+        return lessonService.getPreviousLesson(courseId, currentLessonNumber, userId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

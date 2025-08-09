@@ -18,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin/users")
 @PreAuthorize("hasRole('ADMIN')")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class UserAdminController {
     @Autowired
     private final UserService userService;
@@ -126,4 +127,10 @@ public class UserAdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    @GetMapping("/{userId}/courses/{courseId}")
+    public ResponseEntity<String> testRoute(@PathVariable String userId, @PathVariable Integer courseId) {
+        return ResponseEntity.ok("Test OK");
+    }
+
 }

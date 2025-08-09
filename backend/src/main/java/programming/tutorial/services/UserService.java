@@ -1,5 +1,6 @@
 package programming.tutorial.services;
 
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import programming.tutorial.domain.Role;
@@ -54,6 +55,7 @@ public interface UserService {
 
     void upgradeTier(String auth0Id, Tier tier);
 
+    @Transactional
     void removeUserFromCourse(String userId, Integer courseId);
 
     boolean getUserActiveStatus(String auth0UserId);

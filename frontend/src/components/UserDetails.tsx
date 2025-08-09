@@ -54,7 +54,6 @@ export default function UserDetails() {
                 if (!res.ok) throw new Error('Failed to fetch user data');
                 const data = await res.json();
                 setUser(data);
-                console.log("courses: " + JSON.stringify(data));
             } catch (err: any) {
                 setError(err.message);
             } finally {

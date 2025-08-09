@@ -14,11 +14,11 @@ import java.util.Optional;
 @Repository
 public interface LessonRepository extends JpaRepository<Lesson, Integer> {
 
-    @Query("SELECT l FROM Lesson l WHERE l.course.id = :courseId AND l.lessonNumber = (SELECT MIN(l2.lessonNumber) FROM Lesson l2 WHERE l2.course.id = :courseId AND l2.lessonNumber > :currentLessonNumber)")
-    Optional<Lesson> findNextLesson(@Param("courseId") Integer courseId, @Param("currentLessonNumber") Integer currentLessonNumber);
+    @Query("SELECT l FROM Lesson l WHERE l.course.id = :courseId AND l.user.id = :userId AND l.lessonNumber = (SELECT MIN(l2.lessonNumber) FROM Lesson l2 WHERE l2.course.id = :courseId AND l2.lessonNumber > :currentLessonNumber AND l2.user.id = :userId)")
+    Optional<Lesson> findNextLesson(@Param("courseId") Integer courseId, @Param("currentLessonNumber") Integer currentLessonNumber, @Param("userId") Integer userId);
 
-    @Query("SELECT l FROM Lesson l WHERE l.course.id = :courseId AND l.lessonNumber = (SELECT MAX(l2.lessonNumber) FROM Lesson l2 WHERE l2.course.id = :courseId AND l2.lessonNumber < :currentLessonNumber)")
-    Optional<Lesson> findPreviousLesson(@Param("courseId") Integer courseId, @Param("currentLessonNumber") Integer currentLessonNumber);
+    @Query("SELECT l FROM Lesson l WHERE l.course.id = :courseId AND l.user.id = :userId AND l.lessonNumber = (SELECT MAX(l2.lessonNumber) FROM Lesson l2 WHERE l2.course.id = :courseId AND l2.user.id = :userId AND l2.lessonNumber < :currentLessonNumber)")
+    Optional<Lesson> findPreviousLesson(@Param("courseId") Integer courseId, @Param("currentLessonNumber") Integer currentLessonNumber, @Param("userId") Integer userId);
 
     @Query("SELECT COUNT(DISTINCT l.id) FROM Lesson l WHERE l.course.id = :courseId")
     Long getCourseLength(@Param("courseId") Integer courseId);
@@ -43,4 +43,6 @@ public interface LessonRepository extends JpaRepository<Lesson, Integer> {
     Optional<Lesson> findByCourseIdAndLessonNumberAndUserId(int courseId, int lessonNumber, int userId);
 
     Optional<Lesson> findByCourseIdAndLessonNumber(Integer courseId, Integer nextLessonNumber);
+
+    void deleteByUserIdAndCourseId(Integer userId, Integer courseId);
 }

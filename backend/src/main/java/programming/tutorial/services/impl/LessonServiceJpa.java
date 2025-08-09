@@ -126,13 +126,13 @@ public class LessonServiceJpa implements LessonService {
     }
 
 
-    public Optional<LessonDTO> getNextLesson(Integer courseId, Integer currentLessonNumber) {
-        return lessonRepository.findNextLesson(courseId, currentLessonNumber)
+    public Optional<LessonDTO> getNextLesson(Integer courseId, Integer currentLessonNumber, Integer userId) {
+        return lessonRepository.findNextLesson(courseId, currentLessonNumber, userId)
                 .map(this::convertToDto);
     }
 
-    public Optional<LessonDTO> getPreviousLesson(Integer courseId, Integer currentLessonNumber) {
-        return lessonRepository.findPreviousLesson(courseId, currentLessonNumber)
+    public Optional<LessonDTO> getPreviousLesson(Integer courseId, Integer currentLessonNumber, Integer userId) {
+        return lessonRepository.findPreviousLesson(courseId, currentLessonNumber, userId)
                 .map(this::convertToDto);
     }
 }

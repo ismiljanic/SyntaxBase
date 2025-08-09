@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { lessonComponentMap } from '../utils/LessonComponentMap';
+
 export function LessonLoader() {
     const [lessons, setLessons] = useState<{ id: number; title: string }[]>([]);
     const [lesson, setLesson] = useState<{ id: number; title: string; content: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
+    const navigate = useNavigate();
     const { getAccessTokenSilently } = useAuth0();
     const { courseId, lessonNumber } = useParams<{ courseId: string; lessonNumber: string }>();
     const numericLessonNumber = parseInt(lessonNumber || '', 10);
@@ -49,7 +50,15 @@ export function LessonLoader() {
                         'Content-Type': 'application/json',
                     },
                 });
-                if (!res.ok) throw new Error('Lesson not found or access denied');
+                if (!res.ok) {
+                    if (res.status === 403) {
+                        navigate('/suspended');
+                    } else if (res.status === 404) {
+                        navigate('/not-found');
+                    }
+                    throw new Error('Lesson not found or access denied');
+                }
+
                 const data = await res.json();
                 setLesson(data);
             } catch (err: any) {
