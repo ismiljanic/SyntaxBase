@@ -1,5 +1,7 @@
 package programming.tutorial.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +37,8 @@ public class UserProgressController {
     @Autowired
     private UserService userService;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserProgressController.class);
+
     public static class ProgressUpdateRequest {
         public Integer courseId;
         public Integer lessonId;
@@ -45,11 +49,19 @@ public class UserProgressController {
             @RequestParam String userId,
             @RequestParam Integer courseId
     ) {
+        logger.info("Request received: getCurrentLessonNumber for userId='{}', courseId={}", userId, courseId);
+
         Optional<LessonDTO> lessonOpt = lessonService.getLessonByCourseIdAndCurrentUserProgress(courseId, userId);
+
         if (lessonOpt.isEmpty()) {
+            logger.info("No current lesson found for userId='{}' in courseId={}", userId, courseId);
             return ResponseEntity.notFound().build();
         }
+
         LessonDTO lesson = lessonOpt.get();
+        logger.info("Returning current lesson number {} for userId='{}' in courseId={}",
+                lesson.getLessonNumber(), userId, courseId);
+
         return ResponseEntity.ok(new LessonNumberDTO(lesson.getLessonNumber()));
     }
 
@@ -136,7 +148,7 @@ public class UserProgressController {
         if (!isEnrolled && !isOwner) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
-        return lessonService. getNextLesson(courseId, currentLessonNumber, userId)
+        return lessonService.getNextLesson(courseId, currentLessonNumber, userId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

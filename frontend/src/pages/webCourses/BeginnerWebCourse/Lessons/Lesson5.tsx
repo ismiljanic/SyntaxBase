@@ -222,20 +222,7 @@ export function Lesson5() {
                 }),
             });
 
-            // Log raw status and headers
-            console.log(`Status: ${response.status} ${response.statusText}`);
-
-            // Try to parse as text first (so we can see raw)
             const rawText = await response.text();
-            console.log("Raw response body:", rawText);
-
-            // If it’s JSON, parse again
-            try {
-                const parsed = JSON.parse(rawText);
-                console.log("Parsed JSON response:", parsed);
-            } catch (e) {
-                console.log("Response is not JSON, ignoring parse error.");
-            }
 
             if (!response.ok) {
                 console.error('Failed to update progress');

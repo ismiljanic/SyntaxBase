@@ -34,12 +34,11 @@ public class LessonDTO {
         this.completed = completed;
     }
 
-    public LessonDTO(Integer id, String lessonName, Integer courseId) {
+    public LessonDTO(Integer id, String lessonName, Integer lessonNumber) {
         this.id = id;
         this.lessonName = lessonName;
-        this.courseId = courseId;
+        this.lessonNumber = lessonNumber;
     }
-
     public Integer getId() {
         return id;
     }
@@ -135,5 +134,21 @@ public class LessonDTO {
         dto.setEditable(lesson.isEditable());
         dto.setLessonNumber(lesson.getLessonNumber());
         return dto;
+    }
+
+    @Override
+    public String toString() {
+        return "LessonDTO{" +
+                "id=" + id +
+                ", lessonName='" + lessonName + '\'' +
+                ", courseId=" + courseId +
+                ", userId=" + userId +
+                ", completed=" + completed +
+                ", content='" + content + '\'' +
+                ", editable=" + editable +
+                ", isFirst=" + isFirst +
+                ", isLast=" + isLast +
+                ", lessonNumber=" + lessonNumber +
+                '}';
     }
 }

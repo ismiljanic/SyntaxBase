@@ -1,7 +1,10 @@
 package programming.tutorial.services.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.javapoet.ClassName;
 import org.springframework.stereotype.Service;
 import programming.tutorial.dao.CourseRepository;
 import programming.tutorial.dao.LessonRepository;
@@ -29,6 +32,8 @@ public class LessonServiceJpa implements LessonService {
 
     @Autowired
     private UserRepository userRepository;
+
+    private static final Logger logger = LoggerFactory.getLogger(ClassName.class);
 
     public Optional<LessonDTO> getFirstLesson(Integer courseId, Integer userId) {
         return lessonRepository.findFirstByCourseIdOrderByLessonNumberAsc(courseId)
@@ -79,16 +84,29 @@ public class LessonServiceJpa implements LessonService {
 
     @Override
     public Optional<LessonDTO> getLessonByCourseIdAndCurrentUserProgress(Integer courseId, String userId) {
+
         Optional<LessonDTO> currentLessonOpt = userProgressRepository.findByUser_Auth0UserIdAndCourse_Id(userId, courseId)
                 .map(userProgress -> {
                     Lesson currentLesson = userProgress.getCurrentLesson();
+                    logger.info("Found current lesson for user: id={}, name={}, number={}",
+                            currentLesson.getId(), currentLesson.getLessonName(), currentLesson.getLessonNumber());
                     return new LessonDTO(currentLesson.getId(), currentLesson.getLessonName(), currentLesson.getLessonNumber());
                 });
 
         if (currentLessonOpt.isPresent()) {
             return currentLessonOpt;
         } else {
+            logger.info("No current lesson found in user progress, fetching first lesson of course");
             Optional<Lesson> firstLessonOpt = lessonRepository.findFirstByCourseIdOrderByLessonNumberAsc(courseId);
+
+            if (firstLessonOpt.isPresent()) {
+                Lesson firstLesson = firstLessonOpt.get();
+                logger.info("Found first lesson: id={}, name={}, number={}",
+                        firstLesson.getId(), firstLesson.getLessonName(), firstLesson.getLessonNumber());
+            } else {
+                logger.warn("No lessons found for courseId: {}", courseId);
+            }
+
             return firstLessonOpt.map(lesson -> new LessonDTO(lesson.getId(), lesson.getLessonName(), lesson.getLessonNumber()));
         }
     }

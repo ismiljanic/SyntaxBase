@@ -55,6 +55,10 @@ import ShowCase1Lesson2IntermediateCourse from "./pages/webCourses/IntermediateW
 import ShowCase2Lesson2IntermediateCourse from "./pages/webCourses/IntermediateWebCourse/lessons/ShowCase2Lesson2IntermediateCourse";
 import ShowCase3Lesson2IntermediateCourse from "./pages/webCourses/IntermediateWebCourse/lessons/ShowCase3Lesson2IntermediateCourse";
 import ShowCase4Lesson2IntermediateCourse from "./pages/webCourses/IntermediateWebCourse/lessons/ShowCase4Lesson2IntermediateCourse";
+import ShowCase1Lesson3IntermediateCourse from "./pages/webCourses/IntermediateWebCourse/lessons/ShowCase1Lesson3IntermediateCourse";
+import ShowCase2Lesson3IntermediateCourse from "./pages/webCourses/IntermediateWebCourse/lessons/ShowCase2Lesson3IntermediateCourse";
+import ShowCase3Lesson3IntermediateCourse from "./pages/webCourses/IntermediateWebCourse/lessons/ShowCase3Lesson3IntermediateCourse";
+import ShowCase4Lesson3IntermediateCourse from "./pages/webCourses/IntermediateWebCourse/lessons/ShowCase4Lesson3IntermediateCourse";
 import { Lesson7PortfolioExample } from "./pages/webCourses/BeginnerWebCourse/Lessons/project/examples/Lesson7PortfolioExample";
 import { BeginnerWebTutorialLesson1 } from "./pages/webTutorials/beginnerWebTutorial/Lessons/Lesson1";
 import { BeginnerWebTutorialLesson2 } from "./pages/webTutorials/beginnerWebTutorial/Lessons/Lesson2";
@@ -211,6 +215,18 @@ export function Router() {
           </ProtectedRoute>} />
           <Route path="/showCase/4/lesson/2/course/:courseId" element={<ProtectedRoute>
             <ShowCase4Lesson2IntermediateCourse />
+          </ProtectedRoute>} />
+           <Route path="/showCase/1/lesson/3/course/:courseId" element={<ProtectedRoute>
+            <ShowCase1Lesson3IntermediateCourse />
+          </ProtectedRoute>} />
+           <Route path="/showCase/2/lesson/3/course/:courseId" element={<ProtectedRoute>
+            <ShowCase2Lesson3IntermediateCourse />
+          </ProtectedRoute>} />
+           <Route path="/showCase/3/lesson/3/course/:courseId" element={<ProtectedRoute>
+            <ShowCase3Lesson3IntermediateCourse />
+          </ProtectedRoute>} />
+           <Route path="/showCase/4/lesson/3/course/:courseId" element={<ProtectedRoute>
+            <ShowCase4Lesson3IntermediateCourse />
           </ProtectedRoute>} />
           <Route path="/beginnerWebCourse/:courseId/project/portfolio" element={<ProtectedRoute>
             <Lesson7PortfolioExample />

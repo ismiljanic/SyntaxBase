@@ -77,7 +77,6 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
                         withCredentials: true,
                     }
                 );
-                console.log('Courses response:', coursesResponse.data);
                 setCourses(coursesResponse.data);
                 const progressResponses = await Promise.all(
                     coursesResponse.data.map(course =>
@@ -91,7 +90,6 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
                         )
                     )
                 );
-                console.log('Progress responses:', progressResponses);
                 const progressDataMap = progressResponses.reduce((acc, response, index) => {
                     const courseId = coursesResponse.data[index].courseId;
                     acc[courseId] = response.data;

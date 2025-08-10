@@ -38,7 +38,7 @@ public class UserProgressServiceJpa implements UserProgressService {
         return userProgressRepository.findByUser_Auth0UserIdAndCourse_Id(userId, courseId)
                 .map(userProgress -> {
                     Lesson currentLesson = userProgress.getCurrentLesson();
-                    return new LessonDTO(currentLesson.getId(), currentLesson.getLessonName(), courseId);
+                    return new LessonDTO(currentLesson.getId(), currentLesson.getLessonName(), currentLesson.getLessonNumber());
                 });
     }
 
