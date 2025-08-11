@@ -67,6 +67,7 @@ import { BeginnerWebTutorialLesson4 } from "./pages/webTutorials/beginnerWebTuto
 import { BeginnerWebTutorialLesson5 } from "./pages/webTutorials/beginnerWebTutorial/Lessons/Lesson5";
 import { FinishCourse } from "./pages/webCourses/BeginnerWebCourse/Lessons/FinishCourse";
 import { BeginnerWebDevelopmentQuiz } from "./pages/webCourses/BeginnerWebCourse/Lessons/BeginnerWebDevelopmentQuiz";
+import { IntermediateWebDevelopmentQuiz } from "./pages/webCourses/IntermediateWebCourse/IntermediateWebDevelopmentQuiz";
 import { Community } from "./pages/Community";
 import { Notifications } from "./pages/Notifications";
 import { AdminPage } from "./pages/admin/AdminPage";
@@ -140,9 +141,9 @@ export function Router() {
           </ProtectedRoute>} />
           <Route path="/help" element={<Help />} />
           <Route path="/about" element={<About />} />
-          <Route path="/beginnerWebDevelopmentQuiz" element={<ProtectedRoute>
-            <BeginnerWebDevelopmentQuiz />
-          </ProtectedRoute>} />
+          <Route path="/beginnerWebDevelopmentQuiz" element={<ProtectedRoute><BeginnerWebDevelopmentQuiz /></ProtectedRoute>} />
+          <Route path="/intermediateWebDevelopmentQuiz" element={<ProtectedRoute><IntermediateWebDevelopmentQuiz /></ProtectedRoute>} />
+          {/* <Route path="/advancedWebDevelopmentQuiz" element={<ProtectedRoute><AdvancedWebDevelopmentQuiz /></ProtectedRoute>} /> */}
           <Route path="/course/:courseId/lesson/:lessonNumber" element={<ProtectedRoute><LessonLoader /></ProtectedRoute>} />
           <Route path="/showCase1/lesson2" element={<ProtectedRoute>
             <ShowCase1 />
@@ -204,7 +205,7 @@ export function Router() {
           <Route path="/showCase7Lesson5/lesson5" element={<ProtectedRoute>
             <ShowCase7Lesson5 />
           </ProtectedRoute>} />
-           <Route path="/showCase/1/lesson/2/course/:courseId" element={<ProtectedRoute>
+          <Route path="/showCase/1/lesson/2/course/:courseId" element={<ProtectedRoute>
             <ShowCase1Lesson2IntermediateCourse />
           </ProtectedRoute>} />
           <Route path="/showCase/2/lesson/2/course/:courseId" element={<ProtectedRoute>
@@ -216,16 +217,16 @@ export function Router() {
           <Route path="/showCase/4/lesson/2/course/:courseId" element={<ProtectedRoute>
             <ShowCase4Lesson2IntermediateCourse />
           </ProtectedRoute>} />
-           <Route path="/showCase/1/lesson/3/course/:courseId" element={<ProtectedRoute>
+          <Route path="/showCase/1/lesson/3/course/:courseId" element={<ProtectedRoute>
             <ShowCase1Lesson3IntermediateCourse />
           </ProtectedRoute>} />
-           <Route path="/showCase/2/lesson/3/course/:courseId" element={<ProtectedRoute>
+          <Route path="/showCase/2/lesson/3/course/:courseId" element={<ProtectedRoute>
             <ShowCase2Lesson3IntermediateCourse />
           </ProtectedRoute>} />
-           <Route path="/showCase/3/lesson/3/course/:courseId" element={<ProtectedRoute>
+          <Route path="/showCase/3/lesson/3/course/:courseId" element={<ProtectedRoute>
             <ShowCase3Lesson3IntermediateCourse />
           </ProtectedRoute>} />
-           <Route path="/showCase/4/lesson/3/course/:courseId" element={<ProtectedRoute>
+          <Route path="/showCase/4/lesson/3/course/:courseId" element={<ProtectedRoute>
             <ShowCase4Lesson3IntermediateCourse />
           </ProtectedRoute>} />
           <Route path="/beginnerWebCourse/:courseId/project/portfolio" element={<ProtectedRoute>

@@ -124,6 +124,7 @@ const DynamicLessonRenderer = () => {
     const handleNext = async () => {
         try {
             const token = await getAccessTokenSilently();
+            console.log("Fetching next lesson for courseId:", courseId, "currentLessonNumber:", lessonNumber);
             const response = await axios.get<LessonAPIResponse>(
                 `http://localhost:8080/api/progress/lessons/next`,
                 {

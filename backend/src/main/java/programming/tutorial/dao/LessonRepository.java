@@ -14,10 +14,16 @@ import java.util.Optional;
 @Repository
 public interface LessonRepository extends JpaRepository<Lesson, Integer> {
 
-    @Query("SELECT l FROM Lesson l WHERE l.course.id = :courseId AND l.user.id = :userId AND l.lessonNumber = (SELECT MIN(l2.lessonNumber) FROM Lesson l2 WHERE l2.course.id = :courseId AND l2.lessonNumber > :currentLessonNumber AND l2.user.id = :userId)")
+    /*
+    null check is for instructor courses where userId is null
+    */
+    @Query("SELECT l FROM Lesson l WHERE l.course.id = :courseId AND (l.user.id = :userId OR l.user.id IS NULL) AND l.lessonNumber = (SELECT MIN(l2.lessonNumber) FROM Lesson l2 WHERE l2.course.id = :courseId AND l2.lessonNumber > :currentLessonNumber AND (l2.user.id = :userId OR l2.user.id IS NULL))")
     Optional<Lesson> findNextLesson(@Param("courseId") Integer courseId, @Param("currentLessonNumber") Integer currentLessonNumber, @Param("userId") Integer userId);
 
-    @Query("SELECT l FROM Lesson l WHERE l.course.id = :courseId AND l.user.id = :userId AND l.lessonNumber = (SELECT MAX(l2.lessonNumber) FROM Lesson l2 WHERE l2.course.id = :courseId AND l2.user.id = :userId AND l2.lessonNumber < :currentLessonNumber)")
+    /*
+    null check is for instructor courses where userId is null
+    */
+    @Query("SELECT l FROM Lesson l WHERE l.course.id = :courseId AND (l.user.id = :userId OR l.user.id IS NULL) AND l.lessonNumber = (SELECT MAX(l2.lessonNumber) FROM Lesson l2 WHERE l2.course.id = :courseId AND (l2.user.id = :userId OR l2.user.id IS NULL) AND l2.lessonNumber < :currentLessonNumber)")
     Optional<Lesson> findPreviousLesson(@Param("courseId") Integer courseId, @Param("currentLessonNumber") Integer currentLessonNumber, @Param("userId") Integer userId);
 
     @Query("SELECT COUNT(DISTINCT l.id) FROM Lesson l WHERE l.course.id = :courseId")

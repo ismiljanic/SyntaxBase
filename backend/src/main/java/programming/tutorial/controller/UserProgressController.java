@@ -141,10 +141,11 @@ public class UserProgressController {
     public ResponseEntity<LessonDTO> getNextLesson(@RequestParam Integer courseId, @RequestParam Integer currentLessonNumber, Authentication authentication) {
         String auth0Id = extractUserId(authentication);
         Integer userId = userService.findByAuth0UserId(auth0Id).getId();
-
+        logger.info("Checking userId {}", userId);
         boolean isEnrolled = userProgressService.isUserEnrolled(auth0Id, courseId);
         boolean isOwner = courseService.isCourseOwner(auth0Id, courseId);
-
+        logger.info("Checking if user is enrolled {}", isEnrolled);
+        logger.info("Checking if user is owner {}", isOwner);
         if (!isEnrolled && !isOwner) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }

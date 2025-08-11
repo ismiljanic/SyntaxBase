@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import '../../../../styles/webCourses/BeginnerWebCourse/Quiz.css';
-import { Header } from '../../../Header';
-import { Footer } from '../../../Footer';
-import { Footer2 } from '../../../Footer2';
+import '../../../styles/webCourses/BeginnerWebCourse/Quiz.css';
+import { Header } from '../../Header'
+import { Footer } from '../../Footer';
+import { Footer2 } from '../../Footer2';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 
-export function BeginnerWebDevelopmentQuiz() {
+export function IntermediateWebDevelopmentQuiz() {
     const navigate = useNavigate();
     const { user, isAuthenticated, loginWithRedirect, isLoading } = useAuth0();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -26,21 +26,37 @@ export function BeginnerWebDevelopmentQuiz() {
 
     const quizQuestions = [
         {
-            question: 'What does HTML stand for?',
-            options: ['HyperText Markup Language', 'HighText Markup Language', 'Home Tool Markup Language', 'HyperText Markdown Language'],
-            correctAnswer: 'HyperText Markup Language',
+            question: 'Which backend framework did we use for API development?',
+            options: ['Express', 'Django', 'Ruby on Rails', 'Flask'],
+            correctAnswer: 'Express',
         },
         {
-            question: 'What is the purpose of CSS?',
-            options: ['To style the webpage', 'To add interactivity', 'To structure the webpage', 'To fetch data from a server'],
-            correctAnswer: 'To style the webpage',
+            question: 'What database technology did we connect our backend to?',
+            options: ['MySQL', 'MongoDB', 'PostgreSQL', 'SQLite'],
+            correctAnswer: 'PostgreSQL',
         },
         {
-            question: 'What is the main purpose of JavaScript?',
-            options: ['To make the webpage interactive', 'To add styling to the webpage', 'To define the webpage structure', 'To connect to databases'],
-            correctAnswer: 'To make the webpage interactive',
+            question: 'Which authentication protocol did we integrate?',
+            options: ['OAuth2', 'SAML', 'Basic Auth', 'JWT only'],
+            correctAnswer: 'OAuth2',
+        },
+        {
+            question: 'Where do you store environment variables in this project?',
+            options: ['.env files', 'package.json', 'README.md', 'config.js'],
+            correctAnswer: '.env files',
+        },
+        {
+            question: 'What frontend library did we use for building UI?',
+            options: ['React', 'Vue', 'Angular', 'Svelte'],
+            correctAnswer: 'React',
+        },
+        {
+            question: 'What is the purpose of QR code generation in our app?',
+            options: ['Ticket verification', 'User authentication', 'Database backup', 'Styling elements'],
+            correctAnswer: 'Ticket verification',
         },
     ];
+
 
     const handleAnswerSelect = (answer: string) => {
         setSelectedAnswer(answer);
