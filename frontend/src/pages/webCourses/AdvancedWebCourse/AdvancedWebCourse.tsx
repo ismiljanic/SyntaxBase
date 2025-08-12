@@ -1,7 +1,7 @@
 import React from "react";
-import { Header } from "../Header";
-import { Footer } from "../Footer";
-import { Footer2 } from "../Footer2";
+import { Header } from "../../Header";
+import { Footer } from "../../Footer";
+import { Footer2 } from "../../Footer2";
 import web4 from '../../images/web4.png';
 import '../../styles/webCourses/BeginnerWebCourse.css';
 

@@ -1,6 +1,7 @@
-[submodule "frontend/src/pages/webCourses/IntermediateWebCourse/projects/auth-ticketing-app"]
-	path = frontend/src/pages/webCourses/IntermediateWebCourse/projects/auth-ticketing-app
-	url = https://github.com/ismiljanic/Syntaxbase-auth-ticketing-app.git
+[submodule "frontend/src/pages/webCourses/IntermediateWebCourse/final-project/auth-ticketing-app"]
+    path = frontend/src/pages/webCourses/IntermediateWebCourse/final-project/auth-ticketing-app
+    url = https://github.com/ismiljanic/Syntaxbase-auth-ticketing-app.git
+
 [submodule "frontend/src/pages/webCourses/AdvancedWebCourse/final-project"]
 	path = frontend/src/pages/webCourses/AdvancedWebCourse/final-project
 	url = https://github.com/ismiljanic/SyntaxBase-blood-donation-app.git
