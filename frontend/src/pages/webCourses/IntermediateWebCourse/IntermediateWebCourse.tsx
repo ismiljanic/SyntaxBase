@@ -125,27 +125,27 @@ export function IntermediateWebCourse() {
                 <div className="pictureContainer">
                     <div className="imageWithDescription">
                         <img src={intermediate1} alt="img16" className="courseImage" />
-                        <div className="imageDescription">image description</div>
+                        <div className="imageDescription">Integrate secure authentication</div>
                     </div>
                     <div className="imageWithDescription">
                         <img src={intermediate2} alt="img15" className="courseImage" />
-                        <div className="imageDescription">image description</div>
+                        <div className="imageDescription">Create tickets</div>
                     </div>
                     <div className="imageWithDescription">
                         <img src={intermediate3} alt="img14" className="courseImage" />
-                        <div className="imageDescription">image description</div>
+                        <div className="imageDescription">Generate QR code</div>
                     </div>
                     <div className="imageWithDescription">
                         <img src={intermediate4} alt="img13" className="courseImage" />
-                        <div className="imageDescription">image description</div>
+                        <div className="imageDescription">Preview ticket information</div>
                     </div>
                     <div className="imageWithDescription">
                         <img src={intermediate5} alt="img12" className="courseImage" />
-                        <div className="imageDescription">image description</div>
+                        <div className="imageDescription">Check available tickets</div>
                     </div>
                     <div className="imageWithDescription">
                         <img src={intermediate6} alt="img11" className="courseImage" />
-                        <div className="imageDescription">image description</div>
+                        <div className="imageDescription">Integrate OAuth2 authorization</div>
                     </div>
                 </div>
             </div>

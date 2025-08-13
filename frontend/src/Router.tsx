@@ -19,7 +19,7 @@ import { About } from "./pages/About";
 import { MyCourses } from "./pages/MyCourses";
 import { BeginnerWebCourse } from "./pages/webCourses/BeginnerWebCourse/BeginnerWebCourse";
 import { IntermediateWebCourse } from "./pages/webCourses/IntermediateWebCourse/IntermediateWebCourse";
-import { AdvancedWebCourse } from "./pages/webCourses/AdvancedWebCourse";
+import { AdvancedWebCourse } from "./pages/webCourses/AdvancedWebCourse/AdvancedWebCourse";
 import { BeginnerGameCourse } from "./pages/gameCourses/BeginnerGameCourse";
 import { IntermediateGameCourse } from "./pages/gameCourses/IntermediateGameCourse";
 import { AdvancedGameCourse } from "./pages/gameCourses/AdvancedGameCourse";
