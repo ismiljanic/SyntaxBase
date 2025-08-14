@@ -9,6 +9,7 @@ import structure from '../../../../pages/webCourses/BeginnerWebCourse/images/str
 import basicCSS from '../../../../pages/webCourses/BeginnerWebCourse/images/basicCSS.png';
 import details from '../../../../pages/webCourses/BeginnerWebCourse/images/details.png';
 import { useAuth0 } from '@auth0/auth0-react';
+import LoadingScreen from '../../../../components/LoadingScreen';
 
 export function Lesson7() {
     const navigate = useNavigate();
@@ -228,7 +229,9 @@ export function Lesson7() {
         navigate(`/course/${courseId}/lesson/${previousLessonId}`);
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+        return <LoadingScreen />;
+    }
 
     return (
         <div className='mainContainer'>

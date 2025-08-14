@@ -11,6 +11,7 @@ import sdks from '../images/sdks.png';
 import authflow from '../images/authflow.png';
 import tenant from '../images/tenant.png';
 import { useAuth0 } from '@auth0/auth0-react';
+import LoadingScreen from '../../../../components/LoadingScreen';
 
 export function Lesson6() {
     const navigate = useNavigate();
@@ -231,7 +232,9 @@ export function Lesson6() {
         navigate(`/course/${courseId}/lesson/${previousLessonId}`);
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+        return <LoadingScreen />;
+    }
 
     return (
         <div className='mainContainer'>

@@ -6,7 +6,7 @@ import { Footer2 } from "../pages/Footer2";
 import { Footer } from "../pages/Footer";
 
 export function LoginComponent() {
-    const { loginWithRedirect, isAuthenticated, user, getAccessTokenSilently } = useAuth0();
+    const { loginWithRedirect, isAuthenticated, user, getAccessTokenSilently, isLoading } = useAuth0();
 
     useEffect(() => {
         const sendTokensToBackend = async () => {

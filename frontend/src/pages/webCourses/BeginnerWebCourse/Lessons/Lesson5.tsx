@@ -4,13 +4,6 @@ import { Header } from '../../../Header';
 import { Footer } from '../../../Footer';
 import { Footer2 } from '../../../Footer2';
 import '../../../../styles/webCourses/BeginnerWebCourse/Lesson1.css';
-import css1 from '../../../../pages/webCourses/BeginnerWebCourse/images/css1.png';
-import firstExample from '../../../../pages/webCourses/BeginnerWebCourse/images/firstExample.png';
-import borders from '../../../../pages/webCourses/BeginnerWebCourse/images/borders.png';
-import margins from '../../../../pages/webCourses/BeginnerWebCourse/images/margins.png';
-import secondExample from '../../../../pages/webCourses/BeginnerWebCourse/images/secondExample.png';
-import thirdExample from '../../../../pages/webCourses/BeginnerWebCourse/images/thirdExample.png';
-import fourthExample from '../../../../pages/webCourses/BeginnerWebCourse/images/fourthExample.png';
 import react from '../../../../pages/webCourses/BeginnerWebCourse/images/react.png';
 import typescript from '../../../../pages/webCourses/BeginnerWebCourse/images/typescript.png';
 import typescript2 from '../../../../pages/webCourses/BeginnerWebCourse/images/typescript2.png';
@@ -25,6 +18,7 @@ import useeffectt from '../../../../pages/webCourses/BeginnerWebCourse/images/us
 import onclickk from '../../../../pages/webCourses/BeginnerWebCourse/images/onclickk.png';
 import generics from '../../../../pages/webCourses/BeginnerWebCourse/images/generics.png';
 import { useAuth0 } from '@auth0/auth0-react';
+import LoadingScreen from '../../../../components/LoadingScreen';
 
 
 export function Lesson5() {
@@ -247,7 +241,10 @@ export function Lesson5() {
         navigate(`/course/${courseId}/lesson/${previousLessonId}`);
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+        return <LoadingScreen />;
+    }
+    
     return (
         <div className='mainContainer'>
             <Header bgColor="rgb(247, 250, 251)" />

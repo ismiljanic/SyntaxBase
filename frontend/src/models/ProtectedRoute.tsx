@@ -1,7 +1,7 @@
-// models/ProtectedRoute.tsx
 import { useAuth0 } from '@auth0/auth0-react';
 import { Navigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
+import LoadingScreen from '../components/LoadingScreen';
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
@@ -12,6 +12,7 @@ const ProtectedRoute = ({ children, requiredRoles }: ProtectedRouteProps) => {
     const { isAuthenticated, isLoading, user, getAccessTokenSilently } = useAuth0();
     const rolesClaim = process.env.REACT_APP_AUTH0_ROLES_CLAIM!;
     const [userActive, setUserActive] = useState<boolean | null>(null);
+    const [notFound, setNotFound] = useState(false);
 
     useEffect(() => {
         const checkUserActive = async () => {
@@ -23,6 +24,11 @@ const ProtectedRoute = ({ children, requiredRoles }: ProtectedRouteProps) => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+
+                if (response.status === 404) {
+                    setNotFound(true);
+                    return;
+                }
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch user status');
@@ -40,10 +46,16 @@ const ProtectedRoute = ({ children, requiredRoles }: ProtectedRouteProps) => {
         checkUserActive();
     }, [user, getAccessTokenSilently]);
 
-    if (isLoading) return <p>Loading...</p>;
+    if (isLoading) {
+        return <LoadingScreen />;
+    }
 
     if (!isAuthenticated) {
         return <Navigate to="/unauthorized" replace />;
+    }
+
+    if (notFound) {
+        return <Navigate to="/404" replace />;
     }
 
     if (userActive === false) {

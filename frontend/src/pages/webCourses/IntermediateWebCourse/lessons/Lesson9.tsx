@@ -8,6 +8,7 @@ import db from '../images/db.png';
 import tickets from '../images/tickets.png';
 import qrcode from '../images/ticketInfo.png';
 import { useAuth0 } from '@auth0/auth0-react';
+import LoadingScreen from '../../../../components/LoadingScreen';
 
 export function Lesson9() {
     const navigate = useNavigate();
@@ -228,7 +229,9 @@ export function Lesson9() {
         navigate(`/course/${courseId}/lesson/${previousLessonId}`);
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+        return <LoadingScreen />;
+    }
 
     return (
         <div className='mainContainer'>
@@ -276,7 +279,7 @@ export function Lesson9() {
                                 TICKET CREATION API
                             </div>
                             <div className="imageContainer">
-                                <img src={tickets} alt="" className="imageForCourse"  style={{filter: 'blur(2px)'}}/>
+                                <img src={tickets} alt="" className="imageForCourse" style={{ filter: 'blur(2px)' }} />
                             </div>
                         </h1>
                     </div>
@@ -309,7 +312,7 @@ export function Lesson9() {
                                 QR CODE GENERATION
                             </div>
                             <div className="imageContainer">
-                                <img src={qrcode} alt="" className="imageForCourse" style={{filter: 'blur(2px)'}}/>
+                                <img src={qrcode} alt="" className="imageForCourse" style={{ filter: 'blur(2px)' }} />
                             </div>
                         </h1>
                     </div>

@@ -4,26 +4,25 @@ import { Header } from '../../../Header';
 import { Footer } from '../../../Footer';
 import { Footer2 } from '../../../Footer2';
 import '../../../../styles/webCourses/BeginnerWebCourse/Lesson1.css';
-import myportfolio from '../../../../pages/webCourses/BeginnerWebCourse/images/myportfolio.png';
-import structure from '../../../../pages/webCourses/BeginnerWebCourse/images/structure.png';
-import details from '../../../../pages/webCourses/BeginnerWebCourse/images/details.png';
-import header from '../../../../pages/webCourses/BeginnerWebCourse/images/lesson8Header.png';
-import footer from '../../../../pages/webCourses/BeginnerWebCourse/images/lesson8Footer.png';
+import typescript from '../images/typescript.png';
 import { useAuth0 } from '@auth0/auth0-react';
-import LoadingScreen from '../../../../components/LoadingScreen';
+import firstExample from '../../../../pages/webCourses/BeginnerWebCourse/images/firstExample.png';
+import secondExample from '../../../../pages/webCourses/BeginnerWebCourse/images/secondExample.png';
+import thirdExample from '../../../../pages/webCourses/BeginnerWebCourse/images/thirdExample.png';
+import fourthExample from '../../../../pages/webCourses/BeginnerWebCourse/images/fourthExample.png';
 
-export function Lesson8() {
+export function Lesson3() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(true);
     const [feedbackSubmitted, setFeedbackSubmitted] = useState<boolean>(false);
     const location = useLocation();
+    const { courseId } = useParams();
     const { user, getAccessTokenSilently } = useAuth0();
     const auth0UserId = user?.sub;
     const [isEnrolled, setIsEnrolled] = useState<boolean | null>(null);
     const { lessonNumber } = useParams<{ lessonNumber: string }>();
     const lessonIdNumber = lessonNumber ? parseInt(lessonNumber, 10) : null;
     const [lessonId, setLessonId] = useState<number | null>(null);
-    const { courseId } = useParams();
 
     async function fetchLessonId() {
         if (!courseId || !lessonNumber) return;
@@ -48,7 +47,6 @@ export function Lesson8() {
     useEffect(() => {
         fetchLessonId();
     }, [courseId, lessonNumber, getAccessTokenSilently]);
-
 
     useEffect(() => {
         async function checkEnrollment() {
@@ -120,6 +118,10 @@ export function Lesson8() {
         }
     }, [location.search]);
 
+    if (lessonIdNumber === null) {
+        return <p>Lesson ID is missing or invalid.</p>;
+    }
+
     const sendFeedback = async (feedbackType: string) => {
         if (!user?.sub) {
             console.error('User is not logged in');
@@ -178,7 +180,6 @@ export function Lesson8() {
             console.error('Error marking lesson as completed:', error);
         }
     };
-
     const handleUnderstand = async () => {
         await sendFeedback('understood');
     };
@@ -216,9 +217,6 @@ export function Lesson8() {
         }
     };
 
-    if (lessonIdNumber === null) {
-        return <p>Lesson ID is missing or invalid.</p>;
-    }
     const handleNextLesson = async () => {
         await updateProgress();
         const nextLessonId = lessonIdNumber + 1;
@@ -231,112 +229,113 @@ export function Lesson8() {
         navigate(`/course/${courseId}/lesson/${previousLessonId}`);
     };
 
-    if (loading) {
-        return <LoadingScreen />;
-    }
+    if (loading) return <p>Loading...</p>;
 
     return (
         <div className='mainContainer'>
             <Header bgColor="rgb(247, 250, 251)" />
+
             <div className='lessonIntroduction'>
-                <h1>FIRST CHAPTER</h1>
-                <p>Welcome to <b>Lesson 8</b> of the <b>Beginner Web Development course</b>.</p>
+                <h1>Introduction to TypeScript Deep Dive</h1>
+                <p>
+                    Welcome to <b>Lesson 3</b> of the <b>Intermediate Web Development course</b>.
+                    Master type safety, interfaces, generics, and utility types to make your code more reliable and maintainable.
+                </p>
             </div>
+
             <div className='aboutBeginnerWeb'>
                 <div className="aboutCourseDiv2" style={{ paddingBottom: '7em' }}>
-                    <div className="introductionDiv">INTRODUCTION</div>
+                    <div className="introductionDiv">Introduction</div>
                     <div className="frontImageBeginner">
                         <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
                             <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                STRUCTURE
+                                Why TypeScript Matters
                             </div>
                             <div className="imageContainer">
-                                <img src={myportfolio} alt="" className="imageForCourse" />
+                                <img src={typescript} alt="TypeScript Logo" className="imageForCourse" />
                             </div>
                         </h1>
                     </div>
 
                     <div className="descriptionOfCourse">
-                        In this chapter you will need to build basic HTML structure for your website. You will need to use HTML elements and create simple layout for your website.
-                        <br></br>
-                        <br></br>
-                        Try to think what you want to show on your website and how you want to present it.
+                        TypeScript enhances JavaScript with static type checking. It helps you catch errors early, write self-documenting code, and improves maintainability in large projects.
+                        We’ll cover core concepts such as <code>interfaces</code>, <code>types</code>, <code>generics</code>, and built-in utility types.
                     </div>
                 </div>
-                <div className="aboutCourseDiv2" style={{ paddingBottom: '2em' }}>
-                    <div className="introductionDiv">HEADER, FOOTER, BODY</div>
+
+                <div className="aboutCourseDiv2" style={{ paddingBottom: '15em' }}>
+                    <div className="introductionDiv">Core TypeScript Concepts</div>
                     <div className="frontImageBeginner">
                         <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
                             <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                BASIC HTML STRUCTURE
+                                Interfaces, Generics & Utility Types
                             </div>
                             <div className="imageContainer">
-                                <img src={structure} alt="" className="imageForCourse" />
+                                <img src={typescript} alt="Interfaces" className="imageForCourse" />
                             </div>
                         </h1>
                     </div>
 
                     <div className="descriptionOfCourse">
-                        Generate your own header, footer and body for your website. You can be creative and use any HTML elements you want.
-                        <br></br>
-                        <br></br>
+                        Interfaces define the shape of objects and enforce consistent contracts across your code.
+                        Generics allow components and functions to work with a variety of types while maintaining type safety.
+                        Utility types like <code>Partial</code>, <code>Pick</code>, and <code>Omit</code> make type transformations easy and maintainable.
                     </div>
-                    <p className='paragraphP' style={{ paddingTop: '9em' }}>Our example can be found <a href='/beginnerWebCourse/project/portfolio' className='introductionDiv' style={{ color: 'black', textDecoration: 'none' }} target="_blank"
-                        rel="noopener noreferrer">here</a><br></br>
+
+                    <p className='paragraphP' style={{ paddingTop: '5em' }}>
+                        Examples include:
+                        <div className='htmlElementsDiv'>
+                            <ul>
+                                <li><b>Interface:</b> enforce object structure</li>
+                                <li><b>Generics:</b> create reusable components/functions with flexible types</li>
+                                <li><b>Utility Types:</b> transform existing types safely</li>
+                                <li><b>Type Aliases:</b> define custom type shortcuts</li>
+                            </ul>
+                        </div>
                     </p>
                 </div>
 
-                <div className="aboutCourseDiv2" style={{ paddingBottom: '2em' }}>
-                    <div className="introductionDiv">SECOND CHAPTER</div>
-                    <div className="frontImageBeginner">
-                        <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
-                            <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                HEADER
-                            </div>
-                            <div className="imageContainer">
-                                <img src={header} alt="" className="imageForCourse" />
-                            </div>
-                        </h1>
+                <div className='beginnerPictureContainer' style={{ marginBottom: '3em' }}>
+                    <div
+                        className="imageWithDescription"
+                        onClick={() => window.open(`/showCase/1/lesson/3/course/${courseId}/advancedWebCourse`, '_blank')}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <img
+                            src={firstExample}
+                            alt=""
+                            className="courseImage"
+                            style={{ width: '50em', height: '30em' }}
+                        />
+                        <div className='imageDescription'>Try it yourself</div>
                     </div>
 
-                    <div className="descriptionOfCourse">
-                        In this section you will need to add header to your website.
-                        <br></br>
-                        <br></br>
-                        Think what you want to show in your header and how you want to present it.
-                        <br></br>
-                        <br></br>
-                        Create your logo and add it to your header.
-                    </div>
-                    <p className='paragraphP' style={{ paddingTop: '9em' }}>Our example of simple portfolio can be found <a href='/beginnerWebCourse/project/portfolio' className='introductionDiv' style={{ color: 'black', textDecoration: 'none' }} target="_blank"
-                        rel="noopener noreferrer">here</a><br></br>
-                    </p>
-                </div>
-                <div className="aboutCourseDiv2" style={{ paddingBottom: '2em' }}>
-                    <div className="introductionDiv">THIRD CHAPTER</div>
-                    <div className="frontImageBeginner">
-                        <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
-                            <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                FOOTER
-                            </div>
-                            <div className="imageContainer">
-                                <img src={footer} alt="" className="imageForCourse" />
-                            </div>
-                        </h1>
+                    <div
+                        className="imageWithDescription"
+                        onClick={() => window.open(`/showCase/2/lesson/3/course/${courseId}/advancedWebCourse`, '_blank')}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <img src={secondExample} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
+                        <div className="imageDescription">Try it yourself</div>
                     </div>
 
-                    <div className="descriptionOfCourse">
-                        In this section you will need to add footer to your website.
-                        <br></br>
-                        <br></br>
-                        Think what you want to show in your footer and how you want to present it.
-                        <br></br>
-                        <br></br>
-                        Footer generally contains information about the website and its owner. You can add your contact information, social media links, and other relevant details.
+                    <div
+                        className="imageWithDescription"
+                        onClick={() => window.open(`/showCase/3/lesson/3/course/${courseId}/advancedWebCourse`, '_blank')}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <img src={thirdExample} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
+                        <div className="imageDescription">Try it yourself</div>
                     </div>
-                    <p className='paragraphP' style={{ paddingTop: '9em' }}>Our example of simple portfolio can be found <a href='/beginnerWebCourse/project/portfolio' className='introductionDiv' style={{ color: 'black', textDecoration: 'none' }} target="_blank"
-                        rel="noopener noreferrer">here</a><br></br>
-                    </p>
+
+                    <div
+                        className="imageWithDescription"
+                        onClick={() => window.open(`/showCase/4/lesson/3/course/${courseId}/advancedWebCourse`, '_blank')}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <img src={fourthExample} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
+                        <div className="imageDescription">Try it yourself</div>
+                    </div>
                 </div>
                 <div className="aboutCourseDiv2" style={{ paddingBottom: '7em' }}>
                     <div className="introductionDiv">Summary</div>
@@ -351,10 +350,43 @@ export function Lesson8() {
                     </div>
 
                     <div className="descriptionOfCourse">
-                        In this lesson you created basic HTML structure for your website. You created header and footer and are now ready to add content to your website. Next lesson will be about adding style and responsiveness to your website.
+                        In this lesson, you learned how TypeScript improves code safety and maintainability.
+                        You now understand interfaces, generics, and utility types, which are essential tools for building robust applications.
+                        The next lesson will explore advanced React patterns with TypeScript integration.
+                    </div>
+
+                    <div className='key-areas3' style={{ marginTop: '-10em' }}>
+                        <div className="imageContainerWebBeginner2">
+                            <img src={typescript} alt="React Logo" className="imageForWebBeginner2" />
+                            <div className="overlay">
+                                <div className='keyAreasOfBeginnerWebDev3'>
+                                    <strong>TyoeScript:</strong>
+                                    <div className='keyDescription2'>
+                                        TypeScript enhances JavaScript with static typing, interfaces, and generics.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="imageContainerWebBeginner2">
+                            <img src={typescript} alt="React Logo" className="imageForWebBeginner2" />
+                            <div className="overlay">
+                                <div className='keyAreasOfBeginnerWebDev3'>
+                                    <strong>TypeScript Concepts:</strong>
+                                    <div className='keyDescription2'>
+                                        <ul>
+                                            <li>Interface - defines the shape of objects and enforce consistent contracts across code</li>
+                                            <li>Generics - allow component functions to work with a variety of types</li>
+                                            <li>Utility types like <code>Partial</code>, <code>Pick</code>, and <code>Omit</code> make type transformations easy and maintainable
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
             <div className='feedbackContainer'>
                 <h3>Was this lesson easy to understand?</h3>
                 <div className='feedbackButtons'>
@@ -372,18 +404,18 @@ export function Lesson8() {
                     )}
                 </div>
             </div>
+
             {feedbackSubmitted && (
-                <>
-                    <div style={{ display: 'flex' }}>
-                        <div className='moreCoursesDiv' onClick={handleNextLesson}>
-                            Next Lesson
-                        </div>
-                        <div className='goToPreviousLessonDiv' onClick={handlePreviousLesson} style={{ marginLeft: '-77.5em' }}>
-                            Previous Lesson
-                        </div>
+                <div style={{ display: 'flex' }}>
+                    <div className='moreCoursesDiv' onClick={handleNextLesson}>
+                        Next Lesson
                     </div>
-                </>
+                    <div className='goToPreviousLessonDiv' onClick={handlePreviousLesson} style={{ marginLeft: '-77.5em' }}>
+                        Previous Lesson
+                    </div>
+                </div>
             )}
+
             <Footer2 bgColor="rgb(247, 250, 251)" />
             <Footer bgColor="rgb(247, 250, 251)" />
         </div>

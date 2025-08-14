@@ -9,6 +9,7 @@ import bkndDB from '../images/bkndDB.png';
 import folders from '../images/folders.png';
 import auth from '../images/authflow.png';
 import { useAuth0 } from '@auth0/auth0-react';
+import LoadingScreen from '../../../../components/LoadingScreen';
 
 export function Lesson8() {
     const navigate = useNavigate();
@@ -229,8 +230,10 @@ export function Lesson8() {
         navigate(`/course/${courseId}/lesson/${previousLessonId}`);
     };
 
-    if (loading) return <p>Loading...</p>;
-
+    if (loading) {
+        return <LoadingScreen />;
+    }
+    
     return (
         <div className='mainContainer'>
             <Header bgColor="rgb(247, 250, 251)" />

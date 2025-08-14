@@ -12,6 +12,7 @@ import sc2 from '../images/sc2.png';
 import finalproject from '../images/finalp1.png';
 import sc3 from '../images/sc3.png';
 import { useAuth0 } from '@auth0/auth0-react';
+import LoadingScreen from '../../../../components/LoadingScreen';
 
 export function Lesson7() {
     const navigate = useNavigate();
@@ -232,7 +233,9 @@ export function Lesson7() {
         navigate(`/course/${courseId}/lesson/${previousLessonId}`);
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+        return <LoadingScreen />;
+    }
 
     return (
         <div className='mainContainer'>

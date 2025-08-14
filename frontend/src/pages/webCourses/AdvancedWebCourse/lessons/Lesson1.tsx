@@ -1,29 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Header } from '../../../Header';
 import { Footer } from '../../../Footer';
 import { Footer2 } from '../../../Footer2';
 import '../../../../styles/webCourses/BeginnerWebCourse/Lesson1.css';
-import myportfolio from '../../../../pages/webCourses/BeginnerWebCourse/images/myportfolio.png';
-import structure from '../../../../pages/webCourses/BeginnerWebCourse/images/structure.png';
-import details from '../../../../pages/webCourses/BeginnerWebCourse/images/details.png';
-import header from '../../../../pages/webCourses/BeginnerWebCourse/images/lesson8Header.png';
-import footer from '../../../../pages/webCourses/BeginnerWebCourse/images/lesson8Footer.png';
+import lesson11 from '../images/lesson11.png';
+import lesson12 from '../images/lesson12.png';
+import spb from '../images/spb.png';
+import lesson14 from '../images/lesson14.png';
+import lesson15 from '../images/lesson15.png';
+import wf from '../images/wf.png';
+import wf2 from '../images/wf2.png';
+import pic1 from '../images/pic1.png';
+import commandLine from '../images/commandLine.png';
 import { useAuth0 } from '@auth0/auth0-react';
 import LoadingScreen from '../../../../components/LoadingScreen';
 
-export function Lesson8() {
+export function Lesson1() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(true);
     const [feedbackSubmitted, setFeedbackSubmitted] = useState<boolean>(false);
-    const location = useLocation();
     const { user, getAccessTokenSilently } = useAuth0();
+    const { courseId } = useParams();
     const auth0UserId = user?.sub;
     const [isEnrolled, setIsEnrolled] = useState<boolean | null>(null);
     const { lessonNumber } = useParams<{ lessonNumber: string }>();
     const lessonIdNumber = lessonNumber ? parseInt(lessonNumber, 10) : null;
     const [lessonId, setLessonId] = useState<number | null>(null);
-    const { courseId } = useParams();
+
 
     async function fetchLessonId() {
         if (!courseId || !lessonNumber) return;
@@ -48,7 +52,6 @@ export function Lesson8() {
     useEffect(() => {
         fetchLessonId();
     }, [courseId, lessonNumber, getAccessTokenSilently]);
-
 
     useEffect(() => {
         async function checkEnrollment() {
@@ -109,16 +112,11 @@ export function Lesson8() {
         checkFeedbackStatus();
     }, [user?.sub, lessonId, getAccessTokenSilently]);
 
-    useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const scrollTo = params.get('scrollTo');
-        if (scrollTo) {
-            const targetSection = document.getElementById(scrollTo);
-            if (targetSection) {
-                targetSection.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-    }, [location.search]);
+
+
+    if (lessonIdNumber === null) {
+        return <p>Lesson ID is missing or invalid.</p>;
+    }
 
     const sendFeedback = async (feedbackType: string) => {
         if (!user?.sub) {
@@ -155,6 +153,7 @@ export function Lesson8() {
             console.error('Error sending feedback:', error);
         }
     };
+
 
     const markLessonAsCompleted = async (lessonId: number) => {
         try {
@@ -216,20 +215,12 @@ export function Lesson8() {
         }
     };
 
-    if (lessonIdNumber === null) {
-        return <p>Lesson ID is missing or invalid.</p>;
-    }
     const handleNextLesson = async () => {
         await updateProgress();
         const nextLessonId = lessonIdNumber + 1;
         navigate(`/course/${courseId}/lesson/${nextLessonId}`);
     };
 
-    const handlePreviousLesson = async () => {
-        await updateProgress();
-        const previousLessonId = lessonIdNumber - 1;
-        navigate(`/course/${courseId}/lesson/${previousLessonId}`);
-    };
 
     if (loading) {
         return <LoadingScreen />;
@@ -239,121 +230,152 @@ export function Lesson8() {
         <div className='mainContainer'>
             <Header bgColor="rgb(247, 250, 251)" />
             <div className='lessonIntroduction'>
-                <h1>FIRST CHAPTER</h1>
-                <p>Welcome to <b>Lesson 8</b> of the <b>Beginner Web Development course</b>.</p>
+                <h1>Lesson 1: Advanced Development Environment & Tooling</h1>
+                <p>Welcome to the <b>Advanced Web Development Course</b>. In this lesson, we’ll configure a professional development environment optimized for building full-stack applications with <b>React, TypeScript, Spring Boot, and PostgreSQL</b>.</p>
             </div>
             <div className='aboutBeginnerWeb'>
                 <div className="aboutCourseDiv2" style={{ paddingBottom: '7em' }}>
-                    <div className="introductionDiv">INTRODUCTION</div>
+                    <div className="introductionDiv">Your Developer Toolkit</div>
                     <div className="frontImageBeginner">
                         <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
                             <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                STRUCTURE
+                                Setting Up for Advanced Development
                             </div>
                             <div className="imageContainer">
-                                <img src={myportfolio} alt="" className="imageForCourse" />
+                                <img src={lesson11} alt="" className="imageForCourse" />
                             </div>
                         </h1>
                     </div>
-
                     <div className="descriptionOfCourse">
-                        In this chapter you will need to build basic HTML structure for your website. You will need to use HTML elements and create simple layout for your website.
-                        <br></br>
-                        <br></br>
-                        Try to think what you want to show on your website and how you want to present it.
+                        A robust toolset is critical for building scalable, production-ready applications. In this lesson, we’ll set up:
+                        <b> VSCode</b> with professional extensions, <b>Java & Spring Boot</b>, <b>Git & GitHub workflows</b>, and a <b>TypeScript + React project template</b>.
                     </div>
                 </div>
-                <div className="aboutCourseDiv2" style={{ paddingBottom: '2em' }}>
-                    <div className="introductionDiv">HEADER, FOOTER, BODY</div>
+                <div className="aboutCourseDiv2" style={{ marginBottom: '-8em' }}>
+                    <div className="introductionDiv" style={{ marginLeft: '0.2em' }}>KEY AREAS</div>
                     <div className="frontImageBeginner">
                         <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
-                            <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                BASIC HTML STRUCTURE
-                            </div>
-                            <div className="imageContainer">
-                                <img src={structure} alt="" className="imageForCourse" />
+                            <div className="headerContainer" style={{ width: 'fit-content', marginLeft: '0.1em' }}>
+                                Essential Tools & Setup
                             </div>
                         </h1>
                     </div>
-
-                    <div className="descriptionOfCourse">
-                        Generate your own header, footer and body for your website. You can be creative and use any HTML elements you want.
-                        <br></br>
-                        <br></br>
+                </div>
+                <div className='key-areas2'>
+                    <div className="imageContainerWebBeginner">
+                        <img src={lesson14} alt="" className="imageForWebBeginner" />
+                        <div className="overlay">
+                            <div className='keyAreasOfBeginnerWebDev'>
+                                <strong>VSCode + Extensions</strong>
+                                <div className='keyDescription'>
+                                    Configure advanced extensions for React, TypeScript, Prettier, ESLint, and Git integration to streamline coding and maintain consistency.
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <p className='paragraphP' style={{ paddingTop: '9em' }}>Our example can be found <a href='/beginnerWebCourse/project/portfolio' className='introductionDiv' style={{ color: 'black', textDecoration: 'none' }} target="_blank"
-                        rel="noopener noreferrer">here</a><br></br>
-                    </p>
+                    <div className="imageContainerWebBeginner">
+                        <img src={spb} alt="" className="imageForWebBeginner" />
+                        <div className="overlay">
+                            <div className='keyAreasOfBeginnerWebDev2'>
+                                <strong>Spring Boot & Java</strong>
+                                <div className='keyDescript ion'>
+                                   Install and configure Spring Boot with Java, setting up a powerful backend framework for building RESTful APIs and microservices.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="imageContainerWebBeginner">
+                        <img src={lesson12} alt="" className="imageForWebBeginner" />
+                        <div className="overlay">
+                            <div className='keyAreasOfBeginnerWebDev'>
+                                <strong>Git & GitHub Advanced Workflows</strong>
+                                <div className='keyDescription'>
+                                    Master branching, rebasing, pull requests, and merge strategies to collaborate on larger projects and maintain a clean commit history.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="aboutCourseDiv2" style={{ paddingBottom: '2em' }}>
-                    <div className="introductionDiv">SECOND CHAPTER</div>
-                    <div className="frontImageBeginner">
-                        <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
-                            <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                HEADER
-                            </div>
-                            <div className="imageContainer">
-                                <img src={header} alt="" className="imageForCourse" />
-                            </div>
-                        </h1>
-                    </div>
+                <h3 className='subsection-title'>Modern Project Structure</h3>
+                <p className='paragraph'>
+                    We’ll use a professional <b>React + TypeScript + Spring Boot</b> template with a clear folder structure, preparing you to implement a production-style full-stack application with proper separation of concerns.
+                </p>
 
-                    <div className="descriptionOfCourse">
-                        In this section you will need to add header to your website.
-                        <br></br>
-                        <br></br>
-                        Think what you want to show in your header and how you want to present it.
-                        <br></br>
-                        <br></br>
-                        Create your logo and add it to your header.
+                <div className='beginnerPictureContainer' style={{ marginBottom: '3em' }}>
+                    <div className="imageWithDescription">
+                        <img src={lesson15} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
+                        <div className="imageDescription">Clean Modular Architecture</div>
                     </div>
-                    <p className='paragraphP' style={{ paddingTop: '9em' }}>Our example of simple portfolio can be found <a href='/beginnerWebCourse/project/portfolio' className='introductionDiv' style={{ color: 'black', textDecoration: 'none' }} target="_blank"
-                        rel="noopener noreferrer">here</a><br></br>
-                    </p>
+                    <div className="imageWithDescription">
+                        <img src={commandLine} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
+                        <div className="imageDescription">Advanced Command-Line Workflows</div>
+                    </div>
+                    <div className="imageWithDescription">
+                        <img src={wf} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
+                        <div className="imageDescription">Professional Workflows</div>
+                    </div>
+                    <div className="imageWithDescription">
+                        <img src={pic1} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
+                        <div className="imageDescription">Continuous Learning & Debugging</div>
+                    </div>
                 </div>
-                <div className="aboutCourseDiv2" style={{ paddingBottom: '2em' }}>
-                    <div className="introductionDiv">THIRD CHAPTER</div>
-                    <div className="frontImageBeginner">
-                        <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
-                            <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                FOOTER
-                            </div>
-                            <div className="imageContainer">
-                                <img src={footer} alt="" className="imageForCourse" />
-                            </div>
-                        </h1>
-                    </div>
 
-                    <div className="descriptionOfCourse">
-                        In this section you will need to add footer to your website.
-                        <br></br>
-                        <br></br>
-                        Think what you want to show in your footer and how you want to present it.
-                        <br></br>
-                        <br></br>
-                        Footer generally contains information about the website and its owner. You can add your contact information, social media links, and other relevant details.
-                    </div>
-                    <p className='paragraphP' style={{ paddingTop: '9em' }}>Our example of simple portfolio can be found <a href='/beginnerWebCourse/project/portfolio' className='introductionDiv' style={{ color: 'black', textDecoration: 'none' }} target="_blank"
-                        rel="noopener noreferrer">here</a><br></br>
-                    </p>
-                </div>
                 <div className="aboutCourseDiv2" style={{ paddingBottom: '7em' }}>
-                    <div className="introductionDiv">Summary</div>
+                    <div className="introductionDiv">Developer Workflows</div>
                     <div className="frontImageBeginner">
                         <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
                             <div className="headerContainer" style={{ width: 'fit-content' }}>
-                                Lesson Summary
+                                Efficient Full-Stack Workflows
                             </div>
-                            <div className="imageContainer" style={{ marginTop: '15em' }}>
+                            <div className="imageContainer">
+                                <img src={wf2} alt="" className="imageForCourse" />
                             </div>
                         </h1>
                     </div>
-
                     <div className="descriptionOfCourse">
-                        In this lesson you created basic HTML structure for your website. You created header and footer and are now ready to add content to your website. Next lesson will be about adding style and responsiveness to your website.
+                        Learn the foundations of professional workflows that will carry you through the final project:
+                        <ul>
+                            <li>Managing multiple environments with npm scripts</li>
+                            <li>TypeScript compilation and linting automation</li>
+                            <li>Running backend Spring Boot servers and connecting to PostgreSQL</li>
+                            <li>Testing and debugging full-stack applications</li>
+                        </ul>
+                        By mastering these practices, you’ll move smoothly into building the final Full-Stack Blood Donation Management App.
                     </div>
                 </div>
+
+                {/* Lessons 2–7 text outline (brief intros) */}
+                <div className='lessonIntroduction'>
+                    <h1>Lesson 2: Advanced React Patterns</h1>
+                    <p>Learn hooks, context, and advanced component patterns to manage state and lifecycle in large-scale applications.</p>
+                </div>
+
+                <div className='lessonIntroduction'>
+                    <h1>Lesson 3: TypeScript Deep Dive</h1>
+                    <p>Master type safety, interfaces, generics, and utility types to make your code more reliable and maintainable in complex applications.</p>
+                </div>
+
+                <div className='lessonIntroduction'>
+                    <h1>Lesson 4: RESTful API Design with Spring Boot</h1>
+                    <p>Design and implement robust, scalable APIs for your front-end to consume, including authentication, validation, and error handling.</p>
+                </div>
+
+                <div className='lessonIntroduction'>
+                    <h1>Lesson 5: PostgreSQL & Database Modeling</h1>
+                    <p>Learn how to model relational databases, write optimized queries, and integrate your backend with PostgreSQL for full-stack persistence.</p>
+                </div>
+
+                <div className='lessonIntroduction'>
+                    <h1>Lesson 6: Full-Stack Integration</h1>
+                    <p>Connect React front-end with Spring Boot APIs, handle authentication and authorization, and ensure secure and smooth data flow.</p>
+                </div>
+
+                <div className='lessonIntroduction'>
+                    <h1>Lesson 7: Preparing for the Final Project</h1>
+                    <p>Consolidate all your knowledge, review best practices, and prepare scaffolding for the Full-Stack Blood Donation Management System.</p>
+                </div>
+
             </div>
             <div className='feedbackContainer'>
                 <h3>Was this lesson easy to understand?</h3>
@@ -377,9 +399,6 @@ export function Lesson8() {
                     <div style={{ display: 'flex' }}>
                         <div className='moreCoursesDiv' onClick={handleNextLesson}>
                             Next Lesson
-                        </div>
-                        <div className='goToPreviousLessonDiv' onClick={handlePreviousLesson} style={{ marginLeft: '-77.5em' }}>
-                            Previous Lesson
                         </div>
                     </div>
                 </>

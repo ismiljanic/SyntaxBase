@@ -14,6 +14,7 @@ import commandLine from '../images/commandLine.png';
 import contL from '../../../../pages/webCourses/BeginnerWebCourse/images/contL.png';
 import courseOverview from '../../../../pages/webCourses/BeginnerWebCourse/images/courseOverview.png';
 import { useAuth0 } from '@auth0/auth0-react';
+import LoadingScreen from '../../../../components/LoadingScreen';
 
 export function Lesson1() {
     const navigate = useNavigate();
@@ -221,7 +222,9 @@ export function Lesson1() {
     };
 
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+        return <LoadingScreen />;
+    }
 
     return (
         <div className='mainContainer'>

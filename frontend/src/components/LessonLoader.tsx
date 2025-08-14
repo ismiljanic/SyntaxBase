@@ -50,9 +50,10 @@ export function LessonLoader() {
                         'Content-Type': 'application/json',
                     },
                 });
+               
                 if (!res.ok) {
                     if (res.status === 403) {
-                        navigate('/suspended');
+                        navigate('/forbidden');
                     } else if (res.status === 404) {
                         navigate('/not-found');
                     }
@@ -89,9 +90,10 @@ export function LessonLoader() {
         if (!courseId) return null;
 
         //IDs are from database as a premade course so this won't change
-        const courseIdToSlug: Record<string, 'beginner' | 'intermediate'> = {
+        const courseIdToSlug: Record<string, 'beginner' | 'intermediate' | 'advanced'> = {
             '1': 'beginner',
             '2': 'intermediate',
+            '3': 'advanced',
         };
 
         const courseSlug = courseIdToSlug[courseId];

@@ -22,6 +22,17 @@ import { Lesson8 as Intermediate8 } from '../pages/webCourses/IntermediateWebCou
 import { Lesson9 as Intermediate9 } from '../pages/webCourses/IntermediateWebCourse/lessons/Lesson9';
 import { Lesson10 as Intermediate10 } from '../pages/webCourses/IntermediateWebCourse/lessons/Lesson10';
 
+import { Lesson1 as Advanced1 } from '../pages/webCourses/AdvancedWebCourse/lessons/Lesson1';
+import { Lesson2 as Advanced2 } from '../pages/webCourses/AdvancedWebCourse/lessons/Lesson2';
+import { Lesson3 as Advanced3 } from '../pages/webCourses/AdvancedWebCourse/lessons/Lesson3';
+import { Lesson4 as Advanced4 } from '../pages/webCourses/AdvancedWebCourse/lessons/Lesson4';
+import { Lesson5 as Advanced5 } from '../pages/webCourses/AdvancedWebCourse/lessons/Lesson5';
+import { Lesson6 as Advanced6 } from '../pages/webCourses/AdvancedWebCourse/lessons/Lesson6';
+import { Lesson7 as Advanced7 } from '../pages/webCourses/AdvancedWebCourse/lessons/Lesson7';
+import { Lesson8 as Advanced8 } from '../pages/webCourses/AdvancedWebCourse/lessons/Lesson8';
+import { Lesson9 as Advanced9 } from '../pages/webCourses/AdvancedWebCourse/lessons/Lesson9';
+import { Lesson10 as Advanced10 } from '../pages/webCourses/AdvancedWebCourse/lessons/Lesson10';
+
 export const lessonComponentMap: Record<string, JSX.Element[]> = {
   beginner: [
     <Beginner1 />, <Beginner2 />, <Beginner3 />, <Beginner4 />, <Beginner5 />,
@@ -30,5 +41,9 @@ export const lessonComponentMap: Record<string, JSX.Element[]> = {
   intermediate: [
     <Intermediate1 />, <Intermediate2 />, <Intermediate3 />, <Intermediate4 />, <Intermediate5 />,
     <Intermediate6 />, <Intermediate7 />, <Intermediate8 />, <Intermediate9 />, <Intermediate10 />,
+  ],
+  advanced: [
+    <Advanced1 />, <Advanced2 />, <Advanced3 />, <Advanced4 />, <Advanced5 />,
+    <Advanced6 />, <Advanced7 />, <Advanced8 />, <Advanced9 />, <Advanced10 />,
   ],
 };

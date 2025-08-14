@@ -18,6 +18,7 @@ import useeffectt from '../../../../pages/webCourses/BeginnerWebCourse/images/us
 import onclickk from '../../../../pages/webCourses/BeginnerWebCourse/images/onclickk.png';
 import generics from '../../../../pages/webCourses/BeginnerWebCourse/images/generics.png';
 import { useAuth0 } from '@auth0/auth0-react';
+import LoadingScreen from '../../../../components/LoadingScreen';
 
 
 export function Lesson4() {
@@ -240,8 +241,9 @@ export function Lesson4() {
         navigate(`/course/${courseId}/lesson/${previousLessonId}`);
     };
 
-    if (loading) return <p>Loading...</p>;
-
+    if (loading) {
+        return <LoadingScreen />;
+    }
 
     return (
         <div className='mainContainer'>

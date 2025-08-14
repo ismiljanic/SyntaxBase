@@ -59,6 +59,14 @@ import ShowCase1Lesson3IntermediateCourse from "./pages/webCourses/IntermediateW
 import ShowCase2Lesson3IntermediateCourse from "./pages/webCourses/IntermediateWebCourse/lessons/ShowCase2Lesson3IntermediateCourse";
 import ShowCase3Lesson3IntermediateCourse from "./pages/webCourses/IntermediateWebCourse/lessons/ShowCase3Lesson3IntermediateCourse";
 import ShowCase4Lesson3IntermediateCourse from "./pages/webCourses/IntermediateWebCourse/lessons/ShowCase4Lesson3IntermediateCourse";
+import ShowCase1Lesson2AdvancedCourse from "./pages/webCourses/AdvancedWebCourse/lessons/ShowCase1Lesson2AdvancedCourse";
+import ShowCase2Lesson2AdvancedCourse from "./pages/webCourses/AdvancedWebCourse/lessons/ShowCase2Lesson2AdvancedCourse";
+import ShowCase3Lesson2AdvancedCourse from "./pages/webCourses/AdvancedWebCourse/lessons/ShowCase3Lesson2AdvancedCourse";
+import ShowCase4Lesson2AdvancedCourse from "./pages/webCourses/AdvancedWebCourse/lessons/ShowCase4Lesson2AdvancedCourse";
+import ShowCase1Lesson3AdvancedCourse from "./pages/webCourses/AdvancedWebCourse/lessons/ShowCase1Lesson3AdvancedCourse";
+import ShowCase2Lesson3AdvancedCourse from "./pages/webCourses/AdvancedWebCourse/lessons/ShowCase2Lesson3AdvancedCourse";
+import ShowCase3Lesson3AdvancedCourse from "./pages/webCourses/AdvancedWebCourse/lessons/ShowCase3Lesson3AdvancedCourse";
+import ShowCase4Lesson3AdvancedCourse from "./pages/webCourses/AdvancedWebCourse/lessons/ShowCase4Lesson3AdvancedCourse";
 import { Lesson7PortfolioExample } from "./pages/webCourses/BeginnerWebCourse/Lessons/project/examples/Lesson7PortfolioExample";
 import { BeginnerWebTutorialLesson1 } from "./pages/webTutorials/beginnerWebTutorial/Lessons/Lesson1";
 import { BeginnerWebTutorialLesson2 } from "./pages/webTutorials/beginnerWebTutorial/Lessons/Lesson2";
@@ -205,29 +213,53 @@ export function Router() {
           <Route path="/showCase7Lesson5/lesson5" element={<ProtectedRoute>
             <ShowCase7Lesson5 />
           </ProtectedRoute>} />
-          <Route path="/showCase/1/lesson/2/course/:courseId" element={<ProtectedRoute>
+          <Route path="/showCase/1/lesson/2/course/:courseId/intermediateWebCourse" element={<ProtectedRoute>
             <ShowCase1Lesson2IntermediateCourse />
           </ProtectedRoute>} />
-          <Route path="/showCase/2/lesson/2/course/:courseId" element={<ProtectedRoute>
+          <Route path="/showCase/2/lesson/2/course/:courseId/intermediateWebCourse" element={<ProtectedRoute>
             <ShowCase2Lesson2IntermediateCourse />
           </ProtectedRoute>} />
-          <Route path="/showCase/3/lesson/2/course/:courseId" element={<ProtectedRoute>
+          <Route path="/showCase/3/lesson/2/course/:courseId/intermediateWebCourse" element={<ProtectedRoute>
             <ShowCase3Lesson2IntermediateCourse />
           </ProtectedRoute>} />
-          <Route path="/showCase/4/lesson/2/course/:courseId" element={<ProtectedRoute>
+          <Route path="/showCase/4/lesson/2/course/:courseId/intermediateWebCourse" element={<ProtectedRoute>
             <ShowCase4Lesson2IntermediateCourse />
           </ProtectedRoute>} />
-          <Route path="/showCase/1/lesson/3/course/:courseId" element={<ProtectedRoute>
+          <Route path="/showCase/1/lesson/3/course/:courseId/intermediateWebCourse" element={<ProtectedRoute>
             <ShowCase1Lesson3IntermediateCourse />
           </ProtectedRoute>} />
-          <Route path="/showCase/2/lesson/3/course/:courseId" element={<ProtectedRoute>
+          <Route path="/showCase/2/lesson/3/course/:courseId/intermediateWebCourse" element={<ProtectedRoute>
             <ShowCase2Lesson3IntermediateCourse />
           </ProtectedRoute>} />
-          <Route path="/showCase/3/lesson/3/course/:courseId" element={<ProtectedRoute>
+          <Route path="/showCase/3/lesson/3/course/:courseId/intermediateWebCourse" element={<ProtectedRoute>
             <ShowCase3Lesson3IntermediateCourse />
           </ProtectedRoute>} />
-          <Route path="/showCase/4/lesson/3/course/:courseId" element={<ProtectedRoute>
+          <Route path="/showCase/4/lesson/3/course/:courseId/intermediateWebCourse" element={<ProtectedRoute>
             <ShowCase4Lesson3IntermediateCourse />
+          </ProtectedRoute>} />
+          <Route path="/showCase/1/lesson/2/course/:courseId/advancedWebCourse" element={<ProtectedRoute>
+            <ShowCase1Lesson2AdvancedCourse />
+          </ProtectedRoute>} />
+          <Route path="/showCase/2/lesson/2/course/:courseId/advancedWebCourse" element={<ProtectedRoute>
+            <ShowCase2Lesson2AdvancedCourse />
+          </ProtectedRoute>} />
+          <Route path="/showCase/3/lesson/2/course/:courseId/advancedWebCourse" element={<ProtectedRoute>
+            <ShowCase3Lesson2AdvancedCourse />
+          </ProtectedRoute>} />
+          <Route path="/showCase/4/lesson/2/course/:courseId/advancedWebCourse" element={<ProtectedRoute>
+            <ShowCase4Lesson2AdvancedCourse />
+          </ProtectedRoute>} />
+          <Route path="/showCase/1/lesson/3/course/:courseId/advancedWebCourse" element={<ProtectedRoute>
+            <ShowCase1Lesson3AdvancedCourse />
+          </ProtectedRoute>} />
+          <Route path="/showCase/2/lesson/3/course/:courseId/advancedWebCourse" element={<ProtectedRoute>
+            <ShowCase2Lesson3AdvancedCourse />
+          </ProtectedRoute>} />
+          <Route path="/showCase/3/lesson/3/course/:courseId/advancedWebCourse" element={<ProtectedRoute>
+            <ShowCase3Lesson3AdvancedCourse />
+          </ProtectedRoute>} />
+          <Route path="/showCase/4/lesson/3/course/:courseId/advancedWebCourse" element={<ProtectedRoute>
+            <ShowCase4Lesson3AdvancedCourse />
           </ProtectedRoute>} />
           <Route path="/beginnerWebCourse/:courseId/project/portfolio" element={<ProtectedRoute>
             <Lesson7PortfolioExample />
@@ -293,7 +325,9 @@ export function Router() {
           <Route path="*" element={<NotFound />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/forbidden" element={<Forbidden />} />
-          <Route path="/suspended" element={<SuspendedPage />} />
+          <Route path="/suspended" element={<ProtectedRoute>
+            <SuspendedPage />
+          </ProtectedRoute>} />
         </Routes>
       </div>
     </BrowserRouter>

@@ -15,6 +15,7 @@ import secondExample from '../../../../pages/webCourses/BeginnerWebCourse/images
 import thirdExample from '../../../../pages/webCourses/BeginnerWebCourse/images/thirdExample.png';
 import fourthExample from '../../../../pages/webCourses/BeginnerWebCourse/images/fourthExample.png';
 import { useAuth0 } from '@auth0/auth0-react';
+import LoadingScreen from '../../../../components/LoadingScreen';
 
 
 export function Lesson2() {
@@ -235,7 +236,9 @@ export function Lesson2() {
         navigate(`/course/${courseId}/lesson/${previousLessonId}`);
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+        return <LoadingScreen />;
+    }
 
     return (
         <div className='mainContainer'>
@@ -308,7 +311,7 @@ export function Lesson2() {
                 <div className='beginnerPictureContainer' style={{ marginBottom: '3em' }}>
                     <div
                         className="imageWithDescription"
-                        onClick={() => window.open(`/showCase/1/lesson/2/course/${courseId}`, '_blank')}
+                        onClick={() => window.open(`/showCase/1/lesson/2/course/${courseId}/intermediateWebCourse`, '_blank')}
                         style={{ cursor: 'pointer' }}
                     >
                         <img
@@ -322,7 +325,7 @@ export function Lesson2() {
 
                     <div
                         className="imageWithDescription"
-                        onClick={() => window.open(`/showCase/2/lesson/2/course/${courseId}`, '_blank')}
+                        onClick={() => window.open(`/showCase/2/lesson/2/course/${courseId}/intermediateWebCourse`, '_blank')}
                         style={{ cursor: 'pointer' }}
                     >
                         <img src={secondExample} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
@@ -331,7 +334,7 @@ export function Lesson2() {
 
                     <div
                         className="imageWithDescription"
-                        onClick={() => window.open(`/showCase/3/lesson/2/course/${courseId}`, '_blank')}
+                        onClick={() => window.open(`/showCase/3/lesson/2/course/${courseId}/intermediateWebCourse`, '_blank')}
                         style={{ cursor: 'pointer' }}
                     >
                         <img src={thirdExample} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
@@ -340,7 +343,7 @@ export function Lesson2() {
 
                     <div
                         className="imageWithDescription"
-                        onClick={() => window.open(`/showCase/4/lesson/2/course/${courseId}`, '_blank')}
+                        onClick={() => window.open(`/showCase/4/lesson/2/course/${courseId}/intermediateWebCourse`, '_blank')}
                         style={{ cursor: 'pointer' }}
                     >
                         <img src={fourthExample} alt="" className="courseImage" style={{ width: '50em', height: '30em' }} />
