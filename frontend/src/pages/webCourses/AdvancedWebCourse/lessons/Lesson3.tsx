@@ -10,6 +10,7 @@ import firstExample from '../../../../pages/webCourses/BeginnerWebCourse/images/
 import secondExample from '../../../../pages/webCourses/BeginnerWebCourse/images/secondExample.png';
 import thirdExample from '../../../../pages/webCourses/BeginnerWebCourse/images/thirdExample.png';
 import fourthExample from '../../../../pages/webCourses/BeginnerWebCourse/images/fourthExample.png';
+import LoadingScreen from '../../../../components/LoadingScreen';
 
 export function Lesson3() {
     const navigate = useNavigate();
@@ -229,7 +230,9 @@ export function Lesson3() {
         navigate(`/course/${courseId}/lesson/${previousLessonId}`);
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+        return <LoadingScreen />;
+    }
 
     return (
         <div className='mainContainer'>
