@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import LoadingScreen from '../../../components/LoadingScreen';
 
-export function IntermediateWebDevelopmentQuiz() {
+export function AdvancedWebDevelopmentQuiz() {
     const navigate = useNavigate();
     const { user, isAuthenticated, loginWithRedirect, isLoading } = useAuth0();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -29,34 +29,44 @@ export function IntermediateWebDevelopmentQuiz() {
 
     const quizQuestions = [
         {
-            question: 'Which backend framework did we use for API development?',
-            options: ['Express', 'Django', 'Ruby on Rails', 'Flask'],
-            correctAnswer: 'Express',
+            question: 'Which frontend technology did we use to build the Blood Donation Management System?',
+            options: ['React with TypeScript', 'Vue with JavaScript', 'Angular with TypeScript', 'Svelte with JavaScript'],
+            correctAnswer: 'React with TypeScript',
         },
         {
-            question: 'What database technology did we connect our backend to?',
-            options: ['MySQL', 'MongoDB', 'PostgreSQL', 'SQLite'],
+            question: 'Which backend framework powers the APIs in our final project?',
+            options: ['Express.js', 'Spring Boot', 'Django', 'NestJS'],
+            correctAnswer: 'Spring Boot',
+        },
+        {
+            question: 'What database solution is used to store donor, appointment, and blood stock information?',
+            options: ['PostgreSQL', 'MongoDB', 'MySQL', 'SQLite'],
             correctAnswer: 'PostgreSQL',
         },
         {
-            question: 'Which authentication protocol did we integrate?',
-            options: ['OAuth2', 'SAML', 'Basic Auth', 'JWT only'],
-            correctAnswer: 'OAuth2',
+            question: 'Which key feature ensures only authorized users can access sensitive data?',
+            options: ['Authentication & Authorization', 'Caching', 'Code Splitting', 'CI/CD'],
+            correctAnswer: 'Authentication & Authorization',
         },
         {
-            question: 'Where do you store environment variables in this project?',
-            options: ['.env files', 'package.json', 'README.md', 'config.js'],
-            correctAnswer: '.env files',
+            question: 'Which module allows organizations to manage blood stock and donations?',
+            options: ['Donor Registration', 'Organization Management Tools', 'Reward System', 'Appointment Scheduling'],
+            correctAnswer: 'Organization Management Tools',
         },
         {
-            question: 'What frontend library did we use for building UI?',
-            options: ['React', 'Vue', 'Angular', 'Svelte'],
-            correctAnswer: 'React',
+            question: 'Why did we implement a reward system in the application?',
+            options: ['To gamify donation and increase user engagement', 'To manage database backups', 'To handle session storage', 'To reduce server load'],
+            correctAnswer: 'To gamify donation and increase user engagement',
         },
         {
-            question: 'What is the purpose of QR code generation in our app?',
-            options: ['Ticket verification', 'User authentication', 'Database backup', 'Styling elements'],
-            correctAnswer: 'Ticket verification',
+            question: 'Which testing strategy is recommended for ensuring both frontend and backend work correctly together?',
+            options: ['Unit Testing Only', 'Integration Testing', 'Manual Testing Only', 'Linting'],
+            correctAnswer: 'Integration Testing',
+        },
+        {
+            question: 'How is appointment scheduling handled in the system?',
+            options: ['By linking donors with available times and storing them in the database', 'Through manual email communication', 'By storing schedules in localStorage', 'By exporting times to a CSV file'],
+            correctAnswer: 'By linking donors with available times and storing them in the database',
         },
     ];
 

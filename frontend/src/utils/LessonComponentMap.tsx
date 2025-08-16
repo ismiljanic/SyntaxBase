@@ -1,15 +1,15 @@
 import React from 'react';
 
-import { Lesson1 as Beginner1 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson1';
-import { Lesson2 as Beginner2 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson2';
-import { Lesson3 as Beginner3 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson3';
-import { Lesson4 as Beginner4 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson4';
-import { Lesson5 as Beginner5 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson5';
-import { Lesson6 as Beginner6 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson6';
-import { Lesson7 as Beginner7 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson7';
-import { Lesson8 as Beginner8 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson8';
-import { Lesson9 as Beginner9 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson9';
-import { Lesson10 as Beginner10 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson10';
+import { Lesson1 as Beginner1 } from '../pages/webCourses/BeginnerWebCourse/lessons/Lesson1';
+import { Lesson2 as Beginner2 } from '../pages/webCourses/BeginnerWebCourse/lessons/Lesson2';
+import { Lesson3 as Beginner3 } from '../pages/webCourses/BeginnerWebCourse/lessons/Lesson3';
+import { Lesson4 as Beginner4 } from '../pages/webCourses/BeginnerWebCourse/lessons/Lesson4';
+import { Lesson5 as Beginner5 } from '../pages/webCourses/BeginnerWebCourse/lessons/Lesson5';
+import { Lesson6 as Beginner6 } from '../pages/webCourses/BeginnerWebCourse/lessons/Lesson6';
+import { Lesson7 as Beginner7 } from '../pages/webCourses/BeginnerWebCourse/lessons/Lesson7';
+import { Lesson8 as Beginner8 } from '../pages/webCourses/BeginnerWebCourse/lessons/Lesson8';
+import { Lesson9 as Beginner9 } from '../pages/webCourses/BeginnerWebCourse/lessons/Lesson9';
+import { Lesson10 as Beginner10 } from '../pages/webCourses/BeginnerWebCourse/lessons/Lesson10';
 
 import { Lesson1 as Intermediate1 } from '../pages/webCourses/IntermediateWebCourse/lessons/Lesson1';
 import { Lesson2 as Intermediate2 } from '../pages/webCourses/IntermediateWebCourse/lessons/Lesson2';

@@ -7,14 +7,16 @@ interface FooterProps {
 }
 
 export function Footer({ bgColor = '#333' }: FooterProps) {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="footer" style={{ backgroundColor: bgColor }}>
       <a href="/" className="footer-logo-link">
         <img src={picture} alt="Logo SyntaxBase" className="footer-logo" />
       </a>
       <div className="footer-text">
-        <p>&copy; 2025 SyntaxBase.</p>
-        <p> All rights reserved.</p>
+        <p>&copy; {currentYear} SyntaxBase.</p>
+        <p>All rights reserved.</p>
       </div>
       <div className="footer-links">
         <a href="/privacy">Privacy Policy</a>

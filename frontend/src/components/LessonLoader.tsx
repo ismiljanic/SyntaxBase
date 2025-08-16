@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { lessonComponentMap } from '../utils/LessonComponentMap';
+import LoadingScreen from './LoadingScreen';
 
 export function LessonLoader() {
     const [lessons, setLessons] = useState<{ id: number; title: string }[]>([]);
@@ -50,7 +51,7 @@ export function LessonLoader() {
                         'Content-Type': 'application/json',
                     },
                 });
-               
+
                 if (!res.ok) {
                     if (res.status === 403) {
                         navigate('/forbidden');
@@ -74,7 +75,9 @@ export function LessonLoader() {
 
     const staticComp = getStaticLessonComponentFromNumber(numericLessonNumber);
 
-    if (loading) return <p>Loading lesson...</p>;
+    if (loading) {
+        return <LoadingScreen />;
+    }
     if (staticComp) return staticComp;
     if (error) return <p>Error: {error}</p>;
     if (!lesson) return <p>Lesson not found</p>;

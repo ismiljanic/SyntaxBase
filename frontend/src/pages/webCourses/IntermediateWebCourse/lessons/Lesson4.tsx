@@ -10,13 +10,6 @@ import typescript2 from '../../../../pages/webCourses/BeginnerWebCourse/images/t
 import react2 from '../../../../pages/webCourses/BeginnerWebCourse/images/react2.png';
 import react3 from '../../../../pages/webCourses/BeginnerWebCourse/images/react3.png';
 import magic from '../../../../pages/webCourses/BeginnerWebCourse/images/magic.png';
-import components from '../../../../pages/webCourses/BeginnerWebCourse/images/components.png';
-import types from '../../../../pages/webCourses/BeginnerWebCourse/images/types.png';
-import props from '../../../../pages/webCourses/BeginnerWebCourse/images/props.png';
-import useStatee from '../../../../pages/webCourses/BeginnerWebCourse/images/useState.png';
-import useeffectt from '../../../../pages/webCourses/BeginnerWebCourse/images/useeffectt.png';
-import onclickk from '../../../../pages/webCourses/BeginnerWebCourse/images/onclickk.png';
-import generics from '../../../../pages/webCourses/BeginnerWebCourse/images/generics.png';
 import { useAuth0 } from '@auth0/auth0-react';
 import LoadingScreen from '../../../../components/LoadingScreen';
 

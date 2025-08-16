@@ -5,6 +5,7 @@ import { Footer } from '../../../Footer';
 import { Footer2 } from '../../../Footer2';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
+import LoadingScreen from '../../../../components/LoadingScreen';
 
 export function BeginnerWebDevelopmentQuiz() {
     const navigate = useNavigate();
@@ -15,8 +16,10 @@ export function BeginnerWebDevelopmentQuiz() {
     const [isQuizCompleted, setIsQuizCompleted] = useState(false);
     const [feedback, setFeedback] = useState<string>('');
 
-    if (isLoading) return <div>Loading...</div>;
-    console.log("prije provjere auth-a");
+    if (isLoading) {
+        return <LoadingScreen />;
+    }
+    
     if (!isAuthenticated) {
         loginWithRedirect();
         return null;

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import '../../styles/AdminUserManagment.css';
 import { useNavigate } from 'react-router-dom';
+import LoadingScreen from '../LoadingScreen';
 
 type User = {
     auth0UserId: string;
@@ -130,7 +131,10 @@ export function AdminUserManagement() {
     };
 
 
-    if (loading) return <p>Loading users...</p>;
+    if (loading) {
+        return <LoadingScreen />;
+    }
+    
     if (error) return <p>Error: {error}</p>;
 
     return (

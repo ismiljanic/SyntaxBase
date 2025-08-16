@@ -5,7 +5,6 @@ import { Footer } from '../../../Footer';
 import { Footer2 } from '../../../Footer2';
 import '../../../../styles/webCourses/BeginnerWebCourse/Lesson1.css';
 import auth0 from '../images/intermediate6.png';
-import contL from '../images/contL.png';
 import sc1 from '../images/sc1.png';
 import git from '../images/lesson15.png';
 import sc2 from '../images/sc2.png';

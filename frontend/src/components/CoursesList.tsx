@@ -6,6 +6,7 @@ import '../styles/CoursesList.css';
 import { useAuth0 } from '@auth0/auth0-react';
 import AnimatedCounter from './AnimatedCounter';
 import AnimatedProgressBar from './AnimatedProgressBar';
+import LoadingScreen from './LoadingScreen';
 
 interface Course {
     courseId: number;
@@ -216,7 +217,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
     };
 
     if (loading) {
-        return <p style={{ backgroundColor: 'rgb(247, 250, 251)' }}>Loading courses...</p>;
+        return <LoadingScreen />;
     }
 
     if (error) {

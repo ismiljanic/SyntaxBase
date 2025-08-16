@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import '../../../../styles/webCourses/BeginnerWebCourse/Finish.css';
-import { Header } from '../../../Header';
-import { Footer2 } from '../../../Footer2';
-import { Footer } from '../../../Footer';
-import congrats from '../images/gzzzzz.png';
+import '../../styles/webCourses/BeginnerWebCourse/Finish.css';
+import { Header } from '../Header';
+import { Footer2 } from '../Footer2';
+import { Footer } from '../Footer';
+import congrats from '../../images/gzzzzz.png';
 import { useNavigate, useParams } from 'react-router-dom';
+import LoadingScreen from '../../components/LoadingScreen';
 
 interface ConfettiParticle {
     x: number;
@@ -29,7 +30,7 @@ export function FinishCourse() {
         '2': '/intermediateWebDevelopmentQuiz',
         '3': '/advancedWebDevelopmentQuiz',
     };
-    
+
     const id = courseId ? String(courseId) : undefined;
     const quizPath = id && courseQuizMap[id] ? courseQuizMap[id] : '/defaultQuiz';
 
@@ -135,7 +136,7 @@ export function FinishCourse() {
     };
 
     if (isLoading) {
-        return <div>Loading user info...</div>;
+        return <LoadingScreen />;
     }
 
     if (!isAuthenticated) {

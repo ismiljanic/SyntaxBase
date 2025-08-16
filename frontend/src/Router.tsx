@@ -31,26 +31,26 @@ import { IntermediateProblemSolvingCourse } from "./pages/problemSolvingCourses/
 import { AdvancedProblemSolvingCourse } from "./pages/problemSolvingCourses/AdvancedProblemSolvingCourse";
 import { SimpleFrontendApplication } from "./pages/webCourses/BeginnerWebCourse/pages/SimpleFrontendApplication";
 import { AccountInformation } from "./pages/AccountInformation";
-import { ShowCase1 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase1";
-import { ShowCase2 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase2";
-import { ShowCase3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase3";
-import { ShowCase4 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase4";
-import { ShowCase1Lesson3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase1Lesson3";
-import { ShowCase2Lesson3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase2Lesson3";
-import { ShowCase3Lesson3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase3Lesson3";
-import { ShowCase4Lesson3 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase4Lesson3";
-import { ShowCase1Lesson4 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase1Lesson4";
-import { ShowCase2Lesson4 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase2Lesson4";
-import { ShowCase3Lesson4 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase3Lesson4";
-import { ShowCase4Lesson4 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase4Lesson4";
-import { ShowCase5Lesson4 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase5Lesson4";
-import { ShowCase1Lesson5 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase1Lesson5";
-import { ShowCase2Lesson5 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase2Lesson5";
-import { ShowCase3Lesson5 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase3Lesson5";
-import { ShowCase4Lesson5 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase4Lesson5";
-import { ShowCase5Lesson5 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase5Lesson5";
-import { ShowCase6Lesson5 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase6Lesson5";
-import { ShowCase7Lesson5 } from "./pages/webCourses/BeginnerWebCourse/Lessons/ShowCase7Lesson5";
+import { ShowCase1 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase1";
+import { ShowCase2 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase2";
+import { ShowCase3 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase3";
+import { ShowCase4 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase4";
+import { ShowCase1Lesson3 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase1Lesson3";
+import { ShowCase2Lesson3 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase2Lesson3";
+import { ShowCase3Lesson3 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase3Lesson3";
+import { ShowCase4Lesson3 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase4Lesson3";
+import { ShowCase1Lesson4 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase1Lesson4";
+import { ShowCase2Lesson4 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase2Lesson4";
+import { ShowCase3Lesson4 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase3Lesson4";
+import { ShowCase4Lesson4 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase4Lesson4";
+import { ShowCase5Lesson4 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase5Lesson4";
+import { ShowCase1Lesson5 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase1Lesson5";
+import { ShowCase2Lesson5 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase2Lesson5";
+import { ShowCase3Lesson5 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase3Lesson5";
+import { ShowCase4Lesson5 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase4Lesson5";
+import { ShowCase5Lesson5 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase5Lesson5";
+import { ShowCase6Lesson5 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase6Lesson5";
+import { ShowCase7Lesson5 } from "./pages/webCourses/BeginnerWebCourse/lessons/ShowCase7Lesson5";
 import ShowCase1Lesson2IntermediateCourse from "./pages/webCourses/IntermediateWebCourse/lessons/ShowCase1Lesson2IntermediateCourse";
 import ShowCase2Lesson2IntermediateCourse from "./pages/webCourses/IntermediateWebCourse/lessons/ShowCase2Lesson2IntermediateCourse";
 import ShowCase3Lesson2IntermediateCourse from "./pages/webCourses/IntermediateWebCourse/lessons/ShowCase3Lesson2IntermediateCourse";
@@ -67,15 +67,27 @@ import ShowCase1Lesson3AdvancedCourse from "./pages/webCourses/AdvancedWebCourse
 import ShowCase2Lesson3AdvancedCourse from "./pages/webCourses/AdvancedWebCourse/lessons/ShowCase2Lesson3AdvancedCourse";
 import ShowCase3Lesson3AdvancedCourse from "./pages/webCourses/AdvancedWebCourse/lessons/ShowCase3Lesson3AdvancedCourse";
 import ShowCase4Lesson3AdvancedCourse from "./pages/webCourses/AdvancedWebCourse/lessons/ShowCase4Lesson3AdvancedCourse";
-import { Lesson7PortfolioExample } from "./pages/webCourses/BeginnerWebCourse/Lessons/project/examples/Lesson7PortfolioExample";
-import { BeginnerWebTutorialLesson1 } from "./pages/webTutorials/beginnerWebTutorial/Lessons/Lesson1";
-import { BeginnerWebTutorialLesson2 } from "./pages/webTutorials/beginnerWebTutorial/Lessons/Lesson2";
-import { BeginnerWebTutorialLesson3 } from "./pages/webTutorials/beginnerWebTutorial/Lessons/Lesson3";
-import { BeginnerWebTutorialLesson4 } from "./pages/webTutorials/beginnerWebTutorial/Lessons/Lesson4";
-import { BeginnerWebTutorialLesson5 } from "./pages/webTutorials/beginnerWebTutorial/Lessons/Lesson5";
-import { FinishCourse } from "./pages/webCourses/BeginnerWebCourse/Lessons/FinishCourse";
-import { BeginnerWebDevelopmentQuiz } from "./pages/webCourses/BeginnerWebCourse/Lessons/BeginnerWebDevelopmentQuiz";
+import { Lesson7PortfolioExample } from "./pages/webCourses/BeginnerWebCourse/lessons/project/examples/Lesson7PortfolioExample";
+import { BeginnerWebTutorialLesson1 } from "./pages/webTutorials/beginnerWebTutorial/lessons/Lesson1";
+import { BeginnerWebTutorialLesson2 } from "./pages/webTutorials/beginnerWebTutorial/lessons/Lesson2";
+import { BeginnerWebTutorialLesson3 } from "./pages/webTutorials/beginnerWebTutorial/lessons/Lesson3";
+import { BeginnerWebTutorialLesson4 } from "./pages/webTutorials/beginnerWebTutorial/lessons/Lesson4";
+import { BeginnerWebTutorialLesson5 } from "./pages/webTutorials/beginnerWebTutorial/lessons/Lesson5";
+import { IntermediateWebTutorialLesson1 } from "./pages/webTutorials/intermediateWebTutorial/lessons/Lesson1";
+import { IntermediateWebTutorialLesson2 } from "./pages/webTutorials/intermediateWebTutorial/lessons/Lesson2";
+import { IntermediateWebTutorialLesson3 } from "./pages/webTutorials/intermediateWebTutorial/lessons/Lesson3";
+import { IntermediateWebTutorialLesson4 } from "./pages/webTutorials/intermediateWebTutorial/lessons/Lesson4";
+import { IntermediateWebTutorialLesson5 } from "./pages/webTutorials/intermediateWebTutorial/lessons/Lesson5";
+import { AdvancedWebTutorialLesson1 } from "./pages/webTutorials/advancedWebTutorial/lessons/Lesson1";
+import { AdvancedWebTutorialLesson2 } from "./pages/webTutorials/advancedWebTutorial/lessons/Lesson2";
+import { AdvancedWebTutorialLesson3 } from "./pages/webTutorials/advancedWebTutorial/lessons/Lesson3";
+import { AdvancedWebTutorialLesson4 } from "./pages/webTutorials/advancedWebTutorial/lessons/Lesson4";
+import { AdvancedWebTutorialLesson5 } from "./pages/webTutorials/advancedWebTutorial/lessons/Lesson5";
+import { FinishCourse } from "./pages/webCourses/FinishCourse";
+import { FinishTutorial } from "./pages/webTutorials/FinishTutorial";
+import { BeginnerWebDevelopmentQuiz } from "./pages/webCourses/BeginnerWebCourse/lessons/BeginnerWebDevelopmentQuiz";
 import { IntermediateWebDevelopmentQuiz } from "./pages/webCourses/IntermediateWebCourse/IntermediateWebDevelopmentQuiz";
+import { AdvancedWebDevelopmentQuiz } from "./pages/webCourses/AdvancedWebCourse/AdvancedWebDevelopmentQuiz";
 import { Community } from "./pages/Community";
 import { Notifications } from "./pages/Notifications";
 import { AdminPage } from "./pages/admin/AdminPage";
@@ -151,7 +163,7 @@ export function Router() {
           <Route path="/about" element={<About />} />
           <Route path="/beginnerWebDevelopmentQuiz" element={<ProtectedRoute><BeginnerWebDevelopmentQuiz /></ProtectedRoute>} />
           <Route path="/intermediateWebDevelopmentQuiz" element={<ProtectedRoute><IntermediateWebDevelopmentQuiz /></ProtectedRoute>} />
-          {/* <Route path="/advancedWebDevelopmentQuiz" element={<ProtectedRoute><AdvancedWebDevelopmentQuiz /></ProtectedRoute>} /> */}
+          <Route path="/advancedWebDevelopmentQuiz" element={<ProtectedRoute><AdvancedWebDevelopmentQuiz /></ProtectedRoute>} />
           <Route path="/course/:courseId/lesson/:lessonNumber" element={<ProtectedRoute><LessonLoader /></ProtectedRoute>} />
           <Route path="/showCase1/lesson2" element={<ProtectedRoute>
             <ShowCase1 />
@@ -278,9 +290,40 @@ export function Router() {
           } />
           <Route path="/beginnerWebTutorial/lesson/5" element={
             <BeginnerWebTutorialLesson5 />} />
+          <Route path="/intermediateWebTutorial/lesson/1" element={
+            <IntermediateWebTutorialLesson1 />
+          } />
+          <Route path="/intermediateWebTutorial/lesson/2" element={
+            <IntermediateWebTutorialLesson2 />
+          } />
+          <Route path="/intermediateWebTutorial/lesson/3" element={
+            <IntermediateWebTutorialLesson3 />
+          } />
+          <Route path="/intermediateWebTutorial/lesson/4" element={
+            <IntermediateWebTutorialLesson4 />
+          } />
+          <Route path="/intermediateWebTutorial/lesson/5" element={
+            <IntermediateWebTutorialLesson5 />
+          } />
+           <Route path="/advancedWebTutorial/lesson/1" element={
+            <AdvancedWebTutorialLesson1 />
+          } />
+          <Route path="/advancedWebTutorial/lesson/2" element={
+            <AdvancedWebTutorialLesson2 />
+          } />
+          <Route path="/advancedWebTutorial/lesson/3" element={
+            <AdvancedWebTutorialLesson3 />
+          } />
+          <Route path="/advancedWebTutorial/lesson/4" element={
+            <AdvancedWebTutorialLesson4 />
+          } />
+          <Route path="/advancedWebTutorial/lesson/5" element={
+            <AdvancedWebTutorialLesson5 />
+          } />
           <Route path="/course/:courseId/lesson/finish" element={<ProtectedRoute>
             <FinishCourse />
           </ProtectedRoute>} />
+          <Route path="/tutorial/finish" element={<FinishTutorial />} />
           <Route path="/request-instructor" element={<ProtectedRoute>
             <InstructorRequestForm />
           </ProtectedRoute>} />

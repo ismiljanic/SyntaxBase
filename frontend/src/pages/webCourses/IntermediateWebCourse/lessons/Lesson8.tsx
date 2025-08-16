@@ -4,7 +4,6 @@ import { Header } from '../../../Header';
 import { Footer } from '../../../Footer';
 import { Footer2 } from '../../../Footer2';
 import '../../../../styles/webCourses/BeginnerWebCourse/Lesson1.css';
-import header from '../../../../pages/webCourses/BeginnerWebCourse/images/lesson8Header.png';
 import bkndDB from '../images/bkndDB.png';
 import folders from '../images/folders.png';
 import auth from '../images/authflow.png';
