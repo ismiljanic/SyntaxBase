@@ -107,7 +107,7 @@ export function BeginnerWebTutorialLesson1() {
                         <div className="imageDescription">Continuous Learning</div>
                     </div>
                 </div>
-                <div style={{ display: 'flex' }}>
+                <div style={{ display: 'flex', marginTop: '5em' }}>
                     <div className='moreCoursesDiv' onClick={handleNextLesson}>
                         Next Lesson
                     </div>

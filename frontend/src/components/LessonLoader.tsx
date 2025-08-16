@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Lesson1 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson1';
-import { Lesson2 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson2';
-import { Lesson3 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson3';
-import { Lesson4 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson4';
-import { Lesson5 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson5';
-import { Lesson6 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson6';
-import { Lesson7 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson7';
-import { Lesson8 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson8';
-import { Lesson9 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson9';
-import { Lesson10 } from '../pages/webCourses/BeginnerWebCourse/Lessons/Lesson10';
+import { lessonComponentMap } from '../utils/LessonComponentMap';
+import LoadingScreen from './LoadingScreen';
 
 export function LessonLoader() {
     const [lessons, setLessons] = useState<{ id: number; title: string }[]>([]);
     const [lesson, setLesson] = useState<{ id: number; title: string; content: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
     const { getAccessTokenSilently } = useAuth0();
     const { courseId, lessonNumber } = useParams<{ courseId: string; lessonNumber: string }>();
     const numericLessonNumber = parseInt(lessonNumber || '', 10);
@@ -27,7 +20,7 @@ export function LessonLoader() {
                 const token = await getAccessTokenSilently();
                 const res = await fetch(`http://localhost:8080/api/courses/${courseId}/lessons`, {
                     headers: {
-                        'Authorization': `Bearer ${token}`,
+                        Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json',
                     },
                 });
@@ -54,11 +47,20 @@ export function LessonLoader() {
                 const token = await getAccessTokenSilently();
                 const res = await fetch(`http://localhost:8080/api/progress/lessons/${courseId}/number/${numericLessonNumber}`, {
                     headers: {
-                        'Authorization': `Bearer ${token}`,
+                        Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json',
                     },
                 });
-                if (!res.ok) throw new Error('Lesson not found or access denied');
+
+                if (!res.ok) {
+                    if (res.status === 403) {
+                        navigate('/forbidden');
+                    } else if (res.status === 404) {
+                        navigate('/not-found');
+                    }
+                    throw new Error('Lesson not found or access denied');
+                }
+
                 const data = await res.json();
                 setLesson(data);
             } catch (err: any) {
@@ -73,7 +75,9 @@ export function LessonLoader() {
 
     const staticComp = getStaticLessonComponentFromNumber(numericLessonNumber);
 
-    if (loading) return <p>Loading lesson...</p>;
+    if (loading) {
+        return <LoadingScreen />;
+    }
     if (staticComp) return staticComp;
     if (error) return <p>Error: {error}</p>;
     if (!lesson) return <p>Lesson not found</p>;
@@ -85,23 +89,26 @@ export function LessonLoader() {
         </div>
     );
 
-    function getStaticLessonComponentFromNumber(lessonNumber: number) {
-        const components = [
-            <Lesson1 />,
-            <Lesson2 />,
-            <Lesson3 />,
-            <Lesson4 />,
-            <Lesson5 />,
-            <Lesson6 />,
-            <Lesson7 />,
-            <Lesson8 />,
-            <Lesson9 />,
-            <Lesson10 />,
-        ];
+    function getStaticLessonComponentFromNumber(lessonNumber: number): JSX.Element | null {
+        if (!courseId) return null;
+
+        //IDs are from database as a premade course so this won't change
+        const courseIdToSlug: Record<string, 'beginner' | 'intermediate' | 'advanced'> = {
+            '1': 'beginner',
+            '2': 'intermediate',
+            '3': 'advanced',
+        };
+
+        const courseSlug = courseIdToSlug[courseId];
+        if (!courseSlug) return null;
+
+        const components = lessonComponentMap[courseSlug];
+        if (!components) return null;
 
         if (lessonNumber > 0 && lessonNumber <= components.length) {
             return components[lessonNumber - 1];
         }
+
         return null;
     }
 }

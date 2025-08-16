@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import web4 from '../images/web4.png';
+import enrolledCourse from '../images/enrolledCourse.png';
 import '../styles/CoursesList.css';
 import { useAuth0 } from '@auth0/auth0-react';
 import AnimatedCounter from './AnimatedCounter';
 import AnimatedProgressBar from './AnimatedProgressBar';
+import LoadingScreen from './LoadingScreen';
 
 interface Course {
     courseId: number;
@@ -77,7 +78,6 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
                         withCredentials: true,
                     }
                 );
-                console.log('Courses response:', coursesResponse.data);
                 setCourses(coursesResponse.data);
                 const progressResponses = await Promise.all(
                     coursesResponse.data.map(course =>
@@ -91,7 +91,6 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
                         )
                     )
                 );
-                console.log('Progress responses:', progressResponses);
                 const progressDataMap = progressResponses.reduce((acc, response, index) => {
                     const courseId = coursesResponse.data[index].courseId;
                     acc[courseId] = response.data;
@@ -218,7 +217,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
     };
 
     if (loading) {
-        return <p style={{ backgroundColor: 'rgb(247, 250, 251)' }}>Loading courses...</p>;
+        return <LoadingScreen />;
     }
 
     if (error) {
@@ -293,7 +292,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
                         onClick={() => handleCourseClick(course)}
                     >
                         <div className="leftSide">
-                            <img src={web4} alt={course.courseName} className="courseImage2" />
+                            <img src={enrolledCourse} alt={course.courseName} className="courseImage2" />
                             <div className="imageDescription2">
                                 <strong>{course.courseName}</strong>
                                 <p>{course.description || 'No description available.'}</p>

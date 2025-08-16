@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import LoadingScreen from '../components/LoadingScreen';
 
 const Lesson: React.FC = () => {
     const { courseId, lessonId } = useParams();
@@ -19,13 +20,14 @@ const Lesson: React.FC = () => {
         fetchLesson();
     }, [courseId, lessonId]);
 
-    if (!lesson) return <div>Loading lesson...</div>;
+    if (!lesson) {
+        return <LoadingScreen />;
+    }
 
     return (
         <div className="lesson-container">
             <h1>{lesson.title}</h1>
             <p>{lesson.content}</p>
-            {/* Add video, quiz, etc. here */}
         </div>
     );
 };

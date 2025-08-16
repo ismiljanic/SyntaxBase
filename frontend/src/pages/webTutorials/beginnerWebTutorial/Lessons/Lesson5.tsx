@@ -12,7 +12,7 @@ import magic from '../../../../pages/webCourses/BeginnerWebCourse/images/magic.p
 export function BeginnerWebTutorialLesson5() {
 
     const handleNextLesson = async () => {
-        window.location.href = `/beginnerWebTutorial/finish`;
+        window.location.href = `/tutorial/finish`;
     };
 
     const handlePreviousLesson = async () => {
@@ -174,7 +174,7 @@ export function BeginnerWebTutorialLesson5() {
             </div>
             <div style={{ display: 'flex' }}>
                 <div className='moreCoursesDiv' onClick={handleNextLesson}>
-                    Next Lesson
+                    Finish Tutorial
                 </div>
                 <div className='goToPreviousLessonDiv' onClick={handlePreviousLesson} style={{ marginLeft: '-78.3em' }}>
                     Previous Lesson

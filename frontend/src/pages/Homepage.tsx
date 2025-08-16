@@ -7,6 +7,7 @@ import CoursesList from '../components/CoursesList';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import LoadingScreen from '../components/LoadingScreen';
 
 const Homepage: React.FC = () => {
     const { isAuthenticated, user, isLoading, getAccessTokenSilently } = useAuth0();
@@ -43,7 +44,7 @@ const Homepage: React.FC = () => {
     };
 
     if (isLoading) {
-        return <p>Loading user information...</p>;
+        return <LoadingScreen />;
     }
 
     return (

@@ -1,5 +1,7 @@
 package programming.tutorial.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,38 +37,51 @@ public class UserProgressController {
     @Autowired
     private UserService userService;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserProgressController.class);
+
+    public static class ProgressUpdateRequest {
+        public Integer courseId;
+        public Integer lessonId;
+    }
+
     @GetMapping("/current-lesson")
     public ResponseEntity<LessonNumberDTO> getCurrentLessonNumber(
             @RequestParam String userId,
             @RequestParam Integer courseId
     ) {
+        logger.info("Request received: getCurrentLessonNumber for userId='{}', courseId={}", userId, courseId);
+
         Optional<LessonDTO> lessonOpt = lessonService.getLessonByCourseIdAndCurrentUserProgress(courseId, userId);
+
         if (lessonOpt.isEmpty()) {
+            logger.info("No current lesson found for userId='{}' in courseId={}", userId, courseId);
             return ResponseEntity.notFound().build();
         }
+
         LessonDTO lesson = lessonOpt.get();
+        logger.info("Returning current lesson number {} for userId='{}' in courseId={}",
+                lesson.getLessonNumber(), userId, courseId);
+
         return ResponseEntity.ok(new LessonNumberDTO(lesson.getLessonNumber()));
     }
 
     @PostMapping("/update")
     public ResponseEntity<String> updateProgress(
-            @RequestParam Integer courseId,
-            @RequestParam Integer lessonId,
+            @RequestBody ProgressUpdateRequest request,
             Authentication authentication) {
-
+        System.out.println("Update hit in updateProgressController");
         String userId = extractUserId(authentication);
-
-        boolean isEnrolled = userProgressService.isUserEnrolled(userId, courseId);
-        boolean isOwner = courseService.isCourseOwner(userId, courseId);
+        boolean isEnrolled = userProgressService.isUserEnrolled(userId, request.courseId);
+        boolean isOwner = courseService.isCourseOwner(userId, request.courseId);
 
         if (!isEnrolled && !isOwner) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String auth0UserId = auth.getName();
-        System.out.println("Authid: " + auth0UserId);
-        return ResponseEntity.ok(userProgressService.updateProgress(auth0UserId, courseId, lessonId));
+        String auth0UserId = authentication.getName();
+        return ResponseEntity.ok(
+                userProgressService.updateProgress(auth0UserId, request.courseId, request.lessonId)
+        );
     }
 
     @GetMapping("/progressBar")
@@ -117,7 +132,6 @@ public class UserProgressController {
         if (!isEnrolled && !isOwner) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
-        System.out.println("Lesson number je ovdje u userProgressController: " + lessonNumber);
         return lessonService.getLessonByCourseIdAndLessonNumber(courseId, lessonNumber)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -126,6 +140,25 @@ public class UserProgressController {
     @GetMapping("/lessons/next")
     public ResponseEntity<LessonDTO> getNextLesson(@RequestParam Integer courseId, @RequestParam Integer currentLessonNumber, Authentication authentication) {
         String auth0Id = extractUserId(authentication);
+        Integer userId = userService.findByAuth0UserId(auth0Id).getId();
+        logger.info("Checking userId {}", userId);
+        boolean isEnrolled = userProgressService.isUserEnrolled(auth0Id, courseId);
+        boolean isOwner = courseService.isCourseOwner(auth0Id, courseId);
+        logger.info("Checking if user is enrolled {}", isEnrolled);
+        logger.info("Checking if user is owner {}", isOwner);
+        if (!isEnrolled && !isOwner) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+        return lessonService.getNextLesson(courseId, currentLessonNumber, userId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
+    @GetMapping("/lessons/previous")
+    public ResponseEntity<LessonDTO> getPreviousLesson(@RequestParam Integer courseId, @RequestParam Integer currentLessonNumber, Authentication authentication) {
+        String auth0Id = extractUserId(authentication);
+        Integer userId = userService.findByAuth0UserId(auth0Id).getId();
 
         boolean isEnrolled = userProgressService.isUserEnrolled(auth0Id, courseId);
         boolean isOwner = courseService.isCourseOwner(auth0Id, courseId);
@@ -133,23 +166,8 @@ public class UserProgressController {
         if (!isEnrolled && !isOwner) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
-        return lessonService.getNextLesson(courseId, currentLessonNumber)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
 
-    @GetMapping("/lessons/previous")
-    public ResponseEntity<LessonDTO> getPreviousLesson(@RequestParam Integer courseId, @RequestParam Integer currentLessonNumber, Authentication authentication) {
-        String userId = extractUserId(authentication);
-
-        boolean isEnrolled = userProgressService.isUserEnrolled(userId, courseId);
-        boolean isOwner = courseService.isCourseOwner(userId, courseId);
-
-        if (!isEnrolled && !isOwner) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-        }
-
-        return lessonService.getPreviousLesson(courseId, currentLessonNumber)
+        return lessonService.getPreviousLesson(courseId, currentLessonNumber, userId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

@@ -27,43 +27,34 @@
 }
 
 .login-button {
-    position: relative;
-    overflow: hidden;
     background: transparent;
     border: 2px solid #4a90e2;
     color: #4a90e2;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    padding: 18px 30px;
-    border-radius: 8px;
+    padding: 14px 28px;
+    border-radius: 6px;
     cursor: pointer;
     width: 100%;
-    max-width: 400px;
+    max-width: 200px;
     margin: 0 auto;
     display: block;
-    transition: color 0.4s ease;
-    z-index: 0;
-}
-
-.login-button::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, #4a90e2, #357ABD);
-    border-radius: 8px;
-    transition: left 0.4s ease;
-    z-index: -1;
-}
-
-.login-button:hover::before {
-    left: 0;
+    transition: background-color 0.5s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 .login-button:hover {
-    color: white;
+    background-color: #4a90e2;
+    border-color: #4a90e2;
+}
+
+.login-button:focus {
+    outline: none;
+    border-color: #357ABD;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+}
+
+.login-button:active {
+    background-color: #357ABD;
     border-color: #357ABD;
 }
 
@@ -72,4 +63,29 @@
     color: #333;
     margin: 0;
     user-select: none;
+}
+
+.loading-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f9f9f9;
+    opacity: 0;
+    animation: fadeIn 0.4s forwards;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top-color: #4a90e2;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }

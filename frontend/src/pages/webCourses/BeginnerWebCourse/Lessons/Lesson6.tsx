@@ -19,6 +19,7 @@ import vsc from '../../../../pages/webCourses/BeginnerWebCourse/images/vsc.png';
 import projectStructureExample from '../../../../pages/webCourses/BeginnerWebCourse/images/projectStructureExample.png';
 import nodeModulesExample from '../../../../pages/webCourses/BeginnerWebCourse/images/node_modules.png';
 import { useAuth0 } from '@auth0/auth0-react';
+import LoadingScreen from '../../../../components/LoadingScreen';
 
 export function Lesson6() {
     const navigate = useNavigate();
@@ -239,7 +240,9 @@ export function Lesson6() {
         navigate(`/course/${courseId}/lesson/${previousLessonId}`);
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+        return <LoadingScreen />;
+    }
 
     return (
         <div className='mainContainer'>

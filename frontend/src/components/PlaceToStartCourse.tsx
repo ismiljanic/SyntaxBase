@@ -6,6 +6,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { Footer2 } from "../pages/Footer2";
 import { Footer } from "../pages/Footer";
 import { Header } from "../pages/Header";
+import LoadingScreen from "./LoadingScreen";
 
 export function PlaceToStartCourse() {
   const navigate = useNavigate();
@@ -50,7 +51,9 @@ export function PlaceToStartCourse() {
     { title: "Final Project", description: "Apply everything learned in a project." },
   ];
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="bigContainer">

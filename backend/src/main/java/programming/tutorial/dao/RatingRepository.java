@@ -28,4 +28,6 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
                 ORDER BY AVG(r.rating) DESC
             """)
     List<CourseRatingDTO> findAverageRatingsByCourse();
+
+    void deleteByAuth0UserIdAndCourseId(String auth0UserId, Integer courseId);
 }

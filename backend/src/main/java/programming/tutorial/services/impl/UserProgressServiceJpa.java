@@ -38,21 +38,26 @@ public class UserProgressServiceJpa implements UserProgressService {
         return userProgressRepository.findByUser_Auth0UserIdAndCourse_Id(userId, courseId)
                 .map(userProgress -> {
                     Lesson currentLesson = userProgress.getCurrentLesson();
-                    return new LessonDTO(currentLesson.getId(), currentLesson.getLessonName(), courseId);
+                    return new LessonDTO(currentLesson.getId(), currentLesson.getLessonName(), currentLesson.getLessonNumber());
                 });
     }
 
     @Override
     public String updateProgress(String auth0UserId, Integer courseId, Integer currentLessonNumber) {
-        Optional<UserProgress> userProgressOpt = userProgressRepository.findByUser_Auth0UserIdAndCourse_Id(auth0UserId, courseId);
+        Optional<User> userOpt = userRepository.findByAuth0UserId(auth0UserId);
+        if (userOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        User user = userOpt.get();
 
+        Optional<UserProgress> userProgressOpt = userProgressRepository.findByUser_Auth0UserIdAndCourse_Id(auth0UserId, courseId);
         if (userProgressOpt.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User progress not found");
         }
 
         UserProgress userProgress = userProgressOpt.get();
 
-        Optional<Lesson> nextLessonOpt = lessonRepository.findNextLesson(courseId, currentLessonNumber);
+        Optional<Lesson> nextLessonOpt = lessonRepository.findNextLesson(courseId, currentLessonNumber, user.getId());
 
         if (nextLessonOpt.isPresent()) {
             userProgress.setCurrentLesson(nextLessonOpt.get());
@@ -62,6 +67,7 @@ public class UserProgressServiceJpa implements UserProgressService {
             return "No more lessons. Course might be complete.";
         }
     }
+
 
     @Override
     public ResponseEntity<?> getProgressBar(String userId, Integer courseId) {

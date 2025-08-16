@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import '../../../../styles/webCourses/BeginnerWebCourse/Finish.css';
-import { Header } from '../../../Header';
-import { Footer2 } from '../../../Footer2';
-import { Footer } from '../../../Footer';
-import congrats from '../images/gzzzzz.png';
+import '../../styles/webCourses/BeginnerWebCourse/Finish.css';
+import { Header } from '../Header';
+import { Footer2 } from '../Footer2';
+import { Footer } from '../Footer';
+import congrats from '../../images/gzzzzz.png';
+import { useNavigate, useParams } from 'react-router-dom';
+import LoadingScreen from '../../components/LoadingScreen';
 
 interface ConfettiParticle {
     x: number;
@@ -20,6 +22,17 @@ interface ConfettiParticle {
 export function FinishCourse() {
     const { user, isLoading, isAuthenticated, getAccessTokenSilently } = useAuth0();
     const [auth0UserId, setAuth0UserId] = useState<string | null>(null);
+    const { courseId } = useParams<{ courseId?: string }>();
+    const navigate = useNavigate();
+
+    const courseQuizMap: Record<string, string> = {
+        '1': '/beginnerWebDevelopmentQuiz',
+        '2': '/intermediateWebDevelopmentQuiz',
+        '3': '/advancedWebDevelopmentQuiz',
+    };
+
+    const id = courseId ? String(courseId) : undefined;
+    const quizPath = id && courseQuizMap[id] ? courseQuizMap[id] : '/defaultQuiz';
 
     useEffect(() => {
         const fetchAuth0UserId = async () => {
@@ -123,7 +136,7 @@ export function FinishCourse() {
     };
 
     if (isLoading) {
-        return <div>Loading user info...</div>;
+        return <LoadingScreen />;
     }
 
     if (!isAuthenticated) {
@@ -143,7 +156,7 @@ export function FinishCourse() {
                 </div>
 
                 <div className="finish-actions">
-                    <button onClick={() => (window.location.href = `/beginnerWebDevelopmentQuiz`)}>
+                    <button onClick={() => navigate(quizPath)}>
                         Take Final Quiz
                     </button>
                     <button onClick={() => (window.location.href = '/courses')}>Explore More Courses</button>

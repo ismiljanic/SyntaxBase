@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file
 
+## [2.1.0] - 2025-08-16
+
+### Added
+- Added complete Intermediate Web Development course with:
+    - Showcase examples for some lessons
+    - Final project (Auth Ticketing App)
+    - Full tutorial as separate objective
+- Added complete Advanced Web Development course with:
+    - Showcase examples for some lessons
+    - Final project (Full-Stack Blood Donation App)
+    - Full tutorial as separate objective
+
+### Changed
+- Enhanced general UI/UX of the application 
+- Improved further overall functionality of the application
+- Changed CHANGELOG.md to reflect newest updates and release
+- Minor UI enhancements across the platform for improved usability and consistency
+
+### Fixed
+- Fixed enrollment issues for some users when joining courses
+- Fixed lesson navigation inconsistencies
+- Optimized some database queries for better performance
+
+---
+
+[2.1.0]: https://github.com/ismiljanic/SyntaxBase/tree/v2.1.0
+
 ## [2.0.0] - 2025-08-05
 
 ### Added
@@ -30,7 +57,7 @@ All notable changes to this project will be documented in this file
 
 ---
 
-[2.0.0]: https://github.com/ismiljanic/SyntaxBase/tree/v2.0
+[2.0.0]: https://github.com/ismiljanic/SyntaxBase/tree/v2.0.0
 
 ## [1.0.0] - 2025-07-21
 
@@ -56,4 +83,4 @@ All notable changes to this project will be documented in this file
 
 ---
 
-[1.0.0]: https://github.com/ismiljanic/SyntaxBase/tree/v1.0
+[1.0.0]: https://github.com/ismiljanic/SyntaxBase/tree/v1.0.0

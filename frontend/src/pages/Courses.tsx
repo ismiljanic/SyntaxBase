@@ -81,35 +81,6 @@ export function Courses() {
             <Header bgColor="rgb(247, 250, 251)"></Header>
             <div className={`featureDiv2 feature2 ${featureDiv2Visible2 ? 'slide-in' : ''}`}>
                 <header className="featureHeader2">COURSES</header>
-                {/* {courses.length > 0 && (
-                    <>
-                        <div className="offerDiv2" style={{ paddingTop: '3em', marginBottom: '-5em' }}>
-                            OTHER COURSES FROM API
-                        </div>
-
-                        {courses.map((course) => (
-                            <div key={course.id} className="features3">
-                                <a href="/placetostartcourse" className="reactDiv">
-                                    <img
-                                        src={course.imageUrl || "default-course-image.png"}
-                                        alt={course.title}
-                                        className="reactImage"
-                                    />
-                                    <div className="webCourses">
-                                        <strong>{course.title}</strong>
-                                        <br />
-                                        {course.description}
-                                        <br />
-                                        {course.instructorName && (
-                                            <em>Instructor: {course.instructorName}</em>
-                                        )}
-                                    </div>
-                                    <div className="arrow-circle"></div>
-                                </a>
-                            </div>
-                        ))}
-                    </>
-                )} */}
                 <div className="offerDiv2" style={{ paddingTop: '3em', marginBottom: '-5em' }}>
                     WEB DEVELOPMENT
                 </div>

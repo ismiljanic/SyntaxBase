@@ -6,6 +6,7 @@ import { Footer2 } from './Footer2';
 import "../styles/Community.css";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
+import LoadingScreen from '../components/LoadingScreen';
 
 interface Post {
     id: number;
@@ -314,7 +315,9 @@ export function Community() {
 
     const wordCount = newPost.trim() ? newPost.trim().split(/\s+/).length : 0;
 
-    if (isLoading || loading) return <p>Loading...</p>;
+    if (isLoading || loading) {
+        return <LoadingScreen />;
+    }
 
     const handleReport = async (postId: number) => {
         if (!token || !userId) return;

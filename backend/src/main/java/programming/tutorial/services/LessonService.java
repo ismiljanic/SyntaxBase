@@ -12,8 +12,8 @@ public interface LessonService {
 
     Optional<LessonDTO> getLessonByCourseIdAndLessonId(Integer courseId, Integer lessonId);
 
-    Optional<LessonDTO> getNextLesson(Integer courseId, Integer currentLessonId);
-    Optional<LessonDTO> getPreviousLesson(Integer courseId, Integer currentLessonId);
+    Optional<LessonDTO> getNextLesson(Integer courseId, Integer currentLessonId, Integer userId);
+    Optional<LessonDTO> getPreviousLesson(Integer courseId, Integer currentLessonId, Integer userId);
 
     Optional<LessonDTO> getLessonByCourseIdAndLessonNumber(Integer courseId, Integer lessonId);
 

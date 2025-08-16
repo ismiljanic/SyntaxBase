@@ -1,38 +1,38 @@
 import React, { useState } from "react";
-import { Header } from "../Header";
-import { Footer } from "../Footer";
-import { Footer2 } from "../Footer2";
-import '../../styles/webCourses/BeginnerWebCourse.css';
-import simple1 from '../../pages/webCourses/BeginnerWebCourse/images/simple1.png';
-import simple2 from '../../pages/webCourses/BeginnerWebCourse/images/simple2.png';
-import simple3 from '../../pages/webCourses/BeginnerWebCourse/images/simple3.png';
-import simple4 from '../../pages/webCourses/BeginnerWebCourse/images/simple4.png';
-import simple5 from '../../pages/webCourses/BeginnerWebCourse/images/simple5.png';
-import simple6 from '../../pages/webCourses/BeginnerWebCourse/images/simple6.png';
-import simple7 from '../../pages/webCourses/BeginnerWebCourse/images/simple7.png';
-import intermediateWebCourse from '../../images/intermediateWebCourse.png';
-import adv from '../../images/adv.png';
-import desktop2 from '../../images/desktop2.png';
-import gameL2 from '../../images/gameL2.png';
-import database2 from '../../images/database2.png';
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { Header } from "../../Header";
+import { Footer } from "../../Footer";
+import { Footer2 } from "../../Footer2";
+import intermediate1 from '../IntermediateWebCourse/images/intermediate1.png'
+import intermediate2 from '../IntermediateWebCourse/images/intermediate2.png';
+import intermediate3 from '../IntermediateWebCourse/images/intermediate3.png';
+import intermediate4 from '../IntermediateWebCourse/images/intermediate4.png';
+import intermediate5 from '../IntermediateWebCourse/images/intermediate5.png';
+import intermediate6 from '../IntermediateWebCourse/images/intermediate6.png';
+import contL from '../IntermediateWebCourse/images/contL.png';
+import '../../../styles/webCourses/BeginnerWebCourse.css';
+import beginnerWebCourse from '../../../images/intermediateWebCourse.png';
+import adv from '../../../images/adv.png';
+import desktop2 from '../../../images/desktop2.png';
+import gameL2 from '../../../images/gameL2.png';
+import database2 from '../../../images/database2.png';
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
+import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import axios from "axios";
 
-export function BeginnerWebCourse() {
+export function IntermediateWebCourse() {
     const { user, isAuthenticated, getAccessTokenSilently, isLoading } = useAuth0();
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState("");
     const navigate = useNavigate();
 
+
     const handleButtonClick = async () => {
         if (!isAuthenticated || !user?.sub) {
-            navigate('/login', { state: { from: '/beginnerWebCourse' } });
+            navigate('/login', { state: { from: '/intermediateWebCourse' } });
             return;
         }
-
         try {
             const token = await getAccessTokenSilently();
 
@@ -40,7 +40,7 @@ export function BeginnerWebCourse() {
                 'http://localhost:8080/api/user-courses/startCourse',
                 {
                     auth0UserId: user.sub,
-                    courseId: 1,
+                    courseId: 2,
                 },
                 {
                     headers: { Authorization: `Bearer ${token}` },
@@ -51,7 +51,7 @@ export function BeginnerWebCourse() {
             const response = await axios.get(
                 'http://localhost:8080/api/progress/lessons/first',
                 {
-                    params: { courseId: 1 },
+                    params: { courseId: 2 },
                     headers: { Authorization: `Bearer ${token}` },
                     withCredentials: true,
                 }
@@ -66,7 +66,7 @@ export function BeginnerWebCourse() {
                 return;
             }
 
-            navigate(`/course/1/lesson/${lessonNumber}`);
+            navigate(`/course/2/lesson/${lessonNumber}`);
 
         } catch (error: any) {
             if (axios.isAxiosError(error)) {
@@ -85,10 +85,6 @@ export function BeginnerWebCourse() {
                 setShowPopup(true);
             }
         }
-    };
-
-    if (isLoading) {
-        return <p>Loading...</p>;
     }
 
     return (
@@ -97,56 +93,59 @@ export function BeginnerWebCourse() {
             <div>
                 <div className="container" style={{ backgroundColor: 'rgb(247, 250, 251)' }}>
                     <div className="webCourseDiv">
-                        Beginner Frontend Course
+                        Intermediate Frontend Course
                     </div>
                 </div>
-                <div className="webCourseDiv2" style={{ fontSize: '2.5em', paddingBottom: '2em', fontWeight: 'bold', marginLeft: '3em' }}>
-                    Create Simple Frontend Application!
+                <div className="webCoursesDiv2" style={{ fontSize: '2.5em', paddingBottom: '2em', fontWeight: 'bold', marginLeft: '3em' }}>
+                    Create Impressive Applications!
                 </div>
                 <div className="aboutCourseDiv2">
                     <div className="introductionDiv">Introduction</div>
                     <div className="frontImage">
                         <h1 className="headerDivText" style={{ fontSize: '1.7em' }}>
                             <div className="headerContainer">
-                                Learn How to Create a Simple Frontend Application
+                                Build a Real Frontend Application with React and TypeScript
                             </div>
                             <div className="imageContainer">
-                                <img src={simple2} alt="" className="imageForCourse" />
+                                <img src={contL} alt="Frontend Course" className="imageForCourse" />
                             </div>
                         </h1>
                     </div>
+
                     <div className="descriptionOfCourse">
-                        You will learn how to create a simple frontend application from the beginning!
-                        Course is designed for those new to programming.
-                        You will be introduced to the development environment which you will customize to your needs and preferences.
-                        We will start learning the fundamentals of React, TypeScript and CSS, two powerful tools that will help you build dynamic and type-safe user interfaces while maintaining it stylish.
-                        By the end of the course, you'll have the skills to create a simple, interactive frontend application from scratch with attractive appeal.
+                        This intermediate course is designed for those who have grasped the basics and are ready to build a real-world frontend application from the ground up.
+                        <br /><br />
+                        Through hands-on development, you'll set up your own development environment, learn essential tooling, and use React, TypeScript, and CSS to create responsive, dynamic interfaces with professional polish.
+                        <br /><br />
+                        As part of the course, you'll implement a complete authentication and ticket-generation system backed by a PostgreSQL database. This includes secure QR code generation, user authorization with OAuth2, and integration of OpenID Connect for identity management.
+                        <br /><br />
+                        By the end, you'll have a fully functional frontend app connected to backend services, ready to deploy to the cloud.
                     </div>
                 </div>
                 <div className="pictureContainer">
                     <div className="imageWithDescription">
-                        <img src={simple1} alt="" className="courseImage" />
-                        <div className="imageDescription">Learn HTML structure</div>
+                        <img src={intermediate1} alt="img16" className="courseImage" />
+                        <div className="imageDescription">Integrate secure authentication</div>
                     </div>
                     <div className="imageWithDescription">
-                        <img src={simple3} alt="" className="courseImage" />
-                        <div className="imageDescription">Gain knowledge of TypeScript</div>
+                        <img src={intermediate2} alt="img15" className="courseImage" />
+                        <div className="imageDescription">Create tickets</div>
                     </div>
                     <div className="imageWithDescription">
-                        <img src={simple4} alt="" className="courseImage" />
-                        <div className="imageDescription">Create attractive structures with CSS</div>
+                        <img src={intermediate3} alt="img14" className="courseImage" />
+                        <div className="imageDescription">Generate QR code</div>
                     </div>
                     <div className="imageWithDescription">
-                        <img src={simple5} alt="" className="courseImage" />
-                        <div className="imageDescription">Start with development</div>
+                        <img src={intermediate4} alt="img13" className="courseImage" />
+                        <div className="imageDescription">Preview ticket information</div>
                     </div>
                     <div className="imageWithDescription">
-                        <img src={simple6} alt="" className="courseImage" />
-                        <div className="imageDescription">Find out why node modules are heavy</div>
+                        <img src={intermediate5} alt="img12" className="courseImage" />
+                        <div className="imageDescription">Check available tickets</div>
                     </div>
                     <div className="imageWithDescription">
-                        <img src={simple7} alt="" className="courseImage" />
-                        <div className="imageDescription">Finish all steps of course and get feedback</div>
+                        <img src={intermediate6} alt="img11" className="courseImage" />
+                        <div className="imageDescription">Integrate OAuth2 authorization</div>
                     </div>
                 </div>
             </div>
@@ -176,11 +175,11 @@ export function BeginnerWebCourse() {
                     <div className="lineDiv"></div>
                 </div>
                 <div className="pictureContainer2">
-                    <a href="/intermediateWebCourse" className="imageWithDescription2">
-                        <img src={intermediateWebCourse} alt="" className="courseImage2" />
+                    <a href="/beginnerWebCourse" className="imageWithDescription2">
+                        <img src={beginnerWebCourse} alt="" className="courseImage2" />
                         <div className="imageDescription2">
-                            Intermediate Frontend Course<br />
-                            Develop Intermediate Application Following Course Project Structure!
+                            Beginner Frontend Course<br />
+                            Develop Beginner Application Following Course Project Structure!
                         </div>
                     </a>
                     <a href="/advancedWebCourse" className="imageWithDescription2">
@@ -222,6 +221,6 @@ export function BeginnerWebCourse() {
             </div>
             <Footer2 bgColor="rgb(247, 250, 251)" />
             <Footer bgColor="rgb(247, 250, 251)" />
-        </div>
+        </div >
     );
 }

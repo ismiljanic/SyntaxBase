@@ -10,6 +10,7 @@ import details from '../../../../pages/webCourses/BeginnerWebCourse/images/detai
 import header from '../../../../pages/webCourses/BeginnerWebCourse/images/lesson8Header.png';
 import footer from '../../../../pages/webCourses/BeginnerWebCourse/images/lesson8Footer.png';
 import { useAuth0 } from '@auth0/auth0-react';
+import LoadingScreen from '../../../../components/LoadingScreen';
 
 export function Lesson8() {
     const navigate = useNavigate();
@@ -230,7 +231,9 @@ export function Lesson8() {
         navigate(`/course/${courseId}/lesson/${previousLessonId}`);
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+        return <LoadingScreen />;
+    }
 
     return (
         <div className='mainContainer'>

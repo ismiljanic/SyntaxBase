@@ -13,6 +13,7 @@ import secondExample from '../../../../pages/webCourses/BeginnerWebCourse/images
 import thirdExample from '../../../../pages/webCourses/BeginnerWebCourse/images/thirdExample.png';
 import fourthExample from '../../../../pages/webCourses/BeginnerWebCourse/images/fourthExample.png';
 import { useAuth0 } from '@auth0/auth0-react';
+import LoadingScreen from '../../../../components/LoadingScreen';
 
 
 export function Lesson3() {
@@ -234,7 +235,9 @@ export function Lesson3() {
         navigate(`/course/${courseId}/lesson/${previousLessonId}`);
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+        return <LoadingScreen />;
+    }
 
     return (
         <div className='mainContainer'>

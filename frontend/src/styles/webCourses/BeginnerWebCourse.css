@@ -57,24 +57,18 @@
 
 .aboutPicturesDiv {
     max-height: 0;
-    /* Initially hidden */
     overflow: hidden;
-    /* Hide overflow content */
     transition: max-height 0.5s ease-out;
-    /* Smooth expansion */
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 7em;
     padding-top: 3em;
-    /* Space above images */
 }
 
 .aboutPicturesDiv.expand {
     max-height: 2000px;
-    /* Adjust to fit the content size */
     transition: max-height 0.5s ease-in;
-    /* Smooth collapse */
     padding-bottom: 3em;
 }
 
