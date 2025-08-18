@@ -54,9 +54,19 @@ jobs:
             sleep 5
           done
 
-      - name: Build backend with Maven
-        run: mvn clean install
+      - name: Run unit tests (PRs only)
+        if: github.event_name == 'pull_request'
+        run: mvn -B clean test
         working-directory: ./backend
+
+      - name: Run full build + integration tests (main only)
+        if: github.ref == 'refs/heads/main'
+        run: mvn -B clean verify
+        working-directory: ./backend
+
+#      - name: Build backend with Maven
+#        run: mvn clean install
+#        working-directory: ./backend
 
   build-microservice-notifications:
     runs-on: ubuntu-latest
@@ -85,7 +95,17 @@ jobs:
         run: |
           mkdir -p ./microservice-notifications/src/test/resources/
           echo "$APP_SECRETS" > ./microservice-notifications/src/test/resources/application-secrets.properties
-  
-      - name: Build microservice-notifications with Maven
-        run: mvn clean install
+
+      - name: Run unit tests (PRs only)
+        if: github.event_name == 'pull_request'
+        run: mvn -B clean test
         working-directory: ./microservice-notifications
+
+      - name: Run full build + integration tests (main only)
+        if: github.ref == 'refs/heads/main'
+        run: mvn -B clean verify
+        working-directory: ./microservice-notifications
+
+#      - name: Build microservice-notifications with Maven
+#        run: mvn clean install
+#        working-directory: ./microservice-notifications
