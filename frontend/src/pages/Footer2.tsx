@@ -37,16 +37,9 @@ export function Footer2({ bgColor = '#333' }: FooterProps) {
         e.preventDefault();
 
         try {
-            const token = await getAccessTokenSilently();
-
             await axios.post(
                 'http://localhost:8080/api/feedback/email',
                 { email, message },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
             );
 
             setStatus('Feedback submitted successfully!');
@@ -104,10 +97,10 @@ export function Footer2({ bgColor = '#333' }: FooterProps) {
                     </div>
                     <div className="footer2-nav">
                         <div className="footer2-brand">Social</div>
-                        <div className="div2"><a href='https://github.com/ismiljanic' style={{color: 'black'}}>GitHub</a></div>
+                        <div className="div2"><a href='https://github.com/ismiljanic' style={{ color: 'black' }}>GitHub</a></div>
                         <div className="div2">Instagram</div>
                         <div className="div2">WhatsApp</div>
-                        <div className="div2"><a href='https://t.me/+3vncHfqfDR5mZjI0' style={{color: 'black'}}>Telegram</a></div>
+                        <div className="div2"><a href='https://t.me/+3vncHfqfDR5mZjI0' style={{ color: 'black' }}>Telegram</a></div>
                     </div>
                 </div>
             </div>

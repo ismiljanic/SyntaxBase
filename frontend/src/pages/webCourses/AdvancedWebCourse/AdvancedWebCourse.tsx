@@ -66,7 +66,7 @@ export function AdvancedWebCourse() {
                 return;
             }
 
-            navigate(`/course/2/lesson/${lessonNumber}`);
+            navigate(`/course/3/lesson/${lessonNumber}`);
 
         } catch (error: any) {
             if (axios.isAxiosError(error)) {
