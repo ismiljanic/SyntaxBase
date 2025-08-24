@@ -1,6 +1,7 @@
 package programming.tutorial.controller;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -50,6 +51,7 @@ class ReportControllerTest {
     @WithMockUser(roles = "USER")
     void reportPost_ShouldReturnOk() throws Exception {
         mockMvc.perform(post("/api/reports")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reportRequest)))
                 .andExpect(status().isOk());
@@ -94,7 +96,8 @@ class ReportControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void resolveReport_ShouldReturnOk() throws Exception {
-        mockMvc.perform(post("/api/reports/{id}/resolve", 10))
+        mockMvc.perform(post("/api/reports/{id}/resolve", 10)
+                        .with(csrf()))
                 .andExpect(status().isOk());
 
         verify(reportService).markAsResolved(10);
