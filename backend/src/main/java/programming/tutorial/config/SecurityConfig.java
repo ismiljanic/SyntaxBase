@@ -29,14 +29,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/instructor/**").hasAnyRole("INSTRUCTOR")
                         .requestMatchers(HttpMethod.GET, "/api/users/**").authenticated()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/stripe/webhook", "/api/feedback/email").permitAll()
+                        .requestMatchers("/api/stripe/webhook", "/api/feedback/email", "/api/contact/email").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 )
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/api/feedback/email", "/api/stripe/webhook")
+                        .ignoringRequestMatchers("/api/feedback/email", "/api/stripe/webhook", "/api/contact/email")
                 );
 
         return http.build();

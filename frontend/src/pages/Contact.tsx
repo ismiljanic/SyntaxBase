@@ -86,12 +86,12 @@ export function Contact() {
         e.preventDefault();
 
         try {
-            const token = await getAccessTokenSilently();
+            // const token = await getAccessTokenSilently();
             await axios.post(`http://localhost:8080/api/contact/email`, formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                withCredentials: true
+                // headers: {
+                //     Authorization: `Bearer ${token}`
+                // },
+                // withCredentials: true
             });
             setStatus('Feedback submitted successfully!');
             setFormData({
