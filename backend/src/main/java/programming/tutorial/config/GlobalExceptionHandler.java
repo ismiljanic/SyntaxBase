@@ -3,8 +3,11 @@ package programming.tutorial.config;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,8 +32,8 @@ public class GlobalExceptionHandler {
     }
 
     // ==================== 403 Forbidden ====================
-    @ExceptionHandler(SecurityException.class)
-    public ResponseEntity<Map<String, Object>> handleSecurity(SecurityException e) {
+    @ExceptionHandler({SecurityException.class, AccessDeniedException.class, AuthorizationDeniedException.class})
+    public ResponseEntity<Map<String, Object>> handleForbidden(RuntimeException e) {
         return buildResponse(HttpStatus.FORBIDDEN, e.getMessage());
     }
 
