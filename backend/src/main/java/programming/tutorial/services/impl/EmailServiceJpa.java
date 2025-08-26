@@ -91,7 +91,7 @@ public class EmailServiceJpa implements EmailService {
 
             helper.setTo(user.getUsername());
             helper.setSubject("Your Course Completion Certificate");
-            helper.setText("Dear " + user.getName() + ",\n\nCongratulations on completing the course! Your certificate is attached.\n\nBest regards,\n SyntaxBase Team");
+            helper.setText("Dear " + user.getName() + ",\n\nCongratulations on completing the course! Your certificate is attached.\n\nBest regards,\nSyntaxBase Team");
 
             FileSystemResource file = new FileSystemResource(new File(filePath));
             helper.addAttachment("certificate.pdf", file);

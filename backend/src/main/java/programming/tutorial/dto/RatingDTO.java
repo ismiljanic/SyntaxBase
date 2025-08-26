@@ -16,6 +16,9 @@ public class RatingDTO {
         this.rating = rating;
     }
 
+    public RatingDTO() {
+    }
+
     public Integer getId() {
         return id;
     }

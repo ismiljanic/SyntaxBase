@@ -1,6 +1,7 @@
 package programming.tutorial.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +19,24 @@ public class FeedbackController {
     private LessonFeedbackService feedbackService;
 
     @PostMapping("/email")
-    public String sendFeedback(@RequestBody FeedbackRequest feedbackRequest) {
-        return feedbackService.sendFeedbackEmail(feedbackRequest);
+    public ResponseEntity<String> sendFeedback(@RequestBody FeedbackRequest feedbackRequest) {
+        try {
+            String result = feedbackService.sendFeedbackEmail(feedbackRequest);
+            return ResponseEntity.ok(result);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @PostMapping("/receiveFeedback")
-    public String receiveFeedback(@RequestBody LessonFeedbackRequestDTO feedbackRequest, @RequestParam Integer userId) {
-        return feedbackService.receiveFeedback(feedbackRequest, userId);
+    public ResponseEntity<String> receiveFeedback(@RequestBody LessonFeedbackRequestDTO feedbackRequest,
+                                                  @RequestParam Integer userId) {
+        try {
+            String result = feedbackService.receiveFeedback(feedbackRequest, userId);
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/submit")

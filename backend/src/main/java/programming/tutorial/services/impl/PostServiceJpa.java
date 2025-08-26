@@ -122,7 +122,7 @@ public class PostServiceJpa implements PostService {
                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
 
         User user = userRepository.findByAuth0UserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+                .orElseThrow(() -> new UserNotFoundException("User not found."));
 
         if (!post.getUserId().equals(userId) && user.getRole() != Role.ADMIN) {
             throw new SecurityException("Permission denied.");
