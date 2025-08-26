@@ -2,9 +2,9 @@ name: Java CI
 
 on:
   push:
-    branches: [ jUnit-testing ]
+    branches: [ main ]
   pull_request:
-    branches: [ jUnit-testing ]
+    branches: [ main ]
 
 jobs:
   build-backend:
