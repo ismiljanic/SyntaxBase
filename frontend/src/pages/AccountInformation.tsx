@@ -6,6 +6,7 @@ import { Header } from './Header';
 import { Footer2 } from './Footer2';
 import { Footer } from './Footer';
 import { useAuth0 } from '@auth0/auth0-react';
+import LoadingScreen from '../components/LoadingScreen';
 
 interface User {
     name: string;
@@ -22,6 +23,13 @@ interface Post {
     createdAt: string;
 }
 
+interface Certificate {
+    id: number;
+    courseName: string;
+    issuedAt: Date;
+    fileUrl: string;
+}
+
 type Tier = "Free" | "Professional" | "Ultimate";
 
 
@@ -34,6 +42,7 @@ interface UserAccount {
     userPosts: Post[];
     deletedPosts: Post[];
     tier: Tier;
+    certificates: Certificate[];
 }
 
 export function AccountInformation() {
@@ -77,12 +86,31 @@ export function AccountInformation() {
         fetchUserData();
     }, [userId]);
 
+    const handleViewCertificate = async (fileUrl: string) => {
+        const token = await getAccessTokenSilently();
+        const response = await fetch(`http://localhost:8080/api/certificates/${fileUrl}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            alert("Error fetching certificate");
+            return;
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, "_blank");
+    };
+
+
     if (error) {
         return <div className="error-message">{error}</div>;
     }
 
     if (!accountInfo) {
-        return <div className="loading">Loading...</div>;
+        return <LoadingScreen />
     }
 
     const toggleShowMorePosts = () => {
@@ -139,6 +167,22 @@ export function AccountInformation() {
                     <button onClick={handleUpgradeAccountTier} className="upgrade-tier-button">
                         + Upgrade Account
                     </button>
+                </div>
+                <div className="account-info-section">
+                    <div className="account-info-title">Your Certificates</div>
+                    {accountInfo.certificates?.length > 0 ? (
+                        accountInfo.certificates.map(cert => (
+                            <div key={cert.id} className="certificate-item">
+                                <p><strong>{cert.courseName}</strong></p>
+                                <p>Issued: {new Date(cert.issuedAt).toLocaleString()}</p>
+                                <button className="upgrade-tier-button" onClick={() => handleViewCertificate(cert.fileUrl)}>
+                                    View Certificate
+                                </button>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No certificates yet.</p>
+                    )}
                 </div>
                 <div className="user-posts-section">
                     <h2 className="user-posts-title">Your Posts</h2>

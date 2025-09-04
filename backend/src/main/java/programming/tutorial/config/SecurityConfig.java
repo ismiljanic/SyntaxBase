@@ -29,6 +29,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/instructor/**").hasAnyRole("INSTRUCTOR")
                         .requestMatchers(HttpMethod.GET, "/api/users/**").authenticated()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/api/certificates/**").authenticated()
                         .requestMatchers("/api/stripe/webhook", "/api/feedback/email", "/api/contact/email").permitAll()
                         .anyRequest().authenticated()
                 )

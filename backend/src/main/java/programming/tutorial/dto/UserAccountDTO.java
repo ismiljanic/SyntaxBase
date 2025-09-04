@@ -16,6 +16,8 @@ public class UserAccountDTO {
     private Role role;
     private boolean active;
     private Tier tier;
+    private List<CertificateDTO> certificates;
+
     public UserAccountDTO() {
     }
 
@@ -97,6 +99,14 @@ public class UserAccountDTO {
 
     public void setTier(Tier tier) {
         this.tier = tier;
+    }
+
+    public List<CertificateDTO> getCertificates() {
+        return certificates;
+    }
+
+    public void setCertificates(List<CertificateDTO> certificates) {
+        this.certificates = certificates;
     }
 
     @Override

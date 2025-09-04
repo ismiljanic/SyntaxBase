@@ -147,5 +147,4 @@ public class UserCourseServiceJpa implements UserCourseService {
         }
         return true;
     }
-
 }

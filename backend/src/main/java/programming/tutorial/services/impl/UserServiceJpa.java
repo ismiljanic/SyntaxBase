@@ -45,6 +45,8 @@ public class UserServiceJpa implements UserService {
     private UserProgressRepository userProgressRepository;
     @Autowired
     private LessonFeedbackRepository lessonFeedbackRepository;
+    @Autowired
+    private CertificateRepository certificateRepository;
 
 
     @Override
@@ -276,6 +278,12 @@ public class UserServiceJpa implements UserService {
                         user.getUsername(), post.getCreatedAt(), post.isDeleted()))
                 .collect(Collectors.toList());
 
+        List<CertificateDTO> certificates = certificateRepository.findByUser_Auth0UserId(auth0UserId)
+                .stream()
+                .map(certificate -> new CertificateDTO(certificate.getId(), certificate.getCourse().getCourseName(), certificate.getIssuedAt(), certificate.getFileUrl()))
+                .collect(Collectors.toList());
+
+
         UserAccountDTO userAccountDTO = new UserAccountDTO();
         userAccountDTO.setName(user.getName());
         userAccountDTO.setSurname(user.getSurname());
@@ -285,6 +293,7 @@ public class UserServiceJpa implements UserService {
         userAccountDTO.setDeletedPosts(deletedPosts);
         userAccountDTO.setRole(user.getRole());
         userAccountDTO.setTier(user.getTier());
+        userAccountDTO.setCertificates(certificates);
         return userAccountDTO;
     }
 

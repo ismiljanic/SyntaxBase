@@ -1,5 +1,6 @@
 package programming.tutorial.services.impl;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,9 @@ import programming.tutorial.services.CertificateService;
 import programming.tutorial.services.EmailService;
 import programming.tutorial.services.PdfGeneratorService;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -30,24 +34,28 @@ public class CertificateServiceJpa implements CertificateService {
 
     @Override
     public void generateAndSendCertificate(User user, Course course) {
-        UUID certId = UUID.randomUUID();
-        String fileName = "certificate-" + certId + ".pdf";
-        String filePath = storagePath + "/" + fileName;
+        try {
+            UUID certId = UUID.randomUUID();
+            String fileName = "certificate-" + certId + ".pdf";
+            String filePath = storagePath + "/" + fileName;
 
-        String instructor = course.getCreator().getName();
+            String instructor = course.getCreator().getName();
 
-        pdfGenerator.generateCertificatePdf(filePath, user.getName(), course.getCourseName(), instructor, LocalDate.now(), certId);
+            pdfGenerator.generateCertificatePdf(filePath, user.getName(), course.getCourseName(), instructor, LocalDate.now(), certId);
 
-        Certificate cert = new Certificate();
-        cert.setId(certId);
-        cert.setUser(user);
-        cert.setCourse(course);
-        cert.setInstructorName(instructor);
-        cert.setIssuedAt(LocalDateTime.now());
-        cert.setFileUrl(filePath);
+            Certificate cert = new Certificate();
+            cert.setId(certId);
+            cert.setUser(user);
+            cert.setCourse(course);
+            cert.setInstructorName(instructor);
+            cert.setIssuedAt(LocalDateTime.now());
+            cert.setFileUrl(fileName);
 
-        certificateRepository.save(cert);
-
-        emailService.sendCertificate(user.getUsername(), filePath);
+            certificateRepository.save(cert);
+            emailService.sendCertificate(user.getUsername(), filePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to generate certificate", e);
+        }
     }
 }
