@@ -39,6 +39,8 @@ public class UserServiceTest {
     @Mock
     private InstructorRequestRepository instructorRequestRepository;
     @Mock
+    private CertificateRepository certificateRepository;
+    @Mock
     private EmailServiceJpa emailServiceJpa;
 
     @Test
@@ -391,12 +393,23 @@ public class UserServiceTest {
         user.setRole(Role.USER);
         user.setTier(Tier.FREE);
 
+        Course course = new Course();
+        course.setId(1);
+        course.setCourseName("Some course");
+        course.setSystemCourse(true);
+
         Post post1 = new Post(1, "Hello World", auth0Id, new Date(1970, 1, 1), null, null, false, "general", null);
         Post post2 = new Post(2, "Deleted post", auth0Id, new Date(1970, 1, 1), null, null, true, "general", null);
+
+        Certificate certificate = new Certificate();
+        certificate.setId(UUID.randomUUID());
+        certificate.setUser(user);
+        certificate.setCourse(course);
 
         when(userRepository.findByAuth0UserId(auth0Id)).thenReturn(Optional.of(user));
         when(postRepository.findByUserId(auth0Id)).thenReturn(List.of(post1));
         when(postRepository.findDeletedPostsByUserId(auth0Id)).thenReturn(List.of(post2));
+        when(certificateRepository.findByUser_Auth0UserId(auth0Id)).thenReturn(List.of(certificate));
 
         UserAccountDTO dto = userServiceJpa.getUserAccountInformation(auth0Id);
 
@@ -411,6 +424,8 @@ public class UserServiceTest {
 
         assertEquals(1, dto.getDeletedPosts().size());
         assertEquals(post2.getId(), dto.getDeletedPosts().get(0).getId());
+
+        assertEquals(1, dto.getCertificates().size());
     }
 
     @Test
