@@ -7,7 +7,6 @@ import programming.tutorial.dto.StartCourseRequest;
 import programming.tutorial.dto.UserCourseDTO;
 
 import java.util.List;
-@Service
 public interface UserCourseService {
     void enrollUserInCourse(UserCourseDTO userCourseDTO);
 

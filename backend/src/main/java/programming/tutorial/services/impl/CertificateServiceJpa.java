@@ -3,6 +3,8 @@ package programming.tutorial.services.impl;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import programming.tutorial.dao.CertificateRepository;
 import programming.tutorial.domain.Certificate;
@@ -13,10 +15,12 @@ import programming.tutorial.services.EmailService;
 import programming.tutorial.services.PdfGeneratorService;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -57,5 +61,13 @@ public class CertificateServiceJpa implements CertificateService {
             e.printStackTrace();
             throw new RuntimeException("Failed to generate certificate", e);
         }
+    }
+
+    @Override
+    public Optional<Certificate> getCertificateForUser(String filename, String auth0UserId) {
+        return certificateRepository.findAll()
+                .stream()
+                .filter(certificate -> certificate.getFileUrl().equals(filename))
+                .findFirst();
     }
 }

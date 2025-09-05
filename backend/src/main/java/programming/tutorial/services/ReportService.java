@@ -6,7 +6,6 @@ import programming.tutorial.domain.Report;
 
 import java.util.List;
 
-@Service
 public interface ReportService {
     Report createReport(Integer postId, String reporterId, String reason) throws Exception;
 

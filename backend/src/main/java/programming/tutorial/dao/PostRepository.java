@@ -11,7 +11,6 @@ import java.util.List;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findAllByParentPost(Post parentPost);
-
     List<Post> findAllByParentPostId(Long parentPostId);
     List<Post> findAllByParentPostIsNull();
     List<Post> findByUserId(String userId);
@@ -20,5 +19,5 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findByUserIdAndDeletedTrue(String userId);
     List<Post> findAllByParentPostIsNullAndDeletedFalse();
     List<Post> findAllByParentPostAndDeletedFalse(Post parent);
-
+    int countByUserId(String userId);
 }

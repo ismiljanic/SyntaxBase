@@ -7,6 +7,7 @@ import programming.tutorial.domain.*;
 import programming.tutorial.dto.CourseDTO;
 import programming.tutorial.dto.StartCourseRequest;
 import programming.tutorial.dto.UserCourseDTO;
+import programming.tutorial.services.BadgeService;
 import programming.tutorial.services.CertificateService;
 import programming.tutorial.services.UserCourseService;
 
@@ -36,6 +37,8 @@ public class UserCourseServiceJpa implements UserCourseService {
 
     @Autowired
     private CertificateService certificateService;
+    @Autowired
+    private BadgeService badgeService;
 
     @Override
     public void enrollUserInCourse(UserCourseDTO userCourseDTO) {
@@ -145,6 +148,13 @@ public class UserCourseServiceJpa implements UserCourseService {
         if (!alreadyIssued) {
             certificateService.generateAndSendCertificate(userCourse.getUser(), userCourse.getCourse());
         }
+
+        System.out.println("Trying to award user with badge");
+        User user = userCourse.getUser();
+        int completedCourses = userCourseRepository.countByUserAndCompletedTrue(user);
+        System.out.println("Calling badgeService");
+        badgeService.awardCourseCompletionBadge(user, completedCourses);
+        System.out.println("badgeService called successfully");
         return true;
     }
 }

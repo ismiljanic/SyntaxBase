@@ -8,7 +8,6 @@ import programming.tutorial.dto.LessonDTO;
 
 import java.util.List;
 import java.util.Optional;
-@Service
 public interface CourseService {
 
     Optional<Course> findByName(CourseDTO courseDTO);

@@ -30,6 +30,24 @@ interface Certificate {
     fileUrl: string;
 }
 
+interface Badge {
+    id: string; // UUID as string
+    name: string;
+    description: string;
+    type: string; // e.g., "COURSE_COMPLETION"
+    criteria?: string;
+    permanent: boolean;
+}
+
+interface UserBadge {
+    id: string;
+    badge: Badge;
+    awardedAt: string;
+    revoked: boolean;
+    progress?: string;
+}
+
+
 type Tier = "Free" | "Professional" | "Ultimate";
 
 
@@ -43,6 +61,7 @@ interface UserAccount {
     deletedPosts: Post[];
     tier: Tier;
     certificates: Certificate[];
+    badges: UserBadge[];
 }
 
 export function AccountInformation() {
@@ -182,6 +201,21 @@ export function AccountInformation() {
                         ))
                     ) : (
                         <p>No certificates yet.</p>
+                    )}
+                </div>
+                <div className="account-info-section">
+                    <div className="account-info-title">Your Badges</div>
+                    {accountInfo.badges?.length > 0 ? (
+                        accountInfo.badges.map(userBadge => (
+                            <div key={userBadge.id} className="certificate-item">
+                                <p><strong>{userBadge.badge.name}</strong></p>
+                                <p>{userBadge.badge.description}</p>
+                                <p>Issued: {new Date(userBadge.awardedAt).toLocaleString()}</p>
+                                {userBadge.revoked && <p style={{ color: 'red' }}>Revoked</p>}
+                            </div>
+                        ))
+                    ) : (
+                        <p>No badges yet.</p>
                     )}
                 </div>
                 <div className="user-posts-section">

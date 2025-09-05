@@ -5,11 +5,13 @@ import org.springframework.stereotype.Service;
 import programming.tutorial.dao.NotificationRepository;
 import programming.tutorial.dao.PostRepository;
 import programming.tutorial.dao.UserRepository;
+import programming.tutorial.domain.Badge;
 import programming.tutorial.domain.Post;
 import programming.tutorial.domain.Role;
 import programming.tutorial.domain.User;
 import programming.tutorial.dto.PostDTO;
 import programming.tutorial.dto.ReplyCreatedEventDTO;
+import programming.tutorial.services.BadgeService;
 import programming.tutorial.services.PostService;
 import programming.tutorial.services.ReplyEventProducer;
 
@@ -26,9 +28,10 @@ public class PostServiceJpa implements PostService {
     private UserRepository userRepository;
     @Autowired
     private NotificationRepository notificationRepository;
-
     @Autowired
     private ReplyEventProducer replyEventProducer;
+    @Autowired
+    private BadgeService badgeService;
 
     @Override
     public List<PostDTO> getAllPosts() {
@@ -112,6 +115,10 @@ public class PostServiceJpa implements PostService {
             System.out.println("Publishing reply created event: " + event);
             replyEventProducer.publishReplyCreatedEvent(event);
         }
+
+        int postsCount = postRepository.countByUserId(post.getUserId());
+
+        badgeService.awardForumActivityBadge(post.getUserId(), postsCount);
 
         return savedPost;
     }

@@ -344,7 +344,7 @@ export function Community() {
     };
 
     return (
-        <div className="community-container">
+        <div className="community-container" style={{paddingTop: '0em'}}>
             <Header bgColor="rgb(247, 250, 251)" />
 
             <div className="community-content">

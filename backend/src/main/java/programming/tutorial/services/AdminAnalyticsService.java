@@ -6,7 +6,6 @@ import programming.tutorial.dto.CourseRatingDTO;
 
 import java.util.List;
 
-@Service
 public interface AdminAnalyticsService {
     List<CourseRatingDTO> getTopRatedCourses();
     List<CourseCompletionDTO> getCourseCompletionRates();

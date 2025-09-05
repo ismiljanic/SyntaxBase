@@ -10,7 +10,6 @@ import programming.tutorial.dto.InstructorRequestDTO;
 import java.util.List;
 import java.util.Optional;
 
-@Service
 public interface InstructorRequestService {
     InstructorRequest submitRequest(InstructorRequest request);
 

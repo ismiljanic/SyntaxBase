@@ -48,6 +48,8 @@ public class UserServiceJpa implements UserService {
     @Autowired
     private CertificateRepository certificateRepository;
 
+    @Autowired
+    private UserBadgeRepository userBadgeRepository;
 
     @Override
     public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO) {
@@ -280,9 +282,26 @@ public class UserServiceJpa implements UserService {
 
         List<CertificateDTO> certificates = certificateRepository.findByUser_Auth0UserId(auth0UserId)
                 .stream()
-                .map(certificate -> new CertificateDTO(certificate.getId(), certificate.getCourse().getCourseName(), certificate.getIssuedAt(), certificate.getFileUrl()))
+                .map(c -> new CertificateDTO(c.getId(), c.getCourse().getCourseName(), c.getIssuedAt(), c.getFileUrl()))
                 .collect(Collectors.toList());
 
+        List<UserBadgeDTO> badges = userBadgeRepository.findByUser(user)
+                .stream()
+                .map(ub -> new UserBadgeDTO(
+                        ub.getId(),
+                        new BadgeDTO(
+                                ub.getBadge().getId(),
+                                ub.getBadge().getName(),
+                                ub.getBadge().getDescription(),
+                                ub.getBadge().getType(),
+                                ub.getBadge().getCriteria(),
+                                ub.getBadge().isPermanent()
+                        ),
+                        ub.getAwardedAt(),
+                        ub.isRevoked(),
+                        ub.getProgress()
+                ))
+                .collect(Collectors.toList());
 
         UserAccountDTO userAccountDTO = new UserAccountDTO();
         userAccountDTO.setName(user.getName());
@@ -294,6 +313,8 @@ public class UserServiceJpa implements UserService {
         userAccountDTO.setRole(user.getRole());
         userAccountDTO.setTier(user.getTier());
         userAccountDTO.setCertificates(certificates);
+        userAccountDTO.setBadges(badges);
+
         return userAccountDTO;
     }
 

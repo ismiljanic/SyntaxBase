@@ -5,7 +5,6 @@ import programming.tutorial.dto.LessonDTO;
 
 import java.util.Optional;
 
-@Service
 public interface LessonService {
 
     Optional<LessonDTO> getFirstLesson(Integer courseId, Integer userId);

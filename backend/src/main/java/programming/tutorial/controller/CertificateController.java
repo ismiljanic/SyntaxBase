@@ -9,33 +9,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-import programming.tutorial.dao.CertificateRepository;
 import programming.tutorial.domain.Certificate;
+import programming.tutorial.services.CertificateService;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/certificates")
 public class CertificateController {
 
+    @Autowired
+    private CertificateService certificateService;
+
     @Value("${certificates.storage.path}")
     private String storagePath;
 
-    @Autowired
-    private CertificateRepository certificateRepository;
 
     @GetMapping("/{filename}")
     public ResponseEntity<Resource> getCertificate(@PathVariable String filename,
                                                    @AuthenticationPrincipal Jwt principal) throws Exception {
         String userId = principal.getSubject();
 
-        Optional<Certificate> certificateOpt = certificateRepository.findAll()
-                .stream()
-                .filter(cert -> cert.getFileUrl().equals(filename))
-                .findFirst();
+        Optional<Certificate> certificateOpt = certificateService.getCertificateForUser(filename, userId);
 
         if (certificateOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
