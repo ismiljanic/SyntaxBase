@@ -58,6 +58,8 @@ Some core features in SyntaxBase include:
 - Authenticated users can mark notifications as read
 - Authenticated users can report messages
 - Users can receive email containing unread notifications
+- Authenticated users can view earned certificates
+- Authenticated users can view earned awards
 
 ### Admin
 
@@ -167,10 +169,6 @@ This module enables structured, role-based community interaction through a light
   <li>
     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tomcat/tomcat-original.svg" height="40" alt="tomcat logo"  /> Tomcat
   </li> 
-  <li>
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" height="40" alt="git logo"  />
-  <img width="12" /> Git
-  </li>
 </ul>
 <h3>Database</h3>
   <li>
@@ -187,6 +185,10 @@ This module enables structured, role-based community interaction through a light
 <li>
      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/intellij/intellij-original.svg" height="40" alt="intellij logo"  />
   <img width="12" /> Intelij
+  </li>
+<li>
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" height="40" alt="git logo"  />
+  <img width="12" /> Git
   </li>
 
 ---
@@ -227,7 +229,7 @@ Make sure to configure the following:
 
 For development environment VSCode and/or IntelijIDEA is recommended.
 
-- Clone or donwload project
+- Clone or download project
 - Open project inside desired development environment
 ---
 ## Development Environment
@@ -297,7 +299,7 @@ To start the backend application, follow these steps:
 ---
 ## Project structure
 
-### Project Structure (High Level) - v1.1
+### Project Structure (High Level) - v2.1.0
 
 ```text
 SyntaxBase/

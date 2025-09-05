@@ -86,6 +86,9 @@ The following images provide a visual overview of some features and interface el
 ### Tier upgrade options
 <img src="images/tierUpgrade.png" style="max-width: 100%; height: auto;" alt="tierUpgradeOptions">
 
+### Payment via Stripe
+<img src="images/paymentOption.png" style="max-width: 100%; height: auto;" alt="tierPayment">
+
 ### Forum sections
 <img src="images/forumSections.png" style="max-width: 100%; height: auto;" alt="forumSection">
 
