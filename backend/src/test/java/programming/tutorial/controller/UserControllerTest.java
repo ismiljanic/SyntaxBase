@@ -20,7 +20,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import programming.tutorial.config.TestSecurityConfig;
 import programming.tutorial.domain.Tier;
 import programming.tutorial.domain.User;
+import programming.tutorial.domain.UserBadge;
 import programming.tutorial.dto.*;
+import programming.tutorial.services.BadgeService;
 import programming.tutorial.services.impl.InstructorRequestServiceJpa;
 import programming.tutorial.services.impl.UserServiceJpa;
 
@@ -47,6 +49,10 @@ class UserControllerTest {
     private InstructorRequestServiceJpa instructorRequestServiceJpa;
     @Autowired
     private ObjectMapper objectMapper;
+    private List<UserBadge> userBadges;
+
+    @MockBean
+    private BadgeService badgeService;
 
     @Test
     @WithMockUser
@@ -475,5 +481,20 @@ class UserControllerTest {
         mockMvc.perform(get("/api/users/{auth0UserId}/status", auth0Id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.active").value(false));
+    }
+
+    @Test
+    @WithMockUser
+    void testGetUserBadges() throws Exception {
+        userBadges = List.of(
+                new UserBadge(null, null),
+                new UserBadge(null, null)
+        );
+        when(badgeService.getUserBadges("auth0|123")).thenReturn(userBadges);
+
+        mockMvc.perform(get("/api/users/badges")
+                        .with(jwt().jwt(jwt -> jwt.claim("sub", "auth0|123"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(userBadges.size()));
     }
 }
