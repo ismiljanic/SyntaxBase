@@ -12,8 +12,10 @@ import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.Badge;
 import programming.tutorial.domain.User;
 import programming.tutorial.domain.UserBadge;
+import programming.tutorial.dto.UserBadgeDTO;
 import programming.tutorial.services.impl.BadgeServiceJpa;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 class BadgeServiceTest {
@@ -35,6 +37,8 @@ class BadgeServiceTest {
     private Badge badge2;
     private Badge validBadge;
     private Badge invalidBadge;
+
+    private UserBadge userBadge1, userBadge2;
 
     @BeforeEach
     void setUp() {
@@ -67,6 +71,22 @@ class BadgeServiceTest {
         invalidBadge.setName("Broken Badge");
         invalidBadge.setType("COURSE_COMPLETION");
         invalidBadge.setCriteria("INVALID");
+
+        userBadge1 = new UserBadge();
+        userBadge1.setId(UUID.randomUUID());
+        userBadge1.setUser(user);
+        userBadge1.setBadge(badge1);
+        userBadge1.setRevoked(false);
+        userBadge1.setAwardedAt(LocalDateTime.now());
+        userBadge1.setProgress("100");
+
+        userBadge2 = new UserBadge();
+        userBadge2.setId(UUID.randomUUID());
+        userBadge2.setUser(user);
+        userBadge2.setBadge(badge2);
+        userBadge2.setRevoked(true);
+        userBadge2.setAwardedAt(LocalDateTime.now());
+        userBadge2.setProgress("50");
     }
 
     @Test
@@ -159,5 +179,39 @@ class BadgeServiceTest {
                 () -> badgeService.getUserBadges("auth0-123"));
 
         assertEquals("User not found", ex.getMessage());
+    }
+
+    @Test
+    void testGetUserBadgesByUserId() {
+        when(userRepository.findByAuth0UserId("auth0|123")).thenReturn(Optional.of(user));
+        when(userBadgeRepository.findByUser(user)).thenReturn(Arrays.asList(userBadge1, userBadge2));
+
+        List<UserBadgeDTO> result = badgeService.getUserBadgesByUserId("auth0|123");
+
+        assertNotNull(result);
+        assertEquals(1, result.size(), "Revoked badges should be filtered out");
+
+        UserBadgeDTO dto = result.get(0);
+        assertEquals(userBadge1.getId(), dto.getId());
+        assertEquals(user, dto.getUser());
+        assertEquals(userBadge1.getBadge().getName(), dto.getBadge().getName());
+        assertFalse(dto.isRevoked());
+        assertEquals("100", dto.getProgress());
+
+        verify(userRepository, times(1)).findByAuth0UserId("auth0|123");
+        verify(userBadgeRepository, times(1)).findByUser(user);
+    }
+
+    @Test
+    void testGetUserBadgesByUserId_UserNotFound() {
+        when(userRepository.findByAuth0UserId("auth0|123")).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> badgeService.getUserBadgesByUserId("auth0|123"));
+
+        assertEquals("User not found", exception.getMessage());
+
+        verify(userRepository, times(1)).findByAuth0UserId("auth0|123");
+        verify(userBadgeRepository, never()).findByUser(any());
     }
 }

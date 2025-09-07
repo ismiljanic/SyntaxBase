@@ -26,9 +26,8 @@ import programming.tutorial.services.BadgeService;
 import programming.tutorial.services.impl.InstructorRequestServiceJpa;
 import programming.tutorial.services.impl.UserServiceJpa;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
@@ -496,5 +495,37 @@ class UserControllerTest {
                         .with(jwt().jwt(jwt -> jwt.claim("sub", "auth0|123"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(userBadges.size()));
+    }
+
+    @Test
+    @WithMockUser
+    void testGetUserBadgesByUserId() throws Exception {
+        String userId = "123";
+        List<UserBadgeDTO> badges = Arrays.asList(
+                new UserBadgeDTO(UUID.randomUUID(), new BadgeDTO(), LocalDateTime.now(), false, "COURSE_COMPLETION"),
+                new UserBadgeDTO(UUID.randomUUID(), new BadgeDTO(), LocalDateTime.now(), false, "FORUM_ACTIVITY")
+                );
+
+        Mockito.when(badgeService.getUserBadgesByUserId(userId)).thenReturn(badges);
+
+        mockMvc.perform(get("/api/users/{userId}/badges", userId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(badges)));
+    }
+
+    @Test
+    @WithMockUser
+    void testGetUserProfile() throws Exception {
+        User user = new User();
+        user.setUsername("ivan");
+        UserProfileDTO profileDTO = new UserProfileDTO();
+        profileDTO.setUser(user);
+
+        Mockito.when(userService.getUserProfile(user.getUsername())).thenReturn(profileDTO);
+        mockMvc.perform(get("/api/users/{username}/profile", user.getUsername())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(profileDTO)));
     }
 }

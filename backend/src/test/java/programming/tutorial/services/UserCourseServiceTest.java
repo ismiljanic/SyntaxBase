@@ -9,7 +9,9 @@ import programming.tutorial.dao.*;
 import programming.tutorial.domain.*;
 import programming.tutorial.dto.*;
 import programming.tutorial.services.impl.UserCourseServiceJpa;
+
 import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -35,6 +37,8 @@ public class UserCourseServiceTest {
     @Mock
     private CertificateService certificateService;
 
+    @Mock
+    private BadgeService badgeService;
     @InjectMocks
     private UserCourseServiceJpa userCourseServiceJpa;
 
@@ -403,28 +407,6 @@ public class UserCourseServiceTest {
     }
 
     @Test
-    void markCourseAsCompleted_marksCompletedButDoesNotGenerateCertificateIfAlreadyExists() {
-        User user = new User();
-        Course course = new Course();
-        UserCourse userCourse = new UserCourse();
-        userCourse.setUser(user);
-        userCourse.setCourse(course);
-        userCourse.setCompleted(false);
-
-        when(userCourseRepository.findByUser_Auth0UserIdAndCourseId("auth0|123", 1))
-                .thenReturn(List.of(userCourse));
-        when(certificateRepository.existsByUser_Auth0UserIdAndCourse_Id("auth0|123", 1))
-                .thenReturn(true);
-
-        boolean result = userCourseServiceJpa.markCourseAsCompleted("auth0|123", 1);
-
-        assertTrue(result);
-        assertTrue(userCourse.getCompleted());
-        verify(userCourseRepository).save(userCourse);
-        verify(certificateService, never()).generateAndSendCertificate(any(), any());
-    }
-
-    @Test
     void markCourseAsCompleted_marksCompletedAndGeneratesCertificateIfNotExists() {
         User user = new User();
         Course course = new Course();
@@ -437,12 +419,40 @@ public class UserCourseServiceTest {
                 .thenReturn(List.of(userCourse));
         when(certificateRepository.existsByUser_Auth0UserIdAndCourse_Id("auth0|123", 1))
                 .thenReturn(false);
+        when(userCourseRepository.countByUserAndCompletedTrue(user)).thenReturn(1);
 
         boolean result = userCourseServiceJpa.markCourseAsCompleted("auth0|123", 1);
 
         assertTrue(result);
         assertTrue(userCourse.getCompleted());
+
         verify(userCourseRepository).save(userCourse);
         verify(certificateService).generateAndSendCertificate(user, course);
+        verify(badgeService).awardCourseCompletionBadge(user, 1);
+    }
+
+    @Test
+    void markCourseAsCompleted_marksCompletedButDoesNotGenerateCertificateIfAlreadyExists() {
+        User user = new User();
+        Course course = new Course();
+        UserCourse userCourse = new UserCourse();
+        userCourse.setUser(user);
+        userCourse.setCourse(course);
+        userCourse.setCompleted(false);
+
+        when(userCourseRepository.findByUser_Auth0UserIdAndCourseId("auth0|123", 1))
+                .thenReturn(List.of(userCourse));
+        when(certificateRepository.existsByUser_Auth0UserIdAndCourse_Id("auth0|123", 1))
+                .thenReturn(true);
+        when(userCourseRepository.countByUserAndCompletedTrue(user)).thenReturn(2);
+
+        boolean result = userCourseServiceJpa.markCourseAsCompleted("auth0|123", 1);
+
+        assertTrue(result);
+        assertTrue(userCourse.getCompleted());
+
+        verify(userCourseRepository).save(userCourse);
+        verify(certificateService, never()).generateAndSendCertificate(any(), any());
+        verify(badgeService).awardCourseCompletionBadge(user, 2);
     }
 }

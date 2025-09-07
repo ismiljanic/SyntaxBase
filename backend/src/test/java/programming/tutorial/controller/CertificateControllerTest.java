@@ -1,6 +1,5 @@
 package programming.tutorial.controller;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -8,19 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import programming.tutorial.dao.CertificateRepository;
 import programming.tutorial.domain.Certificate;
 import programming.tutorial.domain.User;
-import programming.tutorial.domain.Course;
+import programming.tutorial.services.CertificateService;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.Mockito.when;
@@ -34,78 +29,86 @@ class CertificateControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private CertificateController certificateController;
-
     @MockBean
-    private CertificateRepository certificateRepository;
+    private CertificateService certificateService;
 
-    private Certificate certificate;
     private User user;
-    private Course course;
-    private UUID certId;
+    private Certificate certificate;
 
     @TempDir
-    Path tempDir;
+    static Path tempDir;
+
+    private String storagePath;
+
+    @DynamicPropertySource
+    static void overrideProps(org.springframework.test.context.DynamicPropertyRegistry registry) {
+        registry.add("certificates.storage.path", () -> tempDir.toString());
+    }
 
     @BeforeEach
     void setUp() throws Exception {
-        certId = UUID.randomUUID();
         user = new User();
         user.setAuth0UserId("user-123");
-        user.setName("Test");
-        user.setUsername("testuser");
 
-        course = new Course();
-        course.setCourseName("Test Course");
+        Path pdfFile = tempDir.resolve("certificate.pdf");
+        Files.writeString(pdfFile, "dummy content");
 
         certificate = new Certificate();
-        certificate.setId(certId);
         certificate.setUser(user);
-        certificate.setCourse(course);
-        certificate.setIssuedAt(LocalDateTime.now());
-        certificate.setFileUrl("certificate-" + certId + ".pdf");
+        certificate.setFileUrl(pdfFile.toString());
 
-        ReflectionTestUtils.setField(certificateController, "storagePath", tempDir.toString());
-
-        Files.createFile(tempDir.resolve(certificate.getFileUrl()));
+        when(certificateService.getCertificateForUser("certificate.pdf", "user-123"))
+                .thenReturn(Optional.of(certificate));
     }
 
     @Test
     void getCertificate_success() throws Exception {
-        when(certificateRepository.findAll()).thenReturn(List.of(certificate));
-
-        mockMvc.perform(get("/api/certificates/{filename}", certificate.getFileUrl())
+        mockMvc.perform(get("/api/certificates/{filename}", "certificate.pdf")
                         .with(jwt().jwt(token -> token.claim("sub", "user-123"))))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_PDF));
     }
 
     @Test
-    void getCertificate_notFound() throws Exception {
-        when(certificateRepository.findAll()).thenReturn(List.of());
+    void getCertificate_notFoundInDb() throws Exception {
+        String filename = "missing.pdf";
+        when(certificateService.getCertificateForUser(filename, "user-123"))
+                .thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/api/certificates/{filename}", "nonexistent.pdf")
-                        .with(jwt().jwt(token -> token.claim("sub", "user-123"))))
+        mockMvc.perform(get("/api/certificates/{filename}", filename)
+                        .with(jwt().jwt(jwt -> jwt.claim("sub", "user-123"))))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void getCertificate_forbidden() throws Exception {
-        when(certificateRepository.findAll()).thenReturn(List.of(certificate));
+    void getCertificate_forbiddenWhenDifferentUser() throws Exception {
+        String filename = "certificate.pdf";
+        certificate.setFileUrl(tempDir.resolve(filename).toString());
 
-        mockMvc.perform(get("/api/certificates/{filename}", certificate.getFileUrl())
-                        .with(jwt().jwt(token -> token.claim("sub", "different-user"))))
+        User otherUser = new User();
+        otherUser.setAuth0UserId("other-999");
+        certificate.setUser(otherUser);
+
+        when(certificateService.getCertificateForUser(filename, "user-123"))
+                .thenReturn(Optional.of(certificate));
+
+        mockMvc.perform(get("/api/certificates/{filename}", filename)
+                        .with(jwt().jwt(jwt -> jwt.claim("sub", "user-123"))))
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    void getCertificate_fileNotReadable() throws Exception {
-        certificate.setFileUrl("nonexistent-file.pdf");
-        when(certificateRepository.findAll()).thenReturn(List.of(certificate));
+    void getCertificate_fileMissingOnDisk() throws Exception {
+        String filename = "ghost.pdf";
+        Path filePath = tempDir.resolve(filename);
+        certificate.setFileUrl(filePath.toString());
 
-        mockMvc.perform(get("/api/certificates/{filename}", certificate.getFileUrl())
-                        .with(jwt().jwt(token -> token.claim("sub", "user-123"))))
+        when(certificateService.getCertificateForUser(filename, "user-123"))
+                .thenReturn(Optional.of(certificate));
+        certificate.setUser(user);
+
+        mockMvc.perform(get("/api/certificates/{filename}", filename)
+                        .with(jwt().jwt(jwt -> jwt.claim("sub", "user-123"))))
                 .andExpect(status().isNotFound());
     }
 }
