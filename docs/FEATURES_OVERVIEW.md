@@ -95,6 +95,9 @@ The following images provide a visual overview of some features and interface el
 ### Forum messages
 <img src="images/forumMessages.png" style="max-width: 100%; height: auto;" alt="forumMessages">
 
+### User profile preview
+<img src="images/user-card.png" style="max-width: 100%; height: auto;" alt="userCard">
+
 ### Invite link email
 <img src="images/courseInviteLinkEmail.png" style="max-width: 100%; height: auto;" alt="inviteLinkEmail">
 
