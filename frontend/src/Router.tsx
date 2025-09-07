@@ -108,6 +108,7 @@ import AcceptInvite from "./components/AcceptInvite";
 import { LessonLoader } from "./components/LessonLoader";
 import { SuspendedPage } from "./pages/SuspendedPage";
 import { NotificationsPage } from "./pages/NotificationPage";
+import UserProfile from "./pages/UserProfile";
 
 export function Router() {
   return (
@@ -305,7 +306,7 @@ export function Router() {
           <Route path="/intermediateWebTutorial/lesson/5" element={
             <IntermediateWebTutorialLesson5 />
           } />
-           <Route path="/advancedWebTutorial/lesson/1" element={
+          <Route path="/advancedWebTutorial/lesson/1" element={
             <AdvancedWebTutorialLesson1 />
           } />
           <Route path="/advancedWebTutorial/lesson/2" element={
@@ -364,6 +365,9 @@ export function Router() {
             <AcceptInvite />} />
           <Route path="/notifications/:userId" element={<ProtectedRoute>
             <NotificationsPage />
+          </ProtectedRoute>} />
+          <Route path="/user/:username" element={<ProtectedRoute>
+            <UserProfile />
           </ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
           <Route path="/unauthorized" element={<Unauthorized />} />

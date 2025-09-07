@@ -234,4 +234,14 @@ public class UserController {
     public List<UserBadge> getUserBadges(@AuthenticationPrincipal Jwt jwt) {
         return badgeService.getUserBadges(jwt.getSubject());
     }
+
+    @GetMapping("/{userId}/badges")
+    public List<UserBadgeDTO> getUserBadgesByUserId(@PathVariable String userId) {
+        return badgeService.getUserBadgesByUserId(userId);
+    }
+
+    @GetMapping("/{username}/profile")
+    public UserProfileDTO getUserProfile(@PathVariable String username) {
+        return userService.getUserProfile(username);
+    }
 }

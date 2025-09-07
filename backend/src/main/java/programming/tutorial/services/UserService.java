@@ -58,4 +58,6 @@ public interface UserService {
     void removeUserFromCourse(String userId, Integer courseId);
 
     boolean getUserActiveStatus(String auth0UserId);
+
+    UserProfileDTO getUserProfile(String username);
 }

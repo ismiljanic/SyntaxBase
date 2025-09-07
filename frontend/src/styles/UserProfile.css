@@ -1,0 +1,45 @@
+.user-profile {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #007bff;
+}
+
+.profile-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.profile-badges, .profile-courses, .profile-posts {
+    margin-top: 1.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+
+.user-badges-profile .badge {
+    display: inline-block;
+    padding: 4px 8px;
+    margin: 4px;
+    border-radius: 6px;
+    background: #f0f0f0;
+    font-size: 0.8rem;
+}

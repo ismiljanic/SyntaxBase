@@ -8,11 +8,15 @@ import org.springframework.stereotype.Service;
 import programming.tutorial.dao.BadgeRepository;
 import programming.tutorial.dao.UserBadgeRepository;
 import programming.tutorial.dao.UserRepository;
+import programming.tutorial.domain.Badge;
 import programming.tutorial.domain.User;
 import programming.tutorial.domain.UserBadge;
+import programming.tutorial.dto.BadgeDTO;
+import programming.tutorial.dto.UserBadgeDTO;
 import programming.tutorial.services.BadgeService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BadgeServiceJpa implements BadgeService {
@@ -92,4 +96,35 @@ public class BadgeServiceJpa implements BadgeService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return userBadgeRepository.findByUser(user);
     }
+
+    @Override
+    public List<UserBadgeDTO> getUserBadgesByUserId(String auth0UserId) {
+        User user = userRepository.findByAuth0UserId(auth0UserId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return userBadgeRepository.findByUser(user).stream()
+                .filter(userBadge -> !userBadge.isRevoked())
+                .map(userBadge -> {
+                    Badge badge = userBadge.getBadge();
+                    BadgeDTO badgeDTO = new BadgeDTO(
+                            badge.getId(),
+                            badge.getName(),
+                            badge.getDescription(),
+                            badge.getType(),
+                            badge.getCriteria(),
+                            badge.isPermanent()
+                    );
+
+                    UserBadgeDTO dto = new UserBadgeDTO();
+                    dto.setId(userBadge.getId());
+                    dto.setUser(user);
+                    dto.setBadge(badgeDTO);
+                    dto.setAwardedAt(userBadge.getAwardedAt());
+                    dto.setRevoked(userBadge.isRevoked());
+                    dto.setProgress(userBadge.getProgress());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
 }

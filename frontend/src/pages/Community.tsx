@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Header } from './Header';
 import { Footer } from './Footer';
@@ -21,6 +21,24 @@ interface Post {
     userRole?: string;
     updatedAt: string;
     deleted: boolean;
+    userAccountCreatedAt?: Date;
+}
+
+interface BadgeDTO {
+    id: string;
+    name: string;
+    description: string;
+    type: string;
+    criteria?: string;
+    permanent: boolean;
+}
+
+interface UserBadge {
+    id: string;
+    badge: BadgeDTO;
+    awardedAt: string;
+    revoked: boolean;
+    progress?: string;
 }
 
 export function Community() {
@@ -37,6 +55,8 @@ export function Community() {
     const [editedPostContent, setEditedPostContent] = React.useState<string>("");
     const [modalMessage, setModalMessage] = useState<string | null>(null);
     const [autoExpandedPostId, setAutoExpandedPostId] = useState<number | null>(null);
+    const [showCard, setShowCard] = useState<Number | null>(null);
+    const [hoveredUserBadges, setHoveredUserBadges] = useState<{ [userId: string]: UserBadge[] }>({});
 
     const categories = [
         'General',
@@ -96,6 +116,7 @@ export function Community() {
         scrollToElement();
     }, [location.search, posts, autoExpandedPostId]);
 
+    const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         const fetchUserRole = async () => {
@@ -141,7 +162,6 @@ export function Community() {
                     new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
                 );
                 setPosts(sortedPosts);
-                console.log(sortedPosts);
                 setErrorMessage('');
             } catch (error: any) {
                 if (axios.isAxiosError(error) && error.response?.status === 401) {
@@ -343,8 +363,43 @@ export function Community() {
         }
     };
 
+    const handleMouseEnter = (id: React.SetStateAction<Number | null>) => {
+        if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+        setShowCard(id);
+    };
+
+    const handleMouseLeave = () => {
+        hideTimeoutRef.current = setTimeout(() => {
+            setShowCard(null);
+        }, 75);
+    };
+
+    const handleHover = async (userId: string) => {
+        if (!hoveredUserBadges[userId]) {
+            if (!token) return;
+
+            try {
+                const res = await fetch(`http://localhost:8080/api/users/${userId}/badges`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (!res.ok) {
+                    console.error("Failed to fetch badges:", res.status, res.statusText);
+                    return;
+                }
+
+                const data: UserBadge[] = await res.json();
+                setHoveredUserBadges(prev => ({ ...prev, [userId]: data }));
+            } catch (err) {
+                console.error("Error fetching badges:", err);
+            }
+        }
+    };
+
     return (
-        <div className="community-container" style={{paddingTop: '0em'}}>
+        <div className="community-container" style={{ paddingTop: '0em' }}>
             <Header bgColor="rgb(247, 250, 251)" />
 
             <div className="community-content">
@@ -428,14 +483,48 @@ export function Community() {
                                         </span>
                                     </div>
                                     <div className="post-header-center">
-                                        <span className="post-user">
-                                            {post.username}
-                                            {post.userRole && (
-                                                <span className={`user-role-badge ${post.userRole.toLowerCase()}`}>
-                                                    {post.userRole}
-                                                </span>
-                                            )}
-                                        </span>
+                                        <div
+                                            className="post-user-wrapper"
+                                            onMouseEnter={() => {
+                                                handleMouseEnter(post.id);
+                                                handleHover(post.userId);
+                                            }}
+                                            onMouseLeave={handleMouseLeave}
+                                        >
+                                            <span className="post-user">
+                                                {post.username}
+                                            </span>
+                                            {post.userRole && <span className={`user-role-badge ${post.userRole.toLowerCase()}`}>{post.userRole}</span>}
+
+                                            <div className={`user-hover-card ${showCard === post.id ? "visible" : ""}`}>
+                                                <div className="user-hover-card-header section">
+                                                    <strong>{post.username}</strong>
+                                                    {post.userRole && <span className={`user-role-badge ${post.userRole.toLowerCase()}`}>{post.userRole}</span>}
+                                                </div>
+
+                                                <div className="user-stats section">
+                                                    {post.userAccountCreatedAt && (
+                                                        <span>Joined: {new Date(post.userAccountCreatedAt).toLocaleString()}</span>
+                                                    )}
+                                                </div>
+
+                                                {hoveredUserBadges[post.userId]?.length > 0 && (
+                                                    <div className="user-badges section">
+                                                        {hoveredUserBadges[post.userId].map((ub) => (
+                                                            <span key={ub.id} className={`badge ${ub.badge.type.toLowerCase()}`}>
+                                                                {ub.badge.name}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                )}
+
+                                                <div className="user-actions section">
+                                                    <a href={`/user/${post.username}`} className="view-profile-link">View Profile →</a>
+                                                    <a href={`/user/chat/${post.username}`} className="view-profile-link">Chat With User →</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <span className="post-time">
                                             {new Date(post.createdAt).toLocaleString()}
                                         </span>
@@ -507,129 +596,143 @@ export function Community() {
                                             )}
                                         </>
                                     )}
+
                                 </div>
-                                <p
-                                    className={`post-content ${post.isExpanded ? "expanded" : ""
-                                        }`}
+                                <div
+                                    className={`post-expandable ${post.isExpanded ? "expanded" : ""}`}
                                 >
-                                    {post.content}
-                                </p>
-                                {post.updatedAt && new Date(post.updatedAt).getTime() > new Date(post.createdAt).getTime() && (
-                                    <span className="edited-label">(edited)</span>
-                                )}
-                                {post.isExpanded && (post.replies ?? []).length > 0 && (
-                                    <div className="replies-list">
-                                        {(post.replies ?? []).map((reply) => (
-                                            <div key={reply.id} className="reply">
-                                                <div className="reply-header">
-                                                    <span className="reply-user">
-                                                        {reply.username} (Reply)
-                                                        {reply.userRole && (
-                                                            <span className={`user-role-badge ${reply.userRole.toLowerCase()}`}>
-                                                                {reply.userRole}
+
+                                    <p
+                                        className={`post-content ${post.isExpanded ? "expanded" : ""
+                                            }`}
+                                    >
+                                        {post.content}
+                                    </p>
+                                    {
+                                        post.updatedAt && new Date(post.updatedAt).getTime() > new Date(post.createdAt).getTime() && (
+                                            <span className="edited-label">(edited)</span>
+                                        )
+                                    }
+                                    {
+                                        post.isExpanded && (post.replies ?? []).length > 0 && (
+                                            <div className="replies-list">
+                                                {(post.replies ?? []).map((reply) => (
+                                                    <div key={reply.id} className="reply">
+                                                        <div className="reply-header">
+                                                            <span className="reply-user">
+                                                                {reply.username} (Reply)
+                                                                {reply.userRole && (
+                                                                    <span className={`user-role-badge ${reply.userRole.toLowerCase()}`}>
+                                                                        {reply.userRole}
+                                                                    </span>
+                                                                )}
                                                             </span>
-                                                        )}
-                                                    </span>
 
-                                                    <small className="reply-date">
-                                                        {new Date(reply.createdAt).toLocaleString()}
-                                                    </small>
-                                                </div>
-                                                {editingReplyId === reply.id ? (
-                                                    <>
-                                                        <textarea
-                                                            className="edit-input"
-                                                            value={editedReplyContent}
-                                                            onChange={(e) => setEditedReplyContent(e.target.value)}
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        />
-                                                        <button
-                                                            className="edit-button"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleSaveEditedReply(post.id, reply.id);
-                                                            }}
-                                                        >
-                                                            Save
-                                                        </button>
+                                                            <small className="reply-date">
+                                                                {new Date(reply.createdAt).toLocaleString()}
+                                                            </small>
+                                                        </div>
+                                                        {editingReplyId === reply.id ? (
+                                                            <>
+                                                                <textarea
+                                                                    className="edit-input"
+                                                                    value={editedReplyContent}
+                                                                    onChange={(e) => setEditedReplyContent(e.target.value)}
+                                                                    onClick={(e) => e.stopPropagation()}
+                                                                />
+                                                                <button
+                                                                    className="edit-button"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        handleSaveEditedReply(post.id, reply.id);
+                                                                    }}
+                                                                >
+                                                                    Save
+                                                                </button>
 
-                                                        <button
-                                                            className="edit-button"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setEditingReplyId(null);
-                                                            }}
-                                                        >
-                                                            Cancel
-                                                        </button>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <p className="reply-content">{reply.content}</p>
-                                                        {reply.userId === userId && (
-                                                            <button
-                                                                className="edit-button"
-                                                                onClick={(e) => {
-                                                                    setEditingReplyId(reply.id);
-                                                                    setEditedReplyContent(reply.content);
-                                                                    e.stopPropagation();
-                                                                }}
-                                                            >
-                                                                Edit
-                                                            </button>
+                                                                <button
+                                                                    className="edit-button"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setEditingReplyId(null);
+                                                                    }}
+                                                                >
+                                                                    Cancel
+                                                                </button>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <p className="reply-content">{reply.content}</p>
+                                                                {reply.userId === userId && (
+                                                                    <button
+                                                                        className="edit-button"
+                                                                        onClick={(e) => {
+                                                                            setEditingReplyId(reply.id);
+                                                                            setEditedReplyContent(reply.content);
+                                                                            e.stopPropagation();
+                                                                        }}
+                                                                    >
+                                                                        Edit
+                                                                    </button>
+                                                                )}
+                                                                {reply.userId !== userId && (
+                                                                    <button
+                                                                        className="report-button"
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            handleReport(reply.id);
+                                                                        }}
+                                                                    >
+                                                                        Report
+                                                                    </button>
+                                                                )}
+                                                            </>
                                                         )}
-                                                        {reply.userId !== userId && (
-                                                            <button
-                                                                className="report-button"
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    handleReport(reply.id);
-                                                                }}
-                                                            >
-                                                                Report
-                                                            </button>
+                                                        {reply.updatedAt && new Date(reply.updatedAt).getTime() > new Date(reply.createdAt).getTime() && (
+                                                            <span className="edited-label">(edited)</span>
                                                         )}
-                                                    </>
-                                                )}
-                                                {reply.updatedAt && new Date(reply.updatedAt).getTime() > new Date(reply.createdAt).getTime() && (
-                                                    <span className="edited-label">(edited)</span>
-                                                )}
+                                                    </div>
+                                                ))}
                                             </div>
-                                        ))}
-                                    </div>
-                                )}
+                                        )
+                                    }
 
-                                {post.isExpanded && (
-                                    <div>
-                                        <div className="reply-hint">Reply to this message:</div>
-                                        <textarea
-                                            placeholder="Type your reply..."
-                                            className="reply-input"
-                                            onKeyDown={(e) => {
-                                                if (e.key === "Enter" && !e.shiftKey) {
-                                                    e.preventDefault();
-                                                    handleReplySubmit(post.id, e.currentTarget.value);
-                                                    e.currentTarget.value = "";
-                                                }
-                                            }}
-                                            onClick={(e) => e.stopPropagation()}
-                                        />
-                                    </div>
-                                )}
+                                    {
+                                        post.isExpanded && (
+                                            <div>
+                                                <div className="reply-hint">Reply to this message:</div>
+                                                <textarea
+                                                    placeholder="Type your reply..."
+                                                    className="reply-input"
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === "Enter" && !e.shiftKey) {
+                                                            e.preventDefault();
+                                                            handleReplySubmit(post.id, e.currentTarget.value);
+                                                            e.currentTarget.value = "";
+                                                        }
+                                                    }}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                />
+                                            </div>
+                                        )
+                                    }
+                                </div>
                             </div>
                         ))}
                 </div>
             </div>
-            {modalMessage && (
-                <div className="modal-overlay">
-                    <div className="modal">
-                        <p>{modalMessage}</p>
-                        <button onClick={() => setModalMessage(null)}>Close</button>
+            {
+                modalMessage && (
+                    <div className="modal-overlay">
+                        <div className="modal">
+                            <p>{modalMessage}</p>
+                            <button onClick={() => setModalMessage(null)}>Close</button>
+                        </div>
                     </div>
-                </div>
-            )}
+                )
+            }
             <Footer2 bgColor="rgb(247, 250, 251)" />
             <Footer bgColor="rgb(247, 250, 251)" />
-        </div>
+        </div >
     );
 }
