@@ -62,9 +62,9 @@ const Homepage: React.FC = () => {
 
             {isAuthenticated && user?.sub ? (
                 <>
-                    <CoursesList userId={user.sub} title="Enrolled Courses" isCreatorList={false} />
+                    <CoursesList profileUserId={null} currentUserId={user.sub} title="Enrolled Courses" isCreatorList={false} />
                     {role === 'INSTRUCTOR' && createdCourses.length > 0 && (
-                        <CoursesList userId={user.sub} title="Created Courses" courses={createdCourses} isCreatorList={true} />
+                        <CoursesList profileUserId={null} currentUserId={user.sub} title="Created Courses" courses={createdCourses} isCreatorList={true} />
                     )}
                 </>
             ) : (

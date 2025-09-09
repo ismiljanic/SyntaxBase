@@ -1,45 +1,166 @@
 .user-profile {
-    max-width: 900px;
     margin: 2rem auto;
-    padding: 1rem;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    font-family: "Inter", sans-serif;
+    color: #222;
 }
 
 .profile-header {
     display: flex;
     align-items: center;
-    gap: 16px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
+    padding: 2rem;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    margin-bottom: 2rem;
 }
 
 .profile-avatar {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #007bff;
+    border: 2px solid #e5e7eb;
+    margin-right: 1.5rem;
 }
 
-.profile-header h1 {
+.profile-info h1 {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.75rem;
+    font-weight: 600;
 }
 
-.profile-badges, .profile-courses, .profile-posts {
-    margin-top: 1.5rem;
+.profile-info .role {
+    font-size: 1rem;
+    color: #555;
+    margin: 0.25rem 0;
+}
+
+.profile-info .joined-date {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.profile-grid {
+    display: grid;
+    gap: 2rem;
+}
+
+.profile-grid .bigDaddyContainer {
+    background-color: #f9f9f9;
+}
+
+.user-profile-courses-wrapper .container2 {
+    margin-left: -3em;
+    margin-top: -15em;
+}
+
+.user-profile-courses-wrapper .moreCoursesDiv {
+    margin-left: 69em;
+}
+
+.user-profile-courses-wrapper .pictureContainerCoursesList {
+    margin-left: 2em;
+    margin-right: 7em;
+}
+
+.profile-section {
+    background: #fff;
+    width: 97.5%;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.profile-section h2 {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
     border-bottom: 1px solid #eee;
-    padding-bottom: 1rem;
+    padding-bottom: 0.5rem;
 }
 
-.user-badges-profile .badge {
+
+.badge-tooltip {
+    position: relative;
     display: inline-block;
-    padding: 4px 8px;
+    cursor: pointer;
+    padding: 8px 12px;
     margin: 4px;
-    border-radius: 6px;
+    border-radius: 12px;
     background: #f0f0f0;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.badge-tooltip .tooltip-text {
+    visibility: hidden;
+    width: max-content;
+    max-width: 200px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 6px;
+    border-radius: 4px;
+
+    position: absolute;
+    z-index: 100;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.badge-tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.badge-tooltip:hover {
+    background-color: #b6b3b39b;
+}
+
+.course-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.course-card {
+    padding: 0.75rem 1rem;
+    background: #fafafa;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.course-category {
     font-size: 0.8rem;
+    color: #555;
+    background: #f0f0f0;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+}
+
+.post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.post-card {
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.post-card small {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: #888;
 }

@@ -3,8 +3,14 @@ import { useParams } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
 import "../styles/UserProfile.css";
 import { useAuth0 } from "@auth0/auth0-react";
+import { Header } from "./Header";
+import { Footer } from "./Footer";
+import { Footer2 } from "./Footer2";
+import image from "../images/default-avatar.png";
+import CoursesList from "../components/CoursesList";
 
 interface User {
+    auth0UserId: string;
     username: string;
     role: string;
     dateCreated: Date;
@@ -63,8 +69,14 @@ interface UserProfileData {
 const UserProfile = () => {
     const { username } = useParams();
     const [user, setUser] = useState<UserProfileData | null>(null);
+    const { isAuthenticated, getAccessTokenSilently, user: auth0User } = useAuth0();
+    const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
-    const { getAccessTokenSilently } = useAuth0();
+    useEffect(() => {
+        if (auth0User) {
+            setCurrentUserId(auth0User.sub || null);
+        }
+    }, [auth0User]);
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -96,42 +108,56 @@ const UserProfile = () => {
         return <LoadingScreen />;
     }
     return (
-        <div className="user-profile">
-            <div className="profile-header">
-                {/* <img src={user.avatarUrl || "/images/default-avatar.png"} alt="Avatar" className="profile-avatar" /> */}
-                <h1>{user.user.username}</h1>
-                <span className="role">{user.user.role}</span>
-                <span className="joined-date">Joined: {new Date(user.user.dateCreated).toLocaleString()}</span>
-            </div>
-
-            <section className="profile-badges">
-                <h2>Badges</h2>
-                <div className="user-badges-profile">
-                    {user.badges.map((ub) => (
-                        <span key={ub.id} className={`badge ${ub.badge.type.toLowerCase()}`}>
-                            {ub.badge.name}
-                        </span>
-                    ))}
+        <div>
+            <Header bgColor="#f9f9f9" />
+            <div className="user-profile">
+                <div className="profile-header">
+                    <img src={image} alt="Avatar" className="profile-avatar" />
+                    <div className="profile-info">
+                        <h1>{user.user.username}</h1>
+                        <p className="role">{user.user.role}</p>
+                        <p className="joined-date">Joined {new Date(user.user.dateCreated).toLocaleDateString()}</p>
+                    </div>
                 </div>
-            </section>
 
-            <section className="profile-courses">
-                <h2>Enrolled Courses</h2>
-                <ul>
-                    {user.courses.map(course => (
-                        <li key={course.courseId}>{course.courseName}</li>
-                    ))}
-                </ul>
-            </section>
+                <div className="profile-grid">
+                    <section className="profile-section">
+                        <h2>Badges</h2>
+                        <div className="badge-grid">
+                            {user.badges.map((ub) => (
+                                <span className="badge-tooltip">
+                                    {ub.badge.name}
+                                    <span className="tooltip-text">{ub.badge.description}</span>
+                                </span>
+                            ))}
+                        </div>
+                    </section>
 
-            <section className="profile-posts">
-                <h2>Posts</h2>
-                <ul>
-                    {user.posts.map(post => (
-                        <li key={post.id}>{post.content}</li>
-                    ))}
-                </ul>
-            </section>
+                    <section className="profile-section">
+                        <div className="user-profile-courses-wrapper">
+                            <CoursesList
+                                profileUserId={user.user.auth0UserId}
+                                currentUserId={currentUserId}
+                                title="Enrolled Courses"
+                                isCreatorList={false}
+                            />
+                        </div>
+                    </section>
+                    <section className="profile-section">
+                        <h2>Recent Posts</h2>
+                        <div className="post-list">
+                            {user.posts.map(post => (
+                                <div key={post.id} className="post-card">
+                                    <p>{post.content}</p>
+                                    <small>{new Date(post.createdAt).toLocaleDateString()}</small>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <Footer2 bgColor="#f9f9f9" />
+            <Footer bgColor="#f9f9f9" />
         </div>
     );
 };

@@ -491,7 +491,7 @@ export function Community() {
                                             }}
                                             onMouseLeave={handleMouseLeave}
                                         >
-                                            <span className="post-user">
+                                            <span className="post-user" onClick={() => navigate(`/user/${post.username}`)}>
                                                 {post.username}
                                             </span>
                                             {post.userRole && <span className={`user-role-badge ${post.userRole.toLowerCase()}`}>{post.userRole}</span>}
@@ -619,14 +619,49 @@ export function Community() {
                                                 {(post.replies ?? []).map((reply) => (
                                                     <div key={reply.id} className="reply">
                                                         <div className="reply-header">
-                                                            <span className="reply-user">
-                                                                {reply.username} (Reply)
-                                                                {reply.userRole && (
-                                                                    <span className={`user-role-badge ${reply.userRole.toLowerCase()}`}>
-                                                                        {reply.userRole}
-                                                                    </span>
-                                                                )}
-                                                            </span>
+                                                            <div
+                                                                className="post-user-wrapper"
+                                                                onMouseEnter={() => {
+                                                                    handleMouseEnter(reply.id);
+                                                                    handleHover(reply.userId);
+                                                                }}
+                                                                onMouseLeave={handleMouseLeave}
+                                                            >
+                                                                <span className="reply-user" onClick={() => navigate(`/user/${reply.username}`)}>
+                                                                    {reply.username} (Reply)
+                                                                </span>
+                                                                {reply.userRole && <span className={`user-role-badge ${reply.userRole.toLowerCase()}`}>{reply.userRole}</span>}
+
+                                                                <div className={`user-hover-card ${showCard === reply.id ? "visible" : ""}`}
+                                                                    style={{ marginLeft: '3em' }}
+                                                                >
+                                                                    <div className="user-hover-card-header section">
+                                                                        <strong>{reply.username}</strong>
+                                                                        {reply.userRole && <span className={`user-role-badge ${reply.userRole.toLowerCase()}`}>{reply.userRole}</span>}
+                                                                    </div>
+
+                                                                    <div className="user-stats section">
+                                                                        {reply.userAccountCreatedAt && (
+                                                                            <span>Joined: {new Date(reply.userAccountCreatedAt).toLocaleString()}</span>
+                                                                        )}
+                                                                    </div>
+
+                                                                    {hoveredUserBadges[reply.userId]?.length > 0 && (
+                                                                        <div className="user-badges section">
+                                                                            {hoveredUserBadges[reply.userId].map((ub) => (
+                                                                                <span key={ub.id} className={`badge ${ub.badge.type.toLowerCase()}`}>
+                                                                                    {ub.badge.name}
+                                                                                </span>
+                                                                            ))}
+                                                                        </div>
+                                                                    )}
+
+                                                                    <div className="user-actions section">
+                                                                        <a href={`/user/${reply.username}`} className="view-profile-link">View Profile →</a>
+                                                                        <a href={`/user/chat/${reply.username}`} className="view-profile-link">Chat With User →</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
 
                                                             <small className="reply-date">
                                                                 {new Date(reply.createdAt).toLocaleString()}
