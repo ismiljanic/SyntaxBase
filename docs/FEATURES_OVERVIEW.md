@@ -55,6 +55,9 @@ The following images provide a visual overview of some features and interface el
 <img src="images/accountinfo.png" style="max-width: 100%; height: auto;" alt="accountinfo">
 <img src="images/changepersonalinfo.png" style="max-width: 100%; height: auto;" alt="changepersonalinfo">
 
+### User Profile Page
+<img src="images/userProfile.png" style="max-width: 100%; height: auto;" alt="userProfilePage">
+
 ### User notifications
 <img src="images/notifications.png" style="max-width: 100%; height: auto;" alt="changepersonalinfo">
 <img src="images/newMessages.png" style="max-width: 100%; height: auto;" alt="accountinfo">
