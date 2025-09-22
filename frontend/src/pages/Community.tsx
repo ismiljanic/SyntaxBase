@@ -79,7 +79,6 @@ export function Community() {
         getAccessTokenSilently,
         isLoading
     } = useAuth0();
-
     const userId = user?.sub;
     const username = user?.nickname || user?.name || 'Anonymous';
 
@@ -520,7 +519,11 @@ export function Community() {
 
                                                 <div className="user-actions section">
                                                     <a href={`/user/${post.username}`} className="view-profile-link">View Profile →</a>
-                                                    <a href={`/user/chat/${post.username}`} className="view-profile-link">Chat With User →</a>
+                                                    {user && post.username !== user.email && (
+                                                        <a href={`/user/chat/${post.username}`} className="view-profile-link">
+                                                            Chat With User →
+                                                        </a>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>

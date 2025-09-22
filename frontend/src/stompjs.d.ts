@@ -1,4 +1,3 @@
-// src/stompjs.d.ts
 declare module '@stomp/stompjs' {
     export type StompHeaders = Record<string, string>;
 
@@ -21,6 +20,7 @@ declare module '@stomp/stompjs' {
         onStompError?: (frame: Frame) => void;
         onWebSocketError?: (ev: Event) => void;
         onDisconnect?: () => void;
+        debug?: (msg: string) => void;
     }
 
     export class Client {
@@ -28,5 +28,6 @@ declare module '@stomp/stompjs' {
         activate(): void;
         deactivate(): void;
         subscribe(destination: string, callback: (message: IMessage) => void): void;
+        publish(options: { destination: string; body: string; headers?: StompHeaders }): void;
     }
 }

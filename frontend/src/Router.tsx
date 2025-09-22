@@ -109,6 +109,7 @@ import { LessonLoader } from "./components/LessonLoader";
 import { SuspendedPage } from "./pages/SuspendedPage";
 import { NotificationsPage } from "./pages/NotificationPage";
 import UserProfile from "./pages/UserProfile";
+import { ChatPage } from "./pages/ChatPage";
 
 export function Router() {
   return (
@@ -369,6 +370,7 @@ export function Router() {
           <Route path="/user/:username" element={<ProtectedRoute>
             <UserProfile />
           </ProtectedRoute>} />
+          <Route path="/user/chat/:username" element={<ChatPage />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/forbidden" element={<Forbidden />} />

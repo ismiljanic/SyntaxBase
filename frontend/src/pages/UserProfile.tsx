@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
 import "../styles/UserProfile.css";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -118,6 +118,15 @@ const UserProfile = () => {
                         <p className="role">{user.user.role}</p>
                         <p className="joined-date">Joined {new Date(user.user.dateCreated).toLocaleDateString()}</p>
                     </div>
+                    {auth0User && username !== auth0User.email && (
+                        <Link
+                            to={`/user/chat/${user.user.username}`}
+                            className="view-profile-link"
+                        >
+                            <span className="link-text">Chat With {user.user.username}</span>
+                            <span className="link-arrow">→</span>
+                        </Link>
+                    )}
                 </div>
 
                 <div className="profile-grid">

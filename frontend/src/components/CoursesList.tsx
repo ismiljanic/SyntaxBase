@@ -293,7 +293,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ profileUserId, currentUserId,
     }
 
     return (
-        <div className="bigDaddyContainer" style={{ paddingTop: '13em' }}>
+        <div className="bigDaddyContainer" style={{ paddingTop: '16em' }}>
             <div className={`container2 ${isCreatorList ? 'creator-margin' : ''}`}>
                 <div className="container2">
                     <div className="webCourseDiv3">{title}</div>
