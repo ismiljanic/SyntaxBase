@@ -13,10 +13,13 @@ public class ChatMessage {
     private UUID id;
     @Column(nullable = false)
     private String fromUserId;
+    @Column(nullable = false)
+    private String fromUserUsername;
 
     @Column(nullable = false)
     private String toUserId;
-
+    @Column(nullable = false)
+    private String toUserUsername;
     @Column(nullable = false)
     private String content;
 
@@ -26,16 +29,18 @@ public class ChatMessage {
     @Enumerated(EnumType.STRING)
     private MessageType type;
 
-    public ChatMessage(UUID id, String fromUserId, String toUserId, String content, Instant sentAt, MessageType type) {
+    public ChatMessage() {
+    }
+
+    public ChatMessage(UUID id, String fromUserId, String fromUserUsername, String toUserId, String toUserUsername, String content, Instant sentAt, MessageType type) {
         this.id = id;
         this.fromUserId = fromUserId;
+        this.fromUserUsername = fromUserUsername;
         this.toUserId = toUserId;
+        this.toUserUsername = toUserUsername;
         this.content = content;
         this.sentAt = sentAt;
         this.type = type;
-    }
-
-    public ChatMessage() {
     }
 
     public UUID getId() {
@@ -54,12 +59,28 @@ public class ChatMessage {
         this.fromUserId = fromUserId;
     }
 
+    public String getFromUserUsername() {
+        return fromUserUsername;
+    }
+
+    public void setFromUserUsername(String fromUserUsername) {
+        this.fromUserUsername = fromUserUsername;
+    }
+
     public String getToUserId() {
         return toUserId;
     }
 
     public void setToUserId(String toUserId) {
         this.toUserId = toUserId;
+    }
+
+    public String getToUserUsername() {
+        return toUserUsername;
+    }
+
+    public void setToUserUsername(String toUserUsername) {
+        this.toUserUsername = toUserUsername;
     }
 
     public String getContent() {
@@ -86,4 +107,3 @@ public class ChatMessage {
         this.type = type;
     }
 }
-

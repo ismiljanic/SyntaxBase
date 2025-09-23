@@ -6,7 +6,9 @@ import java.util.UUID;
 public class ChatMessageDTO {
     private UUID id;
     private String fromUserId;
+    private String fromUserUsername;
     private String toUserId;
+    private String toUserUsername;
     private String content;
     private Instant sentAt;
     private MessageType type;
@@ -30,12 +32,28 @@ public class ChatMessageDTO {
         this.fromUserId = fromUserId;
     }
 
+    public String getFromUserUsername() {
+        return fromUserUsername;
+    }
+
+    public void setFromUserUsername(String fromUserUsername) {
+        this.fromUserUsername = fromUserUsername;
+    }
+
     public String getToUserId() {
         return toUserId;
     }
 
     public void setToUserId(String toUserId) {
         this.toUserId = toUserId;
+    }
+
+    public String getToUserUsername() {
+        return toUserUsername;
+    }
+
+    public void setToUserUsername(String toUserUsername) {
+        this.toUserUsername = toUserUsername;
     }
 
     public String getContent() {

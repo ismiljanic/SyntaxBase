@@ -109,7 +109,7 @@ import { LessonLoader } from "./components/LessonLoader";
 import { SuspendedPage } from "./pages/SuspendedPage";
 import { NotificationsPage } from "./pages/NotificationPage";
 import UserProfile from "./pages/UserProfile";
-import { ChatPage } from "./pages/ChatPage";
+import { ChatPage } from "./pages/chat/ChatPage";
 
 export function Router() {
   return (

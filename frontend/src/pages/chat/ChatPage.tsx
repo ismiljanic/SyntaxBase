@@ -3,13 +3,25 @@ import { Client, IMessage, Frame } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { useParams } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import LoadingScreen from "../components/LoadingScreen";
+import LoadingScreen from "../../components/LoadingScreen";
+import '../../styles/chat/ChatPage.css';
+import { Header } from "../Header";
+import { Footer } from "../Footer";
+import { Footer2 } from "../Footer2";
+import { ChatSidebar } from "../../components/chat/ChatContactSidebar";
 
 interface ChatMessage {
     fromUserId: string;
+    fromUserUsername: string;
     toUserId: string;
+    toUserUsername: string;
     content: string;
     sentAt: string;
+}
+
+interface SelectedContact {
+    id: string;
+    username: string;
 }
 
 export function ChatPage() {
@@ -19,17 +31,35 @@ export function ChatPage() {
     const { username } = useParams<{ username: string }>();
     const { user, getAccessTokenSilently, isAuthenticated } = useAuth0();
     const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+    const [chatWithUserId, setChatWithUserId] = useState<string | null>(null);
+    const [currentUserUsername, setCurrentUserUsername] = useState<string | null>(null);
+    const [chatWithUserUsername, setChatWithUserUsername] = useState<string | null>(null);
+
+    const [autoScroll, setAutoScroll] = useState(true);
+    const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+    const scrollToBottom = () => {
+        if (autoScroll && messagesContainerRef.current) {
+            const container = messagesContainerRef.current;
+            container.scrollTop = container.scrollHeight;
+        }
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages, autoScroll]);
+
 
     useEffect(() => {
         if (isAuthenticated && user) {
             setCurrentUserId(user.sub ?? null);
+            setCurrentUserUsername(user.email || user.nickname || "You");
         }
     }, [user, isAuthenticated]);
 
+
     useEffect(() => {
     }, [isAuthenticated, user]);
-
-    const [chatWithUserId, setChatWithUserId] = useState<string | null>(null);
 
     useEffect(() => {
         if (!username || !isAuthenticated) return;
@@ -38,21 +68,19 @@ export function ChatPage() {
             try {
                 const token = await getAccessTokenSilently();
                 const res = await fetch(`http://localhost:8080/api/users/${username}/profile`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                    headers: { Authorization: `Bearer ${token}` },
                 });
-                if (!res.ok) throw new Error("Failed to fetch user profile");
                 const data = await res.json();
                 setChatWithUserId(data.user.auth0UserId);
+                setChatWithUserUsername(data.user.email || data.user.username);
             } catch (err) {
-                console.error("Error fetching Auth0 user ID:", err);
+                console.error(err);
             }
         };
 
         fetchAuth0Id();
-        console.log("Fetching Auth0 ID for username:", username);
     }, [username, isAuthenticated, getAccessTokenSilently]);
+
 
     useEffect(() => {
         if (!currentUserId || !chatWithUserId) return;
@@ -76,8 +104,7 @@ export function ChatPage() {
         };
 
         fetchMessages();
-        console.log("currentuserid: " + currentUserId);
-    }, [currentUserId, chatWithUserId, getAccessTokenSilently]);
+    }, [currentUserId, chatWithUserId, currentUserUsername, chatWithUserUsername, getAccessTokenSilently]);
 
     useEffect(() => {
         if (!isAuthenticated || !currentUserId || !chatWithUserId) return;
@@ -91,16 +118,12 @@ export function ChatPage() {
                 reconnectDelay: 5000,
                 connectHeaders: { Authorization: `Bearer ${token}` },
                 onConnect: () => {
-                    console.log("Connected to WebSocket");
 
                     const chatTopic =
                         `/topic/chat.${currentUserId < chatWithUserId ? currentUserId : chatWithUserId}.${currentUserId < chatWithUserId ? chatWithUserId : currentUserId}`;
 
-                    console.log("Subscribing to topic:", chatTopic);
-
                     stompClient.current?.subscribe(chatTopic, (msg: IMessage) => {
                         const received: ChatMessage = JSON.parse(msg.body);
-                        console.log("Received WebSocket message:", received);
                         setMessages(prev => [...prev, received]);
                     });
                 },
@@ -130,7 +153,9 @@ export function ChatPage() {
 
         const msg: ChatMessage = {
             fromUserId: currentUserId!,
+            fromUserUsername: currentUserUsername!,
             toUserId: chatWithUserId,
+            toUserUsername: chatWithUserUsername!,
             content: newMessage,
             sentAt: new Date().toISOString(),
         };
@@ -140,52 +165,70 @@ export function ChatPage() {
             body: JSON.stringify(msg),
             headers: { Authorization: `Bearer ${await getAccessTokenSilently()}` }
         });
-
         setNewMessage("");
     };
 
+    const handleContactSelect = (contact: SelectedContact) => {
+        setChatWithUserId(contact.id);
+        setChatWithUserUsername(contact.username);
+    };
+
+
     return (
-        <div style={{ maxWidth: "600px", margin: "0 auto", padding: "1rem" }}>
-            <h2>Chat with {username}</h2>
-            <div
-                style={{
-                    border: "1px solid #ccc",
-                    padding: "1rem",
-                    height: "400px",
-                    overflowY: "scroll",
-                    marginBottom: "1rem",
-                }}
-            >
-                {messages.map((m, idx) => (
-                    <div
-                        key={idx}
-                        style={{
-                            marginBottom: "0.5rem",
-                            textAlign: m.fromUserId === currentUserId ? "right" : "left",
-                            backgroundColor: m.fromUserId === currentUserId ? "#dcf8c6" : "#f1f0f0",
-                            padding: "0.5rem",
-                            borderRadius: "8px",
-                        }}
-                    >
-                        <strong>{m.fromUserId === currentUserId ? "You" : username}:</strong> {m.content}
-                        <div style={{ fontSize: "0.75rem", color: "#666" }}>
-                            {new Date(m.sentAt).toLocaleTimeString()}
-                        </div>
+        <div>
+            <Header bgColor="#f9f9f9" />
+            <div className="chat-page">
+                <ChatSidebar onSelectContact={handleContactSelect} />
+
+                <div className="chat-container">
+                    <header className="chat-header">Chat with {chatWithUserUsername}</header>
+
+                    <div className="chat-messages" id="chat-messages" ref={messagesContainerRef}>
+                        {messages.map((m, idx) => (
+                            <div
+                                key={idx}
+                                className={`message ${m.fromUserId === currentUserId ? "sent" : "received"}`}
+                            >
+                                <div className="message-content">{m.content}</div>
+                                <div className="message-meta">
+                                    <span
+                                        className="sender-name"
+                                        style={{
+                                            marginRight: '6px',
+                                            color: m.fromUserId === currentUserId ? '#ffffff' : '#333'
+                                        }}
+                                    >
+                                        {m.fromUserId === currentUserId ? "You" : username}
+                                    </span>
+                                    <span
+                                        className="timestamp"
+                                        style={{
+                                            color: m.fromUserId === currentUserId ? 'rgba(255, 255, 255, 0.78)' : 'rgba(0, 0, 0, 0.79)'
+                                        }}
+                                    >
+                                        {new Date(m.sentAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                ))}
+
+                    <div className="chat-input-container">
+                        <input
+                            type="text"
+                            placeholder="Type a message..."
+                            value={newMessage}
+                            onChange={(e) => setNewMessage(e.target.value)}
+                            className="chat-input"
+                        />
+                        <button onClick={sendMessage} className="chat-send-btn">
+                            Send
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div style={{ display: "flex" }}>
-                <input
-                    type="text"
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    style={{ flex: 1, padding: "0.5rem" }}
-                    placeholder="Type a message..."
-                />
-                <button onClick={sendMessage} style={{ padding: "0.5rem 1rem" }}>
-                    Send
-                </button>
-            </div>
+            <Footer2 bgColor="#f9f9f9" />
+            <Footer bgColor="#f9f9f9" />
         </div>
     );
 };

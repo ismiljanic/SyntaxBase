@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import microservice_chat.config.AuthChannelInterceptor;
 import microservice_chat.dto.ChatMessageDTO;
+import microservice_chat.dto.ChatSummaryDTO;
 import microservice_chat.services.ChatMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +13,10 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
 import java.security.Principal;
@@ -65,6 +65,12 @@ public class ChatController {
         logger.info("Decoded user1: {}", user1);
         logger.info("Decoded user2: {}", user2);
         return chatService.getMessagesBetween(user1, user2);
+    }
+
+    @GetMapping("api/chat/summaries")
+    public List<ChatSummaryDTO> getChatSummaries(@AuthenticationPrincipal Jwt jwt) {
+        String userId = jwt.getSubject();
+        return chatService.getChatSummariesForUser(userId);
     }
 
 }

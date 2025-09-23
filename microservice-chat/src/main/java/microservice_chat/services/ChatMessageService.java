@@ -4,10 +4,13 @@ import jakarta.transaction.Transactional;
 import microservice_chat.dao.ChatMessageRepository;
 import microservice_chat.domain.ChatMessage;
 import microservice_chat.dto.ChatMessageDTO;
+import microservice_chat.dto.ChatSummaryDTO;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -27,7 +30,9 @@ public class ChatMessageService {
         ChatMessage entity = new ChatMessage();
         entity.setId(UUID.randomUUID());
         entity.setFromUserId(dto.getFromUserId());
+        entity.setFromUserUsername(dto.getFromUserUsername());
         entity.setToUserId(dto.getToUserId());
+        entity.setToUserUsername(dto.getToUserUsername());
         entity.setContent(dto.getContent());
         entity.setSentAt(dto.getSentAt());
 
@@ -47,11 +52,37 @@ public class ChatMessageService {
             ChatMessageDTO dto = new ChatMessageDTO();
             dto.setId(m.getId());
             dto.setFromUserId(m.getFromUserId());
+            dto.setFromUserUsername(m.getFromUserUsername());
             dto.setToUserId(m.getToUserId());
+            dto.setToUserUsername(m.getToUserUsername());
             dto.setContent(m.getContent());
             dto.setSentAt(m.getSentAt());
             dto.setType(m.getType());
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    public List<ChatSummaryDTO> getChatSummariesForUser(String userId) {
+        List<ChatMessage> allMessages = repository.findAllMessagesForUser(userId);
+        Map<String, ChatMessage> lastMessagePerUser = new LinkedHashMap<>();
+
+        for (ChatMessage msg : allMessages) {
+            String otherUserId = msg.getFromUserId().equals(userId) ? msg.getToUserId() : msg.getFromUserId();
+            if (!lastMessagePerUser.containsKey(otherUserId)) {
+                lastMessagePerUser.put(otherUserId, msg);
+            }
+        }
+
+        return lastMessagePerUser.entrySet().stream()
+                .map(entry -> {
+                    ChatMessage lastMsg = entry.getValue();
+                    return new ChatSummaryDTO(
+                            entry.getKey(),
+                            lastMsg.getToUserUsername(),
+                            lastMsg.getContent(),
+                            lastMsg.getSentAt()
+                    );
+                })
+                .toList();
     }
 }
