@@ -181,7 +181,8 @@ export function Header({ bgColor = '#333' }: HeaderProps) {
       </div>
 
       {isAuthenticated && userId ? (
-        <SettingsMenu role={userRole ?? ''} unreadCount={unreadCount} />
+        // <SettingsMenu role={userRole ?? ''} unreadCount={unreadCount} />
+        <SettingsMenu role={userRole ?? ''} />
       ) : (
         <button
           style={{ paddingRight: '5.5em' }}
