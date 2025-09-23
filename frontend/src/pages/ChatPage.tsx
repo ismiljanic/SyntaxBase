@@ -52,7 +52,6 @@ export function ChatPage() {
 
         fetchAuth0Id();
         console.log("Fetching Auth0 ID for username:", username);
-        console.log("Current user ID:", currentUserId);
     }, [username, isAuthenticated, getAccessTokenSilently]);
 
     useEffect(() => {
@@ -61,6 +60,7 @@ export function ChatPage() {
         const fetchMessages = async () => {
             try {
                 const token = await getAccessTokenSilently();
+                //Has to be encodeed due to special characters i.e. "|" in auth0UserId
                 const res = await fetch(
                     `http://localhost:8100/api/chat/messages?user1=${encodeURIComponent(currentUserId)}&user2=${encodeURIComponent(chatWithUserId)}`,
                     {
@@ -76,10 +76,11 @@ export function ChatPage() {
         };
 
         fetchMessages();
+        console.log("currentuserid: " + currentUserId);
     }, [currentUserId, chatWithUserId, getAccessTokenSilently]);
 
     useEffect(() => {
-        if (!isAuthenticated || !currentUserId) return;
+        if (!isAuthenticated || !currentUserId || !chatWithUserId) return;
 
         const connectWebSocket = async () => {
             const token = await getAccessTokenSilently();
@@ -91,13 +92,26 @@ export function ChatPage() {
                 connectHeaders: { Authorization: `Bearer ${token}` },
                 onConnect: () => {
                     console.log("Connected to WebSocket");
-                    stompClient.current?.subscribe(`/user/queue/messages`, (msg: IMessage) => {
+
+                    const chatTopic =
+                        `/topic/chat.${currentUserId < chatWithUserId ? currentUserId : chatWithUserId}.${currentUserId < chatWithUserId ? chatWithUserId : currentUserId}`;
+
+                    console.log("Subscribing to topic:", chatTopic);
+
+                    stompClient.current?.subscribe(chatTopic, (msg: IMessage) => {
                         const received: ChatMessage = JSON.parse(msg.body);
-                        setMessages((prev) => [...prev, received]);
+                        console.log("Received WebSocket message:", received);
+                        setMessages(prev => [...prev, received]);
                     });
                 },
                 onStompError: (frame: Frame) => {
                     console.error("STOMP Error:", frame.headers["message"]);
+                },
+                onWebSocketError: (ev: Event) => {
+                    console.error("WebSocket Error:", ev);
+                },
+                onDisconnect: () => {
+                    console.log("Disconnected from WebSocket");
                 },
             });
 
@@ -129,8 +143,6 @@ export function ChatPage() {
 
         setNewMessage("");
     };
-
-
 
     return (
         <div style={{ maxWidth: "600px", margin: "0 auto", padding: "1rem" }}>

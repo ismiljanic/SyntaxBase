@@ -19,22 +19,30 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
             String authHeader = accessor.getFirstNativeHeader("Authorization");
+
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                String token = authHeader.substring(7);
                 try {
+                    String token = authHeader.substring(7);
                     DecodedJWT decodedJWT = JWT.decode(token);
                     String auth0UserId = decodedJWT.getSubject();
                     accessor.setUser(new StompPrincipal(auth0UserId));
-                    logger.info("Authenticated WebSocket user: {}", auth0UserId);
+                    logger.info("WebSocket CONNECT with Principal: {}", auth0UserId);
                 } catch (Exception e) {
-                    logger.error("Invalid JWT token", e);
+                    logger.error("Invalid JWT token on WebSocket CONNECT", e);
                 }
             } else {
-                logger.warn("Missing Authorization header on CONNECT");
+                logger.warn("Missing Authorization header on WebSocket CONNECT");
             }
         }
+
+        if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+            String destination = accessor.getDestination();
+            logger.info("WebSocket SUBSCRIBE to destination: {}", destination);
+        }
+
         return message;
     }
 }
