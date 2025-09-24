@@ -2,8 +2,11 @@ package microservice_chat.domain;
 
 import jakarta.persistence.*;
 import microservice_chat.dto.MessageType;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -29,10 +32,18 @@ public class ChatMessage {
     @Enumerated(EnumType.STRING)
     private MessageType type;
 
+    @Column(name = "deleted")
+    private boolean deleted = false;
+
+    @ElementCollection
+    @CollectionTable(name = "chat_message_visibility", joinColumns = @JoinColumn(name = "message_id"))
+    @Column(name = "user_id")
+    private Set<String> visibleTo = new HashSet<>();
+
     public ChatMessage() {
     }
 
-    public ChatMessage(UUID id, String fromUserId, String fromUserUsername, String toUserId, String toUserUsername, String content, Instant sentAt, MessageType type) {
+    public ChatMessage(UUID id, String fromUserId, String fromUserUsername, String toUserId, String toUserUsername, String content, Instant sentAt, MessageType type, boolean deleted, Set<String> visibleTo) {
         this.id = id;
         this.fromUserId = fromUserId;
         this.fromUserUsername = fromUserUsername;
@@ -41,6 +52,8 @@ public class ChatMessage {
         this.content = content;
         this.sentAt = sentAt;
         this.type = type;
+        this.deleted = deleted;
+        this.visibleTo = visibleTo;
     }
 
     public UUID getId() {
@@ -105,5 +118,21 @@ public class ChatMessage {
 
     public void setType(MessageType type) {
         this.type = type;
+    }
+
+    public Set<String> getVisibleTo() {
+        return visibleTo;
+    }
+
+    public void setVisibleTo(Set<String> visibleTo) {
+        this.visibleTo = visibleTo;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

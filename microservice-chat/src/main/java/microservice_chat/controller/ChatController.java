@@ -9,6 +9,7 @@ import microservice_chat.services.ChatMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -71,6 +72,26 @@ public class ChatController {
     public List<ChatSummaryDTO> getChatSummaries(@AuthenticationPrincipal Jwt jwt) {
         String userId = jwt.getSubject();
         return chatService.getChatSummariesForUser(userId);
+    }
+
+    @DeleteMapping("/api/chat/contacts/{otherUserId}")
+    public ResponseEntity<Void> removeContact(@PathVariable String otherUserId,
+                                              @AuthenticationPrincipal Jwt jwt) {
+        logger.info("Remove contact hit with otherUserId {}", otherUserId);
+        String currentUserId = jwt.getSubject();
+        logger.info("Current user id is {}", currentUserId);
+        chatService.removeContact(currentUserId, otherUserId);
+        logger.info("Remove contact successfully hit");
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/api/chat/messages/{messageId}/delete")
+    public ResponseEntity<Void> softDeleteMessage(@PathVariable UUID messageId,
+                                                  @AuthenticationPrincipal Jwt jwt) throws AccessDeniedException {
+        String userId = jwt.getSubject();
+        logger.info("JWT userId: {}", jwt.getSubject());
+        chatService.softDeleteMessage(userId, messageId);
+        return ResponseEntity.noContent().build();
     }
 
 }

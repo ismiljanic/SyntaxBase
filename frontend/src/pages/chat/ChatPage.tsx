@@ -11,17 +11,24 @@ import { Footer2 } from "../Footer2";
 import { ChatSidebar } from "../../components/chat/ChatContactSidebar";
 
 interface ChatMessage {
+    id?: string;
     fromUserId: string;
     fromUserUsername: string;
     toUserId: string;
     toUserUsername: string;
     content: string;
     sentAt: string;
+    deleted?: boolean;
 }
 
 interface SelectedContact {
     id: string;
     username: string;
+}
+
+interface ChatSummary {
+    otherUserId: string;
+    otherUsername: string;
 }
 
 export function ChatPage() {
@@ -30,11 +37,12 @@ export function ChatPage() {
     const stompClient = useRef<Client | null>(null);
     const { username } = useParams<{ username: string }>();
     const { user, getAccessTokenSilently, isAuthenticated } = useAuth0();
+    const [messageIdToDelete, setMessageIdToDelete] = useState<string | null>(null);
     const [currentUserId, setCurrentUserId] = useState<string | null>(null);
     const [chatWithUserId, setChatWithUserId] = useState<string | null>(null);
     const [currentUserUsername, setCurrentUserUsername] = useState<string | null>(null);
     const [chatWithUserUsername, setChatWithUserUsername] = useState<string | null>(null);
-
+    const [actionMessageId, setActionMessageId] = useState<string | null>(null);
     const [autoScroll, setAutoScroll] = useState(true);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -83,7 +91,10 @@ export function ChatPage() {
 
 
     useEffect(() => {
-        if (!currentUserId || !chatWithUserId) return;
+        if (!currentUserId || !chatWithUserId) {
+            setMessages([]);
+            return;
+        }
 
         const fetchMessages = async () => {
             try {
@@ -124,8 +135,17 @@ export function ChatPage() {
 
                     stompClient.current?.subscribe(chatTopic, (msg: IMessage) => {
                         const received: ChatMessage = JSON.parse(msg.body);
-                        setMessages(prev => [...prev, received]);
+
+                        setMessages(prev => {
+                            if (received.deleted) {
+                                return prev.map(m =>
+                                    m.id === received.id ? { ...m, deleted: true } : m
+                                );
+                            }
+                            return [...prev, received];
+                        });
                     });
+
                 },
                 onStompError: (frame: Frame) => {
                     console.error("STOMP Error:", frame.headers["message"]);
@@ -150,7 +170,7 @@ export function ChatPage() {
 
     const sendMessage = async () => {
         if (!newMessage.trim() || !chatWithUserId) return;
-
+        console.log("Messageid: " + messageIdToDelete)
         const msg: ChatMessage = {
             fromUserId: currentUserId!,
             fromUserUsername: currentUserUsername!,
@@ -173,12 +193,73 @@ export function ChatPage() {
         setChatWithUserUsername(contact.username);
     };
 
+    const handleContactRemoved = (removedId: string, remainingContacts: ChatSummary[]) => {
+        if (chatWithUserId === removedId) {
+            if (remainingContacts.length > 0) {
+                const next = remainingContacts[0];
+                setChatWithUserId(next.otherUserId);
+                setChatWithUserUsername(next.otherUsername);
+                setMessages([]);
+            } else {
+                setChatWithUserId(null);
+                setChatWithUserUsername(null);
+                setMessages([]);
+            }
+        }
+    };
+
+    const handleMessageClick = (messageId: string) => {
+        setActionMessageId(prev => (prev === messageId ? null : messageId));
+    };
+
+    const deleteMessage = async (messageId: string) => {
+        try {
+            console.log("Attempting to delete message with ID:", messageId);
+
+            if (!messageId) {
+                console.error("Message ID is undefined!");
+                return;
+            }
+
+            const token = await getAccessTokenSilently();
+            console.log("Using token:", token);
+
+            const res = await fetch(
+                `http://localhost:8100/api/chat/messages/${messageId}/delete`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                }
+            );
+
+            console.log("Response status:", res.status, res.statusText);
+
+            if (!res.ok) {
+                const text = await res.text();
+                console.error("Failed to delete message:", text);
+                return;
+            }
+
+            setMessages(prev =>
+                prev.map(m => m.id === messageId ? { ...m, deleted: true } : m)
+            );
+
+            setActionMessageId(null);
+        } catch (err) {
+            console.error("Delete message error:", err);
+        }
+    };
 
     return (
         <div>
             <Header bgColor="#f9f9f9" />
             <div className="chat-page">
-                <ChatSidebar onSelectContact={handleContactSelect} />
+                <ChatSidebar
+                    onSelectContact={handleContactSelect}
+                    onRemoveContact={handleContactRemoved}
+                />
 
                 <div className="chat-container">
                     <header className="chat-header">Chat with {chatWithUserUsername}</header>
@@ -188,8 +269,24 @@ export function ChatPage() {
                             <div
                                 key={idx}
                                 className={`message ${m.fromUserId === currentUserId ? "sent" : "received"}`}
+                                onClick={() => handleMessageClick(m.id!)}
                             >
-                                <div className="message-content">{m.content}</div>
+                                {actionMessageId === m.id && !m.deleted && m.fromUserId === currentUserId && (
+                                    <div className="message-popup">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                deleteMessage(m.id!);
+                                            }}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                )}
+
+                                <div className="message-content">
+                                    {m.deleted ? <i>Message deleted</i> : m.content}
+                                </div>
                                 <div className="message-meta">
                                     <span
                                         className="sender-name"

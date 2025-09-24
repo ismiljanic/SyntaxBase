@@ -20,4 +20,18 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, UUID> 
                 ORDER BY c.sentAt DESC
             """)
     List<ChatMessage> findAllMessagesForUser(@Param("userId") String userId);
+
+    @Query("SELECT m FROM ChatMessage m " +
+            "WHERE ((m.fromUserId = :user1 AND m.toUserId = :user2) " +
+            "   OR (m.fromUserId = :user2 AND m.toUserId = :user1)) " +
+            "AND m.deleted = false")
+    List<ChatMessage> findVisibleMessagesBetween(String user1, String user2);
+
+    @Query("""
+                SELECT c
+                FROM ChatMessage c
+                WHERE :userId MEMBER OF c.visibleTo
+                ORDER BY c.sentAt DESC
+            """)
+    List<ChatMessage> findAllVisibleMessagesForUser(@Param("userId") String userId);
 }

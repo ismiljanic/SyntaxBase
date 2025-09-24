@@ -12,6 +12,7 @@ public class ChatMessageDTO {
     private String content;
     private Instant sentAt;
     private MessageType type;
+    private boolean deleted;
 
     public ChatMessageDTO() {
     }
@@ -78,5 +79,13 @@ public class ChatMessageDTO {
 
     public void setType(MessageType type) {
         this.type = type;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }
