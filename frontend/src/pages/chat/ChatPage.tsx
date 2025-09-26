@@ -19,6 +19,9 @@ interface ChatMessage {
     content: string;
     sentAt: string;
     deleted?: boolean;
+    replyToMessageId?: string | null;
+    edited?: boolean;
+    editedAt?: string | null;
 }
 
 interface SelectedContact {
@@ -30,6 +33,7 @@ interface ChatSummary {
     otherUserId: string;
     otherUsername: string;
 }
+
 
 export function ChatPage() {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -45,6 +49,9 @@ export function ChatPage() {
     const [actionMessageId, setActionMessageId] = useState<string | null>(null);
     const [autoScroll, setAutoScroll] = useState(true);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
+    const [replyingTo, setReplyingTo] = useState<ChatMessage | null>(null);
+    const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+    const MAX_MESSAGE_LENGTH = 500;
 
     const scrollToBottom = () => {
         if (autoScroll && messagesContainerRef.current) {
@@ -137,14 +144,14 @@ export function ChatPage() {
                         const received: ChatMessage = JSON.parse(msg.body);
 
                         setMessages(prev => {
-                            if (received.deleted) {
-                                return prev.map(m =>
-                                    m.id === received.id ? { ...m, deleted: true } : m
-                                );
+                            const exists = prev.find(m => m.id === received.id);
+                            if (exists) {
+                                return prev.map(m => m.id === received.id ? received : m);
                             }
                             return [...prev, received];
                         });
                     });
+
 
                 },
                 onStompError: (frame: Frame) => {
@@ -170,14 +177,24 @@ export function ChatPage() {
 
     const sendMessage = async () => {
         if (!newMessage.trim() || !chatWithUserId) return;
-        console.log("Messageid: " + messageIdToDelete)
+
+        const maxLength = 500;
+        const content = newMessage.slice(0, maxLength);
+
+        if (editingMessageId) {
+            await saveEdit(editingMessageId);
+            setActionMessageId(null);
+            return;
+        }
+
         const msg: ChatMessage = {
             fromUserId: currentUserId!,
             fromUserUsername: currentUserUsername!,
-            toUserId: chatWithUserId,
+            toUserId: chatWithUserId!,
             toUserUsername: chatWithUserUsername!,
-            content: newMessage,
+            content,
             sentAt: new Date().toISOString(),
+            replyToMessageId: replyingTo?.id || null,
         };
 
         stompClient.current?.publish({
@@ -185,8 +202,11 @@ export function ChatPage() {
             body: JSON.stringify(msg),
             headers: { Authorization: `Bearer ${await getAccessTokenSilently()}` }
         });
+
         setNewMessage("");
+        setReplyingTo(null);
     };
+
 
     const handleContactSelect = (contact: SelectedContact) => {
         setChatWithUserId(contact.id);
@@ -252,6 +272,40 @@ export function ChatPage() {
         }
     };
 
+    const handleReply = (message: ChatMessage) => {
+        setEditingMessageId(null);
+        setNewMessage("");
+        setReplyingTo(message);
+        setActionMessageId(null);
+    };
+
+    const handleEdit = (message: ChatMessage) => {
+        setReplyingTo(null);
+        setEditingMessageId(message.id!);
+        setNewMessage(message.content);
+    };
+
+    const saveEdit = async (messageId: string) => {
+        if (!messageId || !newMessage.trim()) return;
+
+        const token = await getAccessTokenSilently();
+        const res = await fetch(`http://localhost:8100/api/chat/messages/${messageId}/edit`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ content: newMessage })
+        });
+
+        if (res.ok) {
+            const updated: ChatMessage = await res.json();
+            setMessages(prev => prev.map(m => m.id === updated.id ? updated : m));
+            setNewMessage("");
+            setEditingMessageId(null);
+        }
+    };
+
     return (
         <div>
             <Header bgColor="#f9f9f9" />
@@ -271,21 +325,55 @@ export function ChatPage() {
                                 className={`message ${m.fromUserId === currentUserId ? "sent" : "received"}`}
                                 onClick={() => handleMessageClick(m.id!)}
                             >
-                                {actionMessageId === m.id && !m.deleted && m.fromUserId === currentUserId && (
-                                    <div className="message-popup">
+                                {actionMessageId === m.id && !m.deleted && (
+                                    <div className="message-popup" style={{ top: m.fromUserId === currentUserId ? '-110px' : '-80px' }}>
+                                        {m.fromUserId === currentUserId && (
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    deleteMessage(m.id!);
+                                                }}
+                                            >
+                                                Delete
+                                            </button>
+                                        )}
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                deleteMessage(m.id!);
+                                                handleReply(m);
                                             }}
                                         >
-                                            Delete
+                                            Reply
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleEdit(m);
+                                            }}
+                                        >
+                                            Edit
                                         </button>
                                     </div>
                                 )}
-
+                                {m.replyToMessageId && (
+                                    <div className="reply-snippet">
+                                        <span className="reply-author">
+                                            {
+                                                messages.find(x => x.id === m.replyToMessageId)?.fromUserUsername
+                                                || "Unknown"
+                                            }
+                                        </span>
+                                        <div className="reply-snippet-text">
+                                            {
+                                                messages.find(x => x.id === m.replyToMessageId)?.content
+                                                || "Message unavailable"
+                                            }
+                                        </div>
+                                    </div>
+                                )}
                                 <div className="message-content">
                                     {m.deleted ? <i>Message deleted</i> : m.content}
+                                    {m.edited && <span className="edited-tag"> (edited)</span>}
                                 </div>
                                 <div className="message-meta">
                                     <span
@@ -311,13 +399,53 @@ export function ChatPage() {
                     </div>
 
                     <div className="chat-input-container">
-                        <input
-                            type="text"
-                            placeholder="Type a message..."
-                            value={newMessage}
-                            onChange={(e) => setNewMessage(e.target.value)}
-                            className="chat-input"
-                        />
+                        {replyingTo && (
+                            <div className="reply-preview">
+                                <div className="reply-info">
+                                    Replying to <strong>{replyingTo.fromUserUsername}</strong>:
+                                </div>
+                                <div className="reply-text">{replyingTo.content}</div>
+                                <button
+                                    className="cancel-reply-btn"
+                                    onClick={() => setReplyingTo(null)}
+                                >
+                                    x
+                                </button>
+                            </div>
+                        )}
+                        {editingMessageId && (
+                            <div className="edit-preview">
+                                <div className="edit-info">
+                                    Editing <strong>{messages.find(m => m.id === editingMessageId)?.fromUserUsername}</strong>’s message:
+                                </div>
+                                <div className="edit-text">
+                                    {messages.find(m => m.id === editingMessageId)?.content}
+                                </div>
+                                <button
+                                    className="cancel-edit-btn"
+                                    onClick={() => {
+                                        setEditingMessageId(null);
+                                        setNewMessage("");
+                                    }}
+                                >
+                                    x
+                                </button>
+                            </div>
+                        )}
+                        <div className="chat-input-wrapper">
+                            <input
+                                type="text"
+                                placeholder="Type a message..."
+                                value={newMessage}
+                                onChange={(e) => {
+                                    setNewMessage(e.target.value.slice(0, MAX_MESSAGE_LENGTH));
+                                }}
+                                className="chat-input"
+                            />
+                        </div>
+                        <div className="char-counter">
+                            {newMessage.length} / {MAX_MESSAGE_LENGTH}
+                        </div>
                         <button onClick={sendMessage} className="chat-send-btn">
                             Send
                         </button>

@@ -23,6 +23,7 @@ import java.nio.file.AccessDeniedException;
 import java.security.Principal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -92,6 +93,19 @@ public class ChatController {
         logger.info("JWT userId: {}", jwt.getSubject());
         chatService.softDeleteMessage(userId, messageId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/api/chat/messages/{messageId}/edit")
+    public ResponseEntity<ChatMessageDTO> editMessage(@PathVariable UUID messageId, @RequestBody Map<String, String> body, @AuthenticationPrincipal Jwt jwt) throws AccessDeniedException{
+        String userId = jwt.getSubject();
+        String newContent = body.get("content");
+
+        logger.info("Edit messages endpoint hit");
+
+        ChatMessageDTO updated = chatService.editMessage(userId, messageId, newContent);
+
+        logger.info("Successfully edited message");
+        return ResponseEntity.ok(updated);
     }
 
 }

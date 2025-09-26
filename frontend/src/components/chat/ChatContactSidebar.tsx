@@ -37,6 +37,7 @@ export const ChatSidebar: React.FC<Props> = ({ onSelectContact, onRemoveContact 
                 });
                 const data: ChatSummary[] = await res.json();
                 setContacts(data);
+                console.log(JSON.stringify(data));
             } catch (err) {
                 console.error(err);
             }

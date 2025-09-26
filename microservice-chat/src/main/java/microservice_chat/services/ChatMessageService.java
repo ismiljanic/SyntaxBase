@@ -11,6 +11,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +42,16 @@ public class ChatMessageService {
         entity.setSentAt(dto.getSentAt());
         entity.getVisibleTo().add(dto.getFromUserId());
         entity.getVisibleTo().add(dto.getToUserId());
+        entity.setReplyToMessageId(dto.getReplyToMessageId());
 
         repository.save(entity);
 
+        ChatMessageDTO dtoOut = getChatMessageDTO(entity);
+
+        kafkaTemplate.send("chat.messages", dtoOut.getToUserId(), dtoOut);
+    }
+
+    private static ChatMessageDTO getChatMessageDTO(ChatMessage entity) {
         ChatMessageDTO dtoOut = new ChatMessageDTO();
         dtoOut.setId(entity.getId());
         dtoOut.setFromUserId(entity.getFromUserId());
@@ -53,8 +61,10 @@ public class ChatMessageService {
         dtoOut.setContent(entity.getContent());
         dtoOut.setSentAt(entity.getSentAt());
         dtoOut.setDeleted(entity.isDeleted());
-
-        kafkaTemplate.send("chat.messages", dtoOut.getToUserId(), dtoOut);
+        dtoOut.setReplyToMessageId(entity.getReplyToMessageId());
+        dtoOut.setEdited(entity.isEdited());
+        dtoOut.setEditedAt(entity.getEditedAt());
+        return dtoOut;
     }
 
     public List<ChatMessageDTO> getMessagesBetween(String user1, String user2) {
@@ -72,6 +82,7 @@ public class ChatMessageService {
             dto.setContent(m.getContent());
             dto.setSentAt(m.getSentAt());
             dto.setType(m.getType());
+            dto.setReplyToMessageId(m.getReplyToMessageId());
             return dto;
         }).collect(Collectors.toList());
     }
@@ -82,9 +93,14 @@ public class ChatMessageService {
         Map<String, ChatMessage> lastMessagePerContact = new LinkedHashMap<>();
 
         for (ChatMessage msg : allMessages) {
+            if (msg.isDeleted()) continue;
+
             String otherUserId = msg.getFromUserId().equals(userId) ? msg.getToUserId() : msg.getFromUserId();
 
-            lastMessagePerContact.putIfAbsent(otherUserId, msg);
+            ChatMessage existing = lastMessagePerContact.get(otherUserId);
+            if (existing == null || msg.getSentAt().isAfter(existing.getSentAt())) {
+                lastMessagePerContact.put(otherUserId, msg);
+            }
         }
 
         return lastMessagePerContact.entrySet().stream()
@@ -135,5 +151,28 @@ public class ChatMessageService {
         dto.setDeleted(true);
         kafkaTemplate.send("chat.messages", dto.getToUserId(), dto);
         kafkaTemplate.send("chat.messages", dto.getFromUserId(), dto);
+    }
+
+    @Transactional
+    public ChatMessageDTO editMessage(String userId, UUID messageId, String newContent) throws AccessDeniedException {
+        ChatMessage message = repository.findById(messageId)
+                .orElseThrow(() -> new RuntimeException("Message not found"));
+
+        if (!message.getFromUserId().equals(userId)) {
+            throw new AccessDeniedException("Cannot edit others' messages");
+        }
+
+        message.setContent(newContent);
+        message.setEdited(true);
+        message.setEditedAt(Instant.now());
+        repository.save(message);
+
+        logger.info("Saved edited message to repository");
+        ChatMessageDTO dto = getChatMessageDTO(message);
+        kafkaTemplate.send("chat.messages", dto.getToUserId(), dto);
+        kafkaTemplate.send("chat.messages", dto.getFromUserId(), dto);
+
+        logger.info("Successfully sent edited message in real-time to both users");
+        return dto;
     }
 }
