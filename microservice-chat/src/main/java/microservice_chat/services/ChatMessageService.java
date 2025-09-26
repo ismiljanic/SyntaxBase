@@ -3,12 +3,12 @@ package microservice_chat.services;
 import jakarta.transaction.Transactional;
 import microservice_chat.dao.ChatMessageRepository;
 import microservice_chat.domain.ChatMessage;
-import microservice_chat.dto.ChatMessageDTO;
 import microservice_chat.dto.ChatSummaryDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import shared.dto.ChatMessageDTO;
 
 import java.nio.file.AccessDeniedException;
 import java.time.Instant;

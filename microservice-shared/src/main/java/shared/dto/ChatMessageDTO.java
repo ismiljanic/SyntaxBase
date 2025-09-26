@@ -1,63 +1,23 @@
-package microservice_chat.domain;
-
-import jakarta.persistence.*;
-import shared.dto.MessageType;
+package shared.dto;
 
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
-@Entity
-@Table(name = "chat_messages")
-public class ChatMessage {
-    @Id
+public class ChatMessageDTO {
     private UUID id;
-    @Column(nullable = false)
     private String fromUserId;
-    @Column(nullable = false)
     private String fromUserUsername;
-    @Column(nullable = false)
     private String toUserId;
-    @Column(nullable = false)
     private String toUserUsername;
-    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
-    @Column(nullable = false)
     private Instant sentAt;
-    @Enumerated(EnumType.STRING)
     private MessageType type;
-    @Column(name = "deleted")
-    private boolean deleted = false;
-    @Column(name = "reply_to_message_id")
+    private boolean deleted;
     private UUID replyToMessageId;
-    @Column(name = "edited")
-    private boolean edited = false;
-    @Column(name = "edited_at")
+    private boolean edited;
     private Instant editedAt;
 
-    @ElementCollection
-    @CollectionTable(name = "chat_message_visibility", joinColumns = @JoinColumn(name = "message_id"))
-    @Column(name = "user_id")
-    private Set<String> visibleTo = new HashSet<>();
-
-    public ChatMessage() {
-    }
-
-    public ChatMessage(UUID id, String fromUserId, String fromUserUsername, String toUserId, String toUserUsername, String content, Instant sentAt, MessageType type, boolean deleted, UUID replyToMessageId, boolean edited, Instant editedAt, Set<String> visibleTo) {
-        this.id = id;
-        this.fromUserId = fromUserId;
-        this.fromUserUsername = fromUserUsername;
-        this.toUserId = toUserId;
-        this.toUserUsername = toUserUsername;
-        this.content = content;
-        this.sentAt = sentAt;
-        this.type = type;
-        this.deleted = deleted;
-        this.replyToMessageId = replyToMessageId;
-        this.edited = edited;
-        this.editedAt = editedAt;
-        this.visibleTo = visibleTo;
+    public ChatMessageDTO() {
     }
 
     public UUID getId() {
@@ -154,13 +114,5 @@ public class ChatMessage {
 
     public void setEditedAt(Instant editedAt) {
         this.editedAt = editedAt;
-    }
-
-    public Set<String> getVisibleTo() {
-        return visibleTo;
-    }
-
-    public void setVisibleTo(Set<String> visibleTo) {
-        this.visibleTo = visibleTo;
     }
 }

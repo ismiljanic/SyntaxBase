@@ -1,12 +1,12 @@
 package microservice_chat.services;
 
-import microservice_chat.dto.ChatMessageDTO;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import shared.dto.ChatMessageDTO;
 
 @Service
 public class KafkaChatConsumer {

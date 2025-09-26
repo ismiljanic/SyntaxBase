@@ -2,13 +2,10 @@ package microservice_chat.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import microservice_chat.config.AuthChannelInterceptor;
-import microservice_chat.dto.ChatMessageDTO;
 import microservice_chat.dto.ChatSummaryDTO;
 import microservice_chat.services.ChatMessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.handler.annotation.Header;
@@ -16,8 +13,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import shared.dto.ChatMessageDTO;
 
 import java.nio.file.AccessDeniedException;
 import java.security.Principal;
