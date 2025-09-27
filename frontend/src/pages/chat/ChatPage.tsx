@@ -11,12 +11,17 @@ import { Footer2 } from "../Footer2";
 import { ChatSidebar } from "../../components/chat/ChatContactSidebar";
 
 interface ChatMessage {
+    id?: string;
     fromUserId: string;
     fromUserUsername: string;
     toUserId: string;
     toUserUsername: string;
     content: string;
     sentAt: string;
+    deleted?: boolean;
+    replyToMessageId?: string | null;
+    edited?: boolean;
+    editedAt?: string | null;
 }
 
 interface SelectedContact {
@@ -24,19 +29,29 @@ interface SelectedContact {
     username: string;
 }
 
+interface ChatSummary {
+    otherUserId: string;
+    otherUsername: string;
+}
+
+
 export function ChatPage() {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [newMessage, setNewMessage] = useState("");
     const stompClient = useRef<Client | null>(null);
     const { username } = useParams<{ username: string }>();
     const { user, getAccessTokenSilently, isAuthenticated } = useAuth0();
+    const [messageIdToDelete, setMessageIdToDelete] = useState<string | null>(null);
     const [currentUserId, setCurrentUserId] = useState<string | null>(null);
     const [chatWithUserId, setChatWithUserId] = useState<string | null>(null);
     const [currentUserUsername, setCurrentUserUsername] = useState<string | null>(null);
     const [chatWithUserUsername, setChatWithUserUsername] = useState<string | null>(null);
-
+    const [actionMessageId, setActionMessageId] = useState<string | null>(null);
     const [autoScroll, setAutoScroll] = useState(true);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
+    const [replyingTo, setReplyingTo] = useState<ChatMessage | null>(null);
+    const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+    const MAX_MESSAGE_LENGTH = 500;
 
     const scrollToBottom = () => {
         if (autoScroll && messagesContainerRef.current) {
@@ -83,7 +98,10 @@ export function ChatPage() {
 
 
     useEffect(() => {
-        if (!currentUserId || !chatWithUserId) return;
+        if (!currentUserId || !chatWithUserId) {
+            setMessages([]);
+            return;
+        }
 
         const fetchMessages = async () => {
             try {
@@ -124,8 +142,17 @@ export function ChatPage() {
 
                     stompClient.current?.subscribe(chatTopic, (msg: IMessage) => {
                         const received: ChatMessage = JSON.parse(msg.body);
-                        setMessages(prev => [...prev, received]);
+
+                        setMessages(prev => {
+                            const exists = prev.find(m => m.id === received.id);
+                            if (exists) {
+                                return prev.map(m => m.id === received.id ? received : m);
+                            }
+                            return [...prev, received];
+                        });
                     });
+
+
                 },
                 onStompError: (frame: Frame) => {
                     console.error("STOMP Error:", frame.headers["message"]);
@@ -151,13 +178,23 @@ export function ChatPage() {
     const sendMessage = async () => {
         if (!newMessage.trim() || !chatWithUserId) return;
 
+        const maxLength = 500;
+        const content = newMessage.slice(0, maxLength);
+
+        if (editingMessageId) {
+            await saveEdit(editingMessageId);
+            setActionMessageId(null);
+            return;
+        }
+
         const msg: ChatMessage = {
             fromUserId: currentUserId!,
             fromUserUsername: currentUserUsername!,
-            toUserId: chatWithUserId,
+            toUserId: chatWithUserId!,
             toUserUsername: chatWithUserUsername!,
-            content: newMessage,
+            content,
             sentAt: new Date().toISOString(),
+            replyToMessageId: replyingTo?.id || null,
         };
 
         stompClient.current?.publish({
@@ -165,20 +202,118 @@ export function ChatPage() {
             body: JSON.stringify(msg),
             headers: { Authorization: `Bearer ${await getAccessTokenSilently()}` }
         });
+
         setNewMessage("");
+        setReplyingTo(null);
     };
+
 
     const handleContactSelect = (contact: SelectedContact) => {
         setChatWithUserId(contact.id);
         setChatWithUserUsername(contact.username);
     };
 
+    const handleContactRemoved = (removedId: string, remainingContacts: ChatSummary[]) => {
+        if (chatWithUserId === removedId) {
+            if (remainingContacts.length > 0) {
+                const next = remainingContacts[0];
+                setChatWithUserId(next.otherUserId);
+                setChatWithUserUsername(next.otherUsername);
+                setMessages([]);
+            } else {
+                setChatWithUserId(null);
+                setChatWithUserUsername(null);
+                setMessages([]);
+            }
+        }
+    };
+
+    const handleMessageClick = (messageId: string) => {
+        setActionMessageId(prev => (prev === messageId ? null : messageId));
+    };
+
+    const deleteMessage = async (messageId: string) => {
+        try {
+            console.log("Attempting to delete message with ID:", messageId);
+
+            if (!messageId) {
+                console.error("Message ID is undefined!");
+                return;
+            }
+
+            const token = await getAccessTokenSilently();
+            console.log("Using token:", token);
+
+            const res = await fetch(
+                `http://localhost:8100/api/chat/messages/${messageId}/delete`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                }
+            );
+
+            console.log("Response status:", res.status, res.statusText);
+
+            if (!res.ok) {
+                const text = await res.text();
+                console.error("Failed to delete message:", text);
+                return;
+            }
+
+            setMessages(prev =>
+                prev.map(m => m.id === messageId ? { ...m, deleted: true } : m)
+            );
+
+            setActionMessageId(null);
+        } catch (err) {
+            console.error("Delete message error:", err);
+        }
+    };
+
+    const handleReply = (message: ChatMessage) => {
+        setEditingMessageId(null);
+        setNewMessage("");
+        setReplyingTo(message);
+        setActionMessageId(null);
+    };
+
+    const handleEdit = (message: ChatMessage) => {
+        setReplyingTo(null);
+        setEditingMessageId(message.id!);
+        setNewMessage(message.content);
+    };
+
+    const saveEdit = async (messageId: string) => {
+        if (!messageId || !newMessage.trim()) return;
+
+        const token = await getAccessTokenSilently();
+        const res = await fetch(`http://localhost:8100/api/chat/messages/${messageId}/edit`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ content: newMessage })
+        });
+
+        if (res.ok) {
+            const updated: ChatMessage = await res.json();
+            setMessages(prev => prev.map(m => m.id === updated.id ? updated : m));
+            setNewMessage("");
+            setEditingMessageId(null);
+        }
+    };
 
     return (
         <div>
             <Header bgColor="#f9f9f9" />
             <div className="chat-page">
-                <ChatSidebar onSelectContact={handleContactSelect} />
+                <ChatSidebar
+                    onSelectContact={handleContactSelect}
+                    onRemoveContact={handleContactRemoved}
+                />
 
                 <div className="chat-container">
                     <header className="chat-header">Chat with {chatWithUserUsername}</header>
@@ -188,8 +323,58 @@ export function ChatPage() {
                             <div
                                 key={idx}
                                 className={`message ${m.fromUserId === currentUserId ? "sent" : "received"}`}
+                                onClick={() => handleMessageClick(m.id!)}
                             >
-                                <div className="message-content">{m.content}</div>
+                                {actionMessageId === m.id && !m.deleted && (
+                                    <div className="message-popup" style={{ top: m.fromUserId === currentUserId ? '-110px' : '-80px' }}>
+                                        {m.fromUserId === currentUserId && (
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    deleteMessage(m.id!);
+                                                }}
+                                            >
+                                                Delete
+                                            </button>
+                                        )}
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleReply(m);
+                                            }}
+                                        >
+                                            Reply
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleEdit(m);
+                                            }}
+                                        >
+                                            Edit
+                                        </button>
+                                    </div>
+                                )}
+                                {m.replyToMessageId && (
+                                    <div className="reply-snippet">
+                                        <span className="reply-author">
+                                            {
+                                                messages.find(x => x.id === m.replyToMessageId)?.fromUserUsername
+                                                || "Unknown"
+                                            }
+                                        </span>
+                                        <div className="reply-snippet-text">
+                                            {
+                                                messages.find(x => x.id === m.replyToMessageId)?.content
+                                                || "Message unavailable"
+                                            }
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="message-content">
+                                    {m.deleted ? <i>Message deleted</i> : m.content}
+                                    {m.edited && <span className="edited-tag"> (edited)</span>}
+                                </div>
                                 <div className="message-meta">
                                     <span
                                         className="sender-name"
@@ -214,13 +399,53 @@ export function ChatPage() {
                     </div>
 
                     <div className="chat-input-container">
-                        <input
-                            type="text"
-                            placeholder="Type a message..."
-                            value={newMessage}
-                            onChange={(e) => setNewMessage(e.target.value)}
-                            className="chat-input"
-                        />
+                        {replyingTo && (
+                            <div className="reply-preview">
+                                <div className="reply-info">
+                                    Replying to <strong>{replyingTo.fromUserUsername}</strong>:
+                                </div>
+                                <div className="reply-text">{replyingTo.content}</div>
+                                <button
+                                    className="cancel-reply-btn"
+                                    onClick={() => setReplyingTo(null)}
+                                >
+                                    x
+                                </button>
+                            </div>
+                        )}
+                        {editingMessageId && (
+                            <div className="edit-preview">
+                                <div className="edit-info">
+                                    Editing <strong>{messages.find(m => m.id === editingMessageId)?.fromUserUsername}</strong>’s message:
+                                </div>
+                                <div className="edit-text">
+                                    {messages.find(m => m.id === editingMessageId)?.content}
+                                </div>
+                                <button
+                                    className="cancel-edit-btn"
+                                    onClick={() => {
+                                        setEditingMessageId(null);
+                                        setNewMessage("");
+                                    }}
+                                >
+                                    x
+                                </button>
+                            </div>
+                        )}
+                        <div className="chat-input-wrapper">
+                            <input
+                                type="text"
+                                placeholder="Type a message..."
+                                value={newMessage}
+                                onChange={(e) => {
+                                    setNewMessage(e.target.value.slice(0, MAX_MESSAGE_LENGTH));
+                                }}
+                                className="chat-input"
+                            />
+                        </div>
+                        <div className="char-counter">
+                            {newMessage.length} / {MAX_MESSAGE_LENGTH}
+                        </div>
                         <button onClick={sendMessage} className="chat-send-btn">
                             Send
                         </button>

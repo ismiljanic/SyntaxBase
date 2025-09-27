@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - dev
 
 env:
   REGISTRY: ghcr.io
@@ -46,6 +47,15 @@ jobs:
         run: |
           docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-notifications:latest ./microservice-notifications
           docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-notifications:latest
+
+      - name: Build microservice-chat JAR
+        run: mvn clean package -DskipTests
+        working-directory: ./microservice-chat
+
+      - name: Build and push microservice-chat
+        run: |
+          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-chat:latest ./microservice-chat
+          docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-chat:latest
 
       - name: Build and push frontend
         run: |

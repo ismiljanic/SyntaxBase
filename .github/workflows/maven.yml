@@ -2,9 +2,9 @@ name: Java CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, dev ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, dev ]
 
 jobs:
   build-backend:
@@ -14,9 +14,9 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_DB: baza
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB_NAME }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         ports:
           - 5432:5432
         options: >-
@@ -26,9 +26,9 @@ jobs:
           --health-retries=5
 
     env:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/baza
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.POSTGRES_USER }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       APP_SECRETS: ${{ secrets.APPLICATION_SECRETS_PROPERTIES_CONTENT }}
 
     steps:
@@ -67,9 +67,9 @@ jobs:
     needs: build-backend
 
     env:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/baza
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.POSTGRES_USER }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       APP_SECRETS: ${{ secrets.APPLICATION_SECRETS_PROPERTIES_CONTENT }}
 
     steps:
