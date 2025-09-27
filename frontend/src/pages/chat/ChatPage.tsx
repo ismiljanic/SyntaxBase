@@ -326,7 +326,7 @@ export function ChatPage() {
                                 onClick={() => handleMessageClick(m.id!)}
                             >
                                 {actionMessageId === m.id && !m.deleted && (
-                                    <div className="message-popup" style={{ top: m.fromUserId === currentUserId ? '-110px' : '-80px' }}>
+                                    <div className="message-popup" style={{ top: m.fromUserId === currentUserId ? '-110px' : '-50px' }}>
                                         {m.fromUserId === currentUserId && (
                                             <button
                                                 onClick={(e) => {
@@ -345,14 +345,16 @@ export function ChatPage() {
                                         >
                                             Reply
                                         </button>
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleEdit(m);
-                                            }}
-                                        >
-                                            Edit
-                                        </button>
+                                        {m.fromUserId === currentUserId && (
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleEdit(m);
+                                                }}
+                                            >
+                                                Edit
+                                            </button>
+                                        )}
                                     </div>
                                 )}
                                 {m.replyToMessageId && (
