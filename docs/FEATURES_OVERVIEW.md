@@ -57,6 +57,7 @@ The following images provide a visual overview of some features and interface el
 
 ### User Profile Page
 <img src="images/userProfile.png" style="max-width: 100%; height: auto;" alt="userProfilePage">
+<img src="images/userProfile2.png" style="max-width: 100%; height: auto;" alt="userProfilePage2">
 
 ### User notifications
 <img src="images/notifications.png" style="max-width: 100%; height: auto;" alt="changepersonalinfo">
@@ -100,6 +101,24 @@ The following images provide a visual overview of some features and interface el
 
 ### User profile preview
 <img src="images/user-card.png" style="max-width: 100%; height: auto;" alt="userCard">
+
+### Chat among users
+<img src="images/chat.png" style="max-width: 100%; height: auto;" alt="chat">
+
+### Reply to users message
+<img src="images/otherReply.png" style="max-width: 100%; height: auto;" alt="replyToMessage">
+
+### Replied message appearance
+<img src="images/repliedMessage.png" style="max-width: 100%; height: auto;" alt="repliedMessage">
+
+### Edit message option
+<img src="images/editMessage.png" style="max-width: 100%; height: auto;" alt="editMessage">
+
+### Edited and deleted message appearance
+<img src="images/editedAndDeletedMessage.png" style="max-width: 100%; height: auto;" alt="editedAndDeletedMessage">
+
+### Remove user from contact
+<img src="images/removeUser.png" style="max-width: 100%; height: auto;" alt="removeUser">
 
 ### Invite link email
 <img src="images/courseInviteLinkEmail.png" style="max-width: 100%; height: auto;" alt="inviteLinkEmail">

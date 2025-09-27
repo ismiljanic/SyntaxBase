@@ -60,6 +60,7 @@ Some core features in SyntaxBase include:
 - Users can receive email containing unread notifications
 - Authenticated users can view earned certificates
 - Authenticated users can view earned awards
+- Authenticated users can chat with each other in real time via integrated chat
 
 ### Admin
 
@@ -299,7 +300,7 @@ To start the backend application, follow these steps:
 ---
 ## Project structure
 
-### Project Structure (High Level) - v2.1.0
+### Project Structure (High Level) - v2.2.0
 
 ```text
 SyntaxBase/
@@ -307,12 +308,15 @@ SyntaxBase/
 ├── backend/
 ├── docs/
 ├── frontend/
+├── microservice-chat/
 ├── microservice-notifications/
+├── microservice-shared/
+├── CHANGELOG.MD
+├── LICENSE
+├── README.MD
 ```
 
 ### Frontend
-<details>
-<summary><strong>Frontend Structure</strong></summary></details>
 
 ```text
 src/
@@ -328,10 +332,10 @@ src/
 │   └── webCourses/       
 ├── services/   
 └── styles/
+└── utils/
 ```
 
 ### Backend
- <details> <summary><strong>Backend Structure</strong></summary></details>
 
 ```text
 com/programming.tutorial/
@@ -341,11 +345,24 @@ com/programming.tutorial/
 ├── domain/
 ├── dto/
 ├── services/
-└── TutorialApplication.java
+└── BackendApplication.java
 ```
 
+### Microservice-chat
+
+```text
+microservice_chat/
+├── config/
+├── controller/
+├── dao/
+├── domain/
+├── dto/
+├── services/
+└── MicroserviceChatApplication.java
+```
+---
+
 ### Microservice-notifications
- <details> <summary><strong>Backend Structure</strong></summary></details>
 
 ```text
 com/SyntaxBase/
@@ -358,6 +375,14 @@ com/SyntaxBase/
 ├── services/
 ├── utils/
 └── MicroserviceNotificationsApplication.java
+```
+---
+
+### Microservice-shared
+
+```text
+shared/
+├── dto/
 ```
 ---
 
