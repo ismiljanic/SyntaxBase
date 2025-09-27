@@ -1,9 +1,11 @@
 package microservice_chat.domain;
 
 import jakarta.persistence.*;
-import microservice_chat.dto.MessageType;
+import shared.dto.MessageType;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -15,24 +17,34 @@ public class ChatMessage {
     private String fromUserId;
     @Column(nullable = false)
     private String fromUserUsername;
-
     @Column(nullable = false)
     private String toUserId;
     @Column(nullable = false)
     private String toUserUsername;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
-
     @Column(nullable = false)
     private Instant sentAt;
-
     @Enumerated(EnumType.STRING)
     private MessageType type;
+    @Column(name = "deleted")
+    private boolean deleted = false;
+    @Column(name = "reply_to_message_id")
+    private UUID replyToMessageId;
+    @Column(name = "edited")
+    private boolean edited = false;
+    @Column(name = "edited_at")
+    private Instant editedAt;
+
+    @ElementCollection
+    @CollectionTable(name = "chat_message_visibility", joinColumns = @JoinColumn(name = "message_id"))
+    @Column(name = "user_id")
+    private Set<String> visibleTo = new HashSet<>();
 
     public ChatMessage() {
     }
 
-    public ChatMessage(UUID id, String fromUserId, String fromUserUsername, String toUserId, String toUserUsername, String content, Instant sentAt, MessageType type) {
+    public ChatMessage(UUID id, String fromUserId, String fromUserUsername, String toUserId, String toUserUsername, String content, Instant sentAt, MessageType type, boolean deleted, UUID replyToMessageId, boolean edited, Instant editedAt, Set<String> visibleTo) {
         this.id = id;
         this.fromUserId = fromUserId;
         this.fromUserUsername = fromUserUsername;
@@ -41,6 +53,11 @@ public class ChatMessage {
         this.content = content;
         this.sentAt = sentAt;
         this.type = type;
+        this.deleted = deleted;
+        this.replyToMessageId = replyToMessageId;
+        this.edited = edited;
+        this.editedAt = editedAt;
+        this.visibleTo = visibleTo;
     }
 
     public UUID getId() {
@@ -105,5 +122,45 @@ public class ChatMessage {
 
     public void setType(MessageType type) {
         this.type = type;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public UUID getReplyToMessageId() {
+        return replyToMessageId;
+    }
+
+    public void setReplyToMessageId(UUID replyToMessageId) {
+        this.replyToMessageId = replyToMessageId;
+    }
+
+    public boolean isEdited() {
+        return edited;
+    }
+
+    public void setEdited(boolean edited) {
+        this.edited = edited;
+    }
+
+    public Instant getEditedAt() {
+        return editedAt;
+    }
+
+    public void setEditedAt(Instant editedAt) {
+        this.editedAt = editedAt;
+    }
+
+    public Set<String> getVisibleTo() {
+        return visibleTo;
+    }
+
+    public void setVisibleTo(Set<String> visibleTo) {
+        this.visibleTo = visibleTo;
     }
 }

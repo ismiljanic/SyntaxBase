@@ -3,11 +3,15 @@ package microservice_chat.services;
 import jakarta.transaction.Transactional;
 import microservice_chat.dao.ChatMessageRepository;
 import microservice_chat.domain.ChatMessage;
-import microservice_chat.dto.ChatMessageDTO;
 import microservice_chat.dto.ChatSummaryDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import shared.dto.ChatMessageDTO;
 
+import java.nio.file.AccessDeniedException;
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class ChatMessageService {
+    private static final Logger logger = LoggerFactory.getLogger(ChatMessageService.class);
 
     private final ChatMessageRepository repository;
     private final KafkaTemplate<String, ChatMessageDTO> kafkaTemplate;
@@ -35,16 +40,35 @@ public class ChatMessageService {
         entity.setToUserUsername(dto.getToUserUsername());
         entity.setContent(dto.getContent());
         entity.setSentAt(dto.getSentAt());
+        entity.getVisibleTo().add(dto.getFromUserId());
+        entity.getVisibleTo().add(dto.getToUserId());
+        entity.setReplyToMessageId(dto.getReplyToMessageId());
 
         repository.save(entity);
 
-        kafkaTemplate.send("chat.messages", dto.getToUserId(), dto);
+        ChatMessageDTO dtoOut = getChatMessageDTO(entity);
+
+        kafkaTemplate.send("chat.messages", dtoOut.getToUserId(), dtoOut);
+    }
+
+    private static ChatMessageDTO getChatMessageDTO(ChatMessage entity) {
+        ChatMessageDTO dtoOut = new ChatMessageDTO();
+        dtoOut.setId(entity.getId());
+        dtoOut.setFromUserId(entity.getFromUserId());
+        dtoOut.setFromUserUsername(entity.getFromUserUsername());
+        dtoOut.setToUserId(entity.getToUserId());
+        dtoOut.setToUserUsername(entity.getToUserUsername());
+        dtoOut.setContent(entity.getContent());
+        dtoOut.setSentAt(entity.getSentAt());
+        dtoOut.setDeleted(entity.isDeleted());
+        dtoOut.setReplyToMessageId(entity.getReplyToMessageId());
+        dtoOut.setEdited(entity.isEdited());
+        dtoOut.setEditedAt(entity.getEditedAt());
+        return dtoOut;
     }
 
     public List<ChatMessageDTO> getMessagesBetween(String user1, String user2) {
-        List<ChatMessage> messages = repository.findByFromUserIdAndToUserIdOrFromUserIdAndToUserId(
-                user1, user2, user2, user1
-        );
+        List<ChatMessage> messages = repository.findVisibleMessagesBetween(user1, user2);
 
         messages.sort((m1, m2) -> m1.getSentAt().compareTo(m2.getSentAt()));
 
@@ -58,31 +82,97 @@ public class ChatMessageService {
             dto.setContent(m.getContent());
             dto.setSentAt(m.getSentAt());
             dto.setType(m.getType());
+            dto.setReplyToMessageId(m.getReplyToMessageId());
             return dto;
         }).collect(Collectors.toList());
     }
 
     public List<ChatSummaryDTO> getChatSummariesForUser(String userId) {
-        List<ChatMessage> allMessages = repository.findAllMessagesForUser(userId);
-        Map<String, ChatMessage> lastMessagePerUser = new LinkedHashMap<>();
+        List<ChatMessage> allMessages = repository.findAllVisibleMessagesForUser(userId);
+
+        Map<String, ChatMessage> lastMessagePerContact = new LinkedHashMap<>();
 
         for (ChatMessage msg : allMessages) {
+            if (msg.isDeleted()) continue;
+
             String otherUserId = msg.getFromUserId().equals(userId) ? msg.getToUserId() : msg.getFromUserId();
-            if (!lastMessagePerUser.containsKey(otherUserId)) {
-                lastMessagePerUser.put(otherUserId, msg);
+
+            ChatMessage existing = lastMessagePerContact.get(otherUserId);
+            if (existing == null || msg.getSentAt().isAfter(existing.getSentAt())) {
+                lastMessagePerContact.put(otherUserId, msg);
             }
         }
 
-        return lastMessagePerUser.entrySet().stream()
+        return lastMessagePerContact.entrySet().stream()
                 .map(entry -> {
                     ChatMessage lastMsg = entry.getValue();
+                    String otherUserId = entry.getKey();
+                    String otherUsername = lastMsg.getFromUserId().equals(userId)
+                            ? lastMsg.getToUserUsername()
+                            : lastMsg.getFromUserUsername();
+
                     return new ChatSummaryDTO(
-                            entry.getKey(),
-                            lastMsg.getToUserUsername(),
+                            otherUserId,
+                            otherUsername,
                             lastMsg.getContent(),
                             lastMsg.getSentAt()
                     );
                 })
                 .toList();
+    }
+
+    @Transactional
+    public void removeContact(String currentUserId, String otherUserId) {
+        logger.info("Remove contact hit");
+        List<ChatMessage> messages = repository.findVisibleMessagesBetween(currentUserId, otherUserId);
+        for (ChatMessage msg : messages) {
+            msg.getVisibleTo().remove(currentUserId);
+        }
+        logger.info("Removing messages successfully and saving messages {}", messages);
+        repository.saveAll(messages);
+    }
+
+    public void softDeleteMessage(String userId, UUID messageId) throws AccessDeniedException {
+        logger.info("Deleting messageId: {}", messageId);
+
+        ChatMessage message = repository.findById(messageId)
+                .orElseThrow(() -> new RuntimeException("Message not found"));
+        if (!message.getFromUserId().equals(userId)) {
+            throw new AccessDeniedException("Cannot delete others' messages");
+        }
+        message.setDeleted(true);
+        repository.save(message);
+
+        //To display deleted messages in real-time
+        ChatMessageDTO dto = new ChatMessageDTO();
+        dto.setId(message.getId());
+        dto.setFromUserId(message.getFromUserId());
+        dto.setToUserId(message.getToUserId());
+        dto.setDeleted(true);
+        kafkaTemplate.send("chat.messages", dto.getToUserId(), dto);
+        kafkaTemplate.send("chat.messages", dto.getFromUserId(), dto);
+    }
+
+    @Transactional
+    public ChatMessageDTO editMessage(String userId, UUID messageId, String newContent) throws AccessDeniedException {
+        ChatMessage message = repository.findById(messageId)
+                .orElseThrow(() -> new RuntimeException("Message not found"));
+
+        if (!message.getFromUserId().equals(userId)) {
+            throw new AccessDeniedException("Cannot edit others' messages");
+        }
+
+        message.setContent(newContent);
+        message.setEdited(true);
+        message.setEditedAt(Instant.now());
+        repository.save(message);
+
+        logger.info("Saved edited message to repository");
+        ChatMessageDTO dto = getChatMessageDTO(message);
+        kafkaTemplate.send("chat.messages", dto.getToUserId(), dto);
+        kafkaTemplate.send("chat.messages", dto.getFromUserId(), dto);
+
+        logger.info("Successfully sent edited message in real-time to both users");
+        return dto;
     }
 }

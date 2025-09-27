@@ -1,4 +1,4 @@
-package microservice_chat.dto;
+package shared.dto;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -12,6 +12,10 @@ public class ChatMessageDTO {
     private String content;
     private Instant sentAt;
     private MessageType type;
+    private boolean deleted;
+    private UUID replyToMessageId;
+    private boolean edited;
+    private Instant editedAt;
 
     public ChatMessageDTO() {
     }
@@ -78,5 +82,37 @@ public class ChatMessageDTO {
 
     public void setType(MessageType type) {
         this.type = type;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public UUID getReplyToMessageId() {
+        return replyToMessageId;
+    }
+
+    public void setReplyToMessageId(UUID replyToMessageId) {
+        this.replyToMessageId = replyToMessageId;
+    }
+
+    public boolean isEdited() {
+        return edited;
+    }
+
+    public void setEdited(boolean edited) {
+        this.edited = edited;
+    }
+
+    public Instant getEditedAt() {
+        return editedAt;
+    }
+
+    public void setEditedAt(Instant editedAt) {
+        this.editedAt = editedAt;
     }
 }

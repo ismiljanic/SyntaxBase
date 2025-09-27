@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import shared.dto.ChatMessageDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -75,5 +76,27 @@ public class NotificationServiceImpl implements NotificationService {
         } else {
             logger.warn("Email or replier username is null, skipping email send.");
         }
+    }
+
+    @Override
+    public void createNotificationFromChatMessage(ChatMessageDTO event) {
+        if (event.getToUserId() == null) {
+            logger.warn("Skipping chat message notification: missing recipient user ID");
+            return;
+        }
+
+        Notification n = new Notification();
+        n.setUserId(event.getToUserId());
+        n.setChatMessageId(event.getId());
+        n.setMessage(event.getContent());
+        n.setCreatedAt(Date.from(event.getSentAt()));
+        n.setRead(false);
+
+        Notification saved = notificationRepository.save(n);
+
+        NotificationDTO dto = NotificationDTO.fromEntity(saved);
+        messagingTemplate.convertAndSend("/topic/notifications/" + dto.getUserId(), dto);
+
+        logger.info("Created chat notification for user {} from message {}", event.getToUserId(), event.getId());
     }
 }

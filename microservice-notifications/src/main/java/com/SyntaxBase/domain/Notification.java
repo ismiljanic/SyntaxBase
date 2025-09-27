@@ -3,6 +3,7 @@ package com.SyntaxBase.domain;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 public class Notification {
@@ -16,6 +17,7 @@ public class Notification {
     private String message;
     private boolean isRead;
     private Date createdAt;
+    private UUID chatMessageId;
 
     public Integer getId() {
         return id;
@@ -71,5 +73,13 @@ public class Notification {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public UUID getChatMessageId() {
+        return chatMessageId;
+    }
+
+    public void setChatMessageId(UUID chatMessageId) {
+        this.chatMessageId = chatMessageId;
     }
 }
