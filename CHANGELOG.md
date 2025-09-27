@@ -2,6 +2,67 @@
 
 All notable changes to this project will be documented in this file
 
+---
+
+## [2.2.0] - 2025-09-27
+
+This release introduces a fully-featured real-time chat system, allowing users to share experiences, ask each other for help, or casually chat with each other.
+
+Alongside this feature, the platform has been refined with new **UI/UX improvements, bug fixes, and performance optimizations**.
+
+---
+
+### Added
+- Live messaging via chat
+  - Messages sorted chronologically
+  - Option to delete messages
+  - Reply feature for chat messages
+  - Edit feature for chat messages
+  - Option to remove users from contact list
+- User Profile Page enhancements
+  - View personal profile and profiles of other users
+  - Display available certificates
+  - Badge awards for course completion and forum activity
+
+---
+
+### Improvements
+- Enhanced chat UI for better user experience
+- Contact sidebar displays last non-deleted message with each contact
+- Improved certificate generation and storage process
+- Restricted certificate access to authenticated users only
+- Further functionality optimizations across the platform
+- Minor UI tweaks for better **usability and consistency**
+- Error logging for Kafka and WebSocket connections
+- Updated `FEATURES_OVERVIEW.md` and `README.md`
+
+---
+
+### Fixed
+- Message sending and receiving bugs in chat
+- Import issues and TypeScript configuration in frontend
+- Docker/PostgreSQL issues, including `spring.jpa.hibernate.ddl-auto=update`
+- CORS preflight and frontend fetch errors
+
+---
+
+### Other
+- Added jUnit tests for backend and microservices
+- Included final project submodule changes for Advanced Web Course
+- Removed sensitive and unnecessary information
+
+---
+
+## Release Links
+- [Changelog](https://github.com/ismiljanic/SyntaxBase/blob/main/CHANGELOG.md)
+- [v2.2.0 Tag](https://github.com/ismiljanic/SyntaxBase/tree/v2.2.0)
+- [Compare with v2.1.0](https://github.com/ismiljanic/SyntaxBase/compare/v2.1.0...v2.2.0)
+
+
+[2.2.0]: https://github.com/ismiljanic/SyntaxBase/tree/v2.2.0
+
+---
+
 ## [2.1.0] - 2025-08-16
 
 ### Added
