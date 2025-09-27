@@ -3,7 +3,6 @@ package programming.tutorial.services;
 import org.springframework.stereotype.Service;
 import programming.tutorial.domain.*;
 
-@Service
 public interface InviteService {
 
     InviteResponse acceptInvite(String token, String username);

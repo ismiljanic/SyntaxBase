@@ -7,6 +7,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import AnimatedCounter from './AnimatedCounter';
 import AnimatedProgressBar from './AnimatedProgressBar';
 import LoadingScreen from './LoadingScreen';
+import { profile } from 'console';
 
 interface Course {
     courseId: number;
@@ -29,14 +30,23 @@ interface Progress {
 }
 
 interface CoursesListProps {
-    userId?: string;
+    profileUserId: string | null;
+    currentUserId: string | null;
     courses?: Course[];
     title?: string;
     role?: string;
     isCreatorList?: boolean;
 }
 
-const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses, title = "My courses", role, isCreatorList }) => {
+//TODO: Map course IDs to their respective enrollment pages on course addition
+const enrollmentPages: { [courseId: number]: string } = {
+    1: "/beginnerWebCourse",
+    2: "/intermediateWebCourse",
+    3: "/advancedWebCourse",
+};
+
+
+const CoursesList: React.FC<CoursesListProps> = ({ profileUserId, currentUserId, courses: propCourses, title = "My courses", role, isCreatorList }) => {
     const { getAccessTokenSilently } = useAuth0();
     const [courses, setCourses] = useState<Course[]>(propCourses || []);
     const [progressData, setProgressData] = useState<{ [key: number]: Progress }>({});
@@ -47,7 +57,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
     const [hoveredRating, setHoveredRating] = useState(0);
     const [deletingCourseId, setDeletingCourseId] = useState<number | null>(null);
     const [modalMessage, setModalMessage] = useState<string | null>(null);
-
+    const userId = currentUserId;
 
     useEffect(() => {
         if (propCourses) {
@@ -67,33 +77,42 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
             try {
                 setLoading(true);
                 const token = await getAccessTokenSilently();
-                const encodedUserId = encodeURIComponent(userId);
+                const encodedProfileUserId = encodeURIComponent(profileUserId || userId);
 
                 const coursesResponse = await axios.get<Course[]>(
-                    `http://localhost:8080/api/user-courses/user/${encodedUserId}`,
+                    `http://localhost:8080/api/user-courses/user/${encodedProfileUserId}`,
                     {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
+                        headers: { Authorization: `Bearer ${token}` },
                         withCredentials: true,
                     }
                 );
+
                 setCourses(coursesResponse.data);
+
                 const progressResponses = await Promise.all(
-                    coursesResponse.data.map(course =>
-                        axios.get<Progress>(
-                            `http://localhost:8080/api/progress/progressBar`,
-                            {
-                                params: { userId, courseId: course.courseId },
-                                headers: { Authorization: `Bearer ${token}` },
-                                withCredentials: true,
+                    coursesResponse.data.map(async (course) => {
+                        try {
+                            const res = await axios.get<Progress>(
+                                `http://localhost:8080/api/progress/progressBar`,
+                                {
+                                    params: { userId, courseId: course.courseId },
+                                    headers: { Authorization: `Bearer ${token}` },
+                                    withCredentials: true,
+                                }
+                            );
+                            return { courseId: course.courseId, progress: res.data };
+                        } catch (err: any) {
+                            if (err.response?.status === 403 || err.response?.status === 404) {
+                                return { courseId: course.courseId, progress: null };
+                            } else {
+                                throw err;
                             }
-                        )
-                    )
+                        }
+                    })
                 );
-                const progressDataMap = progressResponses.reduce((acc, response, index) => {
-                    const courseId = coursesResponse.data[index].courseId;
-                    acc[courseId] = response.data;
+
+                const progressDataMap = progressResponses.reduce((acc, item) => {
+                    if (item.progress) acc[item.courseId] = item.progress;
                     return acc;
                 }, {} as { [key: number]: Progress });
 
@@ -112,7 +131,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
         };
 
         fetchCoursesAndProgress();
-    }, [userId, propCourses, getAccessTokenSilently]);
+    }, [userId, profileUserId, propCourses, getAccessTokenSilently]);
 
     useEffect(() => {
         const fetchRatings = async () => {
@@ -145,39 +164,41 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
 
     const handleCourseClick = async (course: Course) => {
         if (!userId) return;
+
         try {
             const token = await getAccessTokenSilently();
+
+            const res = await axios.get(
+                `http://localhost:8080/api/progress/progressBar`,
+                {
+                    params: { userId, courseId: course.courseId },
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+
+            const lessonNumber = res.data?.lessonNumber || 1;
+
             if (course.systemCourse) {
-                const res = await axios.get(
-                    `http://localhost:8080/api/progress/current-lesson`,
-                    {
-                        params: { courseId: course.courseId, userId },
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
-                const lessonNumber = res.data?.lessonNumber || 1;
                 navigate(`/course/${course.courseId}/lesson/${lessonNumber}`);
             } else {
-                const res = await axios.get(
-                    `http://localhost:8080/api/progress/lessons/first`,
-                    {
-                        params: { courseId: course.courseId },
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
-                const lessonNumber = res.data?.lessonNumber || 1;
                 navigate(`/dynamic-course/${course.courseId}/lesson/${lessonNumber}`);
             }
-        } catch (err) {
-            console.error("Error fetching lesson info:", err);
-            if (course.systemCourse) {
-                navigate(`/course/${course.courseId}/lesson/1`);
+        } catch (err: any) {
+            if (err.response?.status === 403 || err.response?.status === 404) {
+                const enrollmentPage = enrollmentPages[course.courseId];
+                if (enrollmentPage) {
+                    navigate(enrollmentPage);
+                } else {
+                    console.warn(
+                        `No enrollment page mapped for course "${course.courseName}" (id: ${course.courseId})`
+                    );
+                    navigate("/courses");
+                }
             } else {
-                navigate(`/dynamic-course/${course.courseId}/lesson/1`);
+                console.error("Error fetching lesson info:", err);
             }
         }
     };
-
 
     const handleRating = async (index: number, courseId: number) => {
         if (!userId) return;
@@ -229,7 +250,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
     }
 
     const handleDeleteCourse = async (courseId: number) => {
-        if (!userId) return;
+        if (!currentUserId) return;
 
         const confirmDelete = window.confirm("Are you sure you want to delete this course? This action cannot be undone.");
         if (!confirmDelete) return;
@@ -262,7 +283,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
                     backgroundColor: 'rgb(247, 250, 251)',
                     paddingLeft: '41em',
                     fontSize: '1.5em',
-                    paddingBottom: '10em',
+                    // paddingBottom: '10em',
                     paddingTop: '4em',
                 }}
             >
@@ -272,7 +293,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
     }
 
     return (
-        <div className="bigDaddyContainer" style={{ paddingTop: '13em' }}>
+        <div className="bigDaddyContainer" style={{ paddingTop: '16em' }}>
             <div className={`container2 ${isCreatorList ? 'creator-margin' : ''}`}>
                 <div className="container2">
                     <div className="webCourseDiv3">{title}</div>
@@ -300,7 +321,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ userId, courses: propCourses,
                         </div>
 
                         <div className="rightSide">
-                            {!isCreatorList && course.creatorId !== userId && (
+                            {!isCreatorList && course.creatorId !== currentUserId && (
                                 <div className="progress-section2">
                                     <h2>Your Progress</h2>
                                     <AnimatedProgressBar progress={progressData[course.courseId]?.progress || 0} />

@@ -19,11 +19,11 @@ import axios from "axios";
 
 
 interface Course {
-  id: string | number;
-  title: string;
-  description: string;
-  imageUrl?: string;
-  instructorName?: string;
+    id: string | number;
+    title: string;
+    description: string;
+    imageUrl?: string;
+    instructorName?: string;
 }
 
 export function Courses() {
@@ -78,9 +78,9 @@ export function Courses() {
 
     return (
         <div>
-            <Header bgColor="rgb(247, 250, 251)"></Header>
-            <div className={`featureDiv2 feature2 ${featureDiv2Visible2 ? 'slide-in' : ''}`}>
-                <header className="featureHeader2">COURSES</header>
+            <div className={`featureDiv2`} style={{paddingTop: '0em'}}>
+                <Header bgColor="rgb(247, 250, 251)"></Header>
+                <header className="featureHeader2" style={{marginTop: '2em'}}>COURSES</header>
                 <div className="offerDiv2" style={{ paddingTop: '3em', marginBottom: '-5em' }}>
                     WEB DEVELOPMENT
                 </div>

@@ -3,6 +3,7 @@ package programming.tutorial.dao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import programming.tutorial.domain.User;
 import programming.tutorial.domain.UserCourse;
 import programming.tutorial.dto.CourseCompletionDTO;
 import programming.tutorial.dto.UserCourseDTO;
@@ -32,4 +33,6 @@ public interface UserCourseRepository extends JpaRepository<UserCourse, Integer>
                 ORDER BY c.courseName
             """)
     List<CourseCompletionDTO> findCourseCompletionRates();
+
+    int countByUserAndCompletedTrue(User user);
 }

@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 
-@Service
 public interface UserService {
 
     ResponseEntity<?> addUser(UserDTO userDTO);
@@ -59,4 +58,6 @@ public interface UserService {
     void removeUserFromCourse(String userId, Integer courseId);
 
     boolean getUserActiveStatus(String auth0UserId);
+
+    UserProfileDTO getUserProfile(String username);
 }

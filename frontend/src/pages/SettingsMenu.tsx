@@ -3,17 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/SettingsMenu.css';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useNotificationSocket } from '../services/notificationSocket';
 
 type SettingsMenuProps = {
     role: string;
-    unreadCount: number;
 };
 
 export function SettingsMenu({ role }: SettingsMenuProps) {
     const [menuOpen, setMenuOpen] = useState(false);
     const navigate = useNavigate();
-    const [unreadCount, setUnreadCount] = useState(0); //notifications number
-    const { getAccessTokenSilently, logout, user } = useAuth0();
+    const [unreadCount, setUnreadCount] = useState(0);
+    const { getAccessTokenSilently, logout, user, isAuthenticated } = useAuth0();
     const auth0UserId = user?.sub;
 
     const handleMenuToggle = () => setMenuOpen(prev => !prev);
@@ -24,9 +24,7 @@ export function SettingsMenu({ role }: SettingsMenuProps) {
             try {
                 const token = await getAccessTokenSilently();
                 const res = await axios.get('http://localhost:8090/api/notifications', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                    headers: { Authorization: `Bearer ${token}` },
                     withCredentials: true,
                 });
                 const unread = res.data.filter((n: any) => !n.read);
@@ -36,8 +34,16 @@ export function SettingsMenu({ role }: SettingsMenuProps) {
             }
         };
 
-        fetchUnreadNotifications();
-    }, [auth0UserId, getAccessTokenSilently]);
+        if (isAuthenticated) fetchUnreadNotifications();
+    }, [auth0UserId, getAccessTokenSilently, isAuthenticated]);
+
+    useNotificationSocket((payload: { unreadCount?: number }) => {
+        if (payload.unreadCount !== undefined) {
+            setUnreadCount(payload.unreadCount);
+        } else {
+            setUnreadCount(prev => prev + 1);
+        }
+    });
 
     const handleLogout = async () => {
         try {
@@ -53,37 +59,21 @@ export function SettingsMenu({ role }: SettingsMenuProps) {
         }
     };
 
-    const handleChangePersonalInfo = () => {
-        if (auth0UserId) {
-            navigate(`/change-personal-info/${auth0UserId}`);
-        } else {
-            console.error('User ID not found');
-        }
-    };
+    const handleChangePersonalInfo = () => auth0UserId
+        ? navigate(`/change-personal-info/${auth0UserId}`)
+        : console.error('User ID not found');
 
-    const handleContact = () => {
-        if (auth0UserId) {
-            navigate(`/contact/${auth0UserId}`);
-        } else {
-            navigate('/contact');
-        }
-    };
+    const handleContact = () => auth0UserId
+        ? navigate(`/contact/${auth0UserId}`)
+        : navigate('/contact');
 
-    const handleAccountInformation = () => {
-        if (auth0UserId) {
-            navigate(`/accountInformation/${auth0UserId}`);
-        } else {
-            console.error('User ID not found');
-        }
-    };
+    const handleAccountInformation = () => auth0UserId
+        ? navigate(`/accountInformation/${auth0UserId}`)
+        : console.error('User ID not found');
 
-    const handleNotifications = () => {
-        if (auth0UserId) {
-            navigate(`/notifications/${auth0UserId}`);
-        } else {
-            console.error('User ID not auth0UserId');
-        }
-    };
+    const handleNotifications = () => auth0UserId
+        ? navigate(`/notifications/${auth0UserId}`)
+        : console.error('User ID not auth0UserId');
 
     return (
         <div className={`settings-menu ${role === 'ADMIN' ? 'admin-menu' : 'user-menu'}`}>
@@ -92,7 +82,12 @@ export function SettingsMenu({ role }: SettingsMenuProps) {
                 <div className="line"></div>
                 <div className="line"></div>
                 {unreadCount > 0 && (
-                    <span className="settings-badge" onClick={() => navigate(`/notifications/${auth0UserId}`)}>{unreadCount}</span>
+                    <span
+                        className="settings-badge"
+                        onClick={() => navigate(`/notifications/${auth0UserId}`)}
+                    >
+                        {unreadCount}
+                    </span>
                 )}
             </button>
             <div className={`settings-dropdown ${menuOpen ? 'show' : ''}`}>
@@ -104,9 +99,9 @@ export function SettingsMenu({ role }: SettingsMenuProps) {
                     </>
                 ) : (
                     <>
-                        <button onClick={() => navigate(`/accountInformation/${auth0UserId}`)}>Account Information</button>
-                        <button onClick={() => navigate(`/change-personal-info/${auth0UserId}`)}>Change Personal Information</button>
-                        <button onClick={() => navigate(`/contact/${auth0UserId}`)}>Contact Us</button>
+                        <button onClick={handleAccountInformation}>Account Information</button>
+                        <button onClick={handleChangePersonalInfo}>Change Personal Information</button>
+                        <button onClick={handleContact}>Contact Us</button>
                         <button onClick={handleNotifications} className="notif-button">
                             New Messages
                             {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}

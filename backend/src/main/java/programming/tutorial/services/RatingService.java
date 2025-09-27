@@ -6,7 +6,6 @@ import programming.tutorial.dto.RatingDTO;
 
 import java.util.List;
 
-@Service
 public interface RatingService {
     Rating getRating(Long courseId);
     Rating saveRating(Rating rating);

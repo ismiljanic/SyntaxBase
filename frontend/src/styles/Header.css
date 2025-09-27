@@ -4,9 +4,10 @@
     align-items: center;
     padding: 0 1em;
     opacity: 0;
-    transform: translateY(-50px); 
+    transform: translateY(-50px);
     transition: opacity 0.4s ease, transform 0.4s ease;
-    position: relative; 
+    position: relative;
+    z-index: 2000;
 }
 
 .header-visible {
@@ -16,7 +17,7 @@
 
 .header-hidden {
     opacity: 0;
-    transform: translateY(-50px); 
+    transform: translateY(-50px);
 }
 
 .header-expanded {
@@ -126,13 +127,13 @@ a {
 }
 
 .divni2.logged-in {
-  display: flex;
-  margin-left: 20em;
-  margin-right: 29em;
+    display: flex;
+    margin-left: 20em;
+    margin-right: 29em;
 }
 
 .divni2.logged-out {
-  display: flex;
+    display: flex;
 }
 
 .header.logged-out .divni2 {
@@ -210,6 +211,7 @@ a {
     border-radius: 8px;
     margin-left: 5em;
 }
+
 .arrow {
     margin-left: 8px;
     display: inline-block;

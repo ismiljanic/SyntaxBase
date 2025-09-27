@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import programming.tutorial.dao.*;
 import programming.tutorial.domain.*;
 import programming.tutorial.dto.*;
+import programming.tutorial.services.BadgeService;
 import programming.tutorial.services.PostService;
+import programming.tutorial.services.UserCourseService;
 import programming.tutorial.services.UserService;
 
 import java.time.LocalDateTime;
@@ -45,7 +47,14 @@ public class UserServiceJpa implements UserService {
     private UserProgressRepository userProgressRepository;
     @Autowired
     private LessonFeedbackRepository lessonFeedbackRepository;
-
+    @Autowired
+    private CertificateRepository certificateRepository;
+    @Autowired
+    private UserBadgeRepository userBadgeRepository;
+    @Autowired
+    private BadgeService badgeService;
+    @Autowired
+    private UserCourseService courseService;
 
     @Override
     public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO) {
@@ -276,6 +285,29 @@ public class UserServiceJpa implements UserService {
                         user.getUsername(), post.getCreatedAt(), post.isDeleted()))
                 .collect(Collectors.toList());
 
+        List<CertificateDTO> certificates = certificateRepository.findByUser_Auth0UserId(auth0UserId)
+                .stream()
+                .map(c -> new CertificateDTO(c.getId(), c.getCourse().getCourseName(), c.getIssuedAt(), c.getFileUrl()))
+                .collect(Collectors.toList());
+
+        List<UserBadgeDTO> badges = userBadgeRepository.findByUser(user)
+                .stream()
+                .map(ub -> new UserBadgeDTO(
+                        ub.getId(),
+                        new BadgeDTO(
+                                ub.getBadge().getId(),
+                                ub.getBadge().getName(),
+                                ub.getBadge().getDescription(),
+                                ub.getBadge().getType(),
+                                ub.getBadge().getCriteria(),
+                                ub.getBadge().isPermanent()
+                        ),
+                        ub.getAwardedAt(),
+                        ub.isRevoked(),
+                        ub.getProgress()
+                ))
+                .collect(Collectors.toList());
+
         UserAccountDTO userAccountDTO = new UserAccountDTO();
         userAccountDTO.setName(user.getName());
         userAccountDTO.setSurname(user.getSurname());
@@ -285,6 +317,9 @@ public class UserServiceJpa implements UserService {
         userAccountDTO.setDeletedPosts(deletedPosts);
         userAccountDTO.setRole(user.getRole());
         userAccountDTO.setTier(user.getTier());
+        userAccountDTO.setCertificates(certificates);
+        userAccountDTO.setBadges(badges);
+
         return userAccountDTO;
     }
 
@@ -387,4 +422,20 @@ public class UserServiceJpa implements UserService {
                 });
     }
 
+    public UserProfileDTO getUserProfile(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UserNotFoundException(username);
+        }
+
+        List<UserBadgeDTO> badges = badgeService.getUserBadgesByUserId(user.getAuth0UserId());
+        List<CourseDTO> courses = courseService.getCoursesByUserId(user.getAuth0UserId());
+        List<PostDTO> posts = postRepository.findByUserId(user.getAuth0UserId())
+                .stream()
+                .map(post -> new PostDTO(post.getId(), post.getContent(), post.getUserId(),
+                        user.getUsername(), post.getCreatedAt(), post.isDeleted()))
+                .toList();
+
+        return new UserProfileDTO(user, badges, courses, posts);
+    }
 }

@@ -15,6 +15,7 @@ services:
   kafka:
     image: bitnami/kafka:latest
     environment:
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
       - KAFKA_CFG_PROCESS_ROLES=broker,controller
       - KAFKA_CFG_NODE_ID=1
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
@@ -29,6 +30,21 @@ services:
       - "9092:9092"
     volumes:
       - kafka-data:/bitnami/kafka
+
+  microservice-chat:
+    build:
+      context: ./microservice-chat
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+      - kafka
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL_CHAT}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    ports:
+      - "8100:8100"
 
   backend:
     build: ./backend

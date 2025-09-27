@@ -18,6 +18,8 @@ import programming.tutorial.dao.PostRepository;
 import programming.tutorial.dao.UserRepository;
 import programming.tutorial.domain.*;
 import programming.tutorial.dto.*;
+import programming.tutorial.services.BadgeService;
+import programming.tutorial.services.InstructorRequestService;
 import programming.tutorial.services.UserService;
 import programming.tutorial.services.impl.InstructorRequestServiceJpa;
 import programming.tutorial.services.impl.UserServiceJpa;
@@ -34,9 +36,11 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class UserController {
     @Autowired
-    private UserServiceJpa userService;
+    private UserService userService;
     @Autowired
-    private InstructorRequestServiceJpa instructorRequestServiceJpa;
+    private InstructorRequestService instructorRequestService;
+    @Autowired
+    private BadgeService badgeService;
 
     @GetMapping("/userInformation")
     public User getUserInformation(HttpServletRequest request) {
@@ -184,7 +188,7 @@ public class UserController {
 
     @PostMapping("/request-instructor")
     public ResponseEntity<?> requestInstructorRole(@RequestBody InstructorRequestDTO dto, Principal principal) {
-        return instructorRequestServiceJpa.submitInstructorRequest(dto, principal.getName());
+        return instructorRequestService.submitInstructorRequest(dto, principal.getName());
     }
 
     @GetMapping("/role/{auth0UserId}")
@@ -226,4 +230,18 @@ public class UserController {
         return ResponseEntity.ok(Map.of("active", isActive));
     }
 
+    @GetMapping("/badges")
+    public List<UserBadge> getUserBadges(@AuthenticationPrincipal Jwt jwt) {
+        return badgeService.getUserBadges(jwt.getSubject());
+    }
+
+    @GetMapping("/{userId}/badges")
+    public List<UserBadgeDTO> getUserBadgesByUserId(@PathVariable String userId) {
+        return badgeService.getUserBadgesByUserId(userId);
+    }
+
+    @GetMapping("/{username}/profile")
+    public UserProfileDTO getUserProfile(@PathVariable String username) {
+        return userService.getUserProfile(username);
+    }
 }

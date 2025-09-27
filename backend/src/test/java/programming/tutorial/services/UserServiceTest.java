@@ -26,6 +26,8 @@ public class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private UserBadgeRepository userBadgeRepository;
     @InjectMocks
     private UserServiceJpa userServiceJpa;
     @Mock
@@ -39,7 +41,15 @@ public class UserServiceTest {
     @Mock
     private InstructorRequestRepository instructorRequestRepository;
     @Mock
+    private CertificateRepository certificateRepository;
+    @Mock
     private EmailServiceJpa emailServiceJpa;
+    @Mock
+    private BadgeService badgeService;
+    @Mock
+    private UserCourseService courseService;
+    @InjectMocks
+    private UserServiceJpa userService;
 
     @Test
     void addUser_whenUsernameExists_shouldReturnBadRequest() {
@@ -391,12 +401,44 @@ public class UserServiceTest {
         user.setRole(Role.USER);
         user.setTier(Tier.FREE);
 
-        Post post1 = new Post(1, "Hello World", auth0Id, new Date(1970, 1, 1), null, null, false, "general", null);
-        Post post2 = new Post(2, "Deleted post", auth0Id, new Date(1970, 1, 1), null, null, true, "general", null);
+        Course course = new Course();
+        course.setId(1);
+        course.setCourseName("Some course");
+        course.setSystemCourse(true);
+
+        Post post1 = new Post(1, "Hello World", auth0Id,
+                new Date(70, 0, 1), null, null, false, "general", null);
+        Post post2 = new Post(2, "Deleted post", auth0Id,
+                new Date(70, 0, 1), null, null, true, "general", null);
+
+        Certificate certificate = new Certificate();
+        certificate.setId(UUID.randomUUID());
+        certificate.setUser(user);
+        certificate.setCourse(course);
+        certificate.setIssuedAt(LocalDateTime.of(2023, 8, 19, 10, 0));
+        certificate.setFileUrl("file.pdf");
+
+        Badge badge = new Badge();
+        badge.setId(UUID.randomUUID());
+        badge.setName("First Post");
+        badge.setDescription("Awarded for writing the first post");
+        badge.setType("ACHIEVEMENT");
+        badge.setCriteria("Write 1 post");
+        badge.setPermanent(true);
+
+        UserBadge userBadge = new UserBadge();
+        userBadge.setId(UUID.randomUUID());
+        userBadge.setBadge(badge);
+        userBadge.setUser(user);
+        userBadge.setAwardedAt(LocalDateTime.of(2023, 8, 20, 9, 0));
+        userBadge.setRevoked(false);
+        userBadge.setProgress("100");
 
         when(userRepository.findByAuth0UserId(auth0Id)).thenReturn(Optional.of(user));
         when(postRepository.findByUserId(auth0Id)).thenReturn(List.of(post1));
         when(postRepository.findDeletedPostsByUserId(auth0Id)).thenReturn(List.of(post2));
+        when(certificateRepository.findByUser_Auth0UserId(auth0Id)).thenReturn(List.of(certificate));
+        when(userBadgeRepository.findByUser(user)).thenReturn(List.of(userBadge));
 
         UserAccountDTO dto = userServiceJpa.getUserAccountInformation(auth0Id);
 
@@ -411,6 +453,13 @@ public class UserServiceTest {
 
         assertEquals(1, dto.getDeletedPosts().size());
         assertEquals(post2.getId(), dto.getDeletedPosts().get(0).getId());
+
+        assertEquals(1, dto.getCertificates().size());
+        assertEquals(course.getCourseName(), dto.getCertificates().get(0).getCourseName());
+
+        assertEquals(1, dto.getBadges().size());
+        assertEquals(badge.getName(), dto.getBadges().get(0).getBadge().getName());
+        assertEquals("100", dto.getBadges().get(0).getProgress());
     }
 
     @Test
@@ -625,5 +674,46 @@ public class UserServiceTest {
                 () -> userServiceJpa.updateUserRoles("missing", Role.INSTRUCTOR));
 
         assertEquals("User not found", exception.getMessage());
+    }
+
+    @Test
+    void testGetUserProfile_success() {
+        String username = "testuser";
+        User mockUser = new User();
+        mockUser.setId(1);
+        mockUser.setUsername(username);
+        mockUser.setAuth0UserId("auth0|12345");
+        mockUser.setDateCreated(LocalDateTime.now());
+
+        UserBadgeDTO badge = new UserBadgeDTO();
+        CourseDTO course = new CourseDTO();
+        PostDTO post = new PostDTO(1, "content", "auth0|12345", username, new Date(1970, 1, 1), false);
+
+        when(userRepository.findByUsername(username)).thenReturn(mockUser);
+        when(badgeService.getUserBadgesByUserId(mockUser.getAuth0UserId())).thenReturn(List.of(badge));
+        when(courseService.getCoursesByUserId(mockUser.getAuth0UserId())).thenReturn(List.of(course));
+        when(postRepository.findByUserId(mockUser.getAuth0UserId())).thenReturn(List.of(
+                new Post(1, "content", mockUser.getAuth0UserId(), new Date(1970, 1, 1), null, null, false, "category", null)
+        ));
+
+        UserProfileDTO result = userService.getUserProfile(username);
+
+        assertNotNull(result);
+        assertEquals(mockUser, result.getUser());
+        assertEquals(1, result.getBadges().size());
+        assertEquals(1, result.getCourses().size());
+        assertEquals(1, result.getPosts().size());
+    }
+
+    @Test
+    void testGetUserProfile_userNotFound() {
+        String username = "unknown";
+        when(userRepository.findByUsername(username)).thenReturn(null);
+
+        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> {
+            userService.getUserProfile(username);
+        });
+
+        assertEquals(username, exception.getMessage());
     }
 }

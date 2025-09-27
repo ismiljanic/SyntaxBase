@@ -8,7 +8,6 @@ import programming.tutorial.dto.NotificationDTO;
 
 import java.util.List;
 
-@Service
 public interface NotificationService {
     Notification markAsRead(Long id);
 

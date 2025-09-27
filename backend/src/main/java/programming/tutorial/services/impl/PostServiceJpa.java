@@ -5,14 +5,17 @@ import org.springframework.stereotype.Service;
 import programming.tutorial.dao.NotificationRepository;
 import programming.tutorial.dao.PostRepository;
 import programming.tutorial.dao.UserRepository;
+import programming.tutorial.domain.Badge;
 import programming.tutorial.domain.Post;
 import programming.tutorial.domain.Role;
 import programming.tutorial.domain.User;
 import programming.tutorial.dto.PostDTO;
 import programming.tutorial.dto.ReplyCreatedEventDTO;
+import programming.tutorial.services.BadgeService;
 import programming.tutorial.services.PostService;
 import programming.tutorial.services.ReplyEventProducer;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,9 +29,10 @@ public class PostServiceJpa implements PostService {
     private UserRepository userRepository;
     @Autowired
     private NotificationRepository notificationRepository;
-
     @Autowired
     private ReplyEventProducer replyEventProducer;
+    @Autowired
+    private BadgeService badgeService;
 
     @Override
     public List<PostDTO> getAllPosts() {
@@ -38,11 +42,13 @@ public class PostServiceJpa implements PostService {
                     User user = userRepository.findByAuth0UserId(post.getUserId()).orElse(null);
                     String username = user != null ? user.getUsername() : "Unknown User";
                     Role userRole = user != null ? user.getRole() : Role.USER;
+                    LocalDateTime userAccountDateCreatedAt = user != null ? user.getDateCreated() : LocalDateTime.now();
 
                     List<PostDTO> replies = postRepository.findAllByParentPostAndDeletedFalse(post).stream()
                             .map(reply -> {
                                 User replyUser = userRepository.findByAuth0UserId(reply.getUserId()).orElse(null);
                                 String replyUsername = replyUser != null ? replyUser.getUsername() : "Unknown User";
+                                LocalDateTime replyUserDateCreated = replyUser != null ? replyUser.getDateCreated() : LocalDateTime.now();
                                 Role replyUserRole = replyUser != null ? replyUser.getRole() : Role.USER;
                                 return new PostDTO(
                                         reply.getId(),
@@ -53,7 +59,8 @@ public class PostServiceJpa implements PostService {
                                         null,
                                         reply.getCategory(),
                                         replyUserRole,
-                                        reply.getUpdatedAt()
+                                        reply.getUpdatedAt(),
+                                        replyUserDateCreated
                                 );
                             }).collect(Collectors.toList());
 
@@ -66,7 +73,8 @@ public class PostServiceJpa implements PostService {
                             replies,
                             post.getCategory(),
                             userRole,
-                            post.getUpdatedAt()
+                            post.getUpdatedAt(),
+                            userAccountDateCreatedAt
                     );
                 })
                 .collect(Collectors.toList());
@@ -113,6 +121,10 @@ public class PostServiceJpa implements PostService {
             replyEventProducer.publishReplyCreatedEvent(event);
         }
 
+        int postsCount = postRepository.countByUserId(post.getUserId());
+
+        badgeService.awardForumActivityBadge(post.getUserId(), postsCount);
+
         return savedPost;
     }
 
@@ -146,11 +158,13 @@ public class PostServiceJpa implements PostService {
         User user = userRepository.findByAuth0UserId(post.getUserId()).orElse(null);
         String username = user != null ? user.getUsername() : "Unknown User";
         Role userRole = user != null ? user.getRole() : Role.USER;
+        LocalDateTime userAccountDateCreatedAt = user != null ? user.getDateCreated() : LocalDateTime.now();
 
         List<PostDTO> replies = postRepository.findAllByParentPost(post).stream()
                 .map(reply -> {
                     User replyUser = userRepository.findByAuth0UserId(reply.getUserId()).orElse(null);
                     String replyUsername = replyUser != null ? replyUser.getUsername() : "Unknown User";
+                    LocalDateTime replyUserDateCreated = replyUser != null ? replyUser.getDateCreated() : LocalDateTime.now();
                     Role replyUserRole = replyUser != null ? replyUser.getRole() : Role.USER;
                     return new PostDTO(
                             reply.getId(),
@@ -161,7 +175,8 @@ public class PostServiceJpa implements PostService {
                             null,
                             reply.getCategory(),
                             replyUserRole,
-                            reply.getUpdatedAt()
+                            reply.getUpdatedAt(),
+                            replyUserDateCreated
                     );
                 }).collect(Collectors.toList());
 
@@ -174,7 +189,8 @@ public class PostServiceJpa implements PostService {
                 replies,
                 post.getCategory(),
                 userRole,
-                post.getUpdatedAt()
+                post.getUpdatedAt(),
+                userAccountDateCreatedAt
         );
     }
 

@@ -20,13 +20,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import programming.tutorial.config.TestSecurityConfig;
 import programming.tutorial.domain.Tier;
 import programming.tutorial.domain.User;
+import programming.tutorial.domain.UserBadge;
 import programming.tutorial.dto.*;
+import programming.tutorial.services.BadgeService;
 import programming.tutorial.services.impl.InstructorRequestServiceJpa;
 import programming.tutorial.services.impl.UserServiceJpa;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
@@ -47,6 +48,10 @@ class UserControllerTest {
     private InstructorRequestServiceJpa instructorRequestServiceJpa;
     @Autowired
     private ObjectMapper objectMapper;
+    private List<UserBadge> userBadges;
+
+    @MockBean
+    private BadgeService badgeService;
 
     @Test
     @WithMockUser
@@ -475,5 +480,52 @@ class UserControllerTest {
         mockMvc.perform(get("/api/users/{auth0UserId}/status", auth0Id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.active").value(false));
+    }
+
+    @Test
+    @WithMockUser
+    void testGetUserBadges() throws Exception {
+        userBadges = List.of(
+                new UserBadge(null, null),
+                new UserBadge(null, null)
+        );
+        when(badgeService.getUserBadges("auth0|123")).thenReturn(userBadges);
+
+        mockMvc.perform(get("/api/users/badges")
+                        .with(jwt().jwt(jwt -> jwt.claim("sub", "auth0|123"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(userBadges.size()));
+    }
+
+    @Test
+    @WithMockUser
+    void testGetUserBadgesByUserId() throws Exception {
+        String userId = "123";
+        List<UserBadgeDTO> badges = Arrays.asList(
+                new UserBadgeDTO(UUID.randomUUID(), new BadgeDTO(), LocalDateTime.now(), false, "COURSE_COMPLETION"),
+                new UserBadgeDTO(UUID.randomUUID(), new BadgeDTO(), LocalDateTime.now(), false, "FORUM_ACTIVITY")
+                );
+
+        Mockito.when(badgeService.getUserBadgesByUserId(userId)).thenReturn(badges);
+
+        mockMvc.perform(get("/api/users/{userId}/badges", userId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(badges)));
+    }
+
+    @Test
+    @WithMockUser
+    void testGetUserProfile() throws Exception {
+        User user = new User();
+        user.setUsername("ivan");
+        UserProfileDTO profileDTO = new UserProfileDTO();
+        profileDTO.setUser(user);
+
+        Mockito.when(userService.getUserProfile(user.getUsername())).thenReturn(profileDTO);
+        mockMvc.perform(get("/api/users/{username}/profile", user.getUsername())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(profileDTO)));
     }
 }

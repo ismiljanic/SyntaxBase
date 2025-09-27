@@ -6,7 +6,6 @@ import programming.tutorial.dto.LessonDTO;
 
 import java.util.Optional;
 
-@Service
 public interface UserProgressService {
     Optional<LessonDTO> getCurrentLesson(String userId, Integer courseId);
 

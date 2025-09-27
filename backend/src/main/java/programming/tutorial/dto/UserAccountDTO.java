@@ -16,6 +16,9 @@ public class UserAccountDTO {
     private Role role;
     private boolean active;
     private Tier tier;
+    private List<CertificateDTO> certificates;
+    private List<UserBadgeDTO> badges;
+
     public UserAccountDTO() {
     }
 
@@ -97,6 +100,22 @@ public class UserAccountDTO {
 
     public void setTier(Tier tier) {
         this.tier = tier;
+    }
+
+    public List<CertificateDTO> getCertificates() {
+        return certificates;
+    }
+
+    public void setCertificates(List<CertificateDTO> certificates) {
+        this.certificates = certificates;
+    }
+
+    public List<UserBadgeDTO> getBadges() {
+        return badges;
+    }
+
+    public void setBadges(List<UserBadgeDTO> badges) {
+        this.badges = badges;
     }
 
     @Override

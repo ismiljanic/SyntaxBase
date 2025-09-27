@@ -3,6 +3,8 @@ package programming.tutorial.dto;
 import programming.tutorial.domain.Post;
 import programming.tutorial.domain.Role;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class PostDTO {
@@ -12,6 +14,7 @@ public class PostDTO {
     private String username;
     private Date createdAt;
     private Date updatedAt;
+    private LocalDateTime userAccountCreatedAt;
     private List<PostDTO> replies;
     private String category;
     private Role userRole;
@@ -21,7 +24,7 @@ public class PostDTO {
     public PostDTO() {
     }
 
-    public PostDTO(Integer id, String content, String userId, String username, Date createdAt, List<PostDTO> replies, String category, Role userRole, Date updatedAt) {
+    public PostDTO(Integer id, String content, String userId, String username, Date createdAt, List<PostDTO> replies, String category, Role userRole, Date updatedAt, LocalDateTime userAccountCreatedAt) {
         this.id = id;
         this.content = content;
         this.userId = userId;
@@ -31,6 +34,7 @@ public class PostDTO {
         this.category = category;
         this.userRole = userRole;
         this.updatedAt = updatedAt;
+        this.userAccountCreatedAt = userAccountCreatedAt;
     }
 
     public PostDTO(Integer id, String content, String userId, String username, Date createdAt, boolean deleted) {
@@ -138,5 +142,13 @@ public class PostDTO {
 
     public void setParentPost(PostDTO parentPost) {
         this.parentPost = parentPost;
+    }
+
+    public LocalDateTime getUserAccountCreatedAt() {
+        return userAccountCreatedAt;
+    }
+
+    public void setUserAccountCreatedAt(LocalDateTime userAccountCreatedAt) {
+        this.userAccountCreatedAt = userAccountCreatedAt;
     }
 }

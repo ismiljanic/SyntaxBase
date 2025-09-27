@@ -177,7 +177,133 @@
     justify-content: center;
     gap: 100px;
     white-space: nowrap;
+    position: relative;
 }
+
+.username-link {
+    color: #007bff;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.post-user-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.user-hover-card {
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: linear-gradient(180deg, #ffffff 0%, #f9f9f9 100%);
+    border: 1px solid #e0e0e0;
+    border-radius: 16px;
+    padding: 20px;
+    width: 400px;
+    min-height: 200px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    cursor: default;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-hover-card.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+}
+
+.user-hover-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.user-hover-card-header strong {
+    font-size: 1.1rem;
+    color: #222;
+}
+
+.user-stats {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+.user-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.user-badges .badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: #e0e0e0;
+    color: #333;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-hover-card .section {
+    padding: 12px 0;
+    border-bottom: 3px solid #007bff37;
+}
+
+.user-hover-card .section:last-child {
+    border-bottom: none;
+}
+
+
+.user-badges .badge:hover {
+    transform: scale(1.03);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Course completion badge color */
+.user-badges .badge.course_completion {
+    background-color: #ffd000;
+    color: #333;
+}
+
+/* Forum badge color */
+.user-badges .badge.forum_activity {
+    background-color: #e75eff;
+    color: whitesmoke;
+}
+
+.view-profile-link {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 0.875rem;
+    color: #1a73e8;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.view-profile-link:hover {
+    color: #063888;
+}
+
+.user-hover-card:hover {
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
+}
+
+.user-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 12px;
+}
+
 
 .post-header-right {
     flex: 1;
@@ -211,6 +337,7 @@
     opacity: 1;
     margin-right: 4em;
     text-align: justify;
+    transition: transform 0.3s ease;
 }
 
 .post-content.expanded {
@@ -219,21 +346,31 @@
 }
 
 .post {
-    background-color: #ffffff;
+    background-color: #fff;
     border-radius: 8px;
     margin-bottom: 15px;
     padding: 15px;
     margin-right: 1em;
-    transition: box-shadow 0.3s ease;
     cursor: pointer;
+    transition: padding 0.3s ease-in-out, 0.3s ease-in-out;
 }
 
 .post:hover {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.post.expanded:hover {
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+.post-replies {
+    transform-origin: top;
+    transform: scaleY(0);
+    transition: padding 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.post.expanded {
+    padding-bottom: 1.5em;
+}
+
+.post.expanded .post-replies {
+    transform: scaleY(1);
 }
 
 .word-count {
@@ -423,6 +560,26 @@ button.post-button:hover {
 .user-role-badge.admin {
     background-color: #d9534f;
 }
+
+.post-expandable {
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    padding-bottom: 0;
+}
+
+.post-expandable.expanded {
+    padding-bottom: 1em;
+}
+
+.post-replies {
+    transform-origin: top;
+    transform: scaleY(0);
+    transition: transform 0.4s ease;
+}
+
+.post-expandable.expanded .post-replies {
+    transform: scaleY(1);
+}
+
 
 .user-role-badge.instructor {
     background-color: #f29108;

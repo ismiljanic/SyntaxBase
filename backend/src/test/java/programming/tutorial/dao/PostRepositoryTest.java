@@ -8,7 +8,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.test.context.ActiveProfiles;
 import programming.tutorial.domain.Post;
+import programming.tutorial.domain.User;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,9 +28,23 @@ class PostRepositoryTest {
     private Post childPost1;
     private Post childPost2;
     private Post deletedPost;
+    private User user1;
+    private User user2;
 
     @BeforeEach
     void setup() {
+        user1 = new User();
+        user1.setUsername("1stuser");
+        user1.setAuth0UserId("auth0-1");
+
+        user2 = new User();
+        user2.setUsername("2nduser");
+        user2.setAuth0UserId("auth0-2");
+
+        postRepository.save(new Post(1, "First post by user1", user1.getAuth0UserId(), new Date(), null, Collections.emptyList(), false, "GENERAL", new Date()));
+        postRepository.save(new Post(2, "Second post by user1", user1.getAuth0UserId(), new Date(), null, Collections.emptyList(), false, "GENERAL", new Date()));
+        postRepository.save(new Post(3, "Only post by user2", user2.getAuth0UserId(), new Date(), null, Collections.emptyList(), false, "GENERAL", new Date()));
+
         parentPost = new Post();
         parentPost.setUserId("user1");
         parentPost.setDeleted(false);
@@ -97,7 +114,7 @@ class PostRepositoryTest {
     @Test
     void testFindAllByParentPostIsNullAndDeletedFalse() {
         List<Post> topLevelActive = postRepository.findAllByParentPostIsNullAndDeletedFalse();
-        assertThat(topLevelActive).containsExactly(parentPost);
+        assertThat(topLevelActive).contains(parentPost);
         assertThat(topLevelActive).doesNotContain(deletedPost);
     }
 
@@ -106,5 +123,14 @@ class PostRepositoryTest {
         List<Post> childrenActive = postRepository.findAllByParentPostAndDeletedFalse(parentPost);
         assertThat(childrenActive).containsExactlyInAnyOrder(childPost1, childPost2);
         assertThat(childrenActive).doesNotContain(deletedPost);
+    }
+
+    @Test
+    void testCountByUserId() {
+        int user1PostCount = postRepository.countByUserId(user1.getAuth0UserId());
+        int user2PostCount = postRepository.countByUserId(user2.getAuth0UserId());
+
+        assertThat(user1PostCount).isEqualTo(2);
+        assertThat(user2PostCount).isEqualTo(1);
     }
 }

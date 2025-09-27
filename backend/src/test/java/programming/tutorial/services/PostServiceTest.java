@@ -37,6 +37,8 @@ public class PostServiceTest {
     private ReplyEventProducer replyEventProducer;
     @InjectMocks
     private PostServiceJpa postServiceJpa;
+    @Mock
+    private BadgeService badgeService;
 
     @Test
     void getAllPosts_shouldReturnPostsWithReplies() {
@@ -180,15 +182,16 @@ public class PostServiceTest {
     }
 
     @Test
-    void createPost_savesNormalPostSuccesfully() {
+    void createPost_savesNormalPostSuccessfully() {
         Post post = new Post();
         post.setContent("Content");
-        post.setUserId("auth0Id");
+        post.setUserId("auth0UserId");
 
         Post savedPost = new Post();
         savedPost.setId(1);
-        savedPost.setContent("Content for saved post");
+        savedPost.setContent("Content");
         savedPost.setUserId("auth0UserId");
+        savedPost.setCreatedAt(new Date());
 
         when(postRepository.save(any(Post.class))).thenReturn(savedPost);
 
@@ -196,9 +199,10 @@ public class PostServiceTest {
 
         assertNotNull(result);
         assertEquals(1, result.getId());
-        assertEquals("Content for saved post", result.getContent());
+        assertEquals("Content", result.getContent());
         verify(postRepository).save(post);
         verifyNoInteractions(replyEventProducer);
+        verify(badgeService).awardForumActivityBadge(eq("auth0UserId"), anyInt());
     }
 
     @Test
@@ -237,6 +241,7 @@ public class PostServiceTest {
         assertNotNull(result);
         assertEquals(200, result.getId());
         verify(replyEventProducer).publishReplyCreatedEvent(any(ReplyCreatedEventDTO.class));
+        verify(badgeService).awardForumActivityBadge(eq("auth0|child"), anyInt());
     }
 
     @Test

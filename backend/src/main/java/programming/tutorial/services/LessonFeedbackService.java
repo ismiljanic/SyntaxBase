@@ -6,7 +6,6 @@ import programming.tutorial.dto.LessonFeedbackRequestDTO;
 import programming.tutorial.domain.FeedbackRequest;
 import org.springframework.http.ResponseEntity;
 
-@Service
 public interface LessonFeedbackService {
     String sendFeedbackEmail(FeedbackRequest feedbackRequest);
     String receiveFeedback(LessonFeedbackRequestDTO feedbackRequest, Integer userId);

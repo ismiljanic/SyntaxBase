@@ -55,6 +55,9 @@ The following images provide a visual overview of some features and interface el
 <img src="images/accountinfo.png" style="max-width: 100%; height: auto;" alt="accountinfo">
 <img src="images/changepersonalinfo.png" style="max-width: 100%; height: auto;" alt="changepersonalinfo">
 
+### User Profile Page
+<img src="images/userProfile.png" style="max-width: 100%; height: auto;" alt="userProfilePage">
+
 ### User notifications
 <img src="images/notifications.png" style="max-width: 100%; height: auto;" alt="changepersonalinfo">
 <img src="images/newMessages.png" style="max-width: 100%; height: auto;" alt="accountinfo">
@@ -86,11 +89,17 @@ The following images provide a visual overview of some features and interface el
 ### Tier upgrade options
 <img src="images/tierUpgrade.png" style="max-width: 100%; height: auto;" alt="tierUpgradeOptions">
 
+### Payment via Stripe
+<img src="images/paymentOption.png" style="max-width: 100%; height: auto;" alt="tierPayment">
+
 ### Forum sections
 <img src="images/forumSections.png" style="max-width: 100%; height: auto;" alt="forumSection">
 
 ### Forum messages
 <img src="images/forumMessages.png" style="max-width: 100%; height: auto;" alt="forumMessages">
+
+### User profile preview
+<img src="images/user-card.png" style="max-width: 100%; height: auto;" alt="userCard">
 
 ### Invite link email
 <img src="images/courseInviteLinkEmail.png" style="max-width: 100%; height: auto;" alt="inviteLinkEmail">

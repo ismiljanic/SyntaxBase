@@ -139,4 +139,11 @@ class UserCourseRepositoryTest {
         assertThat(springRate.getTotalEnrolled()).isEqualTo(1);
         assertThat(springRate.getCompletionRate()).isEqualTo(0.0);
     }
+
+    @Test
+    void testCountByUserAndCompletedTrue() {
+        int completedCount = userCourseRepository.countByUserAndCompletedTrue(user1);
+
+        assertThat(completedCount).isEqualTo(1);
+    }
 }
