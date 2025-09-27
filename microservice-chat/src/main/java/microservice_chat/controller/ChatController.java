@@ -104,5 +104,4 @@ public class ChatController {
         logger.info("Successfully edited message");
         return ResponseEntity.ok(updated);
     }
-
 }
