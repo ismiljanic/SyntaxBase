@@ -177,7 +177,7 @@ flowchart LR
     end
 
     subgraph Components[Components]
-        UIComp["Reusable UI elements]
+        UIComp["Reusable UI elements"]
     end
 
     subgraph Pages[Pages / Views]
