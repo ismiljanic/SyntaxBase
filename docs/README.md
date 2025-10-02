@@ -4,28 +4,27 @@
 ![License](https://img.shields.io/github/license/ismiljanic/SyntaxBase)
 
 ## Overview
-Short description of the project here...
 
 This is extended documentation for **SyntaxBase**.  
-This section provides an overview of the project’s goals, architecture, and implementation details.  
-While the [root README](../README.md) gives a quick overview and setup guide, here you’ll find full technical docs,
-diagrams, and design decisions.
+This section provides an overview of the project’s goals, architecture and implementation details.  
+While the [root README](../README.md) gives a quick overview and setup guide, [here](./DOCS.md) you’ll find full technical docs,
+diagrams and design decisions.
 
 ---
 
 ## Documentation Index
 
-### [Project Overview](./Project_Overview.md)
+### [Project Overview](./PROJECT_OVERVIEW.md)
 
 Explains what SyntaxBase is and the **problem it solves**: creating a scalable learning and collaboration platform with
 modern backend and frontend practices.  
 Covers the **core goals** (real-time interaction, modularity, reliability), summarizes the **main features** (user
-management, chat, notifications, content sharing, etc.), and defines the **intended audience** (students, teachers,
+management, chat, notifications, content sharing, etc.) and defines the **intended audience** (students, teachers,
 developers).
 
 ---
 
-### [Tech Stack](./Tech_Stack.md)
+### [Tech Stack](./TECH_STACK.md)
 
 Detailed overview of all technologies used and **why they were chosen**:
 
@@ -39,7 +38,7 @@ Detailed overview of all technologies used and **why they were chosen**:
 
 ---
 
-### [Architecture](./Architecture.md)
+### [Architecture](./ARCHITECTURE.md)
 
 Presents a **high-level system design** with diagrams showing interactions between frontend, backend, Kafka, database,
 and WebSocket channels.  
@@ -52,15 +51,15 @@ Breaks down:
 
 ---
 
-### [Database](./Database.md)
+### [Database](./DATABASE.md)
 
 Contains the **ERD diagram** showing tables and relationships.  
-Explains the **main entities** (users, messages, notifications, posts, etc.), how they connect, and why they’re modeled
+Explains the **main entities** (users, messages, notifications, posts, etc.), how they connect and why they’re modeled
 that way.
 
 ---
 
-### [Usage Guide](./Usage.md)
+### [Usage Guide](./USAGE.MD)
 
 Step-by-step instructions on **how to run the application**:
 
@@ -71,7 +70,7 @@ Step-by-step instructions on **how to run the application**:
 
 ---
 
-### [Testing](./Testing.md)
+### [Testing](./TESTING.md)
 
 Overview of the **testing strategy**:
 
@@ -82,7 +81,7 @@ Overview of the **testing strategy**:
 
 ---
 
-### [Future Work](./Future_Work.md)
+### [Future Work](./FUTURE_WORK.md)
 
 Lists **planned improvements** and **possible extensions**:
 
@@ -95,10 +94,16 @@ Lists **planned improvements** and **possible extensions**:
 
 ---
 
+### [Docs](./DOCS.md)
+
+Full documentation available for SyntaxBase application.
+
+---
+
 ## About This Documentation
 
 - This documentation was created for everyone interested in understanding the technical aspects of SyntaxBase
-  application. Purpose was to showcase the project’s architecture, demonstrate professional engineering practices, and
+  application. Purpose was to showcase the project’s architecture, demonstrate professional engineering practices and
   provide a usage manual. Each topic lives in its own file for clarity. This README serves as the entrypoint and table
   of contents.
 

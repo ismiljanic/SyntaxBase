@@ -1,17 +1,17 @@
 # Project Overview – SyntaxBase
 
-This document provides an overview of the **SyntaxBase** project, including the problems it addresses, its core goals, key features, and planned next steps for future development.
+This document provides an overview of the **SyntaxBase** project, including the problems it addresses, its core goals, key features and planned next steps for future development.
 
 ## What is SyntaxBase?
 
 **SyntaxBase** is a full-stack learning and collaboration platform that combines structured educational content with real-time interaction and community features.  
-The project showcases a **microservices architecture** powered by **Spring Boot**, **React**, **Kafka**, **WebSockets**, and **PostgreSQL**, all wrapped in **Dockerized deployments**.
+The project showcases a **microservices architecture** powered by **Spring Boot**, **React**, **Kafka**, **WebSockets** and **PostgreSQL**, all wrapped in **Dockerized deployments**.
 
 ---
 
 ## Core Learning Sections
 
-SyntaxBase provides a wide range of tutorials, exercises, and interactive content organized into **five core domains**:
+SyntaxBase provides a wide range of tutorials, exercises and interactive content organized into **five core domains**:
 
 - **Web Development**
 - **Game Development**
@@ -19,7 +19,7 @@ SyntaxBase provides a wide range of tutorials, exercises, and interactive conten
 - **Problem Solving**
 - **Instructions & Lectures**
 
-Each domain is structured into **three tiers**—**Beginner**, **Intermediate**, and **Advanced**—to guide learners through progressive skill levels.
+Each domain is structured into **three tiers**—**Beginner**, **Intermediate** and **Advanced**—to guide learners through progressive skill levels.
 
 ---
 
@@ -27,7 +27,7 @@ Each domain is structured into **three tiers**—**Beginner**, **Intermediate**,
 
 Beyond learning materials, SyntaxBase offers collaboration through an integrated **community forum** where users can:
 
-- **Engage in discussions** – threaded forum with topic sections, message editing, and user profile previews.
+- **Engage in discussions** – threaded forum with topic sections, message editing and user profile previews.
 - **Connect with peers** – one-to-one chat and discovery of other developers and tech enthusiasts.
 - **Share feedback** – receive guidance from instructors or collaborate with fellow learners.
 
@@ -38,7 +38,7 @@ Beyond learning materials, SyntaxBase offers collaboration through an integrated
 Many e-learning and collaboration platforms face common challenges:
 - Limited **real-time interaction** between participants.
 - Tightly coupled architectures that make systems harder to extend.
-- Fragmented user experience across chat, notifications, and content delivery.
+- Fragmented user experience across chat, notifications and content delivery.
 - Lack of a unified technical foundation to support both learning content and community features.
 
 **SyntaxBase** approaches these challenges by:
@@ -51,8 +51,8 @@ Many e-learning and collaboration platforms face common challenges:
 
 ## Goals of the Project
 
-1. **Demonstrate modular and scalable architecture** with microservices, message queues, and real-time connections.
-2. **Provide a complete end-to-end app** — backend, frontend, database, communication middleware, and deployment pipeline.
+1. **Demonstrate modular and scalable architecture** with microservices, message queues and real-time connections.
+2. **Provide a complete end-to-end app** — backend, frontend, database, communication middleware and deployment pipeline.
 3. **Serve as a flagship portfolio project**, showcasing good engineering practices (layered backend design, unit testing, Dockerization).
 4. **Highlight advanced features** such as event-driven communication and live user interactions.
 
@@ -63,7 +63,7 @@ Many e-learning and collaboration platforms face common challenges:
 - **User Authentication & Management** – registration, login, role-based access
 - **Real-time Chat** – WebSocket-based messaging between users
 - **Live Notifications** – Kafka + WebSockets power event-driven updates
-- **Content / Lesson Management** – courses, lessons, and structured content delivery
+- **Content / Lesson Management** – courses, lessons and structured content delivery
 - **Collaboration Tools** – interaction features for students and teachers
 - **Scalable Microservices** – modular backend services that can be extended independently
 - **Dockerized Deployment** – simplified setup with containers
@@ -77,7 +77,7 @@ Many e-learning and collaboration platforms face common challenges:
 
 - Explore scalability improvements, including load balancing and Kafka partitioning.
 - Add advanced learning features such as grading and analytics.
-- Enhance observability with improved monitoring, logging, and metrics.
+- Enhance observability with improved monitoring, logging and metrics.
 - Refine UX/UI for smoother workflows and better user experience.
 
 ### Future Community Enhancements
