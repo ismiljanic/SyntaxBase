@@ -1,6 +1,6 @@
 # SyntaxBase Documentation
 
-![GitHub last commit](https://img.shields.io/github/last-commit/ismiljanic/SyntaxBase)
+![GitHub last commit](https://img.shields.io/github/last-commit/ismiljanic/SyntaxBase/docs)
 ![License](https://img.shields.io/github/license/ismiljanic/SyntaxBase)
 
 ## Overview

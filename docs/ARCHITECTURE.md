@@ -90,32 +90,32 @@ The backend of **SyntaxBase** follows a **layered architecture**, where each lay
 flowchart TD
     %% Configuration Layer
     subgraph Config[Configuration]
-        C["Exception Handling, Kafka, Security, Payment"]
+        C["Kafka, Security, Payment"]
     end
 
     %% Controllers Layer
     subgraph Controllers[Controllers]
-        CT["Handle REST Requests/Responses"]
+        CT["REST Requests/Responses"]
     end
 
     %% Services Layer
     subgraph Services[Services]
-        S["Business Logic & Orchestration"]
+        S["Business Logic"]
     end
 
     %% Repositories Layer
     subgraph Repositories[Repositories / DAO]
-        R["Data Persistence via Spring Data JPA"]
+        R["Data Persistence"]
     end
 
     %% DTO Layer
     subgraph DTOs[DTOs]
-        D["Transfer objects between layers"]
+        D["Transfer objects"]
     end
 
     %% Validation Layer
     subgraph Validation[Validation Layer - planned]
-        V["Request validation (annotations/custom validators)"]
+        V["Request validation"]
     end
 
     %% Connections
@@ -164,7 +164,7 @@ flowchart LR
     end
 
     subgraph Utils[Utilities / Helpers]
-        UtilsF["Utility functions & helpers"]
+        UtilsF["Utility functions"]
     end
 
     subgraph Services[Services / API Integration]
@@ -173,15 +173,15 @@ flowchart LR
     end
 
     subgraph State[State Management / Hooks]
-        Hooks["React Hooks & Context API"]
+        Hooks["React Hooks"]
     end
 
     subgraph Components[Components]
-        UIComp["Reusable UI elements (forms, chat windows, course cards)"]
+        UIComp["Reusable UI elements]
     end
 
     subgraph Pages[Pages / Views]
-        COURSES["Course Pages (DB, Game, PS, Web, Tutorials)"]
+        COURSES["Course Pages"]
         COMMUNITY["Chat & Forum"]
         ADMIN["Admin / Instructor"]
         OTHER["Other"]
@@ -228,7 +228,7 @@ flowchart TD
 
     %% Messaging Layer
     subgraph Messaging
-        Kafka["Kafka Topic: forum.reply.created"]
+        Kafka["Topic: forum.reply.created"]
         WS["WebSocket Connection"]
     end
 
