@@ -5,7 +5,7 @@ This document provides an overview of the **testing strategy** used in **SyntaxB
 
 ## Types of Tests
 
-SyntaxBase employs multiple layers of automated testing to ensure code quality, reliability, and maintainability:
+SyntaxBase employs multiple layers of automated testing to ensure code quality, reliability and maintainability:
 
 ### 1. Unit Tests
 - Focus on **individual components** or classes in isolation.
@@ -14,7 +14,7 @@ SyntaxBase employs multiple layers of automated testing to ensure code quality, 
   - Backend: validating service methods (e.g., calculating lesson progress, notification generation).
 
 ### 2. Integration Tests
-- Verify **interaction between components**, services, and external systems.
+- Verify **interaction between components**, services and external systems.
 - Examples:
   - Backend: REST endpoints interacting with PostgreSQL using Spring Boot test context.
   - Kafka consumers and producers tested to ensure events propagate correctly.
@@ -99,7 +99,7 @@ Coverage reports are generated via **JaCoCo** Maven plugin.
 
 ## Summary
 
-- **Unit tests** validate individual functions, methods, and components in isolation.  
-- **Integration tests** confirm that services, databases, Kafka topics, and WebSockets interact correctly.  
-- **Automated testing** ensures reliability, maintainability, and consistent behavior across both backend and frontend.  
+- **Unit tests** validate individual functions, methods and components in isolation.  
+- **Integration tests** confirm that services, databases, Kafka topics and WebSockets interact correctly.  
+- **Automated testing** ensures reliability, maintainability and consistent behavior across both backend and frontend.  
 - **Coverage badges** provide quick visual insight evaluating project quality.  

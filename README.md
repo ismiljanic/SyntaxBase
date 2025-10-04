@@ -288,7 +288,7 @@ To start the backend application, follow these steps:
 1. Ensure that **Java 17** (or higher) is installed.
 2. In IntelliJ, navigate to:  
    `SyntaxBase/backend/src/main/java/opp`
-3. Locate the `TutorialApplication.java` class.
+3. Locate the `BackendApplication.java` class.
 4. Right-click the file and select **Run** to start the Spring Boot server.
 
 #### Screenshot
@@ -306,6 +306,7 @@ To start the backend application, follow these steps:
 SyntaxBase/
 ├── .github/
 ├── backend/
+├── database/
 ├── docs/
 ├── frontend/
 ├── microservice-chat/

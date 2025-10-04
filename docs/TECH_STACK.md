@@ -1,6 +1,6 @@
 # Tech Stack – SyntaxBase
 
-This document provides a detailed overview of the technologies used in **SyntaxBase**, along with reasoning for each choice. The stack was selected to demonstrate good engineering practices, event-driven architectures, real-time communication, and full-stack integration.
+This document provides a detailed overview of the technologies used in **SyntaxBase**, along with reasoning for each choice. The stack was selected to demonstrate good engineering practices, event-driven architectures, real-time communication and full-stack integration.
 
 ---
 
