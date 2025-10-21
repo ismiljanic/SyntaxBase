@@ -8,7 +8,9 @@ export const options = {
     { duration: '30s', target: 300 },
     { duration: '30s', target: 500 },
     { duration: '1m', target: 1000 },
-    { duration: '30s', target: 0 },
+    { duration: '1m', target: 2000 },
+    { duration: '1m', target: 1000 },
+    { duration: '1m', target: 0 },
   ],
   thresholds: {
     'checks': ['rate>0.95'],
