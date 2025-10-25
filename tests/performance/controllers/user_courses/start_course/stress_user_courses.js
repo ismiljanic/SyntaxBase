@@ -37,7 +37,6 @@ export default function () {
 
   check(res, { 'status is 2xx or handled': (r) => r.status >= 200 && r.status < 500 });
 
-  sleep(0.2);
 }
 
 export { handleSummary };
