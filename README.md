@@ -312,6 +312,7 @@ SyntaxBase/
 ├── microservice-chat/
 ├── microservice-notifications/
 ├── microservice-shared/
+├── monitoring/
 ├── tests/
 ├── CHANGELOG.MD
 ├── LICENSE
