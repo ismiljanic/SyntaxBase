@@ -1,6 +1,6 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
-import { BASE_URL, USER_ID, TOKEN, defaultHeaders, checkResponse } from './utils.js';
+import { BASE_URL, USER_ID, TOKEN, defaultHeaders, checkResponse } from '../utils.js';
 
 export let options = {
     vus: 5,
