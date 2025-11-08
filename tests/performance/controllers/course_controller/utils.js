@@ -7,10 +7,16 @@ export const defaultHeaders = {
     ...(TOKEN ? { 'Authorization': `Bearer ${TOKEN}` } : {}),
 };
 
-export function checkResponse(res, expectedStatus, description) {
-    const result = res.status === expectedStatus;
-    if (!result) {
-        console.error(`${description} failed: status=${res.status} body=${res.body}`);
-    }
-    return result;
+//export function checkResponse(res, expectedStatus, description) {
+//    const result = res.status === expectedStatus;
+//    if (!result) {
+//        console.error(`${description} failed: status=${res.status} body=${res.body}`);
+//    }
+//    return result;
+//}
+export function checkResponse(res, expected, label = '') {
+  if (Array.isArray(expected)) {
+    return expected.includes(res.status);
+  }
+  return res.status === expected;
 }
