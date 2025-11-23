@@ -37,6 +37,23 @@ jobs:
         run: mvn clean install -DskipTests
         working-directory: ./microservice-shared
 
+      - name: Build and push all moderation Docker images
+        run: |
+          declare -A services=(
+            ["api"]="docker/api/Dockerfile"
+            ["bert"]="docker/bert/Dockerfile"
+            ["classical"]="docker/classical/Dockerfile"
+            ["llm"]="docker/llm/Dockerfile"
+            ["toxic-bert"]="docker/toxic_bert/Dockerfile"
+          )
+          
+          for service in "${!services[@]}"; do
+            docker build -f "microservice-moderation/${services[$service]}" \
+              -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-moderation-$service:latest \
+              microservice-moderation
+            docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-moderation-$service:latest
+          done
+
       - name: Build and push backend
         run: |
           docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-backend:latest ./backend
@@ -51,22 +68,6 @@ jobs:
         run: |
           docker build -f microservice-chat/Dockerfile -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-chat:latest .
           docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-chat:latest
-
-      - name: Build and push all moderation Docker images
-        run: |
-          declare -A services=(
-            ["api"]="SyntaxBase-moderation-microservice/docker/api/Dockerfile"
-            ["bert"]="SyntaxBase-moderation-microservice/docker/bert/Dockerfile"
-            ["classical"]="SyntaxBase-moderation-microservice/docker/classical/Dockerfile"
-            ["llm"]="SyntaxBase-moderation-microservice/docker/llm/Dockerfile"
-            ["toxic-bert"]="SyntaxBase-moderation-microservice/docker/toxic_bert/Dockerfile"
-          )
-
-          for service in "${!services[@]}"; do
-            docker build -f "${services[$service]}" \
-              -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-moderation-$service:latest .
-            docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-moderation-$service:latest
-          done
 
       - name: Build and push frontend
         run: |
