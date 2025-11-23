@@ -283,7 +283,7 @@
     display: inline-block;
     margin-top: 8px;
     font-size: 0.875rem;
-    color: #1a73e8;
+    color: #ffffff;
     font-weight: 500;
     text-decoration: none;
     transition: color 0.3s ease, transform 0.3s ease;
@@ -512,6 +512,34 @@ button.post-button:hover {
 
 .post-category.Discussion {
     background-color: #28a745;
+}
+
+.post-moderation-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 12px;
+    margin-left: 10px;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.post-moderation-label.safe {
+    background-color: #39ca41;
+}
+
+.post-moderation-label.mild {
+    background-color: #ff9d00;
+}
+
+.post-moderation-label.toxic {
+    background-color: #d50000e2;
+}
+
+.post-moderation-label.severe {
+    background-color: #ff0000;
 }
 
 

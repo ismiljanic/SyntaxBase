@@ -6,12 +6,13 @@ import { Header } from '../../pages/Header';
 import { AdminUserManagement } from '../../components/admin/AdminUserManagment';
 import { AdminCoursesManagement } from '../../components/admin/AdminCoursesManagment';
 import { AdminReports } from '../../components/admin/AdminReports';
+import { AdminModerationLogs } from '../../components/admin/AdminModerationLogs';
 
 export function AdminPage() {
   const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } = useAuth0();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'users' | 'requests' | 'courses' | 'reports'>('users');
+  const [activeTab, setActiveTab] = useState<'users' | 'requests' | 'courses' | 'reports' | 'moderation'>('users');
 
   useEffect(() => {
     const checkAccess = async () => {
@@ -74,18 +75,25 @@ export function AdminPage() {
         >
           Instructor Requests
         </button>
-         <button
+        <button
           className={activeTab === 'courses' ? 'tab active' : 'tab'}
           onClick={() => setActiveTab('courses')}
         >
           Courses
         </button>
-         <button
-                  className={activeTab === 'reports' ? 'tab active' : 'tab'}
-                  onClick={() => setActiveTab('reports')}
-                >
-                  Reports
-                </button>
+        <button
+          className={activeTab === 'reports' ? 'tab active' : 'tab'}
+          onClick={() => setActiveTab('reports')}
+        >
+          Reports
+        </button>
+        <button
+          className={activeTab === 'moderation' ? 'tab active' : 'tab'}
+          onClick={() => setActiveTab('moderation')}
+        >
+          Moderation Logs
+        </button>
+
       </div>
 
       <div className="tab-content">
@@ -93,6 +101,8 @@ export function AdminPage() {
         {activeTab === 'requests' && <AdminInstructorRequests />}
         {activeTab === 'courses' && <AdminCoursesManagement />}
         {activeTab === 'reports' && <AdminReports />}
+        {activeTab === 'moderation' && <AdminModerationLogs />}
+
       </div>
     </div>
   );
