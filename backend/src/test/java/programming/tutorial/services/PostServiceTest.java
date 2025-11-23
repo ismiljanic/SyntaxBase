@@ -13,6 +13,7 @@ import programming.tutorial.domain.Role;
 import programming.tutorial.domain.User;
 import programming.tutorial.dto.PostDTO;
 import programming.tutorial.dto.ReplyCreatedEventDTO;
+import programming.tutorial.moderation.ModerationResult;
 import programming.tutorial.services.impl.PostServiceJpa;
 import programming.tutorial.services.impl.UserNotFoundException;
 
@@ -39,6 +40,8 @@ public class PostServiceTest {
     private PostServiceJpa postServiceJpa;
     @Mock
     private BadgeService badgeService;
+    @Mock
+    private ModerationService moderationService;
 
     @Test
     void getAllPosts_shouldReturnPostsWithReplies() {
@@ -136,7 +139,7 @@ public class PostServiceTest {
     }
 
     @Test
-    void createPost_replyThrowsWhenParentNotFound() {
+    void createPost_replyThrowsWhenParentNotFound_withModeration() {
         Post reply = new Post();
         reply.setContent("Reply content");
         reply.setUserId("auth0|child");
@@ -151,6 +154,12 @@ public class PostServiceTest {
         savedReply.setUserId("auth0|child");
         savedReply.setParentPost(parentPost);
 
+        ModerationResult mockResult = new ModerationResult();
+        mockResult.setFinal_label("safe");
+        mockResult.setToxic_confidence(0.95);
+        mockResult.setLlm_reasoning(null);
+        when(moderationService.classify("Reply content")).thenReturn(mockResult);
+
         when(postRepository.save(any(Post.class))).thenReturn(savedReply);
         when(postRepository.findById(99)).thenReturn(Optional.empty());
 
@@ -158,7 +167,7 @@ public class PostServiceTest {
     }
 
     @Test
-    void createPost_replyThrowsWhenUserNotFound() {
+    void createPost_replyThrowsWhenUserNotFound_withModeration() {
         Post parentPost = new Post();
         parentPost.setId(100);
         parentPost.setUserId("auth0|parent");
@@ -174,6 +183,12 @@ public class PostServiceTest {
         savedReply.setContent("Reply content");
         savedReply.setParentPost(parentPost);
 
+        ModerationResult mockResult = new ModerationResult();
+        mockResult.setFinal_label("mild");
+        mockResult.setToxic_confidence(0.6);
+        mockResult.setLlm_reasoning("Some reasoning");
+        when(moderationService.classify("Reply content")).thenReturn(mockResult);
+
         when(postRepository.save(any(Post.class))).thenReturn(savedReply);
         when(postRepository.findById(100)).thenReturn(Optional.of(parentPost));
         when(userRepository.findByAuth0UserId("auth0|child")).thenReturn(Optional.empty());
@@ -182,31 +197,40 @@ public class PostServiceTest {
     }
 
     @Test
-    void createPost_savesNormalPostSuccessfully() {
+    void createPost_savesNormalPostSuccessfully_withModeration() {
         Post post = new Post();
+        post.setId(1);
         post.setContent("Content");
         post.setUserId("auth0UserId");
 
-        Post savedPost = new Post();
-        savedPost.setId(1);
-        savedPost.setContent("Content");
-        savedPost.setUserId("auth0UserId");
-        savedPost.setCreatedAt(new Date());
+        ModerationResult mockResult = new ModerationResult();
+        mockResult.setFinal_label("toxic");
+        mockResult.setToxic_confidence(0.85);
+        mockResult.setLlm_reasoning(null);
+        when(moderationService.classify("Content")).thenReturn(mockResult);
 
-        when(postRepository.save(any(Post.class))).thenReturn(savedPost);
+        when(postRepository.save(any(Post.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(postRepository.countByUserId("auth0UserId")).thenReturn(1);
 
         Post result = postServiceJpa.createPost(post);
 
         assertNotNull(result);
-        assertEquals(1, result.getId());
         assertEquals("Content", result.getContent());
+        assertEquals("toxic", result.getModerationLabel());
+        assertEquals(0.85, result.getModerationConfidence());
+        assertEquals(
+                "LLM evaluation was skipped because the BERT-based models provided sufficient confidence.",
+                result.getModerationReasoning()
+        );
+
         verify(postRepository).save(post);
         verifyNoInteractions(replyEventProducer);
-        verify(badgeService).awardForumActivityBadge(eq("auth0UserId"), anyInt());
+        verify(badgeService).awardForumActivityBadge(eq("auth0UserId"), eq(1));
     }
 
+
     @Test
-    void createPost_replyPostPublishesEvent() {
+    void createPost_replyPostPublishesEvent_withModeration() {
         Post parentPost = new Post();
         parentPost.setId(100);
         parentPost.setContent("Parent content");
@@ -217,31 +241,47 @@ public class PostServiceTest {
         reply.setUserId("auth0|child");
         reply.setParentPost(parentPost);
 
-        Post savedReply = new Post();
-        savedReply.setId(200);
-        savedReply.setContent("Reply content");
-        savedReply.setUserId("auth0|child");
-        savedReply.setParentPost(parentPost);
-
         User replyingUser = new User();
         replyingUser.setAuth0UserId("auth0|child");
         replyingUser.setUsername("child@example.com");
 
         User parentUser = new User();
         parentUser.setAuth0UserId("auth0|parent");
-        parentUser.setUsername("parent@example.com");
 
-        when(postRepository.save(any(Post.class))).thenReturn(savedReply);
+        // simulate DB save and assign ID
+        when(postRepository.save(any(Post.class))).thenAnswer(invocation -> {
+            Post p = invocation.getArgument(0);
+            if (p.getId() == null) p.setId(200);
+            return p;
+        });
+
         when(postRepository.findById(100)).thenReturn(Optional.of(parentPost));
         when(userRepository.findByAuth0UserId("auth0|child")).thenReturn(Optional.of(replyingUser));
         when(userRepository.findByAuth0UserId("auth0|parent")).thenReturn(Optional.of(parentUser));
 
+        ModerationResult mockResult = new ModerationResult();
+        mockResult.setFinal_label("safe");
+        mockResult.setToxic_confidence(0.9);
+        mockResult.setLlm_reasoning(null);
+        when(moderationService.classify("Reply content")).thenReturn(mockResult);
+
+        when(postRepository.countByUserId("auth0|child")).thenReturn(1);
+
         Post result = postServiceJpa.createPost(reply);
 
         assertNotNull(result);
-        assertEquals(200, result.getId());
+        assertEquals(200, result.getId()); // now it has ID
+        assertEquals("Reply content", result.getContent());
+        assertEquals("safe", result.getModerationLabel());
+        assertEquals(0.9, result.getModerationConfidence());
+        assertEquals(
+                "LLM evaluation was skipped because the BERT-based models provided sufficient confidence.",
+                result.getModerationReasoning()
+        );
+
         verify(replyEventProducer).publishReplyCreatedEvent(any(ReplyCreatedEventDTO.class));
-        verify(badgeService).awardForumActivityBadge(eq("auth0|child"), anyInt());
+        verify(badgeService).awardForumActivityBadge(eq("auth0|child"), eq(1));
+        verify(postRepository).save(any(Post.class));
     }
 
     @Test
@@ -518,7 +558,7 @@ public class PostServiceTest {
     }
 
     @Test
-    void updatePost_updatesContentAndTimestamp_whenUserAuthorized() {
+    void updatePost_updatesContentTimestampAndModeration_whenUserAuthorized() {
         Post post = new Post();
         post.setId(1);
         post.setUserId("auth0|123");
@@ -529,12 +569,25 @@ public class PostServiceTest {
 
         when(postRepository.findById(1)).thenReturn(Optional.of(post));
 
+        ModerationResult mockResult = new ModerationResult();
+        mockResult.setFinal_label("safe");
+        mockResult.setToxic_confidence(0.95);
+        mockResult.setLlm_reasoning(null);
+
+        when(moderationService.classify("New content")).thenReturn(mockResult);
+
         postServiceJpa.updatePost(1, dto, "auth0|123");
 
         assertEquals("New content", post.getContent());
         assertNotNull(post.getUpdatedAt());
+        assertEquals("safe", post.getModerationLabel());
+        assertEquals(0.95, post.getModerationConfidence());
+        assertEquals("LLM evaluation was skipped because the BERT-based models provided sufficient confidence.",
+                post.getModerationReasoning());
+
         verify(postRepository).save(post);
     }
+
 
     @Test
     void updatePost_throwsSecurityException_whenUserNotAuthorized() {
