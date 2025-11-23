@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - github-actions
-
 env:
   REGISTRY: ghcr.io
   IMAGE_OWNER: ${{ github.repository_owner }}
