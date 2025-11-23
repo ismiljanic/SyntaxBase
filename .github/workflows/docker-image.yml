@@ -3,7 +3,7 @@ name: Build and Push Docker Images
 on:
   push:
     branches:
-      - github-actions
+      - main
 
 env:
   REGISTRY: ghcr.io

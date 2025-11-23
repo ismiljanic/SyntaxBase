@@ -2,11 +2,9 @@ name: Java CI - All Microservices and Backend
 
 on:
   push:
-#    branches: [ main, dev ]
-    branches: [ github-actions ]
+    branches: [ main, dev ]
   pull_request:
-#    branches: [ main, dev ]
-    branches: [ github-actions ]
+    branches: [ main, dev ]
 
 jobs:
   build-all:
