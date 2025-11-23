@@ -1,5 +1,6 @@
 package programming.tutorial.dto;
 
+import jakarta.persistence.Column;
 import programming.tutorial.domain.Post;
 import programming.tutorial.domain.Role;
 
@@ -21,10 +22,16 @@ public class PostDTO {
     private boolean deleted;
     private PostDTO parentPost;
 
+    private String moderationLabel;
+    private Double moderationConfidence;
+    private Date moderationTimestamp;
+    private String moderationReasoning;
+
+
     public PostDTO() {
     }
 
-    public PostDTO(Integer id, String content, String userId, String username, Date createdAt, List<PostDTO> replies, String category, Role userRole, Date updatedAt, LocalDateTime userAccountCreatedAt) {
+    public PostDTO(Integer id, String content, String userId, String username, Date createdAt, List<PostDTO> replies, String category, Role userRole, Date updatedAt, String moderationLabel, LocalDateTime userAccountCreatedAt) {
         this.id = id;
         this.content = content;
         this.userId = userId;
@@ -34,6 +41,7 @@ public class PostDTO {
         this.category = category;
         this.userRole = userRole;
         this.updatedAt = updatedAt;
+        this.moderationLabel = moderationLabel;
         this.userAccountCreatedAt = userAccountCreatedAt;
     }
 
@@ -150,5 +158,37 @@ public class PostDTO {
 
     public void setUserAccountCreatedAt(LocalDateTime userAccountCreatedAt) {
         this.userAccountCreatedAt = userAccountCreatedAt;
+    }
+
+    public String getModerationLabel() {
+        return moderationLabel;
+    }
+
+    public void setModerationLabel(String moderationLabel) {
+        this.moderationLabel = moderationLabel;
+    }
+
+    public Double getModerationConfidence() {
+        return moderationConfidence;
+    }
+
+    public void setModerationConfidence(Double moderationConfidence) {
+        this.moderationConfidence = moderationConfidence;
+    }
+
+    public Date getModerationTimestamp() {
+        return moderationTimestamp;
+    }
+
+    public void setModerationTimestamp(Date moderationTimestamp) {
+        this.moderationTimestamp = moderationTimestamp;
+    }
+
+    public String getModerationReasoning() {
+        return moderationReasoning;
+    }
+
+    public void setModerationReasoning(String moderationReasoning) {
+        this.moderationReasoning = moderationReasoning;
     }
 }
