@@ -132,5 +132,4 @@ public class UserAdminController {
     public ResponseEntity<String> testRoute(@PathVariable String userId, @PathVariable Integer courseId) {
         return ResponseEntity.ok("Test OK");
     }
-
 }
