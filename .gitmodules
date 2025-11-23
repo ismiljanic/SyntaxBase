@@ -6,5 +6,5 @@
 	path = frontend/src/pages/webCourses/AdvancedWebCourse/final-project
 	url = https://github.com/ismiljanic/SyntaxBase-blood-donation-app.git
 [submodule "moderation-microservice"]
-	path = moderation-microservice
+	path = microservice-moderation
 	url = https://github.com/ismiljanic/SyntaxBase-moderation-microservice.git
