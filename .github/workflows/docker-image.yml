@@ -52,11 +52,6 @@ jobs:
           docker build -f microservice-chat/Dockerfile -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-chat:latest .
           docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-chat:latest
 
-      - name: Build and push frontend
-        run: |
-          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-frontend:latest ./frontend --build-arg REACT_APP_API_BASE_URL=http://localhost:8080
-          docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-frontend:latest
-
       - name: Build and push all moderation Docker images
         run: |
           declare -A services=(
@@ -72,3 +67,8 @@ jobs:
               -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-moderation-$service:latest .
             docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-moderation-$service:latest
           done
+
+      - name: Build and push frontend
+        run: |
+          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-frontend:latest ./frontend --build-arg REACT_APP_API_BASE_URL=http://localhost:8080
+          docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-frontend:latest
