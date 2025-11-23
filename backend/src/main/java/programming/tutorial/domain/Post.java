@@ -38,10 +38,22 @@ public class Post {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
+    @Column(name = "moderationLabel")
+    private String moderationLabel;
+
+    @Column(name = "moderationConfidence")
+    private Double moderationConfidence;
+
+    @Column(columnDefinition = "TEXT")
+    private String moderationReasoning;
+    @Column(name = "moderationTimestamp")
+    private Date moderationTimestamp;
+
+
     public Post() {
     }
 
-    public Post(Integer id, String content, String userId, Date createdAt, Post parentPost, List<Post> replies, boolean deleted, String category, Date updatedAt) {
+    public Post(Integer id, String content, String userId, Date createdAt, Post parentPost, List<Post> replies, boolean deleted, String category, Date updatedAt, String moderationLabel, Double moderationConfidence, String moderationReasoning, Date moderationTimestamp) {
         this.id = id;
         this.content = content;
         this.userId = userId;
@@ -51,6 +63,10 @@ public class Post {
         this.deleted = deleted;
         this.category = category;
         this.updatedAt = updatedAt;
+        this.moderationLabel = moderationLabel;
+        this.moderationConfidence = moderationConfidence;
+        this.moderationReasoning = moderationReasoning;
+        this.moderationTimestamp = moderationTimestamp;
     }
 
     public Integer getId() {
@@ -125,15 +141,47 @@ public class Post {
         this.updatedAt = updatedAt;
     }
 
+    public String getModerationLabel() {
+        return moderationLabel;
+    }
+
+    public void setModerationLabel(String moderationLabel) {
+        this.moderationLabel = moderationLabel;
+    }
+
+    public Double getModerationConfidence() {
+        return moderationConfidence;
+    }
+
+    public void setModerationConfidence(Double moderationConfidence) {
+        this.moderationConfidence = moderationConfidence;
+    }
+
+    public Date getModerationTimestamp() {
+        return moderationTimestamp;
+    }
+
+    public void setModerationTimestamp(Date moderationTimestamp) {
+        this.moderationTimestamp = moderationTimestamp;
+    }
+
+    public String getModerationReasoning() {
+        return moderationReasoning;
+    }
+
+    public void setModerationReasoning(String moderationReasoning) {
+        this.moderationReasoning = moderationReasoning;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Post post)) return false;
-        return deleted == post.deleted && Objects.equals(id, post.id) && Objects.equals(content, post.content) && Objects.equals(userId, post.userId) && Objects.equals(createdAt, post.createdAt) && Objects.equals(parentPost, post.parentPost) && Objects.equals(replies, post.replies) && Objects.equals(category, post.category) && Objects.equals(updatedAt, post.updatedAt);
+        return deleted == post.deleted && Objects.equals(id, post.id) && Objects.equals(content, post.content) && Objects.equals(userId, post.userId) && Objects.equals(createdAt, post.createdAt) && Objects.equals(parentPost, post.parentPost) && Objects.equals(replies, post.replies) && Objects.equals(category, post.category) && Objects.equals(updatedAt, post.updatedAt) && Objects.equals(moderationLabel, post.moderationLabel) && Objects.equals(moderationConfidence, post.moderationConfidence) && Objects.equals(moderationReasoning, post.moderationReasoning) && Objects.equals(moderationTimestamp, post.moderationTimestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, content, userId, createdAt, parentPost, replies, deleted, category, updatedAt);
+        return Objects.hash(id, content, userId, createdAt, parentPost, replies, deleted, category, updatedAt, moderationLabel, moderationConfidence, moderationReasoning, moderationTimestamp);
     }
 }
