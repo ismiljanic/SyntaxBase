@@ -72,7 +72,7 @@ jobs:
 
       - name: Build & push backend Docker
         run: |
-          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-backend:latest ./backend --file Dockerfile
+          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-backend:latest --file ./backend/Dockerfile ./backend
           docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-backend:latest
 
       # ---------------------------
@@ -84,7 +84,7 @@ jobs:
 
       - name: Build & push notifications Docker
         run: |
-          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-notifications:latest ./microservice-notifications --file Dockerfile
+          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-notifications:latest --file ./microservice-notifications/Dockerfile ./microservice-notifications
           docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-notifications:latest
 
       # ---------------------------
@@ -96,7 +96,7 @@ jobs:
 
       - name: Build & push chat Docker
         run: |
-          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-chat:latest ./microservice-chat --file Dockerfile
+          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-chat:latest --file ./microservice-chat/Dockerfile ./microservice-chat
           docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-chat:latest
 
       # ---------------------------
