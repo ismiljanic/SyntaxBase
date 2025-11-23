@@ -44,12 +44,12 @@ jobs:
 
       - name: Build and push microservice-notifications
         run: |
-          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-notifications:latest ./microservice-notifications
+          docker build -f microservice-notifications/Dockerfile -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-notifications:latest .
           docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-notifications:latest
 
       - name: Build and push microservice-chat
         run: |
-          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-chat:latest ./microservice-chat
+          docker build -f microservice-chat/Dockerfile -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-chat:latest .
           docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-chat:latest
 
       - name: Build and push frontend
