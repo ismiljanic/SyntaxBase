@@ -84,6 +84,9 @@ The following images provide a visual overview of some features and interface el
 ### Admin reports display
 <img src="images/adminReportHandle.png" style="max-width: 100%; height: auto;" alt="adminCoursesDisplay">
 
+### Admin moderation logs
+<img src="images/adminModLogs.png" style="max-width: 100%; height: auto;" alt="adminCoursesDisplay">
+
 ### Deleted posts in admin user interface
 <img src="images/deletedPosts.png" style="max-width: 100%; height: auto;" alt="deletedPosts">
 
