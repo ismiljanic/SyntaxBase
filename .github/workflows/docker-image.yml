@@ -39,23 +39,6 @@ jobs:
         run: mvn clean install -DskipTests
         working-directory: ./microservice-shared
 
-      - name: Build and push all moderation Docker images
-        run: |
-          declare -A services=(
-            ["api"]="docker/api/Dockerfile"
-            ["bert"]="docker/bert/Dockerfile"
-            ["classical"]="docker/classical/Dockerfile"
-            ["llm"]="docker/llm/Dockerfile"
-            ["toxic-bert"]="docker/toxic_bert/Dockerfile"
-          )
-          
-          for service in "${!services[@]}"; do
-            docker build -f "microservice-moderation/${services[$service]}" \
-              -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-moderation-$service:latest \
-              microservice-moderation
-            docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-moderation-$service:latest
-          done
-
       - name: Build and push backend
         run: |
           docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-backend:latest ./backend
