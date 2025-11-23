@@ -41,9 +41,9 @@ class PostRepositoryTest {
         user2.setUsername("2nduser");
         user2.setAuth0UserId("auth0-2");
 
-        postRepository.save(new Post(1, "First post by user1", user1.getAuth0UserId(), new Date(), null, Collections.emptyList(), false, "GENERAL", new Date()));
-        postRepository.save(new Post(2, "Second post by user1", user1.getAuth0UserId(), new Date(), null, Collections.emptyList(), false, "GENERAL", new Date()));
-        postRepository.save(new Post(3, "Only post by user2", user2.getAuth0UserId(), new Date(), null, Collections.emptyList(), false, "GENERAL", new Date()));
+        postRepository.save(new Post(1, "First post by user1", user1.getAuth0UserId(), new Date(), null, Collections.emptyList(), false, "GENERAL", new Date(), "label_1", 1.0, "reasoning_1", new Date()));
+        postRepository.save(new Post(2, "Second post by user1", user1.getAuth0UserId(), new Date(), null, Collections.emptyList(), false, "GENERAL", new Date(), "label_2", 1.0, "reasoning_2", new Date()));
+        postRepository.save(new Post(3, "Only post by user2", user2.getAuth0UserId(), new Date(), null, Collections.emptyList(), false, "GENERAL", new Date(), "label_3", 1.0, "reasoning_3", new Date()));
 
         parentPost = new Post();
         parentPost.setUserId("user1");

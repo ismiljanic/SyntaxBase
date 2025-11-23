@@ -407,9 +407,9 @@ public class UserServiceTest {
         course.setSystemCourse(true);
 
         Post post1 = new Post(1, "Hello World", auth0Id,
-                new Date(70, 0, 1), null, null, false, "general", null);
+                new Date(70, 0, 1), null, null, false, "general", null, "label_1", 1.0, "reasoning_1", null);
         Post post2 = new Post(2, "Deleted post", auth0Id,
-                new Date(70, 0, 1), null, null, true, "general", null);
+                new Date(70, 0, 1), null, null, true, "general", null, "label_2", 1.0, "reasoning_2", null);
 
         Certificate certificate = new Certificate();
         certificate.setId(UUID.randomUUID());
@@ -693,7 +693,7 @@ public class UserServiceTest {
         when(badgeService.getUserBadgesByUserId(mockUser.getAuth0UserId())).thenReturn(List.of(badge));
         when(courseService.getCoursesByUserId(mockUser.getAuth0UserId())).thenReturn(List.of(course));
         when(postRepository.findByUserId(mockUser.getAuth0UserId())).thenReturn(List.of(
-                new Post(1, "content", mockUser.getAuth0UserId(), new Date(1970, 1, 1), null, null, false, "category", null)
+                new Post(1, "content", mockUser.getAuth0UserId(), new Date(1970, 1, 1), null, null, false, "category", null, "label", 1.0, "reasoning", null)
         ));
 
         UserProfileDTO result = userService.getUserProfile(username);
