@@ -4,6 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import '../styles/UserDetails.css';
 import { Header } from '../pages/Header';
 import AnimatedProgressBar from './AnimatedProgressBar';
+import LoadingScreen from './LoadingScreen';
 
 type CourseProgress = {
     courseId: number;
@@ -64,7 +65,9 @@ export default function UserDetails() {
         fetchUser();
     }, [userId, getAccessTokenSilently]);
 
-    if (loading) return <p>Loading user details...</p>;
+    if (loading) {
+        return <LoadingScreen />;
+    }
     if (error) return <p>Error: {error}</p>;
     if (!user) return <p>User not found.</p>;
 
@@ -208,35 +211,38 @@ export default function UserDetails() {
                         <div>
                             <h3 className="ud-subheader">Forum Posts</h3>
                             <ul className="ud-postsList">
-                                {user.userPosts.map((post) => (
-                                    <li key={post.id ?? post.createdAt} className="ud-postsListItem">
-                                        <div className="ud-postContent">
-                                            <span className={post.deleted ? 'ud-post-deleted' : ''}>
-                                                {post.deleted ? '[This post was deleted]' : post.content}
-                                            </span>
-                                            <em className="ud-postDate">
-                                                ({new Date(post.createdAt).toLocaleDateString()})
-                                            </em>
-                                        </div>
-                                        <div className="ud-postActions">
-                                            <button
-                                                className="ud-btn ud-btn-delete"
-                                                onClick={() => handleDeletePost(post.id)}
-                                                disabled={post.deleted}
-                                            >
-                                                Delete
-                                            </button>
-                                            <a
-                                                href={`/community/${userId}`}
-                                                className="ud-btn ud-btn-view"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                View Thread
-                                            </a>
-                                        </div>
-                                    </li>
-                                ))}
+                                {user.userPosts
+                                    .slice()
+                                    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                                    .map((post) => (
+                                        <li key={post.id ?? post.createdAt} className="ud-postsListItem">
+                                            <div className="ud-postContent">
+                                                <span className={post.deleted ? 'ud-post-deleted' : ''}>
+                                                    {post.deleted ? '[This post was deleted]' : post.content}
+                                                </span>
+                                                <em className="ud-postDate">
+                                                    ({new Date(post.createdAt).toLocaleDateString()})
+                                                </em>
+                                            </div>
+                                            <div className="ud-postActions">
+                                                <button
+                                                    className="ud-btn ud-btn-delete"
+                                                    onClick={() => handleDeletePost(post.id)}
+                                                    disabled={post.deleted}
+                                                >
+                                                    Delete
+                                                </button>
+                                                <a
+                                                    href={`/community/${userId}`}
+                                                    className="ud-btn ud-btn-view"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    View Thread
+                                                </a>
+                                            </div>
+                                        </li>
+                                    ))}
                             </ul>
 
                             <h3 className="ud-subheader">Deleted Posts</h3>
