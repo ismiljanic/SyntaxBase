@@ -56,3 +56,19 @@ jobs:
         run: |
           docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-frontend:latest ./frontend --build-arg REACT_APP_API_BASE_URL=http://localhost:8080
           docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-frontend:latest
+
+      - name: Build and push all moderation Docker images
+        run: |
+          declare -A services=(
+            ["api"]="SyntaxBase-moderation-microservice/docker/api/Dockerfile"
+            ["bert"]="SyntaxBase-moderation-microservice/docker/bert/Dockerfile"
+            ["classical"]="SyntaxBase-moderation-microservice/docker/classical/Dockerfile"
+            ["llm"]="SyntaxBase-moderation-microservice/docker/llm/Dockerfile"
+            ["toxic-bert"]="SyntaxBase-moderation-microservice/docker/toxic_bert/Dockerfile"
+          )
+
+          for service in "${!services[@]}"; do
+            docker build -f "${services[$service]}" \
+              -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-moderation-$service:latest .
+            docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-moderation-$service:latest
+          done
