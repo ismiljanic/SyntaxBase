@@ -3,8 +3,8 @@ name: Build and Push Docker Images
 on:
   push:
     branches:
-      - main
-      - dev
+#      - main
+      - github-actions
 
 env:
   REGISTRY: ghcr.io
@@ -65,3 +65,21 @@ jobs:
         run: |
           docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-frontend:latest ./frontend --build-arg REACT_APP_API_BASE_URL=http://localhost:8080
           docker push $REGISTRY/${{ env.IMAGE_OWNER }}/syntaxbase-frontend:latest
+
+      - name: Build and push microservice-moderation
+        run: |
+          
+          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/moderation-classical:latest ./microservice-moderation --file docker/classical/Dockerfile
+          docker push $REGISTRY/${{ env.IMAGE_OWNER }}/moderation-classical:latest
+
+          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/moderation-bert:latest ./microservice-moderation --file docker/bert/Dockerfile
+          docker push $REGISTRY/${{ env.IMAGE_OWNER }}/moderation-bert:latest
+
+          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/moderation-toxicbert:latest ./microservice-moderation --file docker/toxic_bert/Dockerfile
+          docker push $REGISTRY/${{ env.IMAGE_OWNER }}/moderation-toxicbert:latest
+
+          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/moderation-llm:latest ./microservice-moderation --file docker/llm/Dockerfile
+          docker push $REGISTRY/${{ env.IMAGE_OWNER }}/moderation-llm:latest
+
+          docker build -t $REGISTRY/${{ env.IMAGE_OWNER }}/moderation-api:latest ./microservice-moderation --file docker/api/Dockerfile
+          docker push $REGISTRY/${{ env.IMAGE_OWNER }}/moderation-api:latest
