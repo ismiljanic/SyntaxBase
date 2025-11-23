@@ -4,6 +4,58 @@ All notable changes to this project will be documented in this file
 
 ---
 
+## [2.3.0] - 2025-11-23
+
+This release introduces the **SyntaxBase Moderation Microservice**, a fully-featured, scalable comment moderation system. It combines rule-based, transformer-based, and large language model reasoning for automatic toxicity classification and detailed content analysis. The service can detect multiple toxicity levels and provide reasoning for flagged content.
+
+The microservice is fully Dockerized and orchestrated via `docker-compose`, allowing flexible scaling and fault isolation across the platform.
+
+---
+
+### Added
+- SyntaxBase Moderation Microservice
+  - Multi-level toxicity detection: safe, mild, toxic, severe
+  - Hybrid classification pipeline:
+    - **Classical ML**: XGBoost with TF-IDF and numeric text features for fast first-pass classification
+    - **BERT-based models** for semantic understanding and finer toxicity detection
+    - **ToxicBERT** for aggressive or identity-based content
+    - **LLM fallback** for uncertain cases with detailed reasoning
+  - Dockerized microservice with independent scaling and fault isolation
+  - REST API for moderation results, accessible by admin panel and other services
+  - Automated reasoning notes when LLM evaluation is skipped
+- Integration into main SyntaxBase project as a root-level microservice (`microservice-moderation`)
+
+---
+
+### Improvements
+- Enhanced platform security by centralizing content moderation
+- Standardized API response format for all moderation endpoints
+- Seamless integration with existing user roles and permissions
+- Prepared backend to display moderation results in admin panel
+
+---
+
+### Fixed
+- Various UI/UX bugs
+
+---
+
+### Other
+- Updated `CHANGELOG.md` to reflect new microservice
+- Updated project structure to include `microservice-moderation/`
+- Documentation added for deployment, architecture, and technical stack
+
+---
+
+## Release Links
+- [Changelog](https://github.com/ismiljanic/SyntaxBase/blob/main/CHANGELOG.md)
+- [v2.3.0 Tag](https://github.com/ismiljanic/SyntaxBase/tree/v2.3.0)
+- [Compare with v2.2.0](https://github.com/ismiljanic/SyntaxBase/compare/v2.2.0...v2.3.0)
+
+[2.3.0]: https://github.com/ismiljanic/SyntaxBase/tree/v2.3.0
+
+---
+
 ## [2.2.0] - 2025-09-27
 
 This release introduces a fully-featured real-time chat system, allowing users to share experiences, ask each other for help, or casually chat with each other.

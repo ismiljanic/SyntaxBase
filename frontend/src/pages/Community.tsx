@@ -22,6 +22,7 @@ interface Post {
     updatedAt: string;
     deleted: boolean;
     userAccountCreatedAt?: Date;
+    moderationLabel?: string;
 }
 
 interface BadgeDTO {
@@ -324,8 +325,6 @@ export function Community() {
         }
     };
 
-
-
     const toggleExpand = (postId: number) => {
         setPosts(posts.map(post =>
             post.id === postId ? { ...post, isExpanded: !post.isExpanded } : post
@@ -480,6 +479,11 @@ export function Community() {
                                         <span className={`post-category ${post.category.replace(/\s+/g, '')}`}>
                                             {post.category}
                                         </span>
+                                        {userRole === "ADMIN" && (
+                                            <span className={`post-moderation-label ${post.moderationLabel?.toLowerCase()}`}>
+                                                {post.moderationLabel ?? "—"}
+                                            </span>
+                                        )}
                                     </div>
                                     <div className="post-header-center">
                                         <div
@@ -723,6 +727,11 @@ export function Community() {
                                                                     >
                                                                         Report
                                                                     </button>
+                                                                )}
+                                                                {userRole === "ADMIN" && (
+                                                                    <span className={`post-moderation-label ${reply.moderationLabel?.toLowerCase()}`}>
+                                                                        {reply.moderationLabel ?? "—"}
+                                                                    </span>
                                                                 )}
                                                             </>
                                                         )}

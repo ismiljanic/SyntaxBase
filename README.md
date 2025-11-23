@@ -310,8 +310,11 @@ SyntaxBase/
 ├── docs/
 ├── frontend/
 ├── microservice-chat/
+├── microservice-moderation/
 ├── microservice-notifications/
 ├── microservice-shared/
+├── monitoring/
+├── tests/
 ├── CHANGELOG.MD
 ├── LICENSE
 ├── README.MD
@@ -360,6 +363,106 @@ microservice_chat/
 ├── dto/
 ├── services/
 └── MicroserviceChatApplication.java
+```
+---
+
+### Microservice-moderation
+
+```text
+SyntaxBase-moderation-microservice/
+│
+├── data/
+│ └── processed/
+│ ├── raw/
+│ └── test/
+│ └── utils/
+|
+├── docker/
+│ └── api/
+    └── Dockerfile
+│ ├── bert/
+    └── Dockerfile
+│ └── classical/
+    └── Dockerfile
+│ └── llm/
+    └── Dockerfile
+│ └── toxic_bert/
+    └── Dockerfile
+|
+├── docs/
+│ └── architecture.md
+│ └── docs.md
+│ └── index.md
+│ └── research_paper.md
+│ └── training_logs.md
+│
+├── models/
+│ └── saved/
+│   └── bert/
+|   └── classical/
+|   └── toxic_bert/
+│
+├── notebooks/
+│ └── 01_baseline_experiments.ipynb
+│ └── 02_distilbert_experiments.ipynb
+│ └── 03_toxicbert_experiments.ipynb
+│ └── 04_model_comparison.ipynb
+│ └── 05_error_analysis.ipynb
+│ └── 06_metrics_analysis.ipynb
+|
+├── results/
+│ └── comparisons/
+|   └── bert/
+|   └── llm/
+│ └── model_comparison_summary.csv
+│ └── runtime_memory_tradeoff.csv
+|
+│ └── logs/
+|   └── classical/
+|   └── llm/
+|       └── meta-llama-3.1-8b-instruct/
+|       └── phi-4-reasoning-plus/
+|       └── qwen3-4b-thinking-2507/
+|   └── transformer/
+|       └── distil_bert/
+|       └── toxic_bert/
+│ └── metrics/
+│ └── visuals/
+│
+├── src/
+│ ├── classical/
+│ ├── llm/
+│   ├── prompts/
+│   ├── evaluator.py/
+│   ├── llm_moderation_client.py/
+│   ├── llm_service.py/
+│ ├── transformer/
+│ ├── utils/
+│ │ └── generate_comments/
+│ │     └── all_round_comments.py # general comments from various sources
+│ │     └── forum_based_comments.py # comments that will likely be in forum
+│ │ └── aggregateLlmResults.py
+│ │ └── compare_all_llms.py
+│ │ └── evaluate_both_models.py
+│ │ └── evaluate_checkpoints.py
+│ │ └── model_comparison_summary.py
+│ │ └── predict_comments_bert.py
+│ │ └── predict_comments_toxicbert.py
+│ │ └── predict_comments.py
+│ │ ├── preprocessing.py
+│ │ ├── runtime_memory_tradeoff_comparison.py
+| │api_service.py   
+| |config.py
+| |inference.py   
+| |model_loader.py   
+| |utils.py   
+|
+├── .gitattributes
+├── .gitignore
+├── docker-compose.yml
+├── LICENSE
+├── README.md
+└── requirements.txt
 ```
 ---
 

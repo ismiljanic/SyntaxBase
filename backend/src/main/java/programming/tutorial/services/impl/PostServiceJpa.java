@@ -11,7 +11,9 @@ import programming.tutorial.domain.Role;
 import programming.tutorial.domain.User;
 import programming.tutorial.dto.PostDTO;
 import programming.tutorial.dto.ReplyCreatedEventDTO;
+import programming.tutorial.moderation.ModerationResult;
 import programming.tutorial.services.BadgeService;
+import programming.tutorial.services.ModerationService;
 import programming.tutorial.services.PostService;
 import programming.tutorial.services.ReplyEventProducer;
 
@@ -33,6 +35,9 @@ public class PostServiceJpa implements PostService {
     private ReplyEventProducer replyEventProducer;
     @Autowired
     private BadgeService badgeService;
+
+    @Autowired
+    private ModerationService moderationService;
 
     @Override
     public List<PostDTO> getAllPosts() {
@@ -60,6 +65,7 @@ public class PostServiceJpa implements PostService {
                                         reply.getCategory(),
                                         replyUserRole,
                                         reply.getUpdatedAt(),
+                                        reply.getModerationLabel(),
                                         replyUserDateCreated
                                 );
                             }).collect(Collectors.toList());
@@ -74,6 +80,7 @@ public class PostServiceJpa implements PostService {
                             post.getCategory(),
                             userRole,
                             post.getUpdatedAt(),
+                            post.getModerationLabel(),
                             userAccountDateCreatedAt
                     );
                 })
@@ -93,7 +100,23 @@ public class PostServiceJpa implements PostService {
         }
 
         post.setCreatedAt(new Date());
+
+        ModerationResult result = moderationService.classify(post.getContent());
+        post.setModerationLabel(result.getFinal_label());
+        post.setModerationConfidence(
+                result.getToxic_confidence() != null ? result.getToxic_confidence() : 0.0
+        );
+
+        if (result.getLlm_reasoning() == null || result.getLlm_reasoning().trim().isEmpty()) {
+            post.setModerationReasoning("LLM evaluation was skipped because the BERT-based models provided sufficient confidence.");
+        } else {
+            post.setModerationReasoning(result.getLlm_reasoning());
+        }
+        post.setModerationTimestamp(new Date());
+
+
         Post savedPost = postRepository.save(post);
+
         System.out.println("Post saved with ID: " + savedPost.getId());
 
         if (post.getParentPost() != null && post.getParentPost().getId() != null) {
@@ -176,6 +199,7 @@ public class PostServiceJpa implements PostService {
                             reply.getCategory(),
                             replyUserRole,
                             reply.getUpdatedAt(),
+                            reply.getModerationLabel(),
                             replyUserDateCreated
                     );
                 }).collect(Collectors.toList());
@@ -190,6 +214,7 @@ public class PostServiceJpa implements PostService {
                 post.getCategory(),
                 userRole,
                 post.getUpdatedAt(),
+                post.getModerationLabel(),
                 userAccountDateCreatedAt
         );
     }
@@ -228,9 +253,50 @@ public class PostServiceJpa implements PostService {
 
         post.setContent(postDTO.getContent());
         post.setUpdatedAt(new Date());
+
+        ModerationResult result = moderationService.classify(postDTO.getContent());
+
+        post.setModerationLabel(result.getFinal_label());
+        post.setModerationConfidence(
+                result.getToxic_confidence() != null ? result.getToxic_confidence() : 0.0
+        );
+
+        if (result.getLlm_reasoning() == null || result.getLlm_reasoning().trim().isEmpty()) {
+            post.setModerationReasoning("LLM evaluation was skipped because the BERT-based models provided sufficient confidence.");
+        } else {
+            post.setModerationReasoning(result.getLlm_reasoning());
+        }
+        post.setModerationTimestamp(new Date());
+
+
         postRepository.save(post);
     }
 
+    private PostDTO convertToDto(Post post) {
+        PostDTO dto = new PostDTO();
+        userRepository.findByAuth0UserId(post.getUserId()).ifPresent(user -> dto.setUsername(user.getUsername()));
+        dto.setId(post.getId());
+        dto.setContent(post.getContent());
+        dto.setUserId(post.getUserId());
+        dto.setCreatedAt(post.getCreatedAt());
+        dto.setUpdatedAt(post.getUpdatedAt());
+        dto.setDeleted(post.isDeleted());
+
+        dto.setModerationLabel(post.getModerationLabel());
+        dto.setModerationConfidence(post.getModerationConfidence());
+        dto.setModerationTimestamp(post.getModerationTimestamp());
+        dto.setModerationReasoning(post.getModerationReasoning());
+        return dto;
+    }
+
+    @Override
+    public List<PostDTO> getAllModeratedPosts() {
+        return postRepository.findAll()
+                .stream()
+                .filter(p -> p.getModerationLabel() != null)
+                .map(this::convertToDto)
+                .toList();
+    }
 
     private String getUsername(String userId) {
         return userRepository.findByAuth0UserId(userId)
