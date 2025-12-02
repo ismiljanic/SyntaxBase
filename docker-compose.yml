@@ -91,6 +91,7 @@ services:
       - backend
 
   prometheus:
+    container_name: prometheus
     image: prom/prometheus:latest
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
@@ -100,6 +101,7 @@ services:
       - backend
 
   grafana:
+    container_name: grafana
     image: grafana/grafana:latest
     environment:
       GF_SECURITY_ADMIN_USER: admin
