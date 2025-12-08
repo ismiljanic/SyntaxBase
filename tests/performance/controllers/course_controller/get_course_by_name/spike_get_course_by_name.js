@@ -21,3 +21,10 @@ export default function () {
     const res = http.get(`${BASE_URL}/name/${courseName}`, { headers: defaultHeaders });
     check(res, { 'GET /api/courses/name/{name} returns 200': (r) => checkResponse(r, 200) });
 }
+
+export function handleSummary(data) {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  return {
+    [`./tests/performance/results/summary_spike_get_courses_by_name_${timestamp}.json`]: JSON.stringify(data, null, 2),
+  };
+}

@@ -40,3 +40,10 @@ export default function () {
   });
   sleep(Math.random() * 5 + 2);
 }
+
+export function handleSummary(data) {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  return {
+    [`./tests/performance/results/summary_stress_post_all_courses_${timestamp}.json`]: JSON.stringify(data, null, 2),
+  };
+}

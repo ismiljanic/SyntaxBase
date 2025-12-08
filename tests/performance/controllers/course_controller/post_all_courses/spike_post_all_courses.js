@@ -32,3 +32,10 @@ export default function () {
       checkResponse(r, 201, 'POST /api/courses'),
   });
 }
+
+export function handleSummary(data) {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  return {
+    [`./tests/performance/results/summary_spike_post_all_courses_${timestamp}.json`]: JSON.stringify(data, null, 2),
+  };
+}
