@@ -17,3 +17,10 @@ export default function () {
    check(res, { 'GET /api/courses/name/{name} returns 200': (r) => checkResponse(r, 200) });
   sleep(0.5);
 }
+
+export function handleSummary(data) {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  return {
+    [`./tests/performance/results/summary_load_get_courses_by_name_${timestamp}.json`]: JSON.stringify(data, null, 2),
+  };
+}

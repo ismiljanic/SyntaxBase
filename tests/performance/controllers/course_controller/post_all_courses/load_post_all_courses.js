@@ -19,3 +19,10 @@ export default function () {
     check(res, { 'POST /api/courses status 200': (r) => checkResponse(r, 200, 'POST /api/courses') });
     sleep(Math.random() * 2 + 1);
 }
+
+export function handleSummary(data) {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  return {
+    [`./tests/performance/results/summary_load_post_all_courses_${timestamp}.json`]: JSON.stringify(data, null, 2),
+  };
+}
