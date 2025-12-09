@@ -2,15 +2,19 @@ package programming.tutorial.dto;
 
 import programming.tutorial.domain.User;
 
-public class CourseDTO {
+import java.io.Serial;
+import java.io.Serializable;
 
+public class CourseDTO implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private Integer courseId;
     private String courseName;
     private int courseLength;
     private String description;
     private String category;
     private String creatorId;
-    private User creator;
+    private UserDTO creator;
     private boolean systemCourse;
 
     public CourseDTO() {
@@ -85,11 +89,11 @@ public class CourseDTO {
         this.creatorId = creatorId;
     }
 
-    public User getCreator() {
+    public UserDTO getCreator() {
         return creator;
     }
 
-    public void setCreator(User creator) {
+    public void setCreator(UserDTO creator) {
         this.creator = creator;
     }
 
