@@ -20,4 +20,10 @@ public class CacheController {
         System.out.println("Called");
         return ResponseEntity.ok("All course caches cleared!");
     }
+
+    @DeleteMapping("/all")
+    public ResponseEntity<String> clearAllCaches() {
+        cacheService.evictAllCaches();
+        return ResponseEntity.ok("All caches cleared");
+    }
 }
