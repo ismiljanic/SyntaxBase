@@ -11,14 +11,25 @@ public class CacheServiceJpa {
     private CacheManager cacheManager;
 
     public void evictAllCoursesCache() {
-        if (cacheManager.getCache("all_courses") != null) {
-            cacheManager.getCache("all_courses").clear();
+        var cache = cacheManager.getCache("all_courses");
+        if (cache != null) {
+            cache.clear();
         }
     }
 
     public void evictCoursesByUser(String auth0UserId) {
-        if (cacheManager.getCache("courses_by_user") != null) {
-            cacheManager.getCache("courses_by_user").evict(auth0UserId);
+        var cache = cacheManager.getCache("courses_by_user");
+        if (cache != null) {
+            cache.evict(auth0UserId);
         }
+    }
+
+    public void evictAllCaches() {
+        cacheManager.getCacheNames().forEach(name -> {
+            var cache = cacheManager.getCache(name);
+            if (cache != null) {
+                cache.clear();
+            }
+        });
     }
 }

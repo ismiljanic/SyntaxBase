@@ -1,5 +1,6 @@
 package programming.tutorial.services.impl;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -13,7 +14,9 @@ import programming.tutorial.dto.CourseDTO;
 import programming.tutorial.dto.CourseWithLessonsDTO;
 import programming.tutorial.dto.LessonDTO;
 import programming.tutorial.dto.UserDTO;
+import programming.tutorial.monitoring.CacheMetrics;
 import programming.tutorial.services.CourseService;
+import io.micrometer.core.instrument.Timer;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,6 +34,11 @@ public class CourseServiceJpa implements CourseService {
     private LessonRepository lessonRepository;
     @Autowired
     private CacheServiceJpa cacheService;
+    @Autowired
+    private CacheMetrics cacheMetrics;
+    @Autowired
+    private MeterRegistry meterRegistry;
+
 
     @Override
     @Cacheable(value = "course_by_name", key = "#name")
@@ -85,9 +93,14 @@ public class CourseServiceJpa implements CourseService {
     @Override
     @Cacheable(value = "all_courses")
     public List<CourseDTO> getAllCourses() {
+        Timer.Sample sample = Timer.start(meterRegistry);
+        long start = System.currentTimeMillis();
+        cacheMetrics.miss();
+        /* First run will print this if cache isn't evicted previously
+         * Other runs will not print this unless cache is invalidated
+         * */
         System.out.println(">>> DB QUERY EXECUTED — NO CACHE HIT <<<");
-        cacheService.evictAllCoursesCache();
-        return courseRepository.findAll().stream()
+        List<CourseDTO> courses = courseRepository.findAll().stream()
                 .map(course -> {
                     CourseDTO dto = new CourseDTO(
                             course.getId(),
@@ -102,7 +115,43 @@ public class CourseServiceJpa implements CourseService {
                     return dto;
                 })
                 .collect(Collectors.toList());
+
+        sample.stop(Timer.builder("app.cache.getAllCourses.time")
+                .description("Execution time for getAllCourses")
+                .register(meterRegistry));
+
+        long duration = System.currentTimeMillis() - start;
+        System.out.println("getAllCourses execution time: " + duration + " ms");
+        return courses;
     }
+
+    /**
+     * Method to check how caching improves/behaves versus regular method.
+     * This bypasses the cache entirely and records execution time for comparison.
+     */
+    public List<CourseDTO> getAllCoursesUncached() {
+        Timer.Sample sample = Timer.start(meterRegistry);
+        long start = System.currentTimeMillis();
+        System.out.println("Uncached getAllCourses method called");
+        List<CourseDTO> courses = courseRepository.findAll().stream()
+                .map(course -> new CourseDTO(
+                        course.getId(),
+                        course.getCourseName(),
+                        course.getLength(),
+                        course.getDescription(),
+                        course.getCategory()
+                ))
+                .collect(Collectors.toList());
+
+        sample.stop(Timer.builder("app.cache.getAllCourses_uncached.time")
+                .description("Execution time for getAllCourses WITHOUT cache")
+                .register(meterRegistry));
+
+        long duration = System.currentTimeMillis() - start;
+        System.out.println("getAllCoursesUncached execution time: " + duration + " ms");
+        return courses;
+    }
+
 
     @Override
     @Caching(evict = {
