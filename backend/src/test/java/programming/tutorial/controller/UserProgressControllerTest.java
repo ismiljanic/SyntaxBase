@@ -1,7 +1,9 @@
 package programming.tutorial.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,10 +26,13 @@ import java.util.HashSet;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 
 @WebMvcTest(UserProgressController.class)
@@ -36,7 +41,6 @@ class UserProgressControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private UserProgressService userProgressService;
     @MockBean
@@ -47,6 +51,8 @@ class UserProgressControllerTest {
     private UserService userService;
     @Mock
     private Authentication authentication;
+    @InjectMocks
+    private UserProgressController progressController;
 
     private final String auth0Id = "auth0|123";
     private final Integer courseId = 1;
@@ -57,6 +63,81 @@ class UserProgressControllerTest {
     void setup() {
         when(authentication.getName()).thenReturn(auth0Id);
         when(userService.getUserId(auth0Id)).thenReturn(userId);
+    }
+
+    @Test
+    void updateProgress_userNotEnrolledAndNotOwner_returnsForbidden() throws Exception {
+        UserProgressController.ProgressUpdateRequest request = new UserProgressController.ProgressUpdateRequest();
+        request.courseId = 1;
+        request.lessonId = 1;
+
+
+        Jwt jwt = Jwt.withTokenValue("token")
+                .header("alg", "none")
+                .claim("sub", auth0Id)
+                .build();
+
+        when(authentication.getPrincipal()).thenReturn(jwt);
+        when(userProgressService.isUserEnrolled(anyString(), eq(request.courseId))).thenReturn(false);
+        when(courseService.isCourseOwner(anyString(), eq(request.courseId))).thenReturn(false);
+
+        mockMvc.perform(post("/api/progress/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(request))
+                        .principal(authentication))
+                .andExpect(status().isForbidden())
+                .andExpect(content().string(""));
+
+        verify(userProgressService).isUserEnrolled(anyString(), eq(request.courseId));
+        verify(courseService).isCourseOwner(anyString(), eq(request.courseId));
+        verifyNoMoreInteractions(userProgressService, courseService);
+    }
+
+    @Test
+    void updateProgress_userEnrolled_returnsOkWithMessage() throws Exception {
+        UserProgressController.ProgressUpdateRequest request = new UserProgressController.ProgressUpdateRequest();
+        request.courseId = 2;
+        request.lessonId = 2;
+
+        Jwt jwt = Jwt.withTokenValue("token")
+                .header("alg", "none")
+                .claim("sub", auth0Id)
+                .build();
+
+        when(authentication.getPrincipal()).thenReturn(jwt);
+        when(userProgressService.isUserEnrolled(anyString(), eq(request.courseId))).thenReturn(true);
+        when(courseService.isCourseOwner(anyString(), eq(request.courseId))).thenReturn(false);
+        when(userProgressService.updateProgress(eq("auth0|123"), eq(request.courseId), eq(request.lessonId)))
+                .thenReturn("Progress updated");
+
+        mockMvc.perform(post("/api/progress/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(request))
+                        .principal(authentication))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        verify(userProgressService).updateProgress(eq("auth0|123"), eq(request.courseId), eq(request.lessonId));
+    }
+
+    @Test
+    void updateProgress_userIsOwner_returnsOkWithMessage() throws Exception {
+        UserProgressController.ProgressUpdateRequest request = new UserProgressController.ProgressUpdateRequest();
+        request.courseId = 3;
+        request.lessonId = 3;
+
+        Jwt jwt = Jwt.withTokenValue("token").header("alg", "none").claim("sub", auth0Id).build();
+        when(authentication.getPrincipal()).thenReturn(jwt);
+        when(userProgressService.isUserEnrolled(anyString(), eq(request.courseId))).thenReturn(false);
+        when(courseService.isCourseOwner(anyString(), eq(request.courseId))).thenReturn(true);
+        when(userProgressService.updateProgress(eq("auth0|123"), eq(request.courseId), eq(request.lessonId)))
+                .thenReturn("Progress updated");
+
+        mockMvc.perform(post("/api/progress/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(request))
+                        .principal(authentication))
+                .andExpect(status().isOk());
     }
 
     @Test
