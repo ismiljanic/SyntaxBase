@@ -17,11 +17,11 @@ import programming.tutorial.dto.CourseDTO;
 import programming.tutorial.dto.CourseWithLessonsDTO;
 import programming.tutorial.dto.LessonDTO;
 import programming.tutorial.services.impl.CourseServiceJpa;
-
+import io.micrometer.core.instrument.Timer;
 import java.util.*;
+import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CourseServiceTest {

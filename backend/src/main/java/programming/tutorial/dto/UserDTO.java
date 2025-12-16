@@ -3,9 +3,13 @@ package programming.tutorial.dto;
 import programming.tutorial.domain.Role;
 import programming.tutorial.domain.Tier;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class UserDTO {
+public class UserDTO implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     public Integer id;
     public String name;
     public String surname;

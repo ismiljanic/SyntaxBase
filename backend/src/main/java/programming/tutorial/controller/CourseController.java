@@ -66,6 +66,10 @@ public class CourseController {
         }
         return courses;
     }
+    @GetMapping("/uncached")
+    public List<CourseDTO> getAllCoursesUncached() {
+        return courseService.getAllCoursesUncached();
+    }
 
     @PostMapping("/create-with-lessons")
     public ResponseEntity<?> createCourseWithLessons(@RequestBody CourseWithLessonsDTO dto) {

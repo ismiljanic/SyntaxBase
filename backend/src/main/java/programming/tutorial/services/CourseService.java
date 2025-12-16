@@ -27,4 +27,6 @@ public interface CourseService {
     boolean isCourseOwner(String userId, Integer courseId);
 
     List<LessonDTO> getLessonsForCourse(Integer courseId);
+
+    List<CourseDTO> getAllCoursesUncached();
 }
