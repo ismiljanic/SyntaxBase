@@ -39,7 +39,6 @@ public class CourseServiceJpa implements CourseService {
     @Autowired
     private MeterRegistry meterRegistry;
 
-
     @Override
     @Cacheable(value = "course_by_name", key = "#name")
     public Optional<Course> findByName(CourseDTO courseDTO) {
@@ -93,9 +92,6 @@ public class CourseServiceJpa implements CourseService {
     @Override
     @Cacheable(value = "all_courses")
     public List<CourseDTO> getAllCourses() {
-        Timer.Sample sample = Timer.start(meterRegistry);
-        long start = System.currentTimeMillis();
-        cacheMetrics.miss();
         /* First run will print this if cache isn't evicted previously
          * Other runs will not print this unless cache is invalidated
          * */
@@ -116,12 +112,6 @@ public class CourseServiceJpa implements CourseService {
                 })
                 .collect(Collectors.toList());
 
-        sample.stop(Timer.builder("app.cache.getAllCourses.time")
-                .description("Execution time for getAllCourses")
-                .register(meterRegistry));
-
-        long duration = System.currentTimeMillis() - start;
-        System.out.println("getAllCourses execution time: " + duration + " ms");
         return courses;
     }
 
