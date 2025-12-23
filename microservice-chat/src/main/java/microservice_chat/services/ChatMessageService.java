@@ -12,10 +12,7 @@ import shared.dto.ChatMessageDTO;
 
 import java.nio.file.AccessDeniedException;
 import java.time.Instant;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,7 +67,7 @@ public class ChatMessageService {
     public List<ChatMessageDTO> getMessagesBetween(String user1, String user2) {
         List<ChatMessage> messages = repository.findVisibleMessagesBetween(user1, user2);
 
-        messages.sort((m1, m2) -> m1.getSentAt().compareTo(m2.getSentAt()));
+        messages.sort(Comparator.comparing(ChatMessage::getSentAt));
 
         return messages.stream().map(m -> {
             ChatMessageDTO dto = new ChatMessageDTO();
