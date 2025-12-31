@@ -1,6 +1,6 @@
 package microservice_analytics.ingestion.kafka;
 
-import microservice_analytics.common.EventEnvelope;
+import common.EventEnvelope;
 import org.slf4j.Logger;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
