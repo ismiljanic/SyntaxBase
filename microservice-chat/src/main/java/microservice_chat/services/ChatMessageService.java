@@ -1,8 +1,11 @@
 package microservice_chat.services;
 
+import common.EventEnvelope;
+import common.EventType;
 import jakarta.transaction.Transactional;
 import microservice_chat.dao.ChatMessageRepository;
 import microservice_chat.domain.ChatMessage;
+import microservice_chat.dto.ChatMessagePayload;
 import microservice_chat.dto.ChatSummaryDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +24,18 @@ public class ChatMessageService {
 
     private final ChatMessageRepository repository;
     private final KafkaTemplate<String, ChatMessageDTO> kafkaTemplate;
+    private final KafkaTemplate<String, EventEnvelope<?>> analyticsKafkaTemplate;
 
-    public ChatMessageService(ChatMessageRepository repository, KafkaTemplate<String, ChatMessageDTO> kafkaTemplate) {
+    public ChatMessageService(
+            ChatMessageRepository repository,
+            KafkaTemplate<String, ChatMessageDTO> kafkaTemplate,
+            KafkaTemplate<String, EventEnvelope<?>> analyticsKafkaTemplate
+    ) {
         this.repository = repository;
         this.kafkaTemplate = kafkaTemplate;
+        this.analyticsKafkaTemplate = analyticsKafkaTemplate;
     }
+
 
     @Transactional
     public void processMessage(ChatMessageDTO dto) {
@@ -40,12 +50,25 @@ public class ChatMessageService {
         entity.getVisibleTo().add(dto.getFromUserId());
         entity.getVisibleTo().add(dto.getToUserId());
         entity.setReplyToMessageId(dto.getReplyToMessageId());
-
         repository.save(entity);
 
         ChatMessageDTO dtoOut = getChatMessageDTO(entity);
-
         kafkaTemplate.send("chat.messages", dtoOut.getToUserId(), dtoOut);
+
+        EventEnvelope<ChatMessagePayload> envelope = new EventEnvelope<>(
+                UUID.randomUUID().toString(),
+                EventType.CHAT_MESSAGE_SENT.name(),
+                "chat-service",
+                Instant.now(),
+                new ChatMessagePayload(
+                        entity.getId().toString(),
+                        entity.getFromUserId(),
+                        entity.getToUserId(),
+                        entity.getSentAt()
+                )
+        );
+        analyticsKafkaTemplate.send("chat-events", entity.getId().toString(), envelope);
+        logger.info("Sent analytics event for messageId={}", entity.getId());
     }
 
     private static ChatMessageDTO getChatMessageDTO(ChatMessage entity) {

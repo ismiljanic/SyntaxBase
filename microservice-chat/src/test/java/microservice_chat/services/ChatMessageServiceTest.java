@@ -1,11 +1,13 @@
 package microservice_chat.services;
 
+import common.EventEnvelope;
 import microservice_chat.dao.ChatMessageRepository;
 import microservice_chat.domain.ChatMessage;
 import microservice_chat.dto.ChatSummaryDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.MockitoAnnotations;
 import org.springframework.kafka.core.KafkaTemplate;
 import shared.dto.ChatMessageDTO;
 
@@ -23,13 +25,18 @@ import static org.mockito.Mockito.*;
 class ChatMessageServiceTest {
     private ChatMessageRepository repository;
     private KafkaTemplate<String, ChatMessageDTO> kafkaTemplate;
+    private KafkaTemplate<String, EventEnvelope<?>> analyticsKafkaTemplate;
     private ChatMessageService chatMessageService;
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
+
         repository = mock(ChatMessageRepository.class);
         kafkaTemplate = mock(KafkaTemplate.class);
-        chatMessageService = new ChatMessageService(repository, kafkaTemplate);
+        analyticsKafkaTemplate = mock(KafkaTemplate.class);
+
+        chatMessageService = new ChatMessageService(repository, kafkaTemplate, analyticsKafkaTemplate);
     }
 
     @Test
