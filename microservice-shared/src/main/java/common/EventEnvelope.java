@@ -1,4 +1,4 @@
-package microservice_analytics.common;
+package common;
 
 import java.time.Instant;
 

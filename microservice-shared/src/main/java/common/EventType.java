@@ -1,4 +1,4 @@
-package microservice_analytics.common;
+package common;
 
 public enum EventType {
     CHAT_MESSAGE_SENT,
